@@ -6,7 +6,7 @@ module.exports = {
       watch: false,
       ignore_watch: ["node_modules"],
       env_development: {
-        NODE_ENV: "development",
+        NODE_ENV: "development" ,
       },
     },
   ],
