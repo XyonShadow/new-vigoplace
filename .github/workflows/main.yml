@@ -40,4 +40,5 @@ jobs:
                 git reset --hard HEAD
                 git pull
                 npm i
-                pm2 restart Production
+                npm run build
+                pm2 restart AdminConsole
