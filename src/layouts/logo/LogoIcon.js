@@ -6,7 +6,7 @@ import Logo from "../../../assets/images/backgrounds/Gradientvigo.svg";
 
 const LogoIcon = () => {
   return (
-    <Link href="/">
+    <Link href="/dashboard">
       <Image src={Logo} alt={Logo} />
     </Link>
   );

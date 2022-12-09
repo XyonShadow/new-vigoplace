@@ -2,7 +2,7 @@ const Menuitems = [
   {
     title: "Dashbaord",
     icon: "home",
-    href: "/",
+    href: "/dashboard",
   },
   {
     title: "Tickets",
