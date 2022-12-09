@@ -35,9 +35,10 @@ jobs:
               KEY: ${{ secrets.SSH_KEY }}
               script: |
                 eval `ssh-agent -s`
-                ssh-add ~/.ssh/server-key
+                ssh-add ~/.ssh/admin
                 cd /var/www/admin.vigoplace.com
                 git reset --hard HEAD
                 git pull
                 npm i
-                pm2 restart Production
+                npm run build
+                pm2 restart AdminConsole
