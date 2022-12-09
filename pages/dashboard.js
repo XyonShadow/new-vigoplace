@@ -58,7 +58,7 @@ export default function Index() {
             sm={6}
             xs={12}
           >
-            <TotalProfit sx={{ height: '100%' }} />
+            <TotalProfit />
           </Grid>
           <Grid
             item
@@ -84,9 +84,9 @@ export default function Index() {
       <Grid item xs={12} lg={8}>
         <ProductPerfomance />
       </Grid>
-      <Grid item xs={12} lg={12}>
+      {/* <Grid item xs={12} lg={12}>
         <BlogCard />
-      </Grid>
+      </Grid> */}
     </Grid>
     </>
   );
