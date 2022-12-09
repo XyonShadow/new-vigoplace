@@ -35,18 +35,18 @@ export default function Index() {
           </Grid>
           <Grid
             item
-            xl={3}
             lg={3}
             sm={6}
+            xl={3}
             xs={12}
           >
             <TotalCustomers />
           </Grid>
           <Grid
             item
-            xl={3}
             lg={3}
             sm={6}
+            xl={3}
             xs={12}
           >
             <TasksProgress />
