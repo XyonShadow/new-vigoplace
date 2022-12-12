@@ -8,4 +8,6 @@ function Payouts() {
   )
 }
 
+Payouts.auth = true
+
 export default Payouts

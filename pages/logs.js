@@ -22,5 +22,5 @@ function ActivityLogs() {
   </>
   )
 }
-
+ActivityLogs.auth = true
 export default ActivityLogs

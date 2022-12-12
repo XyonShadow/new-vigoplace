@@ -57,4 +57,7 @@ function Tickets() {
   )
 }
 
+Tickets.auth = true
+Tickets.role = ['admin', 'subadmin', 'administrator']
+
 export default Tickets

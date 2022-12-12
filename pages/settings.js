@@ -5,3 +5,5 @@ export default function Settings() {
     <h1>Settings Coming soon...</h1>
   )
 }
+
+Settings.auth = true

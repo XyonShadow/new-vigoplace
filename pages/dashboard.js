@@ -8,8 +8,12 @@ import { LatestOrders } from "../src/components/dashboard/latest-orders";
 import { TasksProgress } from "../src/components/dashboard/tasks-progress";
 import { TotalCustomers } from "../src/components/dashboard/total-customers";
 import { TotalProfit } from "../src/components/dashboard/total-profit";
+import {useSession} from 'next-auth/react'
 
 export default function Index() {
+  const { data, status } = useSession()
+  console.log({data, status})
+
   return (
     <>
       <Box
@@ -91,3 +95,6 @@ export default function Index() {
     </>
   );
 }
+
+Index.auth = true
+

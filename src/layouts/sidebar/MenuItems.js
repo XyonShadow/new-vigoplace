@@ -3,31 +3,42 @@ const Menuitems = [
     title: "Dashbaord",
     icon: "home",
     href: "/dashboard",
+    roles: ['admin', 'administrator']
   },
   {
     title: "Tickets",
     icon: "headphones",
     href: "/tickets",
+    roles: ['admin', 'administrator']
+
   },
   {
     title: "Payouts",
     icon: "dollar-sign",
     href: "/payouts",
+    roles: ['admin', 'administrator']
+
   },
   {
     title: "Users",
     icon: "users",
     href: "/users",
+    roles: ['admin', 'administrator']
+
   },
   {
     title: "Settings",
     icon: "settings",
     href: "/settings",
+    roles: ['admin', 'administrator']
+
   },
   {
     title: "Activity Logs",
     icon: "activity",
     href: "/logs",
+    roles: ['admin', 'administrator']
+
   },
 
   // {

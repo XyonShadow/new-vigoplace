@@ -15,6 +15,7 @@ import {
   ListItemButton,
   ListItemText,
 } from "@mui/material";
+import { useSession } from "next-auth/react"
 import FeatherIcon from "feather-icons-react";
 import LogoIcon from "../logo/LogoIcon";
 import Menuitems from "./MenuItems";
@@ -22,6 +23,7 @@ import Buynow from "./Buynow";
 import { useRouter } from "next/router";
 
 const Sidebar = ({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) => {
+  const { status, data } = useSession({ required: true, })
   const [open, setOpen] = React.useState(true);
 
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
@@ -51,6 +53,7 @@ const Sidebar = ({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) => {
 
       <Box mt={2}>
         <List>
+          {/* {Menuitems.filter((item)=> item.roles.includes(data?.user.username)).map((item, index) => ( */}
           {Menuitems.map((item, index) => (
             <List component="li" disablePadding key={item.title}>
               <NextLink href={item.href}>

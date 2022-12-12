@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { signIn, signOut, useSession } from "next-auth/react"
 import HomeLayout from "../src/layouts/HomeLayout"
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -37,12 +38,19 @@ export default function Login() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    router.push('/dashboard')
+    // router.push('/dashboard')
+    // signIn()
     const data = new FormData(event.currentTarget);
     console.log({
-      email: data.get('email'),
+      email: data.get('username'),
       password: data.get('password'),
     });
+    signIn("credentials", {
+      username: data.get('username'),
+      password: data.get('password'),
+      callbackUrl: `${window.location.origin}/dashboard`,
+      // redirect: false,
+    })
   };
 
   return (
@@ -68,9 +76,9 @@ export default function Login() {
               margin="normal"
               required
               fullWidth
-              id="email"
+              id="username"
               label="Email Address"
-              name="email"
+              name="username"
               autoComplete="email"
               autoFocus
             />

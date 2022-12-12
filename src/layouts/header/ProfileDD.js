@@ -1,4 +1,6 @@
 import React from "react";
+import {useRouter} from 'next/router'
+import { signOut, useSession } from "next-auth/react"
 import FeatherIcon from "feather-icons-react";
 import Image from "next/image";
 import userimg from "../../../assets/images/users/user2.jpg";
@@ -13,7 +15,10 @@ import {
   Button,
   Divider,
 } from "@mui/material";
+
 const ProfileDD = () => {
+  const router = useRouter();
+  const { data, status } = useSession()
   const [anchorEl4, setAnchorEl4] = React.useState(null);
 
   const handleClick4 = (event) => {
@@ -23,6 +28,14 @@ const ProfileDD = () => {
   const handleClose4 = () => {
     setAnchorEl4(null);
   };
+
+    const handleSignOut = async () => {
+    const data = await signOut({redirect: false, callbackUrl: "/"})
+    router.push(data.url)
+
+  }
+
+
   return (
     <>
       <Button
@@ -64,7 +77,7 @@ const ProfileDD = () => {
                 ml: 1,
               }}
             >
-              Admin
+              {data?.user?.username}
             </Typography>
             <FeatherIcon icon="chevron-down" width="20" height="20" />
           </Box>
@@ -106,7 +119,7 @@ const ProfileDD = () => {
           <Divider />
           <Box p={2}>
             <Link to="/">
-              <Button fullWidth variant="contained" color="primary">
+              <Button fullWidth variant="contained" color="primary" onClick={() => handleSignOut()}>
                 Logout
               </Button>
             </Link>
