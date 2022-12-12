@@ -7,6 +7,7 @@ module.exports = {
       ignore_watch: ["node_modules"],
       env_development: {
         NODE_ENV: "development",
+        NEXTAUTH_URL:"https://admin.vigoplace.com/"
       },
     },
   ],
