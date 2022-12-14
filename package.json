@@ -34,7 +34,6 @@
     "dev": "next",
     "build": "next build",
     "start": "next  -- -H 127.0.0.1 -p 5000",
-    "post-update": "echo \"codesandbox preview only, need an update\" && yarn upgrade --latest",
-    "export": "npm run build && next export -o _static"
+    "post-update": "echo \"codesandbox preview only, need an update\" && yarn upgrade --latest"
   }
 }
