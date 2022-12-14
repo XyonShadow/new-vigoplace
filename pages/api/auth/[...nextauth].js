@@ -27,7 +27,6 @@ export const authOptions = {
       //   password: {  label: "password", type: "password" }
       // },
       async authorize(credentials, req) {
-        console.log(credentials, 'credentials pro max')
         // You need to provide your own logic here that takes the credentials
         // submitted and returns either a object representing a user or value
         // that is false/null if the credentials are invalid.
@@ -43,9 +42,7 @@ export const authOptions = {
         //   // body: JSON.stringify(credentials),
         //   headers: { "Content-Type": "application/json" }
         // })
-        console.log("***********")
-        console.log(credentials.username)
-        console.log(credentials.password)
+        
         const res = await axios.post('https://vigoplace.com/server/api/admin/auth/login', 
         // credentials
         {
@@ -53,12 +50,9 @@ export const authOptions = {
           "password": credentials.password
         }
         )
-        console.log(res, "respond to me...")
 
         const user = await res.data
 
-        console.log(user, "user to me...")
-        // console.log(res.data, "respond to me...")
 
         // If no error and we have user data, return it
         if (user) {
@@ -77,15 +71,12 @@ export const authOptions = {
   },
   callbacks: {
     async jwt({token, user}) {
-  //  console.log(params, "param me")
    if (user) {
     token.user = user.data
   }
   return token
     },
     async session({session, token, user}) {
-      // console.log({session, token, user}, 'from session')
-      // console.log({ session, token, user })
       // Send properties to the client, like an access_token from a provider.
       session.user = token.user
       return session

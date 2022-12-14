@@ -24,7 +24,6 @@ export default function MyApp(props) {
   // const getLayout = Component.getLayout
   // const getLayout = Component.getLayout || ((page) => page)
   const getLayout = Component.getLayout || ((page) => <FullLayout>{page}</FullLayout>)
-  console.log(getLayout, "Component")
   // {getLayout(<Component {...pageProps} />)}
 
   function Auth({ children }) {
@@ -35,7 +34,6 @@ export default function MyApp(props) {
     //   return <p> loading...</p>
     // }
     
-    console.log(status, 'status')
     if (status === "unauthenticated") {
       return <Index />
     }

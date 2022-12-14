@@ -41,10 +41,7 @@ export default function Login() {
     // router.push('/dashboard')
     // signIn()
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('username'),
-      password: data.get('password'),
-    });
+
     signIn("credentials", {
       username: data.get('username'),
       password: data.get('password'),

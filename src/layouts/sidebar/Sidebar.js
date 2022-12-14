@@ -53,8 +53,8 @@ const Sidebar = ({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) => {
 
       <Box mt={2}>
         <List>
-          {/* {Menuitems.filter((item)=> item.roles.includes(data?.user.username)).map((item, index) => ( */}
-          {Menuitems.map((item, index) => (
+          {Menuitems.filter((item)=> item.roles.includes(data?.user.username)).map((item, index) => (
+          // {Menuitems.map((item, index) => (
             <List component="li" disablePadding key={item.title}>
               <NextLink href={item.href}>
                 <ListItem
