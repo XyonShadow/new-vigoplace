@@ -5,10 +5,8 @@ module.exports = {
       script: "npm run start",
       watch: false,
       ignore_watch: ["node_modules"],
-      env_development: {
-        NODE_ENV: "development",
-        NEXTAUTH_URL:"https://admin.vigoplace.com",
-        NEXTAUTH_SECRET: "cubWjppgZ7T72ZpIqdBY7przSAPy/OPmYfFI68uUmrM="
+      env_production: {
+        NODE_ENV: "production"
       },
     },
   ],
