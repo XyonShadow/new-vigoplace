@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+// import axios from "axios";
 import NextLink from "next/link";
 import PropTypes from "prop-types";
 import {
@@ -21,10 +22,41 @@ import LogoIcon from "../logo/LogoIcon";
 import Menuitems from "./MenuItems";
 import Buynow from "./Buynow";
 import { useRouter } from "next/router";
+import { useRouteRoles } from '../../../hooks/useRouteRoles'
+// import { QueryClient } from "@tanstack/react-query";
+import { useQueryClient } from '@tanstack/react-query'
 
-const Sidebar = ({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) => {
+
+
+function Sidebar ({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }){
   const { status, data } = useSession({ required: true, })
   const [open, setOpen] = React.useState(true);
+  const [roles, setRoles] = React.useState({});
+
+  const queryClient = useQueryClient()
+   const { data: fetchedRoles, isLoading, isFetching } = useRouteRoles()
+  // const dataFromAbove = queryClient.getQueryData(['routeRoles'])
+
+  // console.log(fetchedRoles, 'fetchedRoles')
+
+  const sidebarMenu = fetchedRoles ? fetchedRoles?.data?.map((menu)=>{
+    // console.log(typeof menu.roles, 'menu.roles')
+    // console.log( JSON.parse(menu.roles), 'menu.roles parsed')
+    return {
+        title: menu.title,
+        icon: menu.icon,
+        href: menu.href,
+        roles: menu.roles
+        // roles: JSON.parse(menu?.roles)
+      }
+  }) : []
+
+
+  // console.log({fetchedRoles, isLoading, isFetching, dataFromAbove, data, sidebarMenu})
+  // console.log(sidebarMenu, 'boys')
+
+
+  
 
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
 
@@ -53,7 +85,7 @@ const Sidebar = ({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) => {
 
       <Box mt={2}>
         <List>
-          {Menuitems.filter((item)=> item.roles.includes(data?.user.username)).map((item, index) => (
+          {sidebarMenu?.filter((item)=> item.roles.includes(data?.user.role)).map((item, index) => (
           // {Menuitems.map((item, index) => (
             <List component="li" disablePadding key={item.title}>
               <NextLink href={item.href}>
@@ -138,5 +170,15 @@ Sidebar.propTypes = {
   onSidebarClose: PropTypes.func,
   isSidebarOpen: PropTypes.bool,
 };
+
+// export async function getServerSideProps() {
+//   // Fetch data from external API
+//   console.log("*****************************************************");
+//   const res = await fetch(`localhost:3000/api/admin/console/routeroles`)
+//   const roles = await res.json()
+
+//   // Pass data to the page via props
+//   return { props: { roles, a: "ok" } }
+// }
 
 export default Sidebar;

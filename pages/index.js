@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { signIn, signOut, useSession } from "next-auth/react"
+import { dehydrate, QueryClient } from '@tanstack/react-query'
 import HomeLayout from "../src/layouts/HomeLayout"
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -15,6 +16,8 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useRouter } from 'next/router'
+import { fetchRouteRoles } from '../hooks/useRouteRoles'
+
 
 
 function Copyright(props) {
@@ -119,6 +122,21 @@ export default function Login() {
       </Container>
     </ThemeProvider>
   );
+}
+
+export async function getStaticProps() {
+  const queryClient = new QueryClient()
+
+  await queryClient.prefetchQuery({
+    queryKey: ['routeRoles'],
+    queryFn: () => fetchRouteRoles(),
+  })
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
+  }
 }
 
 Login.getLayout = function getLayout(page) {

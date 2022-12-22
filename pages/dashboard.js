@@ -1,3 +1,5 @@
+import React from 'react';
+import { dehydrate, QueryClient } from '@tanstack/react-query'
 import { Box, Container, Grid } from '@mui/material';
 import BlogCard from "../src/components/dashboard/BlogCard";
 import SalesOverview from "../src/components/dashboard/SalesOverview";
@@ -9,6 +11,8 @@ import { TasksProgress } from "../src/components/dashboard/tasks-progress";
 import { TotalCustomers } from "../src/components/dashboard/total-customers";
 import { TotalProfit } from "../src/components/dashboard/total-profit";
 import {useSession} from 'next-auth/react'
+import { fetchRouteRoles } from '../hooks/useRouteRoles'
+
 
 export default function Index() {
   const { data, status } = useSession()
@@ -94,6 +98,20 @@ export default function Index() {
     </Grid>
     </>
   );
+}
+export async function getStaticProps() {
+  const queryClient = new QueryClient()
+
+  await queryClient.prefetchQuery({
+    queryKey: ['routeRoles'],
+    queryFn: () => fetchRouteRoles(),
+  })
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
+  }
 }
 
 Index.auth = true
