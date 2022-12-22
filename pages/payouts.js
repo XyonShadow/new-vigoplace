@@ -29,7 +29,7 @@ function Payouts() {
           spacing={3}
         >
           <Grid item xs={12}>
-            <RecentOrders payouts={data.data} />
+            <RecentOrders payouts={data?.data} />
           </Grid>
         </Grid>
       </Container>

@@ -59,7 +59,7 @@ const applyFilters = (
   cryptoOrders,
   filters
 )=> {
-  return cryptoOrders.filter((cryptoOrder) => {
+  return cryptoOrders?.filter((cryptoOrder) => {
     let matches = true;
 
     console.log(cryptoOrder, 'cryptoOrder')
@@ -78,7 +78,7 @@ const applyPagination = (
   page,
   limit
 ) => {
-  return cryptoOrders.slice(page * limit, page * limit + limit);
+  return cryptoOrders?.slice(page * limit, page * limit + limit);
 };
 
 export default function RecentOrdersTable({ payouts }) {
@@ -167,7 +167,7 @@ export default function RecentOrdersTable({ payouts }) {
     selectedCryptoOrders.length > 0 &&
     selectedCryptoOrders.length < cryptoOrders.length;
   const selectedAllCryptoOrders =
-    selectedCryptoOrders.length === payouts.length;
+    selectedCryptoOrders?.length === payouts?.length;
   const theme = useTheme();
 
   return (
@@ -229,7 +229,7 @@ export default function RecentOrdersTable({ payouts }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedCryptoOrders.map((payout) => {
+            {paginatedCryptoOrders && paginatedCryptoOrders.map((payout) => {
               const isPayoutSelected = selectedCryptoOrders.includes(
                 payout.payoutRequestId
               );
@@ -338,7 +338,7 @@ export default function RecentOrdersTable({ payouts }) {
       <Box p={2}>
         <TablePagination
           component="div"
-          count={filteredCryptoOrders.length}
+          count={filteredCryptoOrders?.length}
           onPageChange={handlePageChange}
           onRowsPerPageChange={handleLimitChange}
           page={page}
