@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-// import axios from "axios";
 import NextLink from "next/link";
 import PropTypes from "prop-types";
 import {
@@ -23,7 +22,6 @@ import Menuitems from "./MenuItems";
 import Buynow from "./Buynow";
 import { useRouter } from "next/router";
 import { useRouteRoles } from '../../../hooks/useRouteRoles'
-// import { QueryClient } from "@tanstack/react-query";
 import { useQueryClient } from '@tanstack/react-query'
 
 
