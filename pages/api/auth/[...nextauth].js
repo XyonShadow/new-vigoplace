@@ -44,6 +44,7 @@ export const authOptions = {
         // })
         
         const res = await axios.post('https://vigoplace.com/server/api/admin/auth/login', 
+        // const res = await axios.post('http://localhost:3001/api/admin/auth/login', 
         // credentials
         {
           "username": credentials.username,
