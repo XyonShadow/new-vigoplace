@@ -1,7 +1,13 @@
-import React, { useState } from 'react';
-import { format } from 'date-fns';
-import numeral from 'numeral';
-import PropTypes from 'prop-types';
+import React, { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import Collapse from "@mui/material/Collapse";
+import CircularProgress from "@mui/material/CircularProgress";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+
+import { format } from "date-fns";
+import numeral from "numeral";
+import PropTypes from "prop-types";
 import {
   Tooltip,
   Divider,
@@ -22,32 +28,35 @@ import {
   MenuItem,
   Typography,
   useTheme,
-  CardHeader
-} from '@mui/material';
+  CardHeader,
+  Button,
+} from "@mui/material";
 
-import Label from './Label/index';
-import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
+import Label from "./Label/index";
+import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
+import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
+import {
+  fetchSinglePayoutRequest,
+  useSinglePayoutRequest,
+} from "../../hooks/useSinglePayoutRequest";
 // import BulkActions from './BulkActions';
-
-
 
 // const CryptoOrderStatus = {completed' | 'pending' | 'failed}
 
 const getStatusLabel = (cryptoOrderStatus) => {
   const map = {
     failed: {
-      text: 'Failed',
-      color: 'error'
+      text: "Failed",
+      color: "error",
     },
     completed: {
-      text: 'Completed',
-      color: 'success'
+      text: "Completed",
+      color: "success",
     },
     pending: {
-      text: 'Pending',
-      color: 'warning'
-    }
+      text: "Pending",
+      color: "warning",
+    },
   };
 
   const { text, color } = map[cryptoOrderStatus];
@@ -55,15 +64,12 @@ const getStatusLabel = (cryptoOrderStatus) => {
   return <Label color={color}>{text}</Label>;
 };
 
-const applyFilters = (
-  cryptoOrders,
-  filters
-)=> {
+const applyFilters = (cryptoOrders, filters) => {
   return cryptoOrders?.filter((cryptoOrder) => {
     let matches = true;
 
-    console.log(cryptoOrder, 'cryptoOrder')
-    console.log(filters, 'cryptoOrder')
+    // console.log(cryptoOrder, "cryptoOrder");
+    // console.log(filters, "cryptoOrder");
 
     if (filters.status && cryptoOrder.payoutRequestStatus !== filters.status) {
       matches = false;
@@ -73,74 +79,87 @@ const applyFilters = (
   });
 };
 
-const applyPagination = (
-  cryptoOrders,
-  page,
-  limit
-) => {
+const applyPagination = (cryptoOrders, page, limit) => {
   return cryptoOrders?.slice(page * limit, page * limit + limit);
 };
 
 export default function RecentOrdersTable({ payouts }) {
-  const [selectedCryptoOrders, setSelectedCryptoOrders] = useState(
-    []
-  );
+  const [selectedCryptoOrders, setSelectedCryptoOrders] = useState([]);
   const selectedBulkActions = selectedCryptoOrders.length > 0;
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(5);
   const [filters, setFilters] = useState({
-    status: null
+    status: null,
   });
+  // const [payoutRId, setPayoutRId] = React.useState(null);
+  // console.log(payoutRId, 'payoutRId');
+
+  const queryClient = useQueryClient();
+  // const { isLoading } = useSinglePayoutRequest(payoutRId)
+  // const ab = queryClient.getQueryData(["payoutRequest", 10])
+  // console.log(queryClient.getQueryData(["payoutRequest", 10]).data);
+
+  const fetchSingle = () => {
+    const { data, error, isFetching, isLoading } =
+      useSinglePayoutRequest(payoutRId);
+    // console.log(data, "abc");
+    return data;
+  };
+
+  // console.log(fetchSingle(), "abc")
+
+  // console.log( {data, error, isFetching, isLoading});
+  // const [open, setOpen] = React.useState(false);
 
   const statusOptions = [
     {
-      id: 'all',
-      name: 'All'
+      id: "all",
+      name: "All",
     },
     {
-      id: 'completed',
-      name: 'Completed'
+      id: "completed",
+      name: "Completed",
     },
     {
-      id: 'pending',
-      name: 'Pending'
+      id: "pending",
+      name: "Pending",
     },
     {
-      id: 'processing',
-      name: 'Processing'
+      id: "processing",
+      name: "Processing",
     },
     {
-      id: 'declined',
-      name: 'Declined'
-    }
+      id: "declined",
+      name: "Declined",
+    },
   ];
 
   const handleStatusChange = (e) => {
     let value = null;
 
-    if (e.target.value !== 'all') {
+    if (e.target.value !== "all") {
       value = e.target.value;
     }
 
     setFilters((prevFilters) => ({
       ...prevFilters,
-      status: value
+      status: value,
     }));
   };
 
   const handleSelectAllCryptoOrders = (event) => {
-    setSelectedCryptoOrders(
-      event.target.checked
-        ? cryptoOrders.map((cryptoOrder) => cryptoOrder.id)
-        : []
-    );
+    // setSelectedCryptoOrders(
+    //   event.target.checked
+    //     ? cryptoOrders.map((cryptoOrder) => cryptoOrder.id)
+    //     : []
+    // );
   };
 
   const handleSelectOneCryptoOrder = (event, cryptoOrderId) => {
     if (!selectedCryptoOrders.includes(cryptoOrderId)) {
       setSelectedCryptoOrders((prevSelected) => [
         ...prevSelected,
-        cryptoOrderId
+        cryptoOrderId,
       ]);
     } else {
       setSelectedCryptoOrders((prevSelected) =>
@@ -153,11 +172,11 @@ export default function RecentOrdersTable({ payouts }) {
     setPage(newPage);
   };
 
-  const handleLimitChange = (event)=> {
+  const handleLimitChange = (event) => {
     setLimit(parseInt(event.target.value));
   };
 
-  const filteredCryptoOrders = applyFilters(payouts, filters);
+  const filteredCryptoOrders = applyFilters(payouts?.payoutRequests, filters);
   const paginatedCryptoOrders = applyPagination(
     filteredCryptoOrders,
     page,
@@ -184,7 +203,7 @@ export default function RecentOrdersTable({ payouts }) {
               <FormControl fullWidth variant="outlined">
                 <InputLabel>Status</InputLabel>
                 <Select
-                  value={filters.status || 'all'}
+                  value={filters.status || "all"}
                   onChange={handleStatusChange}
                   label="Status"
                   autoWidth
@@ -202,18 +221,19 @@ export default function RecentOrdersTable({ payouts }) {
         />
       )}
       <Divider />
-      <TableContainer>
-        <Table>
+      <TableContainer sx={{ maxHeight: 650 }}>
+        <Table stickyHeader>
           <TableHead>
             <TableRow>
               <TableCell padding="checkbox">
-                <Checkbox
+                {/* <Checkbox
                   color="primary"
                   checked={selectedAllCryptoOrders}
                   indeterminate={selectedSomeCryptoOrders}
                   onChange={handleSelectAllCryptoOrders}
-                />
+                /> */}
               </TableCell>
+
               {/* <TableCell>Order Details</TableCell> */}
               {/* <TableCell>Request ID</TableCell>
               <TableCell>Source</TableCell>
@@ -229,109 +249,22 @@ export default function RecentOrdersTable({ payouts }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedCryptoOrders && paginatedCryptoOrders.map((payout) => {
-              const isPayoutSelected = selectedCryptoOrders.includes(
-                payout.payoutRequestId
-              );
-              return (
-                <TableRow
-                  hover
-                  key={payout.id}
-                  selected={isPayoutSelected}
-                >
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      color="primary"
-                      checked={isPayoutSelected}
-                      onChange={(event) => handleSelectOneCryptoOrder(event, payout.payoutRequestId) }
-                      value={isPayoutSelected}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Typography
-                      variant="body1"
-                      fontWeight=""
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-                      {payout.payoutRequestId}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" noWrap>
-                      {/* {format(payouts.payoutRequestDate, 'MMMM dd yyyy')} */}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography
-                      variant="body1"
-                      fontWeight=""
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-                      {payout.payoutRequestReference}
-                    </Typography>
-                  </TableCell>
-        
-                  <TableCell align="right">
-                    <Typography
-                      variant="body1"
-                      fontWeight=""
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-                      {payout.payoutRequestAmount}
-                    </Typography>
-                    {/* <Typography variant="body2" color="text.secondary" noWrap>
-                      {numeral(payout.payoutRequestAmount).format(
-                        `${cryptoOrder.currency}0,0.00`
-                      )}
-                    </Typography> */}
-                  </TableCell>
-                  <TableCell align="right">
-                  <Typography
-                      variant="body1"
-                      fontWeight="bold"
-                      color="text.primary"
-                      gutterBottom
-                      noWrap
-                    >
-                      {getStatusLabel(payout.payoutRequestStatus)}
-                    </Typography>
-                    {/* {getStatusLabel(payout.payoutRequestStatus)} */}
-                  </TableCell>
-                  <TableCell align="right">
-                    <Tooltip title="Edit Order" arrow>
-                      <IconButton
-                        sx={{
-                          '&:hover': {
-                            // background: theme.colors.primary.lighter
-                          },
-                          color: theme.palette.primary.main
-                        }}
-                        color="inherit"
-                        size="small"
-                      >
-                        <EditTwoToneIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Delete Order" arrow>
-                      <IconButton
-                        sx={{
-                          // '&:hover': { background: theme.colors.error.lighter },
-                          color: theme.palette.error.main
-                        }}
-                        color="inherit"
-                        size="small"
-                      >
-                        <DeleteTwoToneIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
+            {paginatedCryptoOrders &&
+              paginatedCryptoOrders.map((payout, index) => {
+                const isPayoutSelected = selectedCryptoOrders.includes(
+                  payout.payoutRequestId
+                );
+                return (
+                  <Row
+                    // key={payout.payoutRequestId}
+                    key={index}
+                    payout={payout}
+                    isPayoutSelected={isPayoutSelected}
+                  // setRequestId={setPayoutRId}
+                  // isLoading={isLoading}
+                  />
+                );
+              })}
           </TableBody>
         </Table>
       </TableContainer>
@@ -348,12 +281,287 @@ export default function RecentOrdersTable({ payouts }) {
       </Box>
     </Card>
   );
-};
+}
+
+function Row({ payout, isPayoutSelected }) {
+  const theme = useTheme();
+  const [open, setOpen] = React.useState(false);
+  const queryClient = useQueryClient();
+  const [payoutRId, setPayoutRId] = React.useState(null);
+  const { isLoading } = useSinglePayoutRequest(payoutRId);
+
+  return (
+    <>
+      <TableRow hover selected={isPayoutSelected}>
+        {/* <TableCell padding="checkbox">
+                  <Checkbox
+                    color="primary"
+                    checked={isPayoutSelected}
+                    onChange={(event) => handleSelectOneCryptoOrder(event, payout.payoutRequestId)}
+                    value={isPayoutSelected}
+                  />
+                </TableCell> */}
+        <TableCell>
+          <IconButton
+            aria-label="expand row"
+            size="small"
+            onClick={() => {
+              setOpen((open) => !open);
+              setPayoutRId(() => payout.payoutRequestId);
+              // const {data, error, isFetching, isLoading} = useSinglePayoutRequest(10)
+              // console.log( {data, error, isFetching, isLoading}, "pop");
+              // fetchSingle()
+            }}
+          >
+            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </IconButton>
+        </TableCell>
+        <TableCell>
+          <Typography
+            variant="body1"
+            fontWeight=""
+            color="text.primary"
+            gutterBottom
+            noWrap
+          >
+            {payout.payoutRequestId}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" noWrap>
+            {/* {format(payouts.payoutRequestDate, 'MMMM dd yyyy')} */}
+          </Typography>
+        </TableCell>
+        <TableCell>
+          <Typography
+            variant="body1"
+            fontWeight=""
+            color="text.primary"
+            gutterBottom
+            noWrap
+          >
+            {payout.payoutRequestReference}
+          </Typography>
+        </TableCell>
+
+        <TableCell align="right">
+          <Typography
+            variant="body1"
+            fontWeight=""
+            color="text.primary"
+            gutterBottom
+            noWrap
+          >
+            {payout.payoutRequestAmount}
+          </Typography>
+          {/* <Typography variant="body2" color="text.secondary" noWrap>
+                    {numeral(payout.payoutRequestAmount).format(
+                      `${cryptoOrder.currency}0,0.00`
+                    )}
+                  </Typography> */}
+        </TableCell>
+        <TableCell align="right">
+          <Typography
+            variant="body1"
+            fontWeight="bold"
+            color="text.primary"
+            gutterBottom
+            noWrap
+          >
+            {getStatusLabel(payout.payoutRequestStatus)}
+          </Typography>
+          {/* {getStatusLabel(payout.payoutRequestStatus)} */}
+        </TableCell>
+
+        <TableCell align="right">
+          {/* <Tooltip title="Edit Order" arrow>
+            <IconButton
+              sx={{
+                "&:hover": {
+                  // background: theme.colors.primary.lighter
+                },
+                color: theme.palette.primary.main,
+              }}
+              color="inherit"
+              size="small"
+            >
+              <EditTwoToneIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+
+          <Tooltip title="Delete Order" arrow>
+            <IconButton
+              sx={{
+                // '&:hover': { background: theme.colors.error.lighter },
+                color: theme.palette.error.main,
+              }}
+              color="inherit"
+              size="small"
+            >
+              <DeleteTwoToneIcon fontSize="small" />
+            </IconButton>
+          </Tooltip> */}
+          {
+            payout.payoutRequestStatus === 'pending' ? (
+              <>
+                <Button
+                  sx={{ margin: 1 }}
+                  size="small"
+                  variant="contained"
+                  color="success"
+                >
+                  Approve
+                </Button><Button size="small" variant="contained" color="error">
+                  Decline
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button size="small" variant="contained" color="error">
+                  Flag Request
+                </Button>
+              </>
+            )
+          }
+
+        </TableCell>
+      </TableRow>
+      <TableCell
+        style={{
+          paddingBottom: 0,
+          paddingTop: 0,
+          background: "rgb(230 230 230)",
+        }}
+        colSpan={6}
+      >
+        <Collapse in={open} timeout="auto" unmountOnExit>
+          <Box sx={{ margin: 1 }}>
+            <Typography
+              variant="h6"
+              fontWeight={"bold"}
+              gutterBottom
+              component="div"
+            >
+              More Details
+            </Typography>
+            {isLoading ? (
+              <Box sx={{ display: "flex", justifyContent: "center" }}>
+                <CircularProgress />
+              </Box>
+            ) : (
+              <Table size="small" aria-label="purchases">
+                <TableHead>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: "bold" }}>
+                      Date
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: "bold" }}>Full Name</TableCell>
+                    <TableCell  sx={{fontWeight: "bold"}} align="center">Net Payout</TableCell>
+                    <TableCell sx={{fontWeight: "bold"}} align="center">payment Method</TableCell>
+                    <TableCell sx={{fontWeight: "bold"}} align="center">currency</TableCell>
+                    <TableCell sx={{fontWeight: "bold"}} align="center">account Name</TableCell>
+                    <TableCell sx={{fontWeight: "bold"}} align="center">acountBankName</TableCell>
+                    <TableCell sx={{fontWeight: "bold"}} align="center">accountNumber</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {/* {
+                  queryClient.getQueryData(["payoutRequest", 10])
+
+                } */}
+                  {
+                    // row.history.map((historyRow) => (
+                    <TableRow
+                      key={
+                        queryClient.getQueryData([
+                          "payoutRequest",
+                          payout.payoutRequestId,
+                        ])?.data?.payoutRequestStatus
+                      }
+                    >
+                      <TableCell align="center" component="th" scope="row">
+                        {new Date(
+                          queryClient.getQueryData([
+                            "payoutRequest",
+                            payout.payoutRequestId,
+                          ])?.data?.payoutRequestDate
+                        ).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell align="center">
+                        {
+                          queryClient.getQueryData([
+                            "payoutRequest",
+                            payout.payoutRequestId,
+                          ])?.data?.userFullname
+                        }
+                      </TableCell>
+                      <TableCell align="center">
+                        {
+                          queryClient.getQueryData([
+                            "payoutRequest",
+                            payout.payoutRequestId,
+                          ])?.data?.payoutRequestNet
+                        }
+                      </TableCell>
+                      <TableCell align="center">
+                        {
+                          queryClient.getQueryData([
+                            "payoutRequest",
+                            payout.payoutRequestId,
+                          ])?.data?.paymentMethodName
+                        }
+                      </TableCell>
+                      <TableCell align="center">
+                        {
+                          queryClient.getQueryData([
+                            "payoutRequest",
+                            payout.payoutRequestId,
+                          ])?.data?.currency
+                        }
+                      </TableCell>
+                      <TableCell align="center">
+                        {
+                          queryClient.getQueryData([
+                            "payoutRequest",
+                            payout.payoutRequestId,
+                          ])?.data?.accountName
+                        }
+                      </TableCell>
+                      <TableCell align="center">
+                        {
+                          queryClient.getQueryData([
+                            "payoutRequest",
+                            payout.payoutRequestId,
+                          ])?.data?.acountBankName
+                        }
+                      </TableCell>
+                      <TableCell align="center">
+                        {
+                          queryClient.getQueryData([
+                            "payoutRequest",
+                            payout.payoutRequestId,
+                          ])?.data?.accountNumber
+                        }
+                      </TableCell>
+
+                      {/* <TableCell align="right">
+                      {Math.round(historyRow.amount * row.price * 100) / 100}
+                    </TableCell> */}
+                    </TableRow>
+                    // ))
+                  }
+                </TableBody>
+              </Table>
+            )}
+          </Box>
+        </Collapse>
+      </TableCell>
+    </>
+  );
+}
 
 RecentOrdersTable.propTypes = {
-  cryptoOrders: PropTypes.array.isRequired
+  cryptoOrders: PropTypes.array.isRequired,
 };
 
 RecentOrdersTable.defaultProps = {
-  cryptoOrders: []
+  cryptoOrders: [],
 };
