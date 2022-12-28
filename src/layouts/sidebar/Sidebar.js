@@ -78,7 +78,7 @@ function Sidebar ({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }){
         alignItems: "center"
       }}>
       <LogoIcon />
-      <Typography variant="h1" color={"white"}>igoplace</Typography>
+      <Typography variant="h1" fontWeight={'bold'} color={"white"}>igoplace</Typography>
       </Box>
 
       <Box mt={2}>
