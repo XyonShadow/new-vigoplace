@@ -10,13 +10,10 @@ import { LatestOrders } from "../src/components/dashboard/latest-orders";
 import { TasksProgress } from "../src/components/dashboard/tasks-progress";
 import { TotalCustomers } from "../src/components/dashboard/total-customers";
 import { TotalProfit } from "../src/components/dashboard/total-profit";
-import {useSession} from 'next-auth/react'
-import { fetchRouteRoles } from '../hooks/useRouteRoles'
+import { fetchRouteRoles } from '../hooks/useRouteRoles';
 
 
 export default function Index() {
-  const { data, status } = useSession()
-  console.log({data, status})
 
   return (
     <>

@@ -37,7 +37,7 @@ function Sidebar ({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }){
 
   // console.log(fetchedRoles, 'fetchedRoles')
 
-  const sidebarMenu = fetchedRoles ? fetchedRoles?.data?.map((menu)=>{
+  const sidebarMenu = fetchedRoles ? fetchedRoles?.map((menu)=>{
     // console.log(typeof menu.roles, 'menu.roles')
     // console.log( JSON.parse(menu.roles), 'menu.roles parsed')
     return {
@@ -51,7 +51,7 @@ function Sidebar ({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }){
 
 
   // console.log({fetchedRoles, isLoading, isFetching, dataFromAbove, data, sidebarMenu})
-  // console.log(sidebarMenu, 'boys')
+
 
 
   
