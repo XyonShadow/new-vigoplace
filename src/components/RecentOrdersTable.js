@@ -1,12 +1,18 @@
 import React, { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useMutation} from "@tanstack/react-query";
+import Snackbar from '@mui/material/Snackbar';
+import axios from 'axios'
+import MuiAlert from '@mui/material/Alert';
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import Collapse from "@mui/material/Collapse";
 import CircularProgress from "@mui/material/CircularProgress";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-
+import CheckIcon from '@mui/icons-material/Check';
+import { green, yellow } from '@mui/material/colors';
+import {getSession} from 'next-auth/react'
 import { format } from "date-fns";
 import numeral from "numeral";
+import Slide from '@mui/material/Slide';
 import PropTypes from "prop-types";
 import {
   Tooltip,
@@ -42,6 +48,10 @@ import {
 // import BulkActions from './BulkActions';
 
 // const CryptoOrderStatus = {completed' | 'pending' | 'failed}
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 
 const getStatusLabel = (cryptoOrderStatus) => {
   const map = {
@@ -51,17 +61,19 @@ const getStatusLabel = (cryptoOrderStatus) => {
     },
     completed: {
       text: "Completed",
-      color: "success",
+      color: green[500],
+
     },
     pending: {
       text: "Pending",
-      color: "warning",
+      color: yellow[800],
     },
   };
 
   const { text, color } = map[cryptoOrderStatus];
 
-  return <Label color={color}>{text}</Label>;
+  return <Label sx={{color}} >{text}</Label>;
+  // return <Label sx={{}} color={color}>{text}</Label>;
 };
 
 const applyFilters = (cryptoOrders, filters) => {
@@ -91,6 +103,7 @@ export default function RecentOrdersTable({ payouts }) {
   const [filters, setFilters] = useState({
     status: null,
   });
+  // const mutation = useApprovePayOut().
   // const [payoutRId, setPayoutRId] = React.useState(null);
   // console.log(payoutRId, 'payoutRId');
 
@@ -283,15 +296,58 @@ export default function RecentOrdersTable({ payouts }) {
   );
 }
 
-function Row({ payout, isPayoutSelected }) {
+ function Row({ payout, isPayoutSelected }) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const queryClient = useQueryClient();
   const [payoutRId, setPayoutRId] = React.useState(null);
   const { isLoading } = useSinglePayoutRequest(payoutRId);
+  const [openToast, setOpenToast] = React.useState(false);
+
+
+  const handleClose = (event, reason) => {
+    setOpenToast(false);
+  };
+
+  const getToken = async() => {
+    const session = await getSession()
+    return session?.user?.token
+  }
+
+  const approvePayOut = async (id) => {
+          const token = await getToken()
+          const parsed = await axios.post(
+            // 'http://localhost:3001/api/admin/console/approvepayout/test'
+            'https://vigoplace.com/server/api/admin/console/approvepayout'
+            ,{payoutRequestId: id},
+            {
+            headers:{
+              'Authorization': token
+          },
+          })
+          return parsed
+    }
+
+    const approvePayOutMutation = useMutation({
+        mutationKey: ['approvePayOut'],
+        mutationFn: approvePayOut,
+        onSuccess: () => {
+          queryClient.invalidateQueries('payoutRequests')
+        },
+        onError: async (error)=>{
+          setOpenToast(true);
+        },
+        
+      })
+    
 
   return (
     <>
+      <Snackbar TransitionComponent={Slide} open={openToast} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="warning" sx={{ width: '100%' }}>
+         {approvePayOutMutation.error?.response?.data?.message}
+        </Alert>
+      </Snackbar>
       <TableRow hover selected={isPayoutSelected}>
         {/* <TableCell padding="checkbox">
                   <Checkbox
@@ -360,9 +416,10 @@ function Row({ payout, isPayoutSelected }) {
         </TableCell>
         <TableCell align="right">
           <Typography
+            // sx={{ color: green[500]}}
             variant="body1"
             fontWeight="bold"
-            color="text.primary"
+            // color="text.primary"
             gutterBottom
             noWrap
           >
@@ -403,20 +460,30 @@ function Row({ payout, isPayoutSelected }) {
             payout.payoutRequestStatus === 'pending' ? (
               <>
                 <Button
-                  sx={{ margin: 1 }}
+                  sx={{ margin: 1, bgcolor: green[500]}}
                   size="small"
                   variant="contained"
                   color="success"
+                  onClick={() => {
+                    approvePayOutMutation.mutate(payout.payoutRequestId)                  
+                  }
+                    
+
+                  } 
                 >
-                  Approve
-                </Button><Button size="small" variant="contained" color="error">
+                  {
+                    approvePayOutMutation.isLoading ? <CircularProgress size={23} color='inherit'/> : approvePayOutMutation.isSuccess ? <CheckIcon /> : 'Approve'
+                  }
+
+                </Button>
+                <Button size="small" variant="contained" color="error">
                   Decline
                 </Button>
               </>
             ) : (
               <>
-                <Button size="small" variant="contained" color="error">
-                  Flag Request
+                <Button size="small" variant="contained" color="error" sx={{bgcolor: green[500]}}>
+                  Approved <CheckIcon />
                 </Button>
               </>
             )
