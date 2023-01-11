@@ -37,6 +37,7 @@ const usePayoutRequests = (limit, offset, status) => {
   return useQuery({
     queryKey: ['payoutRequests'],
     queryFn: () => fetchPayoutRequests(limit, offset, status),
+    refetchInterval: 15000
   })
 }
 
