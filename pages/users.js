@@ -62,7 +62,8 @@ const Settings = () => {
     // },
     async () => {
       const { data } = await axios.get(
-        `http://localhost:3001/api/admin/console/users?gender=female`,
+        `https://vigoplace.com/server/api/admin/console/users`,
+        // `http://localhost:3001/api/admin/console/users?gender=female`,
         {
           headers: {
             Authorization: user?.token,
