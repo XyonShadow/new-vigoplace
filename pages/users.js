@@ -3,42 +3,40 @@ import MaterialReactTable from 'material-react-table';
 import { IconButton, Tooltip } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import axios from "axios";
+import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 import {
   QueryClient,
   QueryClientProvider,
   useQuery,
 } from '@tanstack/react-query';
 import {getSession, useSession} from 'next-auth/react'
+//Material-UI Imports
+import {
+  Box,
+  Button,
+  ListItemIcon,
+  MenuItem,
+  Typography,
+  TextField
+} from "@mui/material";
 
-// const getToken = async() => {
-//   const session = await getSession()
-//   return session?.user?.token
-// }
-// const token = await getToken()
+//Icons Imports
+import { AccountCircle, Send } from "@mui/icons-material";
 
-const Users = () => {
-  const [columnFilters, setColumnFilters] = useState([]);
-  const [globalFilter, setGlobalFilter] = useState('');
-  const [sorting, setSorting] = useState([]);
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 10,
-  });
-
+const Settings = () => {
   const getUser = useSession()
   const user = getUser?.data?.user
-  // const {data: {user}} = useSession()
 
-  console.log(user, 'tokennnnnn')
+  console.log(getUser, 'user ooooooo')
 
   const { data, isError, isFetching, isLoading, refetch } = useQuery(
     [
       'table-data',
-      columnFilters,
-      globalFilter,
-      pagination.pageIndex,
-      pagination.pageSize,
-      sorting,
+      // columnFilters,
+      // globalFilter,
+      // pagination.pageIndex,
+      // pagination.pageSize,
+      // sorting,
     ],
     // async () => {
     //   // const url = new URL(
@@ -64,7 +62,7 @@ const Users = () => {
     // },
     async () => {
       const { data } = await axios.get(
-        `http://localhost:3001/api/admin/console/users`,
+        `http://localhost:3001/api/admin/console/users?gender=female`,
         {
           headers: {
             Authorization: user?.token,
@@ -78,83 +76,237 @@ const Users = () => {
       onError: (err) => {
        console.log(err, 'err fetching users')
       },
+      enabled: !!user?.token
     },
     { keepPreviousData: true },
   );
 
   const columns = useMemo(
     () => [
-      {
-        accessorKey: 'fullname',
-        header: 'Full Name',
-      },
-      {
-        accessorKey: 'gender',
-        header: 'Gender',
-      },
-      {
-        accessorKey: 'email',
-        header: 'Email',
-      },
-      {
-        accessorKey: 'status',
-        header: 'Status',
-      },
-      {
-        accessorKey: 'phone',
-        header: 'Phone',
-      },
+          {
+            accessorFn: (row) => row.fullname,
+            // accessorFn: (row) => `${row.fullname}`,
+            id: "fullname", //id is still required when using accessorFn instead of accessorKey
+            header: "Full Name",
+            Cell: ({ cell, row }) => (
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "1rem"
+                }}
+              >
+                <img
+                  // alt={row.original.fullname}
+                  height={30}
+                  src={row.original.photo}
+                  loading="lazy"
+                  style={{ borderRadius: "50%" }}
+                />
+                <Typography>{cell.getValue()}</Typography>
+              </Box>
+            )
+          },
+          {
+            accessorKey: "gender",
+            enableClickToCopy: false,
+            header: "Gender",
+          },
+          {
+            accessorKey: "email",
+            enableClickToCopy: true,
+            header: "Email",
+          },
+          {
+            accessorKey: "status",
+            enableClickToCopy: false,
+            header: "Status",
+          },
+          {
+            accessorKey: "phone",
+            enableClickToCopy: false,
+            header: "Phone",
+          },
+    
+    
+          // {
+          //   accessorFn: (row) => new Date(row.startDate), //convert to Date for sorting and filtering
+          //   id: "startDate",
+          //   header: "Start Date",
+          //   filterFn: "lessThanOrEqualTo",
+          //   sortingFn: "datetime",
+          //   Cell: ({ cell }) => cell.getValue()?.toLocaleDateString(), //render Date as a string
+          //   Header: ({ column }) => <em>{column.columnDef.header}</em>, //custom header markup
+          //   //Custom Date Picker Filter from @mui/x-date-pickers
+          //   Filter: ({ column }) => (
+          //     <LocalizationProvider dateAdapter={AdapterDayjs}>
+          //       <DatePicker
+          //         onChange={(newValue) => {
+          //           column.setFilterValue(newValue);
+          //         }}
+          //         renderInput={(params) => (
+          //           <TextField
+          //             {...params}
+          //             helperText={"Filter Mode: Lesss Than"}
+          //             sx={{ minWidth: "120px" }}
+          //             variant="standard"
+          //           />
+          //         )}
+          //         value={column.getFilterValue()}
+          //       />
+          //     </LocalizationProvider>
+          //   )
+          // }
+     
     ],
-    [],
+    []
   );
 
   return (
     <MaterialReactTable
       columns={columns}
-      data={data?.data ?? []} //data is undefined on first render
-      initialState={{ showColumnFilters: true }}
-      manualFiltering
-      manualPagination
-      manualSorting
+      data={data?.data ?? []}
+      // enableColumnFilterModes
+      // enableColumnOrdering
+      // enableGrouping
+      // enablePinning
+      enableRowActions
+      enableRowSelection
+      initialState={{ showColumnFilters: false }}
+      positionToolbarAlertBanner="bottom"
+      renderDetailPanel={({ row }) => (
+        <>
+        <Box
+          sx={{
+            display: "flex"
+          }}
+        >
+        <Box
+          sx={{
+            marginRight: "20px"
+          }}
+        >
+          <img
+            alt="avatar"
+            height={200}
+            src={row.original.photo}
+            loading="lazy"
+            style={{ borderRadius: "50%" }}
+          />
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: ""
+          }}
+        >
+          <Box sx={{ textAlign: "center" }}>
+            {/* <Typography variant="h2">Wallet :</Typography> */}
+            <Typography variant="h4">
+            </Typography>
+          </Box>
+        </Box>
+
+        </Box>
+        </>
+      )}
+      renderRowActionMenuItems={({ closeMenu }) => [
+        <MenuItem
+          key={0}
+          onClick={() => {
+            // View profile logic...
+            closeMenu();
+          }}
+          sx={{ m: 0 }}
+        >
+          <ListItemIcon>
+            <AccountCircle />
+          </ListItemIcon>
+          View Profile
+        </MenuItem>,
+        <MenuItem
+          key={1}
+          onClick={() => {
+            // Send email logic...
+            closeMenu();
+          }}
+          sx={{ m: 0 }}
+        >
+          <ListItemIcon>
+            <Send />
+          </ListItemIcon>
+          Send Email
+        </MenuItem>
+      ]}
       muiToolbarAlertBannerProps={
         isError
           ? {
               color: 'error',
-              children: 'Error loading data',
+              children: 'Error loading data, Please use the refresh button on the table to retry',
             }
           : undefined
       }
-      onColumnFiltersChange={setColumnFilters}
-      onGlobalFilterChange={setGlobalFilter}
-      onPaginationChange={setPagination}
-      onSortingChange={setSorting}
-      renderTopToolbarCustomActions={() => (
-        <Tooltip arrow title="Refresh Data">
+      renderTopToolbarCustomActions={({ table }) => {
+        const handleDeactivate = () => {
+          table.getSelectedRowModel().flatRows.map((row) => {
+            alert("deactivating " + row.getValue("name"));
+          });
+        };
+
+        const handleActivate = () => {
+          table.getSelectedRowModel().flatRows.map((row) => {
+            alert("activating " + row.getValue("name"));
+          });
+        };
+
+        const handleContact = () => {
+          table.getSelectedRowModel().flatRows.map((row) => {
+            alert("contact " + row.getValue("name"));
+          });
+        };
+
+        return (
+          <div style={{ display: "flex", gap: "0.5rem" }}>
+               <Tooltip arrow title="Refresh Data">
           <IconButton onClick={() => refetch()}>
             <RefreshIcon />
           </IconButton>
         </Tooltip>
-      )}
-      rowCount={data?.meta?.totalRowCount ?? 0}
+            <Button
+              color="error"
+              disabled={!table.getIsSomeRowsSelected()}
+              onClick={handleDeactivate}
+              variant="contained"
+            >
+              Deactivate
+            </Button>
+            <Button
+              color="success"
+              disabled={!table.getIsSomeRowsSelected()}
+              onClick={handleActivate}
+              variant="contained"
+            >
+              Activate
+            </Button>
+            <Button
+              color="info"
+              disabled={!table.getIsSomeRowsSelected()}
+              onClick={handleContact}
+              variant="contained"
+            >
+              Contact
+            </Button>
+          </div>
+        );
+      }}
       state={{
-        columnFilters,
-        globalFilter,
         isLoading,
-        pagination,
         showAlertBanner: isError,
         showProgressBars: isFetching,
-        sorting,
       }}
     />
   );
 };
-
-Users.auth = true
-export default Users;
-
-
-// function Users() {
-//   return (
-//     <h1>Users coming soon...</h1>
-//   )
-// }
+Settings.auth = true
+export default Settings;
