@@ -1,15 +1,18 @@
-import React, { useMemo, useState } from 'react';
-import MaterialReactTable from 'material-react-table';
-import { IconButton, Tooltip } from '@mui/material';
-import RefreshIcon from '@mui/icons-material/Refresh';
+import React, { useMemo, useState } from "react";
+import MaterialReactTable from "material-react-table";
+import { CircularProgress, IconButton, Paper, Tab, Tooltip } from "@mui/material";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import axios from "axios";
-import PermIdentityIcon from '@mui/icons-material/PermIdentity';
+import CheckIcon from '@mui/icons-material/Check';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import {
   QueryClient,
   QueryClientProvider,
+  useQueryClient,
   useQuery,
-} from '@tanstack/react-query';
-import {getSession, useSession} from 'next-auth/react'
+  useMutation,
+} from "@tanstack/react-query";
+import { getSession, useSession } from "next-auth/react";
 //Material-UI Imports
 import {
   Box,
@@ -17,21 +20,109 @@ import {
   ListItemIcon,
   MenuItem,
   Typography,
-  TextField
+  TextField,
 } from "@mui/material";
 
 //Icons Imports
 import { AccountCircle, Send } from "@mui/icons-material";
+import { UserBalanceCard } from "../src/components/dashboard/userBalanceCard";
+import { UserBio } from "../src/components/dashboard/userBio";
+import { TabContext, TabList } from "@mui/lab";
+import TabPanel from '@mui/lab/TabPanel';
 
-const Settings = () => {
-  const getUser = useSession()
-  const user = getUser?.data?.user
 
-  console.log(getUser, 'user ooooooo')
+const Users = () => {
+  const queryClient = useQueryClient();
+  const getUser = useSession();
+  const user = getUser?.data?.user;
+  const [value, setValue] = React.useState('1');
+  const [walletId, setWalletId] = React.useState(null);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+
+  const blockUser = async (id) => {
+    const blockedUser = await axios.post(
+      // "http://localhost:3001/api/admin/console/users/block",
+      'https://vigoplace.com/server/api/admin/console/users/block',
+      { userId: id },
+      {
+        headers: {
+          Authorization: user?.token,
+        },
+      }
+    );
+    return blockedUser;
+  };
+
+  const blockMutation = useMutation({
+    mutationKey: ["blockUser"],
+    mutationFn: blockUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries("fetchUsers");
+    },
+    onError: async (error) => {
+      // setOpenToast(true);
+    },
+  });
+
+  const unblockUser = async (id) => {
+    const unblockedUser = await axios.post(
+      // "http://localhost:3001/api/admin/console/users/unblock",
+      'https://vigoplace.com/server/api/admin/console/users/unblock',
+      { userId: id },
+      {
+        headers: {
+          Authorization: user?.token,
+        },
+      }
+    );
+    return unblockedUser;
+  };
+
+  const unblockMutation = useMutation({
+    mutationKey: ["unblockUser"],
+    mutationFn: unblockUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries("fetchUsers");
+    },
+    onError: async (error) => {
+      // setOpenToast(true);
+    },
+  });
+
+  // const getUserWallet = async (id) => {
+  //   const wallet = await axios.post(
+  //     "http://localhost:3001/api/admin/console/users/wallets",
+  //     // 'https://vigoplace.com/server/api/admin/console/approvepayout'
+  //     { userId: id },
+  //     {
+  //       headers: {
+  //         Authorization: user?.token,
+  //       },
+  //     }
+  //   );
+  //   return wallet;
+  // };
+
+  // const getUserWalletMutation = useMutation({
+  //   mutationKey: ["userWallet"],
+  //   mutationFn: getUserWallet,
+  //   // onSuccess: () => {
+  //   //   queryClient.invalidateQueries("fetchUsers");
+  //   // },
+  //   onError: async (error) => {
+  //     // setOpenToast(true);
+  //   },
+  // });
+
+  // console.log(getUserWalletMutation.data, 'data me abeg')
 
   const { data, isError, isFetching, isLoading, refetch } = useQuery(
     [
-      'table-data',
+      "fetchUsers",
       // columnFilters,
       // globalFilter,
       // pagination.pageIndex,
@@ -63,7 +154,7 @@ const Settings = () => {
     async () => {
       const { data } = await axios.get(
         `https://vigoplace.com/server/api/admin/console/users`,
-        // `http://localhost:3001/api/admin/console/users?gender=female`,
+        // `http://localhost:3001/api/admin/console/users`,
         {
           headers: {
             Authorization: user?.token,
@@ -75,90 +166,120 @@ const Settings = () => {
     },
     {
       onError: (err) => {
-       console.log(err, 'err fetching users')
+        console.log(err, "err fetching users");
       },
-      enabled: !!user?.token
+      enabled: !!user?.token,
     },
-    { keepPreviousData: true },
+    { keepPreviousData: true }
   );
+
+  // const { data: wallet, isLoading: walletLoading } = useQuery(
+  //   [
+  //     "fetchUserWallet",
+  //     walletId,
+  //   ],
+  //   async () => {
+  //     const { data } = await axios.get(
+  //       // `https://vigoplace.com/server/api/admin/console/users`,
+  //       `http://localhost:3001/api/admin/console/users/wallets`,
+  //       {
+  //         headers: {
+  //           Authorization: user?.token,
+  //         },
+  //       }
+  //     );
+
+  //     return data;
+  //   },
+  //   {
+  //     onError: (err) => {
+  //       console.log(err, "err fetching users");
+  //     },
+  //     enabled: !!user?.token,
+  //   },
+  //   { keepPreviousData: true }
+  // );
+
+  // console.log({walletId, wallet});
 
   const columns = useMemo(
     () => [
-          {
-            accessorFn: (row) => row.fullname,
-            // accessorFn: (row) => `${row.fullname}`,
-            id: "fullname", //id is still required when using accessorFn instead of accessorKey
-            header: "Full Name",
-            Cell: ({ cell, row }) => (
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "1rem"
-                }}
-              >
-                <img
-                  // alt={row.original.fullname}
-                  height={30}
-                  src={row.original.photo}
-                  loading="lazy"
-                  style={{ borderRadius: "50%" }}
-                />
-                <Typography>{cell.getValue()}</Typography>
-              </Box>
-            )
-          },
-          {
-            accessorKey: "gender",
-            enableClickToCopy: false,
-            header: "Gender",
-          },
-          {
-            accessorKey: "email",
-            enableClickToCopy: true,
-            header: "Email",
-          },
-          {
-            accessorKey: "status",
-            enableClickToCopy: false,
-            header: "Status",
-          },
-          {
-            accessorKey: "phone",
-            enableClickToCopy: false,
-            header: "Phone",
-          },
-    
-    
-          // {
-          //   accessorFn: (row) => new Date(row.startDate), //convert to Date for sorting and filtering
-          //   id: "startDate",
-          //   header: "Start Date",
-          //   filterFn: "lessThanOrEqualTo",
-          //   sortingFn: "datetime",
-          //   Cell: ({ cell }) => cell.getValue()?.toLocaleDateString(), //render Date as a string
-          //   Header: ({ column }) => <em>{column.columnDef.header}</em>, //custom header markup
-          //   //Custom Date Picker Filter from @mui/x-date-pickers
-          //   Filter: ({ column }) => (
-          //     <LocalizationProvider dateAdapter={AdapterDayjs}>
-          //       <DatePicker
-          //         onChange={(newValue) => {
-          //           column.setFilterValue(newValue);
-          //         }}
-          //         renderInput={(params) => (
-          //           <TextField
-          //             {...params}
-          //             helperText={"Filter Mode: Lesss Than"}
-          //             sx={{ minWidth: "120px" }}
-          //             variant="standard"
-          //           />
-          //         )}
-          //         value={column.getFilterValue()}
-          //       />
-          //     </LocalizationProvider>
-          //   )
-          // }
-     
+      {
+        accessorFn: (row) => row.fullname,
+        // accessorFn: (row) => `${row.fullname}`,
+        id: "fullname", //id is still required when using accessorFn instead of accessorKey
+        header: "Full Name",
+        Cell: ({ cell, row }) => (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: "1rem",
+            }}
+          >
+            {
+              row.original.photo ? (<img
+                // alt={row.original.fullname}
+                height={30}
+                src={row.original.photo}
+                loading="lazy"
+                style={{ borderRadius: "50%" }}
+              />) : (<AccountCircleIcon sx={{fontSize: '33px'}}/>)
+            }
+            
+            <Typography>{cell.getValue()}</Typography>
+          </Box>
+        ),
+      },
+      {
+        accessorKey: "gender",
+        enableClickToCopy: false,
+        header: "Gender",
+      },
+      {
+        accessorKey: "email",
+        enableClickToCopy: true,
+        header: "Email",
+      },
+      {
+        accessorKey: "status",
+        enableClickToCopy: false,
+        header: "Status",
+      },
+      {
+        accessorKey: "phone",
+        enableClickToCopy: false,
+        header: "Phone",
+      },
+
+      // {
+      //   accessorFn: (row) => new Date(row.startDate), //convert to Date for sorting and filtering
+      //   id: "startDate",
+      //   header: "Start Date",
+      //   filterFn: "lessThanOrEqualTo",
+      //   sortingFn: "datetime",
+      //   Cell: ({ cell }) => cell.getValue()?.toLocaleDateString(), //render Date as a string
+      //   Header: ({ column }) => <em>{column.columnDef.header}</em>, //custom header markup
+      //   //Custom Date Picker Filter from @mui/x-date-pickers
+      //   Filter: ({ column }) => (
+      //     <LocalizationProvider dateAdapter={AdapterDayjs}>
+      //       <DatePicker
+      //         onChange={(newValue) => {
+      //           column.setFilterValue(newValue);
+      //         }}
+      //         renderInput={(params) => (
+      //           <TextField
+      //             {...params}
+      //             helperText={"Filter Mode: Lesss Than"}
+      //             sx={{ minWidth: "120px" }}
+      //             variant="standard"
+      //           />
+      //         )}
+      //         value={column.getFilterValue()}
+      //       />
+      //     </LocalizationProvider>
+      //   )
+      // }
     ],
     []
   );
@@ -172,86 +293,190 @@ const Settings = () => {
       // enableGrouping
       // enablePinning
       enableRowActions
+      enableStickyHeader
+      enableStickyFooter
       enableRowSelection
       initialState={{ showColumnFilters: false }}
       positionToolbarAlertBanner="bottom"
-      renderDetailPanel={({ row }) => (
+      renderDetailPanel={({ row }) => { 
+        // setWalletId(row.original.id)
+        console.log("i run")
+        // getUserWalletMutation.mutate(row.original.id)
+      return (
         <>
-        <Box
-          sx={{
-            display: "flex"
-          }}
-        >
-        <Box
-          sx={{
-            marginRight: "20px"
-          }}
-        >
-          <img
-            alt="avatar"
-            height={200}
-            src={row.original.photo}
-            loading="lazy"
-            style={{ borderRadius: "50%" }}
-          />
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: ""
-          }}
-        >
-          <Box sx={{ textAlign: "center" }}>
-            {/* <Typography variant="h2">Wallet :</Typography> */}
-            <Typography variant="h4">
-            </Typography>
-          </Box>
-        </Box>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "flex-start"
+            }}
+          >
 
-        </Box>
+            <Box
+              sx={{
+                marginRight: "20px",
+              }}
+            >
+              <img
+                alt="avatar"
+                height={200}
+                src={row.original.photo}
+                loading="lazy"
+                style={{ borderRadius: "50%" }}
+              />
+            </Box>
+
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <UserBio usersBio={row.original.bio}/>
+              {/* <UserBalanceCard /> */}
+            </Box>
+
+          {/* <Box
+              sx={{
+                // display: "flex",
+                // justifyContent: "space-between",
+                // alignItems: "center",
+                width: '100%', typography: 'body1'
+              }}
+            >
+            <TabContext value={value}>
+  <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+    <TabList onChange={handleChange} aria-label="lab API tabs example">
+      <Tab label="Dollar" value="1" />
+      <Tab label="Naira" value="2" />
+    </TabList>
+  </Box>
+  <TabPanel value="1">
+     <Typography variant="h4">Balance: $ 30000</Typography>
+  </TabPanel>
+  <TabPanel value="2">Item Two</TabPanel>
+</TabContext>
+            </Box> */}
+
+            </Box>
+
         </>
-      )}
-      renderRowActionMenuItems={({ closeMenu }) => [
-        <MenuItem
-          key={0}
-          onClick={() => {
-            // View profile logic...
-            closeMenu();
-          }}
-          sx={{ m: 0 }}
-        >
-          <ListItemIcon>
-            <AccountCircle />
-          </ListItemIcon>
-          View Profile
-        </MenuItem>,
-        <MenuItem
-          key={1}
-          onClick={() => {
-            // Send email logic...
-            closeMenu();
-          }}
-          sx={{ m: 0 }}
-        >
-          <ListItemIcon>
-            <Send />
-          </ListItemIcon>
-          Send Email
-        </MenuItem>
-      ]}
+      )}}
+      renderRowActionMenuItems={({ closeMenu, row, table }) => {
+        // console.log(table.getSelectedRowModel().flatRows[0]?.getValue('fullname'), 'table')
+
+        const handleDeactivate = () => {
+          console.log(row.original, "orig");
+          blockMutation.mutate(row.original.id);
+        };
+
+        const handleActivate = () => {
+          console.log(row.getValue("fullname"), "name");
+          unblockMutation.mutate(row.original.id);
+        };
+
+        return [
+          <>
+            {row.original?.status !== "blocked" ? (
+              <MenuItem
+                key={0}
+                // onClick={handleDeactivate}
+                onClick={() => handleDeactivate()}
+                sx={{ m: 0 }}
+              >
+                <Button
+                  color="error"
+                  // disabled={!table.getIsSomeRowsSelected('fullname')}
+                  variant="contained"
+                >
+                  {blockMutation.isLoading ? (
+                    <CircularProgress size={23} color="inherit" />
+                  ) : (
+                    "Block"
+                  )}
+                  {/* {table.getRow().getValue()} */}
+                </Button>
+              </MenuItem>
+            ) : (
+              <MenuItem
+                key={0}
+                // onClick={handleDeactivate}
+                onClick={() => handleActivate()}
+                sx={{ m: 0 }}
+              >
+                <Button
+                  color="success"
+                  // disabled={!table.getIsSomeRowsSelected('fullname')}
+                  variant="contained"
+                >
+                  {unblockMutation.isLoading ? (
+                    <CircularProgress size={23} color="inherit" />
+                  ) : (
+                    "Unblock"
+                  )}
+                  {/* {table.getRow().getValue()} */}
+                </Button>
+              </MenuItem>
+            )}
+          </>,
+
+          // <MenuItem
+          //   key={0}
+          //   // onClick={handleDeactivate}
+          //   onClick={() => handleDeactivate()}
+          //   sx={{ m: 0 }}
+          // >
+          //   {
+          //     row.original?.status !== 'blocked' ? (   <Button
+          //       color="error"
+          //       // disabled={!table.getIsSomeRowsSelected('fullname')}
+          //       variant="contained"
+          //     >
+          //  { blockMutation.isLoading ? <CircularProgress size={23} color='inherit' /> : 'Block' }
+          //       {/* {table.getRow().getValue()} */}
+          //     </Button>) : (<Button
+          //       color="success"
+          //       // disabled={!table.getIsSomeRowsSelected('fullname')}
+          //       variant="contained"
+          //     >
+          // { unblockMutation.isLoading ? <CircularProgress size={23} color='inherit' /> : 'Unblock' }
+          //       {/* {table.getRow().getValue()} */}
+          //     </Button>)
+          //   }
+
+          // </MenuItem>,
+
+          <MenuItem
+            key={1}
+            onClick={() => {
+              // View profile logic...
+              closeMenu();
+            }}
+            sx={{ m: 0 }}
+          >
+            <Button
+              color="success"
+              // disabled={!table.getIsSomeRowsSelected('fullname')}
+              variant="contained"
+            >
+              View full Profile
+            </Button>
+          </MenuItem>,
+        ];
+      }}
       muiToolbarAlertBannerProps={
         isError
           ? {
-              color: 'error',
-              children: 'Error loading data, Please use the refresh button on the table to retry',
+              color: "error",
+              children:
+                "Error loading data, Please use the refresh button on the table to retry",
             }
           : undefined
       }
       renderTopToolbarCustomActions={({ table }) => {
         const handleDeactivate = () => {
           table.getSelectedRowModel().flatRows.map((row) => {
-            alert("deactivating " + row.getValue("name"));
+            alert("deactivating " + row.getValue("fullname"));
           });
         };
 
@@ -269,29 +494,22 @@ const Settings = () => {
 
         return (
           <div style={{ display: "flex", gap: "0.5rem" }}>
-               <Tooltip arrow title="Refresh Data">
-          <IconButton onClick={() => refetch()}>
-            <RefreshIcon />
-          </IconButton>
-        </Tooltip>
+            <Tooltip arrow title="Refresh Data">
+              <IconButton onClick={() => refetch()}>
+                <RefreshIcon />
+              </IconButton>
+            </Tooltip>
+
             <Button
               color="error"
               disabled={!table.getIsSomeRowsSelected()}
               onClick={handleDeactivate}
               variant="contained"
             >
-              Deactivate
+              Delete
             </Button>
             <Button
               color="success"
-              disabled={!table.getIsSomeRowsSelected()}
-              onClick={handleActivate}
-              variant="contained"
-            >
-              Activate
-            </Button>
-            <Button
-              color="info"
               disabled={!table.getIsSomeRowsSelected()}
               onClick={handleContact}
               variant="contained"
@@ -306,8 +524,9 @@ const Settings = () => {
         showAlertBanner: isError,
         showProgressBars: isFetching,
       }}
+      muiTableContainerProps={{ sx: { height: "75vh" } }}
     />
   );
 };
-Settings.auth = true
-export default Settings;
+Users.auth = true;
+export default Users;
