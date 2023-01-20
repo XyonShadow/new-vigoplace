@@ -50,7 +50,6 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
   const { data: fetchedRoles, isLoading, isFetching } = useRouteRoles()
   // const dataFromAbove = queryClient.getQueryData(['routeRoles'])
 
-  console.log(userInfo, 'userInfo')
 
   const { data: paystackBalance, isError } = useQuery(
     [
@@ -103,7 +102,6 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
     { keepPreviousData: true },
   );
 
-  console.log(usersBalance, 'usersBalance')
 
   const sidebarMenu = fetchedRoles ? fetchedRoles?.map((menu) => {
     // console.log(typeof menu.roles, 'menu.roles')
