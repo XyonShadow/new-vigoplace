@@ -1,10 +1,19 @@
 import React, { useMemo, useState } from "react";
 import MaterialReactTable from "material-react-table";
-import { CircularProgress, IconButton, Paper, Tab, Tooltip } from "@mui/material";
+import { CircularProgress, IconButton, InputAdornment, Paper, Tab, Tooltip } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import axios from "axios";
 import CheckIcon from '@mui/icons-material/Check';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import SearchIcon from '@mui/icons-material/Search';
+import Input from '@mui/material/Input';
+import { useRouter } from 'next/router'
+
+
+
 import {
   QueryClient,
   QueryClientProvider,
@@ -32,21 +41,57 @@ import TabPanel from '@mui/lab/TabPanel';
 
 
 const Users = () => {
+  const router = useRouter()
   const queryClient = useQueryClient();
   const getUser = useSession();
   const user = getUser?.data?.user;
   const [value, setValue] = React.useState('1');
   const [walletId, setWalletId] = React.useState(null);
 
+  const [columnFilters, setColumnFilters] = useState([]);
+  const [globalFilter, setGlobalFilter] = useState('');
+  const [sorting, setSorting] = useState([]);
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+  });
+  const [gender, setGender] = React.useState('');
+  const [status, setStatus] = React.useState('');
+  const [isVerified, setIsverified] = React.useState('');
+  const [email, setEmail] = React.useState('');
+
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+  const handleGender = (event) => {
+    setGender(event.target.value);
+    setPagination({
+      pageIndex: 0,
+      pageSize: 10,
+    })
+  };
+  const handleStatus = (event) => {
+    setStatus(event.target.value);
+    setPagination({
+      pageIndex: 0,
+      pageSize: 10,
+    })
+  };
+  const handleVerified = (event) => {
+    console.log({eventt: event.target.value});
+    setIsverified(event.target.value);
+    setPagination({
+      pageIndex: 0,
+      pageSize: 10,
+    })
   };
 
 
   const blockUser = async (id) => {
     const blockedUser = await axios.post(
-      // "http://localhost:3001/api/admin/console/users/block",
-      'https://vigoplace.com/server/api/admin/console/users/block',
+      "http://localhost:3001/api/admin/console/users/block",
+      // 'https://vigoplace.com/server/api/admin/console/users/block',
       { userId: id },
       {
         headers: {
@@ -70,8 +115,8 @@ const Users = () => {
 
   const unblockUser = async (id) => {
     const unblockedUser = await axios.post(
-      // "http://localhost:3001/api/admin/console/users/unblock",
-      'https://vigoplace.com/server/api/admin/console/users/unblock',
+      "http://localhost:3001/api/admin/console/users/unblock",
+      // 'https://vigoplace.com/server/api/admin/console/users/unblock',
       { userId: id },
       {
         headers: {
@@ -123,11 +168,14 @@ const Users = () => {
   const { data, isError, isFetching, isLoading, refetch } = useQuery(
     [
       "fetchUsers",
-      // columnFilters,
-      // globalFilter,
-      // pagination.pageIndex,
-      // pagination.pageSize,
-      // sorting,
+      columnFilters, //refetch when columnFilters changes
+      globalFilter, //refetch when globalFilter changes
+      pagination.pageIndex, //refetch when pagination.pageIndex changes
+      pagination.pageSize, //refetch when pagination.pageSize changes
+      sorting, //refetch when sorting changes
+      gender,
+      status,
+      isVerified
     ],
     // async () => {
     //   // const url = new URL(
@@ -153,8 +201,8 @@ const Users = () => {
     // },
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/users`,
-        // `http://localhost:3001/api/admin/console/users`,
+        `https://vigoplace.com/server/api/admin/console/users?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${gender !=='' ? `&gender=${gender}`:''}${status !=='' ? `&status=${status}`:''}${isVerified !=='' ? `&isVerified=${isVerified}`:''}`,
+        // `http://localhost:3001/api/admin/console/users?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${gender !=='' ? `&gender=${gender}`:''}${status !=='' ? `&status=${status}`:''}${isVerified !=='' ? `&isVerified=${isVerified}`:''}`,
         {
           headers: {
             Authorization: user?.token,
@@ -292,15 +340,28 @@ const Users = () => {
       // enableColumnOrdering
       // enableGrouping
       // enablePinning
+
       enableRowActions
       enableStickyHeader
       enableStickyFooter
       enableRowSelection
+      manualPagination
+      
+      onPaginationChange={setPagination}
+      rowCount={data?.count?.total ?? 0}
+      // onColumnFiltersChange={()=>{
+      //   setColumnFilters
+      // }}
+      // onColumnFiltersChange={
+      //   setColumnFilters
+      // }
+      onGlobalFilterChange={setGlobalFilter}
       initialState={{ showColumnFilters: false }}
       positionToolbarAlertBanner="bottom"
+enableGlobalFilter={false}
+
       renderDetailPanel={({ row }) => { 
         // setWalletId(row.original.id)
-        console.log("i run")
         // getUserWalletMutation.mutate(row.original.id)
       return (
         <>
@@ -362,6 +423,7 @@ const Users = () => {
 
         </>
       )}}
+
       renderRowActionMenuItems={({ closeMenu, row, table }) => {
         // console.log(table.getSelectedRowModel().flatRows[0]?.getValue('fullname'), 'table')
 
@@ -376,80 +438,49 @@ const Users = () => {
         };
 
         return [
-          <>
-            {row.original?.status !== "blocked" ? (
+          
               <MenuItem
                 key={0}
                 // onClick={handleDeactivate}
-                onClick={() => handleDeactivate()}
+                // onClick={() => handleDeactivate()}
                 sx={{ m: 0 }}
               >
-                <Button
-                  color="error"
-                  // disabled={!table.getIsSomeRowsSelected('fullname')}
-                  variant="contained"
-                >
-                  {blockMutation.isLoading ? (
-                    <CircularProgress size={23} color="inherit" />
-                  ) : (
-                    "Block"
-                  )}
-                  {/* {table.getRow().getValue()} */}
-                </Button>
+                {
+                  row.original?.status !== "blocked" ? ( <Button
+                    onClick={() => handleDeactivate()}
+                    color="error"
+                    // disabled={!table.getIsSomeRowsSelected('fullname')}
+                    variant="contained"
+                  >
+                    {blockMutation.isLoading ? (
+                      <CircularProgress size={23} color="inherit" />
+                    ) : (
+                      "Block"
+                    )}
+                    {/* {table.getRow().getValue()} */}
+                  </Button>) : (    <Button
+                  onClick={() => handleActivate()}
+          color="success"
+          // disabled={!table.getIsSomeRowsSelected('fullname')}
+          variant="contained"
+        >
+          {unblockMutation.isLoading ? (
+            <CircularProgress size={23} color="inherit" />
+          ) : (
+            "Unblock"
+          )}
+          {/* {table.getRow().getValue()} */}
+        </Button>)
+                }
+               
               </MenuItem>
-            ) : (
-              <MenuItem
-                key={0}
-                // onClick={handleDeactivate}
-                onClick={() => handleActivate()}
-                sx={{ m: 0 }}
-              >
-                <Button
-                  color="success"
-                  // disabled={!table.getIsSomeRowsSelected('fullname')}
-                  variant="contained"
-                >
-                  {unblockMutation.isLoading ? (
-                    <CircularProgress size={23} color="inherit" />
-                  ) : (
-                    "Unblock"
-                  )}
-                  {/* {table.getRow().getValue()} */}
-                </Button>
-              </MenuItem>
-            )}
-          </>,
-
-          // <MenuItem
-          //   key={0}
-          //   // onClick={handleDeactivate}
-          //   onClick={() => handleDeactivate()}
-          //   sx={{ m: 0 }}
-          // >
-          //   {
-          //     row.original?.status !== 'blocked' ? (   <Button
-          //       color="error"
-          //       // disabled={!table.getIsSomeRowsSelected('fullname')}
-          //       variant="contained"
-          //     >
-          //  { blockMutation.isLoading ? <CircularProgress size={23} color='inherit' /> : 'Block' }
-          //       {/* {table.getRow().getValue()} */}
-          //     </Button>) : (<Button
-          //       color="success"
-          //       // disabled={!table.getIsSomeRowsSelected('fullname')}
-          //       variant="contained"
-          //     >
-          // { unblockMutation.isLoading ? <CircularProgress size={23} color='inherit' /> : 'Unblock' }
-          //       {/* {table.getRow().getValue()} */}
-          //     </Button>)
-          //   }
-
-          // </MenuItem>,
+            ,
 
           <MenuItem
             key={1}
             onClick={() => {
               // View profile logic...
+              router.push(`/user/${row.original.id}`)
               closeMenu();
             }}
             sx={{ m: 0 }}
@@ -464,6 +495,7 @@ const Users = () => {
           </MenuItem>,
         ];
       }}
+
       muiToolbarAlertBannerProps={
         isError
           ? {
@@ -473,6 +505,7 @@ const Users = () => {
             }
           : undefined
       }
+
       renderTopToolbarCustomActions={({ table }) => {
         const handleDeactivate = () => {
           table.getSelectedRowModel().flatRows.map((row) => {
@@ -505,6 +538,7 @@ const Users = () => {
               disabled={!table.getIsSomeRowsSelected()}
               onClick={handleDeactivate}
               variant="contained"
+              size="small"
             >
               Delete
             </Button>
@@ -513,16 +547,103 @@ const Users = () => {
               disabled={!table.getIsSomeRowsSelected()}
               onClick={handleContact}
               variant="contained"
+              size="small"
             >
               Contact
             </Button>
+
+            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+        <InputLabel id="demo-simple-select-standard-label">Gender</InputLabel>
+        <Select
+          labelId="demo-simple-select-standard-label"
+          id="demo-simple-select-standard"
+          value={gender}
+          defaultValue="None"
+          onChange={handleGender}
+          label="Gender"
+        >
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
+          <MenuItem value={'male'}>Male</MenuItem>
+          <MenuItem value={'female'}>Female</MenuItem>
+        </Select>
+      </FormControl>
+
+      <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+        <InputLabel id="demo-simple-select-standard-label">Status</InputLabel>
+        <Select
+          labelId="demo-simple-select-standard-label"
+          id="demo-simple-select-standard"
+          value={status}
+          defaultValue="None"
+          onChange={handleStatus}
+          label="Gender"
+        >
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
+          <MenuItem value={'active'}>Active</MenuItem>
+          <MenuItem value={'inactive'}>Inactive</MenuItem>
+          <MenuItem value={'blocked'}>Blocked</MenuItem>
+          <MenuItem value={'deactivated'}>Deactivated</MenuItem>
+        </Select>
+      </FormControl>
+
+      <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+        <InputLabel id="demo-simple-select-standard-label">Verified</InputLabel>
+        <Select
+          labelId="demo-simple-select-standard-label"
+          id="demo-simple-select-standard"
+          value={isVerified}
+          defaultValue="None"
+          onChange={handleVerified}
+          label="Gender"
+        >
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
+          <MenuItem value={1}>Verified</MenuItem>
+          <MenuItem value={0}>Unverified</MenuItem>
+        </Select>
+      </FormControl>
+
+      {/* <FormControl sx={{ m: 1, width: '25ch' }} variant="standard">
+          <InputLabel htmlFor="standard-adornment-password">Email</InputLabel>
+          <Input
+            id="standard-adornment-password"
+            type={'text'}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+
+                  aria-label="search"
+                  // onClick={handleClickShowPassword}
+                  // onMouseDown={handleMouseDownPassword}
+                >
+                 <SearchIcon />
+                </IconButton>
+              </InputAdornment>
+            }
+          />
+          </FormControl> */}
+
+      
+
           </div>
         );
       }}
+
+      // getPaginationRowModel={(props)=> console.log(props, "propppp")}
+      // manualPagination
+      // onPaginationChange={}
+      // muiTablePaginationProps={}
+
       state={{
         isLoading,
         showAlertBanner: isError,
         showProgressBars: isFetching,
+        pagination,
       }}
       muiTableContainerProps={{ sx: { height: "75vh" } }}
     />
