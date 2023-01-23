@@ -151,8 +151,8 @@ const Users = () => {
     ],
     async () => {
       const { data } = await axios.post(
-        // `https://vigoplace.com/server/api/admin/console/users`,
-        `http://localhost:3001/api/admin/console/users/wallets`,
+        `https://vigoplace.com/server/api/admin/console/users/wallets`,
+        // `http://localhost:3001/api/admin/console/users/wallets`,
         {
           userId: userid
         },
@@ -180,8 +180,8 @@ const Users = () => {
     ],
     async () => {
       const { data } = await axios.get(
-        // `https://vigoplace.com/server/api/admin/console/users`,
-        `http://localhost:3001/api/admin/console/user?userId=${userid}`,
+        `https://vigoplace.com/server/api/admin/console/user?userId=${userid}`,
+        // `http://localhost:3001/api/admin/console/user?userId=${userid}`,
         {
           headers: {
             Authorization: user?.token,
@@ -206,8 +206,8 @@ const Users = () => {
     ],
     async () => {
       const { data } = await axios.get(
-        // `https://vigoplace.com/server/api/admin/console/users`,
-        `http://localhost:3001/api/admin/console/users/transactions?userId=${userid}`,
+        `https://vigoplace.com/server/api/admin/console/users/transactions?userId=${userid}`,
+        // `http://localhost:3001/api/admin/console/users/transactions?userId=${userid}`,
         {
           headers: {
             Authorization: user?.token,
