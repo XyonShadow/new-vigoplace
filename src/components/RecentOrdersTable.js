@@ -41,6 +41,17 @@ import {
   Button,
 } from "@mui/material";
 
+import TextField from '@mui/material/TextField';import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+
+import LoadingButton from '@mui/lab/LoadingButton';
+
+
+
+
 import Label from "./Label/index";
 import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
 import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
@@ -114,6 +125,8 @@ export default function RecentOrdersTable({ payouts }) {
   const [filters, setFilters] = useState({
     status: null,
   });
+
+
   // const mutation = useApprovePayOut().
   // const [payoutRId, setPayoutRId] = React.useState(null);
   // console.log(payoutRId, 'payoutRId');
@@ -316,6 +329,17 @@ function Row({ payout, isPayoutSelected }) {
   const [openToast, setOpenToast] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
   const [buffer, setBuffer] = React.useState(10);
+  const [openModal, setOpenModal] = React.useState(false);
+  const [pin, setPin] = React.useState(null);
+
+console.log(pin);
+
+  const handlePin = (e) => {
+    setPin(e.target.value);
+  }
+
+
+
 
 
   const handleClose = (event, reason) => {
@@ -327,12 +351,13 @@ function Row({ payout, isPayoutSelected }) {
     return session?.user?.token
   }
 
-  const approvePayOut = async (id) => {
+  const approvePayOut = async ({id, pin}) => {
+    console.log({id, pin})
     const token = await getToken()
     const parsed = await axios.post(
-      // 'http://localhost:3001/api/admin/console/approvepayout/test'
+      // 'http://localhost:3001/api/admin/console/approvepayout'
       'https://vigoplace.com/server/api/admin/console/approvepayout'
-      , { payoutRequestId: id },
+      , { payoutRequestId: id, approvalPin:pin },
       {
         headers: {
           'Authorization': token
@@ -346,9 +371,11 @@ function Row({ payout, isPayoutSelected }) {
     mutationFn: approvePayOut,
     onSuccess: () => {
       queryClient.invalidateQueries('payoutRequests')
+      setPin(null)
     },
     onError: async (error) => {
       setOpenToast(true);
+      setPin(null)
     },
 
   })
@@ -477,9 +504,11 @@ function Row({ payout, isPayoutSelected }) {
                   variant="contained"
                   color="success"
                   onClick={() => {
-                    approvePayOutMutation.mutate(payout.payoutRequestId)
+                    setOpenModal(true)
                   }
-
+                  // onClick={() => {
+                  //   approvePayOutMutation.mutate(payout.payoutRequestId)
+                  // }
 
                   }
                 >
@@ -491,6 +520,40 @@ function Row({ payout, isPayoutSelected }) {
                 <Button size="small" variant="contained" color="error">
                   Decline
                 </Button>
+
+                <Dialog  open={openModal} onClose={()=>{
+                  setOpenModal(false)
+                  setPin(null)
+                  }}>
+        <DialogTitle>Approve Payout</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Please enter your admin approval pin to approve this request, if you dont have one yet, head to settings to generate one now
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="Approval Pin"
+            type="number"
+            fullWidth
+            value={pin}
+            variant="standard"
+            onChange={handlePin}
+            
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={()=>{
+            setOpenModal(false)
+            setPin(null)
+            }}>Cancel</Button>
+          <LoadingButton variant="contained" loading={approvePayOutMutation.isLoading} disabled={pin === null || pin?.length <=5} onClick={()=>{
+            approvePayOutMutation.mutate({id: payout.payoutRequestId, pin})
+            setPin(null)
+          }}>Approve</LoadingButton>
+        </DialogActions>
+      </Dialog>
               </>
             ) : payout.payoutRequestStatus === 'processing' ? (
               <>

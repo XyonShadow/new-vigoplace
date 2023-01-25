@@ -96,8 +96,8 @@ const Users = () => {
 
   const blockUser = async (id) => {
     const blockedUser = await axios.post(
-      "http://localhost:3001/api/admin/console/users/block",
-      // 'https://vigoplace.com/server/api/admin/console/users/block',
+      // "http://localhost:3001/api/admin/console/users/block",
+      'https://vigoplace.com/server/api/admin/console/users/block',
       { userId: id },
       {
         headers: {
@@ -121,8 +121,8 @@ const Users = () => {
 
   const unblockUser = async (id) => {
     const unblockedUser = await axios.post(
-      "http://localhost:3001/api/admin/console/users/unblock",
-      // 'https://vigoplace.com/server/api/admin/console/users/unblock',
+      // "http://localhost:3001/api/admin/console/users/unblock",
+      'https://vigoplace.com/server/api/admin/console/users/unblock',
       { userId: id },
       {
         headers: {
