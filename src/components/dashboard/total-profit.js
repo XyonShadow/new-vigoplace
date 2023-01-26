@@ -1,9 +1,11 @@
 import { Avatar, Card, Box, CardContent, Grid, Typography } from '@mui/material';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import CircularProgress from '@mui/material/CircularProgress';
 
 
-export const TotalProfit = ({balance, ...props}) => (
+
+export const TotalProfit = ({balance, isLoading, ...props}) => (
   <Card {...props}>
     <CardContent>
       <Grid
@@ -23,7 +25,10 @@ export const TotalProfit = ({balance, ...props}) => (
             color="textPrimary"
             variant="h4"
           >
-            {balance}
+            {
+              isLoading ?  (<CircularProgress size={20} />)  : (balance)
+            }
+            {/* {balance} */}
           </Typography>
         </Grid>
         <Grid item>

@@ -66,6 +66,32 @@ export default function Index() {
     },
   );
 
+  const { data: paystackBalance, isLoading } = useQuery(
+    [
+      'paystackBalanceOnDashboard',
+    ],
+    async () => {
+      const { data } = await axios.get(
+        `https://vigoplace.com/server/api/admin/console/balance/paystack`,
+        // `http://localhost:3001/api/admin/console/balance/paystack`,
+        {
+          headers: {
+            Authorization: user?.token,
+          },
+        }
+      );
+
+      return data;
+    },
+    {
+      onError: (err) => {
+       console.log(err, 'err fetching users')
+      },
+      enabled: !!user?.token,
+    },
+    { keepPreviousData: true },
+  );
+
   return (
     <>
       <Box
@@ -125,7 +151,7 @@ export default function Index() {
             sm={6}
             xs={12}
           >
-            <TotalProfit balance={ queryClient.getQueryData(["paystackBalance"])?.data?.balance ?? 0} />
+            <TotalProfit isLoading={isLoading} balance={ paystackBalance?.data?.balance ?? 0} />
           </Grid>
           <Grid
             item
