@@ -16,6 +16,7 @@ import numeral from "numeral";
 import Slide from '@mui/material/Slide';
 import PropTypes from "prop-types";
 import LinearProgress from '@mui/material/LinearProgress';
+import Link from 'next/link'
 // import ColoredLinearProgress from './LinearLoader';
 import {
   Tooltip,
@@ -528,7 +529,7 @@ console.log(pin);
         <DialogTitle>Approve Payout</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Please enter your admin approval pin to approve this request, if you dont have one yet, head to settings to generate one now
+            Please enter your admin approval pin to approve this request, if you dont have one yet, head to {<Link style={{color:"blue"}} href="/settings">Settings</Link>} to generate one now
           </DialogContentText>
           <TextField
             autoFocus
