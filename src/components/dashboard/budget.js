@@ -19,7 +19,7 @@ export const Budget = (props) => (
             gutterBottom
             variant="overline"
           >
-            BUDGET
+            Paystack Balance
           </Typography>
           <Typography
             color="textPrimary"
@@ -28,6 +28,7 @@ export const Budget = (props) => (
             $24k
           </Typography>
         </Grid>
+        
         <Grid item>
           <Avatar
             sx={{
@@ -40,6 +41,7 @@ export const Budget = (props) => (
           </Avatar>
         </Grid>
       </Grid>
+      
       <Box
         sx={{
           pt: 2,

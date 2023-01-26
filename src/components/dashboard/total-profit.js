@@ -3,7 +3,7 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 
 
-export const TotalProfit = (props) => (
+export const TotalProfit = ({balance, ...props}) => (
   <Card {...props}>
     <CardContent>
       <Grid
@@ -17,13 +17,13 @@ export const TotalProfit = (props) => (
             gutterBottom
             variant="overline"
           >
-            INCOME
+            Paystack
           </Typography>
           <Typography
             color="textPrimary"
             variant="h4"
           >
-            $23k
+            {balance}
           </Typography>
         </Grid>
         <Grid item>
@@ -34,7 +34,7 @@ export const TotalProfit = (props) => (
               width: 56
             }}
           >
-            <AttachMoneyIcon />
+            ₦
           </Avatar>
         </Grid>
       </Grid>
@@ -45,7 +45,7 @@ export const TotalProfit = (props) => (
           pt: 2
         }}
       >
-        <ArrowUpwardIcon color="success" />
+        {/* <ArrowUpwardIcon color="success" />
         <Typography
           variant="body2"
           sx={{
@@ -59,7 +59,7 @@ export const TotalProfit = (props) => (
           variant="caption"
         >
           Since last month
-        </Typography>
+        </Typography> */}
       </Box>
     </CardContent>
   </Card>

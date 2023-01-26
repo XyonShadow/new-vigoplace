@@ -11,9 +11,60 @@ import { TasksProgress } from "../src/components/dashboard/tasks-progress";
 import { TotalCustomers } from "../src/components/dashboard/total-customers";
 import { TotalProfit } from "../src/components/dashboard/total-profit";
 import { fetchRouteRoles } from '../hooks/useRouteRoles';
+import axios from 'axios';
+import {
+  useQueryClient,
+  useQuery,
+  useMutation,
+} from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 
 
 export default function Index() {
+  const queryClient = useQueryClient();
+  const getUser = useSession();
+  const user = getUser?.data?.user;
+
+  const { data: users } = useQuery(['fetchUsersCount'],
+    async () => {
+      const { data } = await axios.get(
+        `https://vigoplace.com/server/api/admin/console/users/count`,
+        // `http://localhost:3001/api/admin/console/users/count`,
+        {
+          headers: {
+            Authorization: user?.token,
+          },
+        }
+      );
+      return data;
+    },
+    {
+      onError: (err) => {
+        console.log(err, "err fetching users");
+      },
+      enabled: !!user?.token,
+    },
+  );
+  const { data: activeUsers } = useQuery(['fetchActiveUsersCount'],
+    async () => {
+      const { data } = await axios.get(
+        `https://vigoplace.com/server/api/admin/console/users/count?status=active`,
+        // `http://localhost:3001/api/admin/console/users/count?status=active`,
+        {
+          headers: {
+            Authorization: user?.token,
+          },
+        }
+      );
+      return data;
+    },
+    {
+      onError: (err) => {
+        console.log(err, "err fetching users");
+      },
+      enabled: !!user?.token,
+    },
+  );
 
   return (
     <>
@@ -29,7 +80,7 @@ export default function Index() {
           container
           spacing={3}
         >
-          <Grid
+          {/* <Grid
             item
             lg={3}
             sm={6}
@@ -37,7 +88,8 @@ export default function Index() {
             xs={12}
           >
             <Budget />
-          </Grid>
+          </Grid> */}
+
           <Grid
             item
             lg={3}
@@ -45,9 +97,19 @@ export default function Index() {
             xl={3}
             xs={12}
           >
-            <TotalCustomers />
+            <TotalCustomers title={"Total Users"} count={users?.data?.count ?? 0}/>
           </Grid>
+
           <Grid
+            item
+            lg={3}
+            sm={6}
+            xl={3}
+            xs={12}
+          >
+            <TotalCustomers title={'Active Users'} count={activeUsers?.data?.count ?? 0}/>
+          </Grid>
+          {/* <Grid
             item
             lg={3}
             sm={6}
@@ -55,7 +117,7 @@ export default function Index() {
             xs={12}
           >
             <TasksProgress />
-          </Grid>
+          </Grid> */}
           <Grid
             item
             xl={3}
@@ -63,7 +125,7 @@ export default function Index() {
             sm={6}
             xs={12}
           >
-            <TotalProfit />
+            <TotalProfit balance={ queryClient.getQueryData(["paystackBalance"])?.data?.balance ?? 0} />
           </Grid>
           <Grid
             item
@@ -77,6 +139,7 @@ export default function Index() {
         </Grid>
       </Container>
     </Box>
+    
     <Grid container spacing={0}>
 
       <Grid item xs={12} lg={12}>
