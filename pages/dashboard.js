@@ -151,7 +151,7 @@ export default function Index() {
             sm={6}
             xs={12}
           >
-            <TotalProfit isLoading={isLoading} balance={ paystackBalance?.data?.balance ?? 0} />
+            <TotalProfit isLoading={isLoading} balance={ paystackBalance?.data?.balance.split('₦')[1] ?? 0} />
           </Grid>
           <Grid
             item

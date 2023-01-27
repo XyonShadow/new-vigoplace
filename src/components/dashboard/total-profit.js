@@ -26,7 +26,7 @@ export const TotalProfit = ({balance, isLoading, ...props}) => (
             variant="h4"
           >
             {
-              isLoading ?  (<CircularProgress size={20} />)  : (balance)
+              isLoading ?  (<CircularProgress size={20} />)  : ("₦"+Number(balance).toLocaleString("en-US"))
             }
             {/* {balance} */}
           </Typography>

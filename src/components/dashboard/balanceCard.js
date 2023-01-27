@@ -27,7 +27,7 @@ export const BalanceCard = ({balance, ...props}) => (
             align='center'
             color='green'
           >
-            {balance?.balance}
+            {balance?.balance.toLocaleString("en-US")}
           </Typography>
         </Grid>
       </Grid>

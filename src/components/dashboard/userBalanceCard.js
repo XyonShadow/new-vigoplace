@@ -26,7 +26,7 @@ export const UserBalanceCard = ({ usersBalance = [], ...props }) => (
           ? usersBalance.map((balance) => (
               <>
                 <Typography color="green" variant="h2" align="center">
-                  {`${balance?.SCSymbol}${balance?.amount}`}
+                  {`${balance?.SCSymbol}${balance?.amount.toLocaleString("en-US")}`}
                 </Typography>
                 <Divider />
               </>
