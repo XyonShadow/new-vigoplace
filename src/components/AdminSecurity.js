@@ -47,11 +47,13 @@ function AdminSecurity() {
   const [password, setPassword] = useState({
     oldPassword: "",
     newPassword: "",
+    confirmPassword: "",
   });
 
   const [approval, setApproval] = useState({
     oldPin: "",
     pin: "",
+    confirmPin: "",
   });
 
   const handlePassword = (event) => {
@@ -91,7 +93,7 @@ function AdminSecurity() {
     },
     onSuccess: () => {
       setPinToast({ ...pinToast, success: true });
-      setApproval({pin: '', oldPin: ''})
+      setApproval({pin: '', oldPin: '', confirmPin: ''})
       setOpenModal(false);
     },
   });
@@ -119,7 +121,7 @@ function AdminSecurity() {
     },
     onSuccess: (msg) => {
       setPasswordToast({ ...passwordToast, success: true });
-      setPassword({newPassword: "", oldPassword:""})
+      setPassword({newPassword: "", oldPassword:"", confirmPassword:""})
       setOpenModal2(false)
     },
   });
@@ -206,6 +208,17 @@ function AdminSecurity() {
                     value={password.newPassword}
                     variant="outlined"
                   />
+                  <TextField
+                    fullWidth
+                    label="Confirm password"
+                    margin="normal"
+                    name="confirmPassword"
+                    onChange={handlePassword}
+                    type="text"
+                    value={password.confirmPassword}
+                    variant="outlined"
+                    error={password.newPassword !== password.confirmPassword}
+                  />
                 </CardContent>
                 <Divider />
                 <Box
@@ -223,16 +236,17 @@ function AdminSecurity() {
                       password.oldPassword === "" ||
                       password.newPassword === "" ||
                       password.oldPassword.length <= 5 ||
-                      password.newPassword.length <= 5
+                      password.newPassword.length <= 5 ||
+                      password.newPassword !== password.confirmPassword
                     }
                     onClick={() => {
-                    //   updatePasswordMutation.mutate(password);
-                    setOpenModal2(true);
+                      updatePasswordMutation.mutate(password);
+                    // setOpenModal2(true);
                     }}
                   >
                     Change Password
                   </LoadingButton>
-                  <Dialog
+                  {/* <Dialog
                   open={openModal2}
                   onClose={() => {
                     setOpenModal(false);
@@ -261,7 +275,7 @@ function AdminSecurity() {
                   Update
                 </LoadingButton>
                   </DialogActions>
-                </Dialog>
+                </Dialog> */}
                 </Box>
               </Card>
             </form>
@@ -279,8 +293,8 @@ function AdminSecurity() {
             {/* <form> */}
             <Card>
               <CardHeader
-                subheader="if this is your first approval pin kindly use 000000 as old pin"
-                title="Set Approval Pin"
+                // subheader="Enter Old pin and"
+                title="Create Approval Pin"
               />
               <Divider />
               <CardContent>
@@ -304,6 +318,17 @@ function AdminSecurity() {
                   value={approval.pin}
                   variant="outlined"
                 />
+                <TextField
+                  fullWidth
+                  label="Confirm Pin"
+                  margin="normal"
+                  name="confirmPin"
+                  onChange={handlePinChange}
+                  type="number"
+                  value={approval.confirmPin}
+                  variant="outlined"
+                  error={approval.pin !== approval.confirmPin}
+                />
               </CardContent>
               <Divider />
               <Box
@@ -321,16 +346,18 @@ function AdminSecurity() {
                     approval.pin === "" ||
                     approval.oldPin === "" ||
                     approval.pin.length <= 5 ||
-                    approval.oldPin.length <= 5
+                    approval.oldPin.length <= 5 ||
+                    approval.pin !== approval.confirmPin
                   }
                   onClick={() => {
-                    setOpenModal(true);
+                    // setOpenModal(true);
+                    updatePinMutation.mutate(approval)
                   }}
                 >
                   Update
                 </LoadingButton>
 
-                <Dialog
+                {/* <Dialog
                   open={openModal}
                   onClose={() => {
                     setOpenModal(false);
@@ -359,7 +386,7 @@ function AdminSecurity() {
                   Update
                 </LoadingButton>
                   </DialogActions>
-                </Dialog>
+                </Dialog> */}
               </Box>
             </Card>
             {/* </form> */}
