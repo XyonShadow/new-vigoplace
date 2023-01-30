@@ -530,7 +530,7 @@ console.log(pin);
         <DialogTitle>Approve Payout</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Please enter your admin approval pin to approve this request, if you dont have one yet, head to {<Link style={{color:"blue"}} href="/settings">Settings</Link>} to generate one now
+            Please enter your admin approval pin to approve this request, if you dont have one yet, head to {<Link style={{color:"blue"}} href="/settings">Settings</Link>} to create one now
           </DialogContentText>
           <TextField
             autoFocus
