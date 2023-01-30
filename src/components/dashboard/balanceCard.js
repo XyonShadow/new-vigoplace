@@ -2,7 +2,7 @@ import { Avatar, Box, Card, CardContent, Grid, Typography } from '@mui/material'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import MoneyIcon from '@mui/icons-material/Money';
 
-export const BalanceCard = ({balance, ...props}) => (
+export const BalanceCard = ({ balance, nairaPayoutBalance, ...props }) => (
   <Card
     // sx={{ height: '100%' }}
     {...props}
@@ -27,7 +27,7 @@ export const BalanceCard = ({balance, ...props}) => (
             align='center'
             color='green'
           >
-            {balance?.balance.toLocaleString("en-US")}
+            ₦{balance?.balance.toLocaleString("en-US")}
           </Typography>
         </Grid>
       </Grid>
@@ -38,13 +38,15 @@ export const BalanceCard = ({balance, ...props}) => (
           alignItems: 'center'
         }}
       >
-        <Typography
-          color="error"
-          variant="h6"
-          align='center'
-        >
-          available balance too low for naira wallet balances
-        </Typography>
+        {
+          nairaPayoutBalance > balance?.balance ? (<Typography
+            color="error"
+            variant="h6"
+            align='center'
+          >
+            available balance too low for naira wallet balances
+          </Typography>) : null
+        }
       </Box>
     </CardContent>
   </Card>
