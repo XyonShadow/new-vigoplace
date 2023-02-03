@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import MaterialReactTable from "material-react-table";
 import { useRouter } from "next/router";
+import {format} from "date-fns"
 import {
   Avatar,
   Card,
@@ -137,7 +138,6 @@ const Users = () => {
   };
 
   const handleCreditChange = (event) => {
-    console.log(event.target.value, creditDetails);
     setCreditDetails({
       ...creditDetails,
       [event.target.name]: event.target.value,
@@ -164,7 +164,6 @@ const Users = () => {
   };
 
   const handleVerified = (event) => {
-    console.log({ eventt: event.target.value });
     setIsverified(event.target.value);
     setPagination({
       pageIndex: 0,
@@ -241,11 +240,19 @@ const Users = () => {
     isLoading: loadingTransactions,
     refetch: refetchTransactions,
   } = useQuery(
-    ["fetchSingleUserTransactions"],
+    [
+      "fetchSingleUserTransactions",
+      columnFilters, //refetch when columnFilters changes
+      globalFilter, //refetch when globalFilter changes
+      pagination.pageIndex, //refetch when pagination.pageIndex changes
+      pagination.pageSize, //refetch when pagination.pageSize changes
+      sorting, //refetch when sorting changes
+      status,
+    ],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/users/transactions?userId=${userid}`,
-        // `http://localhost:3001/api/admin/console/users/transactions?userId=${userid}`,
+        // `https://vigoplace.com/server/api/admin/console/users/transactions?userId=${userid}`,
+        `http://localhost:3001/api/admin/console/users/transactions?userId=${userid}&limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${status !=='' ? `&status=${status}`:''}`,
         {
           headers: {
             Authorization: user?.token,
@@ -409,7 +416,8 @@ const Users = () => {
         header: "Amount",
       },
       {
-        accessorKey: "transactionDate",
+        // accessorKey: "transactionDate",
+        accessorFn: (row) =>  format(new Date(row.transactionDate), "Pp"),
         enableClickToCopy: false,
         header: "Date",
       },
@@ -647,7 +655,7 @@ const Users = () => {
                         margin="normal"
                         name="approvalPin"
                         onChange={handleCreditChange}
-                        type="password"
+                        type={creditDetails.approvalPin === '' ? "text" : "password"}
                         value={creditDetails.approvalPin}
                         variant="outlined"
                       />
@@ -778,22 +786,21 @@ const Users = () => {
       </Typography>
 
       <MaterialReactTable
-        columns={columns}
-        data={userTransactions?.data ?? []}
-        // enableColumnFilterModes
+         // enableColumnFilterModes
         // enableColumnOrdering
         // enableGrouping
         // enablePinning
-
         // enableRowActions
+        // enableRowSelection
+
+        columns={columns}
+        data={userTransactions?.data ?? []}
         enableStickyHeader
         enableStickyFooter
-        // enableRowSelection
-        // manualPagination
-
-        // onPaginationChange={setPagination}
-        // rowCount={data?.count?.total ?? 0}
-        // onGlobalFilterChange={setGlobalFilter}
+        manualPagination
+        onPaginationChange={setPagination}
+        rowCount={userTransactions?.count?.total ?? 0}
+        onGlobalFilterChange={setGlobalFilter}
         initialState={{ showColumnFilters: false }}
         positionToolbarAlertBanner="bottom"
         enableGlobalFilter={false}
@@ -810,6 +817,63 @@ const Users = () => {
         // manualPagination
         // onPaginationChange={}
         // muiTablePaginationProps={}
+
+        renderTopToolbarCustomActions={({ table }) => {
+  
+          return (
+            <div style={{ display: "flex", gap: "0.5rem" }}>
+              <Tooltip arrow title="Refresh Data">
+                <IconButton onClick={() => refetch()}>
+                  <RefreshIcon />
+                </IconButton>
+              </Tooltip>
+  
+        <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+          <InputLabel id="demo-simple-select-standard-label">Status</InputLabel>
+          <Select
+            labelId="demo-simple-select-standard-label"
+            id="demo-simple-select-standard"
+            value={status}
+            defaultValue="None"
+            onChange={handleStatus}
+            label="Gender"
+          >
+
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
+            <MenuItem value={'completed'}>Completed</MenuItem>
+            <MenuItem value={'pending'}>Pending</MenuItem>
+            <MenuItem value={'processing'}>Processing</MenuItem>
+            <MenuItem value={'declined'}>Declined</MenuItem>
+          </Select>
+        </FormControl>
+  
+        {/* <FormControl sx={{ m: 1, width: '25ch' }} variant="standard">
+            <InputLabel htmlFor="standard-adornment-password">Email</InputLabel>
+            <Input
+              id="standard-adornment-password"
+              type={'text'}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+  
+                    aria-label="search"
+                    // onClick={handleClickShowPassword}
+                    // onMouseDown={handleMouseDownPassword}
+                  >
+                   <SearchIcon />
+                  </IconButton>
+                </InputAdornment>
+              }
+            />
+            </FormControl> */}
+  
+        
+  
+            </div>
+          );
+        }}
 
         state={{
           isLoading,
