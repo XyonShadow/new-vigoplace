@@ -251,8 +251,8 @@ const Users = () => {
     ],
     async () => {
       const { data } = await axios.get(
-        // `https://vigoplace.com/server/api/admin/console/users/transactions?userId=${userid}`,
-        `http://localhost:3001/api/admin/console/users/transactions?userId=${userid}&limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${status !=='' ? `&status=${status}`:''}`,
+        `https://vigoplace.com/server/api/admin/console/users/transactions?userId=${userid}&limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${status !=='' ? `&status=${status}`:''}`,
+        // `http://localhost:3001/api/admin/console/users/transactions?userId=${userid}&limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${status !=='' ? `&status=${status}`:''}`,
         {
           headers: {
             Authorization: user?.token,
