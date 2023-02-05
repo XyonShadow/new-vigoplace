@@ -265,8 +265,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
         <Drawer
           anchor="right"
           // open={open}
-          // open={quickStat.right}
-          open={true}
+          open={quickStat.right}
           onClose={toggleDrawer("right", false)}
           variant="temporary"
           // ModalProps={{
