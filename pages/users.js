@@ -38,6 +38,7 @@ import { UserBalanceCard } from "../src/components/dashboard/userBalanceCard";
 import { UserBio } from "../src/components/dashboard/userBio";
 import { TabContext, TabList } from "@mui/lab";
 import TabPanel from '@mui/lab/TabPanel';
+import { useEffect } from "react";
 
 
 const Users = () => {
@@ -138,6 +139,11 @@ const Users = () => {
     },
   });
 
+  useEffect(() => {
+    setPagination({...pagination, pageIndex: 0})
+  }, [columnFilters])
+  
+
   // const getUserWallet = async (id) => {
   //   const wallet = await axios.post(
   //     "http://localhost:3001/api/admin/console/users/wallets",
@@ -201,8 +207,8 @@ const Users = () => {
     // },
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/users?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${gender !=='' ? `&gender=${gender}`:''}${status !=='' ? `&status=${status}`:''}${isVerified !=='' ? `&isVerified=${isVerified}`:''}`,
-        // `http://localhost:3001/api/admin/console/users?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${gender !=='' ? `&gender=${gender}`:''}${status !=='' ? `&status=${status}`:''}${isVerified !=='' ? `&isVerified=${isVerified}`:''}`,
+        `https://vigoplace.com/server/api/admin/console/users?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${gender !=='' ? `&gender=${gender}`:''}${status !=='' ? `&status=${status}`:''}${isVerified !=='' ? `&isVerified=${isVerified}`:''}${columnFilters?.length >=1 ?`&search=${JSON.stringify(columnFilters)}`:''}`,
+        // `http://localhost:3001/api/admin/console/users?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${gender !=='' ? `&gender=${gender}`:''}${status !=='' ? `&status=${status}`:''}${isVerified !=='' ? `&isVerified=${isVerified}`:''}${columnFilters?.length >=1 ? `&search=${JSON.stringify(columnFilters)}`:''}`,
         {
           headers: {
             Authorization: user?.token,
@@ -255,7 +261,7 @@ const Users = () => {
       {
         accessorFn: (row) => row.fullname,
         // accessorFn: (row) => `${row.fullname}`,
-        id: "fullname", //id is still required when using accessorFn instead of accessorKey
+        id: "name", //id is still required when using accessorFn instead of accessorKey
         header: "Full Name",
         Cell: ({ cell, row }) => (
           <Box
@@ -352,13 +358,14 @@ const Users = () => {
       // onColumnFiltersChange={()=>{
       //   setColumnFilters
       // }}
-      // onColumnFiltersChange={
-      //   setColumnFilters
-      // }
+      onColumnFiltersChange={
+        setColumnFilters
+      }
       onGlobalFilterChange={setGlobalFilter}
       initialState={{ showColumnFilters: false }}
       positionToolbarAlertBanner="bottom"
-enableGlobalFilter={false}
+      enableGlobalFilter={true}
+      // enableGlobalFilter={false}
 
       renderDetailPanel={({ row }) => { 
         // setWalletId(row.original.id)
