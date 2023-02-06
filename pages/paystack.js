@@ -224,6 +224,7 @@ const Users = () => {
         // accessorKey: "amount",
         accessorFn: (row) => (row.amount / 100).toLocaleString("en-US"),
         enableClickToCopy: false,
+        id: "amount",
         header: "Amount",
       },
       {
@@ -244,6 +245,7 @@ const Users = () => {
       {
         // accessorKey: "transactionDate",
         accessorFn: (row) => format(new Date(row.createdAt), "Pp"),
+        id: "createdAt",
         enableClickToCopy: false,
         header: "Date",
       },
