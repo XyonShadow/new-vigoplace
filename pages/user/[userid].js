@@ -411,7 +411,9 @@ const Users = () => {
         header: "Currency",
       },
       {
-        accessorKey: "transactionTotal",
+        // accessorKey: "transactionTotal",
+        id: "transactionTotal",
+        accessorFn: (row) => row.transactionNetTotal.toLocaleString("en-US"),
         enableClickToCopy: false,
         header: "Amount",
       },

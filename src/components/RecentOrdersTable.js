@@ -447,7 +447,7 @@ console.log(pin);
             gutterBottom
             noWrap
           >
-            {payout.payoutRequestAmount}
+            {payout.payoutRequestAmount.toLocaleString("en-US")}
           </Typography>
           {/* <Typography variant="body2" color="text.secondary" noWrap>
                     {numeral(payout.payoutRequestAmount).format(
@@ -661,7 +661,7 @@ console.log(pin);
                           queryClient.getQueryData([
                             "payoutRequest",
                             payout.payoutRequestId,
-                          ])?.data?.payoutRequestNet
+                          ])?.data?.payoutRequestNet?.toLocaleString("en-US")
                         }
                       </TableCell>
                       <TableCell align="center">
