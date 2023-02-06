@@ -44,7 +44,7 @@ export const BalanceCard = ({ balance, nairaPayoutBalance, ...props }) => (
             variant="h6"
             align='center'
           >
-            available balance too low for naira wallet balances
+            available balance too low for total Naira payout Requests
           </Typography>) : null
         }
       </Box>
