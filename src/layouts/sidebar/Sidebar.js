@@ -123,6 +123,30 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
     { keepPreviousData: true }
   );
 
+  const { data: vigoWalletBalance } = useQuery(
+    ["vigoWalletBalance"],
+    async () => {
+      const { data } = await axios.get(
+        `https://vigoplace.com/server/api/admin/console/balance/vigowallet`,
+        // `http://localhost:3001/api/admin/console/balance/vigowallet`,
+        {
+          headers: {
+            Authorization: userInfo?.user?.token,
+          },
+        }
+      );
+
+      return data;
+    },
+    {
+      onError: (err) => {
+        console.log(err, "err fetching vigo place balance");
+      },
+      enabled: !!userInfo?.user?.token,
+    },
+    { keepPreviousData: true }
+  );
+
   const sidebarMenu = fetchedRoles
     ? fetchedRoles?.map((menu) => {
         // console.log(typeof menu.roles, 'menu.roles')
@@ -327,6 +351,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
         <BalanceCard
           balance={paystackBalance?.data}
           nairaPayoutBalance={payoutsBalance?.data?.NGN.total}
+          vigoWalletBalance={vigoWalletBalance?.data?.amount}
         />
         <UserBalanceCard usersBalance={usersBalance?.data ?? []} />
       </Drawer>

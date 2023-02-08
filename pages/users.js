@@ -364,8 +364,7 @@ const Users = () => {
       onGlobalFilterChange={setGlobalFilter}
       initialState={{ showColumnFilters: false }}
       positionToolbarAlertBanner="bottom"
-      enableGlobalFilter={true}
-      // enableGlobalFilter={false}
+      enableGlobalFilter={false}
 
       renderDetailPanel={({ row }) => { 
         // setWalletId(row.original.id)

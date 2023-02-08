@@ -2,7 +2,7 @@ import { Avatar, Box, Card, CardContent, Grid, Typography } from '@mui/material'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import MoneyIcon from '@mui/icons-material/Money';
 
-export const BalanceCard = ({ balance, nairaPayoutBalance, ...props }) => (
+export const BalanceCard = ({ balance, nairaPayoutBalance, vigoWalletBalance, ...props }) => (
   <Card
     // sx={{ height: '100%' }}
     {...props}
@@ -28,6 +28,23 @@ export const BalanceCard = ({ balance, nairaPayoutBalance, ...props }) => (
             color='green'
           >
             ₦{balance?.balance.toLocaleString("en-US")}
+          </Typography>
+        </Grid>
+        <Grid item>
+          <Typography
+            color="textSecondary"
+            gutterBottom
+            variant="h4"
+          >
+            VigoPlace  Wallet
+          </Typography>
+          <Typography
+            // color="textPrimary"
+            variant="h3"
+            align='center'
+            color='green'
+          >
+            ₦{vigoWalletBalance.toLocaleString("en-US")}
           </Typography>
         </Grid>
       </Grid>

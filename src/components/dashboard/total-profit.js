@@ -5,7 +5,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 
 
-export const TotalProfit = ({balance, isLoading, ...props}) => (
+export const TotalProfit = ({balance, isLoading, header='', ...props}) => (
   <Card {...props}>
     <CardContent>
       <Grid
@@ -19,7 +19,7 @@ export const TotalProfit = ({balance, isLoading, ...props}) => (
             gutterBottom
             variant="overline"
           >
-            Paystack
+            {header}
           </Typography>
           <Typography
             color="textPrimary"
