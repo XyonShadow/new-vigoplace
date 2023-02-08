@@ -27,7 +27,7 @@ export const BalanceCard = ({ balance, nairaPayoutBalance, vigoWalletBalance, ..
             align='center'
             color='green'
           >
-            ₦{balance?.balance.toLocaleString("en-US")}
+            ₦{balance?.balance?.toLocaleString("en-US")}
           </Typography>
         </Grid>
         <Grid item>
@@ -44,7 +44,7 @@ export const BalanceCard = ({ balance, nairaPayoutBalance, vigoWalletBalance, ..
             align='center'
             color='green'
           >
-            ₦{vigoWalletBalance.toLocaleString("en-US")}
+            ₦{vigoWalletBalance?.toLocaleString("en-US")}
           </Typography>
         </Grid>
       </Grid>
