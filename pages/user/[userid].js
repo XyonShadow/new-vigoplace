@@ -595,186 +595,189 @@ const Users = () => {
           {/* <Divider orientation="vertical" variant="middle"  /> */}
         </Grid>
 
-        <Grid item sm={12} xs={12} lg={6}>
-          <Box sx={{ width: "100%" }}>
-            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-              <Tabs
-                value={tabValue}
-                onChange={handleTabChange}
-                textColor="inherit"
-                centered
-                scrollButtons="auto"
-                aria-label=""
+{
+  user?.role === "root" ? ( <Grid item sm={12} xs={12} lg={6}>
+    <Box sx={{ width: "100%" }}>
+      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+        <Tabs
+          value={tabValue}
+          onChange={handleTabChange}
+          textColor="inherit"
+          centered
+          scrollButtons="auto"
+          aria-label=""
+        >
+          <Tab label="Credit User" {...a11yProps(0)} />
+          <Tab label="Debit User" {...a11yProps(1)} />
+        </Tabs>
+      </Box>
+      <TabPanel value={tabValue} index={0}>
+        <Box sx={{ pt: 3 }}>
+          <form>
+            <Card>
+              <CardHeader subheader=""   sx={{color: "green"}}title="Credit User Wallet" />
+              <Divider />
+              <CardContent>
+
+                <InputLabel id="demo-simple-select-standard-label">
+                  Currency
+                </InputLabel>
+                <Select
+                fullWidth
+                  labelId="demo-simple-select-standard-label"
+                  id="demo-simple-select-standard"
+                  value={walletId}
+                  defaultValue="None"
+                  onChange={handleWalletIdChange}
+                  label="Wallet"
+                >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  {userWallet?.data?.map((wallet, id) => (
+                    <MenuItem key={id} value={wallet.WId}>
+                      {wallet.SCCurrency}
+                    </MenuItem>
+                  ))}
+                </Select>
+
+                <TextField
+                  fullWidth
+                  label="Amount"
+                  margin="normal"
+                  name="amount"
+                  onChange={handleCreditChange}
+                  type="number"
+                  value={creditDetails.amount}
+                  variant="outlined"
+                />
+                <TextField
+                  autoComplete={false}
+                  fullWidth
+                  label="Approval Pin"
+                  margin="normal"
+                  name="approvalPin"
+                  onChange={handleCreditChange}
+                  type={creditDetails.approvalPin === '' ? "text" : "password"}
+                  value={creditDetails.approvalPin}
+                  variant="outlined"
+                />
+              </CardContent>
+              <Divider />
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  p: 2,
+                }}
               >
-                <Tab label="Credit User" {...a11yProps(0)} />
-                <Tab label="Debit User" {...a11yProps(1)} />
-              </Tabs>
-            </Box>
-            <TabPanel value={tabValue} index={0}>
-              <Box sx={{ pt: 3 }}>
-                <form>
-                  <Card>
-                    <CardHeader subheader=""   sx={{color: "green"}}title="Credit User Wallet" />
-                    <Divider />
-                    <CardContent>
-
-                      <InputLabel id="demo-simple-select-standard-label">
-                        Currency
-                      </InputLabel>
-                      <Select
-                      fullWidth
-                        labelId="demo-simple-select-standard-label"
-                        id="demo-simple-select-standard"
-                        value={walletId}
-                        defaultValue="None"
-                        onChange={handleWalletIdChange}
-                        label="Wallet"
-                      >
-                        <MenuItem value="">
-                          <em>None</em>
-                        </MenuItem>
-                        {userWallet?.data?.map((wallet, id) => (
-                          <MenuItem key={id} value={wallet.WId}>
-                            {wallet.SCCurrency}
-                          </MenuItem>
-                        ))}
-                      </Select>
-
-                      <TextField
-                        fullWidth
-                        label="Amount"
-                        margin="normal"
-                        name="amount"
-                        onChange={handleCreditChange}
-                        type="number"
-                        value={creditDetails.amount}
-                        variant="outlined"
-                      />
-                      <TextField
-                        autoComplete={false}
-                        fullWidth
-                        label="Approval Pin"
-                        margin="normal"
-                        name="approvalPin"
-                        onChange={handleCreditChange}
-                        type={creditDetails.approvalPin === '' ? "text" : "password"}
-                        value={creditDetails.approvalPin}
-                        variant="outlined"
-                      />
-                    </CardContent>
-                    <Divider />
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "flex-end",
-                        p: 2,
-                      }}
-                    >
-                      <LoadingButton
-                        variant="contained"
-                        color="primary"
-                        loading={creditUserMutation.isLoading}
-                        disabled={
-                          creditDetails.amount === "" ||
-                          creditDetails.approvalPin === "" ||
-                          creditDetails.approvalPin.length <= 5 ||
-                          walletId === null
-                        }
-                        onClick={() => {
-                          creditUserMutation.mutate({...creditDetails, walletId})
-                        // setOpenModal2(true);
-                        }}
-                      >
-                        Credit
-                      </LoadingButton>
-                    </Box>
-                  </Card>
-                </form>
+                <LoadingButton
+                  variant="contained"
+                  color="primary"
+                  loading={creditUserMutation.isLoading}
+                  disabled={
+                    creditDetails.amount === "" ||
+                    creditDetails.approvalPin === "" ||
+                    creditDetails.approvalPin.length <= 5 ||
+                    walletId === null
+                  }
+                  onClick={() => {
+                    creditUserMutation.mutate({...creditDetails, walletId})
+                  // setOpenModal2(true);
+                  }}
+                >
+                  Credit
+                </LoadingButton>
               </Box>
-            </TabPanel>
-            <TabPanel value={tabValue} index={1}>
-            <Box sx={{ pt: 3 }}>
-                <form>
-                  <Card>
-                    <CardHeader subheader="" sx={{color: "red"}} title="Debit User Wallet" />
-                    <Divider />
-                    <CardContent>
+            </Card>
+          </form>
+        </Box>
+      </TabPanel>
+      <TabPanel value={tabValue} index={1}>
+      <Box sx={{ pt: 3 }}>
+          <form>
+            <Card>
+              <CardHeader subheader="" sx={{color: "red"}} title="Debit User Wallet" />
+              <Divider />
+              <CardContent>
 
-                      <InputLabel id="demo-simple-select-standard-label">
-                        Currency
-                      </InputLabel>
-                      <Select
-                      fullWidth
-                        labelId="demo-simple-select-standard-label"
-                        id="demo-simple-select-standard"
-                        value={walletId}
-                        defaultValue="None"
-                        onChange={handleWalletIdChange}
-                        label="wallet"
-                      >
-                        <MenuItem value={null}>
-                          <em>None</em>
-                        </MenuItem>
-                        {userWallet?.data?.map((wallet, id) => (
-                          <MenuItem key={id} value={wallet.WId}>
-                            {wallet.SCCurrency}
-                          </MenuItem>
-                        ))}
-                      </Select>
+                <InputLabel id="demo-simple-select-standard-label">
+                  Currency
+                </InputLabel>
+                <Select
+                fullWidth
+                  labelId="demo-simple-select-standard-label"
+                  id="demo-simple-select-standard"
+                  value={walletId}
+                  defaultValue="None"
+                  onChange={handleWalletIdChange}
+                  label="wallet"
+                >
+                  <MenuItem value={null}>
+                    <em>None</em>
+                  </MenuItem>
+                  {userWallet?.data?.map((wallet, id) => (
+                    <MenuItem key={id} value={wallet.WId}>
+                      {wallet.SCCurrency}
+                    </MenuItem>
+                  ))}
+                </Select>
 
-                      <TextField
-                        fullWidth
-                        label="Amount"
-                        margin="normal"
-                        name="amount"
-                        onChange={handleDebitChange}
-                        type="number"
-                        value={debitDetails.amount}
-                        variant="outlined"
-                      />
-                      <TextField
-                        fullWidth
-                        label="Approval Pin"
-                        margin="normal"
-                        name="approvalPin"
-                        onChange={handleDebitChange}
-                        type="password"
-                        value={debitDetails.approvalPin}
-                        variant="outlined"
-                      />
-                    </CardContent>
-                    <Divider />
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "flex-end",
-                        p: 2,
-                      }}
-                    >
-                      <LoadingButton
-                        variant="contained"
-                        color="primary"
-                        loading={debitUserMutation.isLoading}
-                        disabled={
-                          debitDetails.amount === "" ||
-                          debitDetails.approvalPin === "" ||
-                          debitDetails.approvalPin.length <= 5 ||
-                          walletId === null
-                        }
-                        onClick={() => {
-                          debitUserMutation.mutate({...debitDetails, walletId})
-                        // setOpenModal2(true);
-                        }}
-                      >
-                        Debit
-                      </LoadingButton>
-                    </Box>
-                  </Card>
-                </form>
+                <TextField
+                  fullWidth
+                  label="Amount"
+                  margin="normal"
+                  name="amount"
+                  onChange={handleDebitChange}
+                  type="number"
+                  value={debitDetails.amount}
+                  variant="outlined"
+                />
+                <TextField
+                  fullWidth
+                  label="Approval Pin"
+                  margin="normal"
+                  name="approvalPin"
+                  onChange={handleDebitChange}
+                  type="password"
+                  value={debitDetails.approvalPin}
+                  variant="outlined"
+                />
+              </CardContent>
+              <Divider />
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  p: 2,
+                }}
+              >
+                <LoadingButton
+                  variant="contained"
+                  color="primary"
+                  loading={debitUserMutation.isLoading}
+                  disabled={
+                    debitDetails.amount === "" ||
+                    debitDetails.approvalPin === "" ||
+                    debitDetails.approvalPin.length <= 5 ||
+                    walletId === null
+                  }
+                  onClick={() => {
+                    debitUserMutation.mutate({...debitDetails, walletId})
+                  // setOpenModal2(true);
+                  }}
+                >
+                  Debit
+                </LoadingButton>
               </Box>
-            </TabPanel>
-          </Box>
-        </Grid>
+            </Card>
+          </form>
+        </Box>
+      </TabPanel>
+    </Box>
+  </Grid>) : (null)
+}
+       
 
       </Grid>
 
