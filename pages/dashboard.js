@@ -186,6 +186,16 @@ export default function Index() {
           >
             <TotalProfit header={"Vigo Wallet"} isLoading={vigoWalletLoading} balance={ vigoWalletBalance?.data?.amount ?? 0} />
           </Grid>
+              {/* <Grid item lg={3} sm={6} xl={3} xs={12}>
+              <DashBalance
+                header={"Vigo Wallet"}
+                vigoLoading={vigoWalletLoading}
+                paystackLoading={isLoading}
+                vigo={vigoWalletBalance?.data?.amount ?? 0}
+                paystack={paystackBalance?.data?.balance ?? 0}
+
+              />
+            </Grid> */}
           <Grid
             item
             lg={12}

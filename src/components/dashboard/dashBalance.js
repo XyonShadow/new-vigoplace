@@ -1,36 +1,64 @@
-import { Avatar, Card, Box, CardContent, Grid, Typography } from '@mui/material';
+import { Avatar, Card, Box, CardContent, Grid, Typography, Divider, useMediaQuery} from '@mui/material';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import CircularProgress from '@mui/material/CircularProgress';
+import { Height } from '@mui/icons-material';
 
 
 
-export const TotalProfit = ({balance, isLoading, header='', ...props}) => (
-  <Card {...props}>
+export const DashBalance = ({vigo, paystack, vigoLoading, paystackLoading, header='', ...props}) =>{
+  const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
+  console.log({vigo, paystack})
+
+ return(
+  <Card {...props} sx={{...(lgUp &&{minWidth: "300px"})}}>
     <CardContent>
       <Grid
         container
         spacing={3}
-        sx={{ justifyContent: 'space-between' }}
+        // sx={{ justifyContent: 'space-between' }}
       >
-        <Grid item>
+        <Grid item display={"block"}>
           <Typography
             color="textSecondary"
             gutterBottom
             variant="overline"
           >
-            {header}
+            Vigoplace
           </Typography>
           <Typography
             color="textPrimary"
             variant="h4"
           >
             {
-              isLoading ?  (<CircularProgress size={20} />)  : ("₦"+Number(balance).toLocaleString("en-US"))
+              vigoLoading ?  (<CircularProgress size={20} />)  : ("₦"+Number(vigo).toLocaleString("en-US"))
+            }
+            {/* {balance} */}
+          </Typography>
+          {/* <Divider sx={{width: "20px", color: "red"}} orientation="vertical" variant="inset"  /> */}
+        </Grid>
+
+
+          {/* <hr/> */}
+        <Grid item>
+          <Typography
+            color="textSecondary"
+            gutterBottom
+            variant="overline"
+          >
+            Paystack
+          </Typography>
+          <Typography
+            color="textPrimary"
+            variant="h4"
+          >
+            {
+              paystackLoading ?  (<CircularProgress size={20} />)  : ("₦"+Number(paystack).toLocaleString("en-US"))
             }
             {/* {balance} */}
           </Typography>
         </Grid>
+
         {/* <Grid item>
           <Avatar
             sx={{
@@ -43,6 +71,7 @@ export const TotalProfit = ({balance, isLoading, header='', ...props}) => (
           </Avatar>
         </Grid> */}
       </Grid>
+
       <Box
         sx={{
           alignItems: 'center',
@@ -68,4 +97,4 @@ export const TotalProfit = ({balance, isLoading, header='', ...props}) => (
       </Box>
     </CardContent>
   </Card>
-);
+)};
