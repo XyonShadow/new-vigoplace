@@ -617,7 +617,7 @@ console.log(pin);
                       Date
                     </TableCell>
                     <TableCell sx={{ fontWeight: "bold" }}>Full Name</TableCell>
-                    <TableCell sx={{ fontWeight: "bold" }} align="center">Net Payout</TableCell>
+                    <TableCell sx={{ fontWeight: "bold" }} align="center">Fee</TableCell>
                     <TableCell sx={{ fontWeight: "bold" }} align="center">payment Method</TableCell>
                     <TableCell sx={{ fontWeight: "bold" }} align="center">currency</TableCell>
                     <TableCell sx={{ fontWeight: "bold" }} align="center">account Name</TableCell>
@@ -661,7 +661,7 @@ console.log(pin);
                           queryClient.getQueryData([
                             "payoutRequest",
                             payout.payoutRequestId,
-                          ])?.data?.payoutRequestNet?.toLocaleString("en-US")
+                          ])?.data?.payoutRequestFee?.toLocaleString("en-US")
                         }
                       </TableCell>
                       <TableCell align="center">
