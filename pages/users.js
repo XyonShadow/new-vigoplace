@@ -288,6 +288,7 @@ const Users = () => {
       {
         accessorKey: "gender",
         enableClickToCopy: false,
+        enableColumnFilter: false,
         header: "Gender",
       },
       {
@@ -299,10 +300,12 @@ const Users = () => {
         accessorKey: "status",
         enableClickToCopy: false,
         header: "Status",
+        enableColumnFilter: false,
       },
       {
         accessorKey: "phone",
         enableClickToCopy: false,
+        enableColumnFilter: false,
         header: "Phone",
       },
 
