@@ -174,6 +174,8 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
   const location = curl.pathname;
   // ackground: rgba(28,34,47);
 
+  console.log({abc : vigoWalletBalance})
+
   const SidebarContent = (
     <Box
       p={2}
@@ -268,6 +270,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
       {/* <Buynow /> */}
     </Box>
   );
+
   if (lgUp) {
     return (
       <>
@@ -306,6 +309,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
           <BalanceCard
             balance={paystackBalance?.data}
             nairaPayoutBalance={payoutsBalance?.data?.NGN.total}
+            vigoWalletBalance={vigoWalletBalance?.data?.amount ?? 0}
           />
           <UserBalanceCard usersBalance={usersBalance?.data ?? []} />
         </Drawer>
@@ -351,7 +355,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
         <BalanceCard
           balance={paystackBalance?.data}
           nairaPayoutBalance={payoutsBalance?.data?.NGN.total}
-          vigoWalletBalance={vigoWalletBalance?.data?.amount}
+          vigoWalletBalance={vigoWalletBalance?.data?.amount ?? 0}
         />
         <UserBalanceCard usersBalance={usersBalance?.data ?? []} />
       </Drawer>
