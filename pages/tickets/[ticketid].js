@@ -392,14 +392,14 @@ const SingleTicket = () => {
 {
   showAttachments && (<Grid container spacing={0}>
     <Grid item xs={12} lg={12}>
-      <BaseCard title="Grid Image">
+      <BaseCard title="Attachments">
         <ImageList
           // sx={{ height: 450 }}
           variant="quilted"
           cols={4}
           // rowHeight={121}
         >
-          {ticket?.data?.attachments?.map((item, index) => (
+          { ticket?.data?.attachments.length >=1 ? ticket?.data?.attachments?.map((item, index) => (
             <ImageListItem
               key={index}
               cols={3}
@@ -411,7 +411,7 @@ const SingleTicket = () => {
                 loading="lazy"
               />
             </ImageListItem>
-          ))}
+          )): <Typography variant="p" >No Attachments for this Ticket</Typography>  }
         </ImageList>
       </BaseCard>
     </Grid>
@@ -493,7 +493,7 @@ export const Chat = ({ messages, ticket, userDetails }) => {
 
         <Grid padding={'15px'} xs={12}>
           <Grid item xs={12} display={'flex'} alignItems={'center'} marginBottom={'10px'} >
-            <Avatar alt="Remy Sharp" src={ticket?.data?.userphoto} sx={{ marginRight: "40px" }} />
+            <Avatar alt="" src={ticket?.data?.userphoto} sx={{ marginRight: "40px" }} />
             <Typography variant="h2" sx={{ fontWeight: "bold" }} className="header-message">{userDetails?.data?.user?.fullname}</Typography>
           </Grid>
           <Divider variant="fullWidth" orientation="horizontal" />
@@ -507,7 +507,7 @@ export const Chat = ({ messages, ticket, userDetails }) => {
                   <Grid container>
                     <Grid item xs={12} display={'flex'}>
                       {
-                     message.type === 'sent' ? (<> <Avatar alt="Remy Sharp" src={message.userphoto} />
+                     message.type === 'sent' ? (<> <Avatar alt="" src={message.userphoto} />
 
                      <ListItemText align={message.type === 'sent' ? "left" : "right"} sx={{maxWidth: "50%", paddingLeft: "20px", whiteSpace: "normal" }} primary={message.message}
                      // secondary="oh yeah man"
