@@ -172,10 +172,6 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
   };
   let curl = useRouter();
   const location = curl.pathname;
-  // ackground: rgba(28,34,47);
-
-  console.log({abc : vigoWalletBalance})
-
   const SidebarContent = (
     <Box
       p={2}
