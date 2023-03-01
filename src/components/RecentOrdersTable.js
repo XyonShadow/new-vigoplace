@@ -1,22 +1,22 @@
 import React, { useState } from "react";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-import Snackbar from '@mui/material/Snackbar';
-import axios from 'axios'
-import MuiAlert from '@mui/material/Alert';
+import Snackbar from "@mui/material/Snackbar";
+import axios from "axios";
+import MuiAlert from "@mui/material/Alert";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import Collapse from "@mui/material/Collapse";
 import CircularProgress from "@mui/material/CircularProgress";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import CheckIcon from '@mui/icons-material/Check';
-import CancelIcon from '@mui/icons-material/Cancel';
-import { green, yellow } from '@mui/material/colors';
-import { getSession } from 'next-auth/react'
+import CheckIcon from "@mui/icons-material/Check";
+import CancelIcon from "@mui/icons-material/Cancel";
+import { green, yellow } from "@mui/material/colors";
+import { getSession } from "next-auth/react";
 import { format } from "date-fns";
 import numeral from "numeral";
-import Slide from '@mui/material/Slide';
+import Slide from "@mui/material/Slide";
 import PropTypes from "prop-types";
-import LinearProgress from '@mui/material/LinearProgress';
-import Link from 'next/link'
+import LinearProgress from "@mui/material/LinearProgress";
+import Link from "next/link";
 // import ColoredLinearProgress from './LinearLoader';
 import {
   Tooltip,
@@ -42,17 +42,14 @@ import {
   Button,
 } from "@mui/material";
 
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
-import LoadingButton from '@mui/lab/LoadingButton';
-
-
-
+import LoadingButton from "@mui/lab/LoadingButton";
 
 import Label from "./Label/index";
 import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
@@ -68,7 +65,6 @@ const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-
 const getStatusLabel = (cryptoOrderStatus) => {
   const map = {
     failed: {
@@ -78,7 +74,6 @@ const getStatusLabel = (cryptoOrderStatus) => {
     completed: {
       text: "Completed",
       color: green[500],
-
     },
     pending: {
       text: "Pending",
@@ -93,10 +88,9 @@ const getStatusLabel = (cryptoOrderStatus) => {
       color: yellow[700],
     },
   };
-  console.log(cryptoOrderStatus, 'cryptoOrderStatus')
   const { text, color } = map[cryptoOrderStatus];
 
-  return <Label sx={{ color }} >{text}</Label>;
+  return <Label sx={{ color }}>{text}</Label>;
   // return <Label sx={{}} color={color}>{text}</Label>;
 };
 
@@ -127,7 +121,6 @@ export default function RecentOrdersTable({ payouts }) {
   const [filters, setFilters] = useState({
     status: null,
   });
-
 
   // const mutation = useApprovePayOut().
   // const [payoutRId, setPayoutRId] = React.useState(null);
@@ -299,8 +292,8 @@ export default function RecentOrdersTable({ payouts }) {
                     key={index}
                     payout={payout}
                     isPayoutSelected={isPayoutSelected}
-                  // setRequestId={setPayoutRId}
-                  // isLoading={isLoading}
+                    // setRequestId={setPayoutRId}
+                    // isLoading={isLoading}
                   />
                 );
               })}
@@ -332,61 +325,96 @@ function Row({ payout, isPayoutSelected }) {
   const [progress, setProgress] = React.useState(0);
   const [buffer, setBuffer] = React.useState(10);
   const [openModal, setOpenModal] = React.useState(false);
+  const [declineModal, setDeclineModal] = React.useState(false);
   const [pin, setPin] = React.useState(null);
+  const [reason, setReason] = React.useState("");
 
-console.log(pin);
 
   const handlePin = (e) => {
     setPin(e.target.value);
-  }
-
-
-
-
+  };
+  const handleReason = (e) => {
+    setReason(e.target.value);
+  };
 
   const handleClose = (event, reason) => {
     setOpenToast(false);
   };
 
   const getToken = async () => {
-    const session = await getSession()
-    return session?.user?.token
-  }
+    const session = await getSession();
+    return session?.user?.token;
+  };
 
-  const approvePayOut = async ({id, pin}) => {
-    console.log({id, pin})
-    const token = await getToken()
+  const approvePayOut = async ({ id, pin }) => {
+    console.log({ id, pin });
+    const token = await getToken();
     const parsed = await axios.post(
-      // 'http://localhost:3001/api/admin/console/approvepayout'
-      'https://vigoplace.com/server/api/admin/console/approvepayout'
-      , { payoutRequestId: id, approvalPin:pin },
+      // "http://localhost:3001/api/admin/console/approvepayout",
+      'https://vigoplace.com/server/api/admin/console/approvepayout',
+      { payoutRequestId: id, approvalPin: pin },
       {
         headers: {
-          'Authorization': token
+          Authorization: token,
         },
-      })
-    return parsed
-  }
+      }
+    );
+    return parsed;
+  };
 
   const approvePayOutMutation = useMutation({
-    mutationKey: ['approvePayOut'],
+    mutationKey: ["approvePayOut"],
     mutationFn: approvePayOut,
     onSuccess: () => {
-      queryClient.invalidateQueries('payoutRequests')
-      setPin(null)
+      queryClient.invalidateQueries("payoutRequests");
+      setPin(null);
     },
     onError: async (error) => {
       setOpenToast(true);
-      setPin(null)
+      setPin(null);
     },
+  });
 
-  })
+  const declinePayOut = async ({ id, pin, reason }) => {
+    const token = await getToken();
+    const parsed = await axios.post(
+      // "http://localhost:3001/api/admin/console/declinepayout",
+      'https://vigoplace.com/server/api/admin/console/declinepayout',
+      { payoutRequestId: id, approvalPin: pin, reason },
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+    return parsed;
+  };
+
+  const declinePayOutMutation = useMutation({
+    mutationKey: ["declinePayOut"],
+    mutationFn: declinePayOut,
+    onSuccess: (data) => {
+      console.log({data})
+      queryClient.invalidateQueries("payoutRequests");
+      setPin(null);
+      setReason("")
+    },
+    onError: async (error) => {
+      setOpenToast(true);
+      setPin(null);
+    },
+  });
 
   return (
     <>
-      <Snackbar TransitionComponent={Slide} open={openToast} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="warning" sx={{ width: '100%' }}>
-          {approvePayOutMutation.error?.response?.data?.message}
+      <Snackbar
+        TransitionComponent={Slide}
+        open={openToast}
+        autoHideDuration={6000}
+        onClose={handleClose}
+      >
+        <Alert onClose={handleClose} severity="warning" sx={{ width: "100%" }}>
+          {approvePayOutMutation.error?.response?.data?.message || declinePayOutMutation.error?.response?.data?.message}
         </Alert>
       </Snackbar>
       <TableRow hover selected={isPayoutSelected}>
@@ -497,94 +525,203 @@ console.log(pin);
               <DeleteTwoToneIcon fontSize="small" />
             </IconButton>
           </Tooltip> */}
-          {
-            payout.payoutRequestStatus === 'pending' ? (
-              <>
-                <Button
-                  sx={{ margin: 1, bgcolor: green[500] }}
-                  size="small"
-                  variant="contained"
-                  color="success"
-                  onClick={() => {
-                    setOpenModal(true)
+          {payout.payoutRequestStatus === "pending" ? (
+            <>
+              <Button
+                sx={{ margin: 1, bgcolor: green[500] }}
+                size="small"
+                variant="contained"
+                color="success"
+                onClick={
+                  () => {
+                    setOpenModal(true);
                   }
-                  // onClick={() => {
-                  //   approvePayOutMutation.mutate(payout.payoutRequestId)
-                  // }
-
+                }
+              >
+                {approvePayOutMutation.isLoading ? (
+                  <CircularProgress size={23} color="inherit" />
+                ) : approvePayOutMutation.isSuccess ? (
+                  <CheckIcon />
+                ) : (
+                  "Approve"
+                )}
+              </Button>
+              <Button size="small" variant="contained" color="error" onClick={
+                  () => {
+                    setDeclineModal(true);
                   }
-                >
+                }>
                   {
-                    approvePayOutMutation.isLoading ? <CircularProgress size={23} color='inherit' /> : approvePayOutMutation.isSuccess ? <CheckIcon /> : 'Approve'
+                    declinePayOutMutation.isLoading ? (<CircularProgress size={23} color="inherit" />) :  approvePayOutMutation.isSuccess ? (<CheckIcon />) : ("Decline")
                   }
+              </Button>
 
-                </Button>
-                <Button size="small" variant="contained" color="error">
-                  Decline
-                </Button>
+              <Dialog
+                open={openModal}
+                onClose={() => {
+                  setOpenModal(false);
+                  setPin(null);
+                }}
+              >
+                <DialogTitle>Approve Payout</DialogTitle>
+                <DialogContent>
+                  <DialogContentText>
+                    Please enter your admin approval pin to approve this
+                    request, if you dont have one yet, head to{" "}
+                    {
+                      <Link style={{ color: "blue" }} href="/settings">
+                        Settings
+                      </Link>
+                    }{" "}
+                    to create one now
+                  </DialogContentText>
+                  <TextField
+                    autoFocus
+                    margin="dense"
+                    id="name"
+                    label="Approval Pin"
+                    type="number"
+                    fullWidth
+                    value={pin}
+                    variant="standard"
+                    onChange={handlePin}
+                  />
+                </DialogContent>
+                <DialogActions>
+                  <Button
+                    onClick={() => {
+                      setOpenModal(false);
+                      setPin(null);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <LoadingButton
+                    variant="contained"
+                    loading={approvePayOutMutation.isLoading}
+                    disabled={pin === null || pin?.length <= 5}
+                    onClick={() => {
+                      approvePayOutMutation.mutate({
+                        id: payout.payoutRequestId,
+                        pin,
+                      });
+                      setPin(null);
+                    }}
+                  >
+                    Approve
+                  </LoadingButton>
+                </DialogActions>
+              </Dialog>
 
-                <Dialog  open={openModal} onClose={()=>{
-                  setOpenModal(false)
-                  setPin(null)
-                  }}>
-        <DialogTitle>Approve Payout</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Please enter your admin approval pin to approve this request, if you dont have one yet, head to {<Link style={{color:"blue"}} href="/settings">Settings</Link>} to create one now
-          </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Approval Pin"
-            type="number"
-            fullWidth
-            value={pin}
-            variant="standard"
-            onChange={handlePin}
-            
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={()=>{
-            setOpenModal(false)
-            setPin(null)
-            }}>Cancel</Button>
-          <LoadingButton variant="contained" loading={approvePayOutMutation.isLoading} disabled={pin === null || pin?.length <=5} onClick={()=>{
-            approvePayOutMutation.mutate({id: payout.payoutRequestId, pin})
-            setPin(null)
-          }}>Approve</LoadingButton>
-        </DialogActions>
-      </Dialog>
-              </>
-            ) : payout.payoutRequestStatus === 'processing' ? (
-              <>
+              <Dialog
+                open={declineModal}
+                onClose={() => {
+                  setDeclineModal(false);
+                  setPin(null);
+                }}
+              >
+                <DialogTitle>Decline Payout</DialogTitle>
+                <DialogContent>
+                  <DialogContentText>
+                    Please enter your admin approval pin to Decline this
+                    request, if you dont have one yet, head to{" "}
+                    {
+                      <Link style={{ color: "blue" }} href="/settings">
+                        Settings
+                      </Link>
+                    }{" "}
+                    to create one now
+                  </DialogContentText>
+                  <TextField
+                    autoFocus
+                    margin="dense"
+                    id="name"
+                    label="Approval Pin"
+                    type="number"
+                    fullWidth
+                    value={pin}
+                    variant="standard"
+                    onChange={handlePin}
+                  />
+                  <TextField
+                    autoFocus
+                    margin="dense"
+                    id="reason"
+                    label="Reason"
+                    type="text"
+                    fullWidth
+                    value={reason}
+                    variant="standard"
+                    onChange={handleReason}
+                  />
+                </DialogContent>
+                <DialogActions>
+                  <Button
+                    onClick={() => {
+                      setDeclineModal(false);
+                      setPin(null);
+                      // setReason("")
 
-                <Box sx={{
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <LoadingButton
+                    variant="contained"
+                    loading={approvePayOutMutation.isLoading}
+                    disabled={pin === null || pin?.length <= 5}
+                    onClick={() => {
+                      declinePayOutMutation.mutate({
+                        id: payout.payoutRequestId,
+                        pin,
+                        reason
+                      });
+                      setPin(null);
+                    }}
+                  >
+                    Decline
+                  </LoadingButton>
+                </DialogActions>
+              </Dialog>
+            </>
+          ) : payout.payoutRequestStatus === "processing" ? (
+            <>
+              <Box
+                sx={{
                   display: "flex",
-                  width: '100%',
-                  justifyContent: "flex-end"
-                }}>
-                  <Box sx={{ width: '100px'}}>
-                    <LinearProgress />
-                  </Box>
+                  width: "100%",
+                  justifyContent: "flex-end",
+                }}
+              >
+                <Box sx={{ width: "100px" }}>
+                  <LinearProgress />
                 </Box>
-              </>
-            ) : payout.payoutRequestStatus === 'declined' ? (
-              <>
-                <Button size="small" disabled variant="contained" color="error" sx={{ bgcolor: green[500] }}>
-                  Declined <CancelIcon />
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button size="small" variant="contained" color="error" sx={{ bgcolor: green[500] }}>
-                  Approved <CheckIcon />
-                </Button>
-              </>
-            )
-          }
-
+              </Box>
+            </>
+          ) : payout.payoutRequestStatus === "declined" ? (
+            <>
+              <Button
+                size="small"
+                disabled
+                variant="contained"
+                color="error"
+                sx={{ bgcolor: green[500] }}
+              >
+                Declined <CancelIcon />
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                size="small"
+                variant="contained"
+                color="error"
+                sx={{ bgcolor: green[500] }}
+              >
+                Approved <CheckIcon />
+              </Button>
+            </>
+          )}
         </TableCell>
       </TableRow>
       <TableCell
@@ -613,16 +750,26 @@ console.log(pin);
               <Table size="small" aria-label="purchases">
                 <TableHead>
                   <TableRow>
-                    <TableCell sx={{ fontWeight: "bold" }}>
-                      Date
-                    </TableCell>
+                    <TableCell sx={{ fontWeight: "bold" }}>Date</TableCell>
                     <TableCell sx={{ fontWeight: "bold" }}>Full Name</TableCell>
-                    <TableCell sx={{ fontWeight: "bold" }} align="center">Fee</TableCell>
-                    <TableCell sx={{ fontWeight: "bold" }} align="center">payment Method</TableCell>
-                    <TableCell sx={{ fontWeight: "bold" }} align="center">currency</TableCell>
-                    <TableCell sx={{ fontWeight: "bold" }} align="center">account Name</TableCell>
-                    <TableCell sx={{ fontWeight: "bold" }} align="center">acountBankName</TableCell>
-                    <TableCell sx={{ fontWeight: "bold" }} align="center">accountNumber</TableCell>
+                    <TableCell sx={{ fontWeight: "bold" }} align="center">
+                      Fee
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: "bold" }} align="center">
+                      payment Method
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: "bold" }} align="center">
+                      currency
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: "bold" }} align="center">
+                      account Name
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: "bold" }} align="center">
+                      acountBankName
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: "bold" }} align="center">
+                      accountNumber
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -657,12 +804,12 @@ console.log(pin);
                         }
                       </TableCell>
                       <TableCell align="center">
-                        {
-                          queryClient.getQueryData([
+                        {queryClient
+                          .getQueryData([
                             "payoutRequest",
                             payout.payoutRequestId,
-                          ])?.data?.payoutRequestFee?.toLocaleString("en-US")
-                        }
+                          ])
+                          ?.data?.payoutRequestFee?.toLocaleString("en-US")}
                       </TableCell>
                       <TableCell align="center">
                         {
