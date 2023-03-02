@@ -20,6 +20,7 @@ import Slide from "@mui/material/Slide";
 import PropTypes from "prop-types";
 import LinearProgress from "@mui/material/LinearProgress";
 import Link from "next/link";
+import { useRouter } from "next/router";
 // import ColoredLinearProgress from './LinearLoader';
 import {
   Tooltip,
@@ -380,6 +381,7 @@ export default function RecentOrdersTable() {
 
 function Row({ payout, isPayoutSelected }) {
   const theme = useTheme();
+    const router = useRouter();
   const [open, setOpen] = React.useState(false);
   const queryClient = useQueryClient();
   const [payoutRId, setPayoutRId] = React.useState(null);
@@ -616,6 +618,20 @@ function Row({ payout, isPayoutSelected }) {
                     declinePayOutMutation.isLoading ? (<CircularProgress size={23} color="inherit" />) :  approvePayOutMutation.isSuccess ? (<CheckIcon />) : ("Decline")
                   }
               </Button>
+              <Button
+                sx={{ margin: 1, bgcolor: green['A700'] }}
+                size="small"
+                variant="contained"
+                color="success"
+                onClick={
+                  () => {
+                    // setOpenModal(true);
+                    router.push(`/user/${payout.payoutRequestUId}`)
+                  }
+                }
+              >
+               Profile
+              </Button>
 
               <Dialog
                 open={openModal}
@@ -758,6 +774,20 @@ function Row({ payout, isPayoutSelected }) {
                   <LinearProgress />
                 </Box>
               </Box>
+              <Button
+                sx={{ margin: 1, bgcolor: green[500] }}
+                size="small"
+                variant="contained"
+                color="success"
+                onClick={
+                  () => {
+                    // setOpenModal(true);
+                    router.push(`/user/${payout.payoutRequestUId}`)
+                  }
+                }
+              >
+               Profile
+              </Button>
             </>
           ) : payout.payoutRequestStatus === "declined" ? (
             <>
@@ -770,6 +800,20 @@ function Row({ payout, isPayoutSelected }) {
               >
                 Declined <CancelIcon />
               </Button>
+              <Button
+                sx={{ margin: 1, bgcolor: green['A700'] }}
+                size="small"
+                variant="contained"
+                color="success"
+                onClick={
+                  () => {
+                    // setOpenModal(true);
+                    router.push(`/user/${payout.payoutRequestUId}`)
+                  }
+                }
+              >
+               Profile
+              </Button>
             </>
           ) : (
             <>
@@ -780,6 +824,20 @@ function Row({ payout, isPayoutSelected }) {
                 sx={{ bgcolor: green[500] }}
               >
                 Approved <CheckIcon />
+              </Button>
+              <Button
+                sx={{ margin: 1, bgcolor: green['A700'] }}
+                size="small"
+                variant="contained"
+                color="success"
+                onClick={
+                  () => {
+                    // setOpenModal(true);
+                    router.push(`/user/${payout.payoutRequestUId}`)
+                  }
+                }
+              >
+               Profile
               </Button>
             </>
           )}
