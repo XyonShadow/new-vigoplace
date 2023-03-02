@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
+import {
+  useQueryClient,
+  useQuery,
+  useMutation,
+} from "@tanstack/react-query";
+import { getSession, useSession } from "next-auth/react";
 import Snackbar from "@mui/material/Snackbar";
 import axios from "axios";
 import MuiAlert from "@mui/material/Alert";
@@ -10,9 +15,7 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import CheckIcon from "@mui/icons-material/Check";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { green, yellow } from "@mui/material/colors";
-import { getSession } from "next-auth/react";
 import { format } from "date-fns";
-import numeral from "numeral";
 import Slide from "@mui/material/Slide";
 import PropTypes from "prop-types";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -98,9 +101,6 @@ const applyFilters = (cryptoOrders, filters) => {
   return cryptoOrders?.filter((cryptoOrder) => {
     let matches = true;
 
-    // console.log(cryptoOrder, "cryptoOrder");
-    // console.log(filters, "cryptoOrder");
-
     if (filters.status && cryptoOrder.payoutRequestStatus !== filters.status) {
       matches = false;
     }
@@ -113,7 +113,10 @@ const applyPagination = (cryptoOrders, page, limit) => {
   return cryptoOrders?.slice(page * limit, page * limit + limit);
 };
 
-export default function RecentOrdersTable({ payouts }) {
+export default function RecentOrdersTable() {
+  const queryClient = useQueryClient();
+  const getUser = useSession();
+  const user = getUser?.data?.user;
   const [selectedCryptoOrders, setSelectedCryptoOrders] = useState([]);
   const selectedBulkActions = selectedCryptoOrders.length > 0;
   const [page, setPage] = useState(0);
@@ -121,12 +124,16 @@ export default function RecentOrdersTable({ payouts }) {
   const [filters, setFilters] = useState({
     status: null,
   });
+  const [status, setStatus] = React.useState(null);
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+  });
 
   // const mutation = useApprovePayOut().
   // const [payoutRId, setPayoutRId] = React.useState(null);
   // console.log(payoutRId, 'payoutRId');
 
-  const queryClient = useQueryClient();
   // const { isLoading } = useSinglePayoutRequest(payoutRId)
   // const ab = queryClient.getQueryData(["payoutRequest", 10])
   // console.log(queryClient.getQueryData(["payoutRequest", 10]).data);
@@ -179,6 +186,20 @@ export default function RecentOrdersTable({ payouts }) {
     }));
   };
 
+  const handleStatus = (event) => {
+    let value = null;
+
+    if (event.target.value !== "all") {
+      value = event.target.value;
+    }
+    setStatus(value);
+
+    setPagination({
+      pageIndex: 0,
+      pageSize: 10,
+    })
+  };
+
   const handleSelectAllCryptoOrders = (event) => {
     // setSelectedCryptoOrders(
     //   event.target.checked
@@ -201,19 +222,60 @@ export default function RecentOrdersTable({ payouts }) {
   };
 
   const handlePageChange = (event, newPage) => {
-    setPage(newPage);
+    // setPage(newPage);
+    setPagination({...pagination, pageIndex: newPage})
   };
 
   const handleLimitChange = (event) => {
-    setLimit(parseInt(event.target.value));
+    // setLimit(parseInt(event.target.value));
+    setPagination({...pagination, pageSize: event.target.value})
   };
 
-  const filteredCryptoOrders = applyFilters(payouts?.payoutRequests, filters);
+  const { data: payouts, isError, isFetching, isLoading, refetch } = useQuery(
+    [
+      "payoutRequests",
+      // columnFilters, //refetch when columnFilters changes
+      // globalFilter, //refetch when globalFilter changes
+      pagination.pageIndex, //refetch when pagination.pageIndex changes
+      pagination.pageSize, //refetch when pagination.pageSize changes
+      // sorting, //refetch when sorting changes
+      status,
+      page,
+      limit
+    ],
+    async () => {
+      const { data } = await axios.get(
+        `https://vigoplace.com/server/api/admin/console/payouts?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${status !== undefined && status !== null ? `&status=${status}` : '' }`,
+        // `http://localhost:3001/api/admin/console/payouts?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${status !== undefined && status !== null ? `&status=${status}` : '' }`,
+        {
+          headers: {
+            Authorization: user?.token,
+          },
+        }
+      );
+
+      return data;
+    },
+    {
+      onError: (err) => {
+        console.log(err, "err fetching payouts");
+      },
+      enabled: !!user?.token,
+    },
+    { keepPreviousData: true }
+  );
+
+
+
+
+  const filteredCryptoOrders = applyFilters(payouts?.data?.payoutRequests, filters);
   const paginatedCryptoOrders = applyPagination(
     filteredCryptoOrders,
-    page,
-    limit
+    pagination.pageIndex,
+    pagination.pageSize,
   );
+
+
   const selectedSomeCryptoOrders =
     selectedCryptoOrders.length > 0 &&
     selectedCryptoOrders.length < cryptoOrders.length;
@@ -235,8 +297,9 @@ export default function RecentOrdersTable({ payouts }) {
               <FormControl fullWidth variant="outlined">
                 <InputLabel>Status</InputLabel>
                 <Select
-                  value={filters.status || "all"}
-                  onChange={handleStatusChange}
+                  // value={filters.status || "all"}
+                  value={status || "all"}
+                  onChange={handleStatus}
                   label="Status"
                   autoWidth
                 >
@@ -281,8 +344,8 @@ export default function RecentOrdersTable({ payouts }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedCryptoOrders &&
-              paginatedCryptoOrders.map((payout, index) => {
+            {filteredCryptoOrders &&
+              filteredCryptoOrders.map((payout, index) => {
                 const isPayoutSelected = selectedCryptoOrders.includes(
                   payout.payoutRequestId
                 );
@@ -303,11 +366,11 @@ export default function RecentOrdersTable({ payouts }) {
       <Box p={2}>
         <TablePagination
           component="div"
-          count={filteredCryptoOrders?.length}
+          count={payouts?.data?.count ?? 0}
           onPageChange={handlePageChange}
           onRowsPerPageChange={handleLimitChange}
-          page={page}
-          rowsPerPage={limit}
+          page={pagination.pageIndex}
+          rowsPerPage={pagination.pageSize}
           rowsPerPageOptions={[5, 10, 25, 30]}
         />
       </Box>
@@ -347,7 +410,6 @@ function Row({ payout, isPayoutSelected }) {
   };
 
   const approvePayOut = async ({ id, pin }) => {
-    console.log({ id, pin });
     const token = await getToken();
     const parsed = await axios.post(
       // "http://localhost:3001/api/admin/console/approvepayout",
@@ -394,7 +456,6 @@ function Row({ payout, isPayoutSelected }) {
     mutationKey: ["declinePayOut"],
     mutationFn: declinePayOut,
     onSuccess: (data) => {
-      console.log({data})
       queryClient.invalidateQueries("payoutRequests");
       setPin(null);
       setReason("")
