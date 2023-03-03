@@ -11,6 +11,8 @@ import Select from '@mui/material/Select';
 import SearchIcon from '@mui/icons-material/Search';
 import Input from '@mui/material/Input';
 import { useRouter } from 'next/router'
+import {format} from "date-fns"
+
 
 
 
@@ -300,6 +302,13 @@ const Users = () => {
         accessorKey: "status",
         enableClickToCopy: false,
         header: "Status",
+        enableColumnFilter: false,
+      },
+      {
+        // accessorKey: "createdAt",
+        accessorFn: (row) =>  format(new Date(row.createdAt), "Pp"),
+        enableClickToCopy: false,
+        header: "Joined",
         enableColumnFilter: false,
       },
       {

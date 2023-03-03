@@ -470,7 +470,6 @@ const Users = () => {
     setDebitErrorToast(false);
   };
 
-
   return (
     <>
     <Snackbar TransitionComponent={Slide} open={creditSuccessToast} autoHideDuration={6000} onClose={handleCreditSuccessToastClose}>
@@ -556,6 +555,10 @@ const Users = () => {
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 <b>BIO:</b> {userDetails?.data?.user?.bio}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {/* <b>Joined:</b> {userDetails?.data?.user?.createdAt} */}
+                <b>Joined:</b> { userDetails?.data?.user?.createdAt ? format(new Date(userDetails?.data?.user?.createdAt), "Pp") : ""}
               </Typography>
 
               <Divider variant="middle" />
