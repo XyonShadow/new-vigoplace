@@ -11,7 +11,7 @@ import Select from '@mui/material/Select';
 import SearchIcon from '@mui/icons-material/Search';
 import Input from '@mui/material/Input';
 import { useRouter } from 'next/router'
-import {format} from "date-fns"
+import { format } from "date-fns"
 
 
 
@@ -60,6 +60,7 @@ const Users = () => {
   });
   const [gender, setGender] = React.useState('');
   const [status, setStatus] = React.useState('');
+  const [flagged, setFlagged] = React.useState('');
   const [isVerified, setIsverified] = React.useState('');
   const [email, setEmail] = React.useState('');
 
@@ -82,8 +83,14 @@ const Users = () => {
     })
   };
   const handleVerified = (event) => {
-    console.log({eventt: event.target.value});
     setIsverified(event.target.value);
+    setPagination({
+      pageIndex: 0,
+      pageSize: 10,
+    })
+  };
+  const handleFlagged = (event) => {
+    setFlagged(event.target.value);
     setPagination({
       pageIndex: 0,
       pageSize: 10,
@@ -141,10 +148,60 @@ const Users = () => {
     },
   });
 
+  const flagUser = async (id) => {
+    const flaggedUser = await axios.post(
+      // "http://localhost:3001/api/admin/console/users/flag",
+      'https://vigoplace.com/server/api/admin/console/users/flag',
+      { userId: id },
+      {
+        headers: {
+          Authorization: user?.token,
+        },
+      }
+    );
+    return flaggedUser;
+  };
+
+  const flagUserMutation = useMutation({
+    mutationKey: ["flagUser"],
+    mutationFn: flagUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries("fetchUsers");
+    },
+    onError: async (error) => {
+      // setOpenToast(true);
+    },
+  });
+
+  const unflagUser = async (id) => {
+    const unflaggedUser = await axios.post(
+      // "http://localhost:3001/api/admin/console/users/unflag",
+      'https://vigoplace.com/server/api/admin/console/users/unflag',
+      { userId: id },
+      {
+        headers: {
+          Authorization: user?.token,
+        },
+      }
+    );
+    return unflaggedUser;
+  };
+
+  const unflagUserMutation = useMutation({
+    mutationKey: ["unflagUser"],
+    mutationFn: unflagUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries("fetchUsers");
+    },
+    onError: async (error) => {
+      // setOpenToast(true);
+    },
+  });
+
   useEffect(() => {
-    setPagination({...pagination, pageIndex: 0})
+    setPagination({ ...pagination, pageIndex: 0 })
   }, [columnFilters])
-  
+
 
   // const getUserWallet = async (id) => {
   //   const wallet = await axios.post(
@@ -183,7 +240,8 @@ const Users = () => {
       sorting, //refetch when sorting changes
       gender,
       status,
-      isVerified
+      isVerified,
+      flagged
     ],
     // async () => {
     //   // const url = new URL(
@@ -209,8 +267,8 @@ const Users = () => {
     // },
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/users?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${gender !=='' ? `&gender=${gender}`:''}${status !=='' ? `&status=${status}`:''}${isVerified !=='' ? `&isVerified=${isVerified}`:''}${columnFilters?.length >=1 ?`&search=${JSON.stringify(columnFilters)}`:''}`,
-        // `http://localhost:3001/api/admin/console/users?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${gender !=='' ? `&gender=${gender}`:''}${status !=='' ? `&status=${status}`:''}${isVerified !=='' ? `&isVerified=${isVerified}`:''}${columnFilters?.length >=1 ? `&search=${JSON.stringify(columnFilters)}`:''}`,
+        `https://vigoplace.com/server/api/admin/console/users?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${gender !=='' ? `&gender=${gender}`:''}${status !=='' ? `&status=${status}`:''}${flagged !== '' ? `&flagged=${flagged}` : ''}${isVerified !=='' ? `&isVerified=${isVerified}`:''}${columnFilters?.length >=1 ?`&search=${JSON.stringify(columnFilters)}`:''}`,
+        // `http://localhost:3001/api/admin/console/users?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${gender !== '' ? `&gender=${gender}` : ''}${status !== '' ? `&status=${status}` : ''}${flagged !== '' ? `&flagged=${flagged}` : ''}${isVerified !== '' ? `&isVerified=${isVerified}` : ''}${columnFilters?.length >= 1 ? `&search=${JSON.stringify(columnFilters)}` : ''}`,
         {
           headers: {
             Authorization: user?.token,
@@ -280,9 +338,9 @@ const Users = () => {
                 src={row.original.photo}
                 loading="lazy"
                 style={{ borderRadius: "50%" }}
-              />) : (<AccountCircleIcon sx={{fontSize: '33px'}}/>)
+              />) : (<AccountCircleIcon sx={{ fontSize: '33px' }} />)
             }
-            
+
             <Typography>{cell.getValue()}</Typography>
           </Box>
         ),
@@ -306,7 +364,7 @@ const Users = () => {
       },
       {
         // accessorKey: "createdAt",
-        accessorFn: (row) =>  format(new Date(row.createdAt), "Pp"),
+        accessorFn: (row) => format(new Date(row.createdAt), "Pp"),
         enableClickToCopy: false,
         header: "Joined",
         enableColumnFilter: false,
@@ -364,7 +422,7 @@ const Users = () => {
       enableStickyFooter
       enableRowSelection
       manualPagination
-      
+
       onPaginationChange={setPagination}
       rowCount={data?.count?.total ?? 0}
       // onColumnFiltersChange={()=>{
@@ -378,44 +436,44 @@ const Users = () => {
       positionToolbarAlertBanner="bottom"
       enableGlobalFilter={false}
 
-      renderDetailPanel={({ row }) => { 
+      renderDetailPanel={({ row }) => {
         // setWalletId(row.original.id)
         // getUserWalletMutation.mutate(row.original.id)
-      return (
-        <>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "flex-start"
-            }}
-          >
-
-            <Box
-              sx={{
-                marginRight: "20px",
-              }}
-            >
-              <img
-                alt="avatar"
-                height={200}
-                src={row.original.photo}
-                loading="lazy"
-                style={{ borderRadius: "50%" }}
-              />
-            </Box>
-
+        return (
+          <>
             <Box
               sx={{
                 display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
+                alignItems: "flex-start"
               }}
             >
-              <UserBio usersBio={row.original.bio}/>
-              {/* <UserBalanceCard /> */}
-            </Box>
 
-          {/* <Box
+              <Box
+                sx={{
+                  marginRight: "20px",
+                }}
+              >
+                <img
+                  alt="avatar"
+                  height={200}
+                  src={row.original.photo}
+                  loading="lazy"
+                  style={{ borderRadius: "50%" }}
+                />
+              </Box>
+
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <UserBio usersBio={row.original.bio} />
+                {/* <UserBalanceCard /> */}
+              </Box>
+
+              {/* <Box
               sx={{
                 // display: "flex",
                 // justifyContent: "space-between",
@@ -439,60 +497,103 @@ const Users = () => {
 
             </Box>
 
-        </>
-      )}}
+          </>
+        )
+      }}
 
       renderRowActionMenuItems={({ closeMenu, row, table }) => {
         // console.log(table.getSelectedRowModel().flatRows[0]?.getValue('fullname'), 'table')
-
         const handleDeactivate = () => {
-          console.log(row.original, "orig");
           blockMutation.mutate(row.original.id);
         };
 
         const handleActivate = () => {
-          console.log(row.getValue("fullname"), "name");
+          // console.log(row.getValue("fullname"), "name");
           unblockMutation.mutate(row.original.id);
         };
 
+        const handleFlag = () => {
+          flagUserMutation.mutate(row.original.id);
+        };
+        const handleUnFlag = () => {
+          unflagUserMutation.mutate(row.original.id);
+        };
+
         return [
-          
-              <MenuItem
-                key={0}
-                // onClick={handleDeactivate}
-                // onClick={() => handleDeactivate()}
-                sx={{ m: 0 }}
+
+          <MenuItem
+            key={0}
+            // onClick={handleDeactivate}
+            // onClick={() => handleDeactivate()}
+            sx={{ m: 0 }}
+          >
+            {
+              row.original?.status !== "blocked" ? (<Button
+                onClick={() => handleDeactivate()}
+                color="error"
+                // disabled={!table.getIsSomeRowsSelected('fullname')}
+                variant="contained"
               >
-                {
-                  row.original?.status !== "blocked" ? ( <Button
-                    onClick={() => handleDeactivate()}
-                    color="error"
-                    // disabled={!table.getIsSomeRowsSelected('fullname')}
-                    variant="contained"
-                  >
-                    {blockMutation.isLoading ? (
-                      <CircularProgress size={23} color="inherit" />
-                    ) : (
-                      "Block"
-                    )}
-                    {/* {table.getRow().getValue()} */}
-                  </Button>) : (    <Button
-                  onClick={() => handleActivate()}
-          color="success"
-          // disabled={!table.getIsSomeRowsSelected('fullname')}
-          variant="contained"
-        >
-          {unblockMutation.isLoading ? (
-            <CircularProgress size={23} color="inherit" />
-          ) : (
-            "Unblock"
-          )}
-          {/* {table.getRow().getValue()} */}
-        </Button>)
-                }
-               
-              </MenuItem>
-            ,
+                {blockMutation.isLoading ? (
+                  <CircularProgress size={23} color="inherit" />
+                ) : (
+                  "Block"
+                )}
+                {/* {table.getRow().getValue()} */}
+              </Button>) : (<Button
+                onClick={() => handleActivate()}
+                color="success"
+                // disabled={!table.getIsSomeRowsSelected('fullname')}
+                variant="contained"
+              >
+                {unblockMutation.isLoading ? (
+                  <CircularProgress size={23} color="inherit" />
+                ) : (
+                  "Unblock"
+                )}
+                {/* {table.getRow().getValue()} */}
+              </Button>)
+            }
+
+          </MenuItem>
+          ,
+
+          <MenuItem
+            key={0}
+            // onClick={handleDeactivate}
+            // onClick={() => handleDeactivate()}
+            sx={{ m: 0 }}
+          >
+            {
+              row.original?.flagged ? (<Button
+                onClick={() => handleUnFlag()}
+                color="error"
+                // disabled={!table.getIsSomeRowsSelected('fullname')}
+                variant="contained"
+              >
+                {blockMutation.isLoading ? (
+                  <CircularProgress size={23} color="inherit" />
+                ) : (
+                  "unflag"
+                )}
+                {/* {table.getRow().getValue()} */}
+              </Button>) : (<Button
+                onClick={() => handleFlag()}
+                color="success"
+                // disabled={!table.getIsSomeRowsSelected('fullname')}
+                variant="contained"
+              >
+                {unblockMutation.isLoading ? (
+                  <CircularProgress size={23} color="inherit" />
+                ) : (
+                  "flag"
+                )}
+                {/* {table.getRow().getValue()} */}
+              </Button>)
+            }
+
+          </MenuItem>
+          ,
 
           <MenuItem
             key={1}
@@ -517,10 +618,10 @@ const Users = () => {
       muiToolbarAlertBannerProps={
         isError
           ? {
-              color: "error",
-              children:
-                "Error loading data, Please use the refresh button on the table to retry",
-            }
+            color: "error",
+            children:
+              "Error loading data, Please use the refresh button on the table to retry",
+          }
           : undefined
       }
 
@@ -571,62 +672,80 @@ const Users = () => {
             </Button>
 
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel id="demo-simple-select-standard-label">Gender</InputLabel>
-        <Select
-          labelId="demo-simple-select-standard-label"
-          id="demo-simple-select-standard"
-          value={gender}
-          defaultValue="None"
-          onChange={handleGender}
-          label="Gender"
-        >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          <MenuItem value={'male'}>Male</MenuItem>
-          <MenuItem value={'female'}>Female</MenuItem>
-        </Select>
-      </FormControl>
+              <InputLabel id="demo-simple-select-standard-label">Gender</InputLabel>
+              <Select
+                labelId="demo-simple-select-standard-label"
+                id="demo-simple-select-standard"
+                value={gender}
+                defaultValue="None"
+                onChange={handleGender}
+                label="Gender"
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                <MenuItem value={'male'}>Male</MenuItem>
+                <MenuItem value={'female'}>Female</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel id="demo-simple-select-standard-label">Flagged</InputLabel>
+              <Select
+                labelId="demo-simple-select-standard-label"
+                id="demo-simple-select-standard"
+                value={flagged}
+                // value={flagged ? "Flagged Users" : "Unflagged Users"}
+                defaultValue="all Users"
+                onChange={handleFlagged}
+                label="Flagged"
+              >
+                <MenuItem value="">
+                  <em>All Users</em>
+                </MenuItem>
+                <MenuItem value={1}>Flagged Users</MenuItem>
+                <MenuItem value={0}>Unflagged Users</MenuItem>
+              </Select>
+            </FormControl>
 
-      <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel id="demo-simple-select-standard-label">Status</InputLabel>
-        <Select
-          labelId="demo-simple-select-standard-label"
-          id="demo-simple-select-standard"
-          value={status}
-          defaultValue="None"
-          onChange={handleStatus}
-          label="Gender"
-        >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          <MenuItem value={'active'}>Active</MenuItem>
-          <MenuItem value={'inactive'}>Inactive</MenuItem>
-          <MenuItem value={'blocked'}>Blocked</MenuItem>
-          <MenuItem value={'deactivated'}>Deactivated</MenuItem>
-        </Select>
-      </FormControl>
+            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel id="demo-simple-select-standard-label">Status</InputLabel>
+              <Select
+                labelId="demo-simple-select-standard-label"
+                id="demo-simple-select-standard"
+                value={status}
+                defaultValue="None"
+                onChange={handleStatus}
+                label="Gender"
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                <MenuItem value={'active'}>Active</MenuItem>
+                <MenuItem value={'inactive'}>Inactive</MenuItem>
+                <MenuItem value={'blocked'}>Blocked</MenuItem>
+                <MenuItem value={'deactivated'}>Deactivated</MenuItem>
+              </Select>
+            </FormControl>
 
-      <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel id="demo-simple-select-standard-label">Verified</InputLabel>
-        <Select
-          labelId="demo-simple-select-standard-label"
-          id="demo-simple-select-standard"
-          value={isVerified}
-          defaultValue="None"
-          onChange={handleVerified}
-          label="Gender"
-        >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          <MenuItem value={1}>Verified</MenuItem>
-          <MenuItem value={0}>Unverified</MenuItem>
-        </Select>
-      </FormControl>
+            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel id="demo-simple-select-standard-label">Verified</InputLabel>
+              <Select
+                labelId="demo-simple-select-standard-label"
+                id="demo-simple-select-standard"
+                value={isVerified}
+                defaultValue="None"
+                onChange={handleVerified}
+                label="Gender"
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                <MenuItem value={1}>Verified</MenuItem>
+                <MenuItem value={0}>Unverified</MenuItem>
+              </Select>
+            </FormControl>
 
-      {/* <FormControl sx={{ m: 1, width: '25ch' }} variant="standard">
+            {/* <FormControl sx={{ m: 1, width: '25ch' }} variant="standard">
           <InputLabel htmlFor="standard-adornment-password">Email</InputLabel>
           <Input
             id="standard-adornment-password"
@@ -646,7 +765,7 @@ const Users = () => {
           />
           </FormControl> */}
 
-      
+
 
           </div>
         );
