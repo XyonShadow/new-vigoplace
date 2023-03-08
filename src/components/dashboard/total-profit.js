@@ -5,7 +5,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 
 
-export const TotalProfit = ({balance, isLoading, header='', ...props}) => (
+export const TotalProfit = ({balance, isLoading, header='', currency="NGN", ...props}) => (
   <Card {...props}>
     <CardContent>
       <Grid
@@ -26,7 +26,7 @@ export const TotalProfit = ({balance, isLoading, header='', ...props}) => (
             variant="h4"
           >
             {
-              isLoading ?  (<CircularProgress size={20} />)  : ("₦"+Number(balance).toLocaleString("en-US"))
+              isLoading ?  (<CircularProgress size={20} />)  : (`${currency === 'usd' ? "$" : "₦"}`+Number(balance).toLocaleString("en-US"))
             }
             {/* {balance} */}
           </Typography>

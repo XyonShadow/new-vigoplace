@@ -217,7 +217,7 @@ export default function Index() {
             sm={6}
             xs={12}
           >
-            <TotalProfit header={"Paypal"} isLoading={paypalLoading} balance={ paypalBalance?.data?.amount ?? 0} />
+            <TotalProfit header={"Paypal"} currency='usd' isLoading={paypalLoading} balance={ paypalBalance?.data?.amount ?? 0} />
           </Grid>
               {/* <Grid item lg={3} sm={6} xl={3} xs={12}>
               <DashBalance
