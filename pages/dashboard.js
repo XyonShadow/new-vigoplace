@@ -116,6 +116,30 @@ export default function Index() {
     { keepPreviousData: true }
   );
 
+  const { data: paypalBalance,  isLoading: paypalLoading } = useQuery(
+    ["paypalBalance"],
+    async () => {
+      const { data } = await axios.get(
+        // `https://vigoplace.com/server/api/admin/console/balance/paypal`,
+        `http://localhost:3001/api/admin/console/balance/paypal`,
+        {
+          headers: {
+            Authorization: user?.token,
+          },
+        }
+      );
+
+      return data;
+    },
+    {
+      onError: (err) => {
+        console.log(err, "err fetching vigo place balance");
+      },
+      enabled: !!user?.token,
+    },
+    { keepPreviousData: true }
+  );
+
   return (
     <>
       <Box
@@ -185,6 +209,15 @@ export default function Index() {
             xs={12}
           >
             <TotalProfit header={"Vigo Wallet"} isLoading={vigoWalletLoading} balance={ vigoWalletBalance?.data?.amount ?? 0} />
+          </Grid>
+          <Grid
+            item
+            xl={3}
+            lg={3}
+            sm={6}
+            xs={12}
+          >
+            <TotalProfit header={"Paypal"} isLoading={paypalLoading} balance={ paypalBalance?.data?.amount ?? 0} />
           </Grid>
               {/* <Grid item lg={3} sm={6} xl={3} xs={12}>
               <DashBalance

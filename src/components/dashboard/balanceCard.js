@@ -2,7 +2,7 @@ import { Avatar, Box, Card, CardContent, Grid, Typography } from '@mui/material'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import MoneyIcon from '@mui/icons-material/Money';
 
-export const BalanceCard = ({ balance, nairaPayoutBalance, vigoWalletBalance, ...props }) => (
+export const BalanceCard = ({ balance, nairaPayoutBalance, vigoWalletBalance, paypalBalance, ...props }) => (
   <Card
     // sx={{ height: '100%' }}
     {...props}
@@ -13,23 +13,7 @@ export const BalanceCard = ({ balance, nairaPayoutBalance, vigoWalletBalance, ..
         spacing={3}
         sx={{ justifyContent: 'space-between' }}
       >
-        <Grid item>
-          <Typography
-            color="textSecondary"
-            gutterBottom
-            variant="h4"
-          >
-            PayStack Balance
-          </Typography>
-          <Typography
-            // color="textPrimary"
-            variant="h3"
-            align='center'
-            color='green'
-          >
-            ₦{balance?.balance?.toLocaleString("en-US")}
-          </Typography>
-        </Grid>
+      
         <Grid item>
           <Typography
             color="textSecondary"
@@ -45,6 +29,42 @@ export const BalanceCard = ({ balance, nairaPayoutBalance, vigoWalletBalance, ..
             color='green'
           >
             ₦{vigoWalletBalance?.toLocaleString("en-US")}
+          </Typography>
+        </Grid>
+     
+        <Grid item>
+          <Typography
+            color="textSecondary"
+            gutterBottom
+            variant="h4"
+          >
+            PayPal  Balance
+          </Typography>
+          <Typography
+            // color="textPrimary"
+            variant="h3"
+            align='center'
+            color='green'
+          >
+            ${paypalBalance?.toLocaleString("en-US")}
+          </Typography>
+        </Grid>
+
+        <Grid item>
+          <Typography
+            color="textSecondary"
+            gutterBottom
+            variant="h4"
+          >
+            PayStack Balance
+          </Typography>
+          <Typography
+            // color="textPrimary"
+            variant="h3"
+            align='center'
+            color='green'
+          >
+            ₦{balance?.balance?.toLocaleString("en-US")}
           </Typography>
         </Grid>
       </Grid>
