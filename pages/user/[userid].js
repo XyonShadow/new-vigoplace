@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import MaterialReactTable from "material-react-table";
 import { useRouter } from "next/router";
-import {format} from "date-fns"
+import { format } from "date-fns";
 import {
   Avatar,
   Card,
@@ -32,11 +32,9 @@ import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
-import MuiAlert from '@mui/material/Alert';
-import Slide from '@mui/material/Slide';
+import MuiAlert from "@mui/material/Alert";
+import Slide from "@mui/material/Slide";
 import Snackbar from "@mui/material/Snackbar";
-
-
 
 import {
   QueryClient,
@@ -62,6 +60,7 @@ import { UserBalanceCard } from "../../src/components/dashboard/userBalanceCard"
 import { UserBio } from "../../src/components/dashboard/userBio";
 import { LoadingButton, TabContext, TabList } from "@mui/lab";
 import BaseCard from "../../src/components/baseCard/BaseCard";
+import { MaterialTable } from "../../src/components/table";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -117,7 +116,6 @@ const Users = () => {
   const [debitSuccessToast, setDebitSuccessToast] = React.useState(false);
   const [debitErrorToast, setDebitErrorToast] = React.useState(false);
 
-
   const [status, setStatus] = React.useState("");
   const [isVerified, setIsverified] = React.useState("");
   const [email, setEmail] = React.useState("");
@@ -131,7 +129,7 @@ const Users = () => {
     approvalPin: "",
   });
 
-/* ******* onchange functions ********** */  
+  /* ******* onchange functions ********** */
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -156,6 +154,7 @@ const Users = () => {
   };
 
   const handleStatus = (event) => {
+    console.log(event.target.value)
     setStatus(event.target.value);
     setPagination({
       pageIndex: 0,
@@ -251,8 +250,47 @@ const Users = () => {
     ],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/users/transactions?userId=${userid}&limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${status !=='' ? `&status=${status}`:''}`,
+        `https://vigoplace.com/server/api/admin/console/users/transactions?userId=${userid}&limit=${
+          pagination.pageSize
+        }&offset=${pagination.pageIndex * pagination.pageSize}${
+          status !== "" ? `&status=${status}` : ""
+        }`,
         // `http://localhost:3001/api/admin/console/users/transactions?userId=${userid}&limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${status !=='' ? `&status=${status}`:''}`,
+        {
+          headers: {
+            Authorization: user?.token,
+          },
+        }
+      );
+
+      return data;
+    },
+    {
+      onError: (err) => {
+        console.log(err, "err fetching users");
+      },
+      enabled: !!user?.token,
+    },
+    { keepPreviousData: true }
+  );
+
+  
+  const {
+    data: userActivities,
+    isError: fetchActivitiesError,
+    isFetching: fetchingActivities,
+    isLoading: loadingActivities,
+    refetch: refetchActivities,
+  } = useQuery(
+    [
+      "fetchSingleUserActivities",
+    ],
+    async () => {
+      const { data } = await axios.get(
+        `https://vigoplace.com/server/api/admin/console/users/activities?userId=${userid}&limit=${
+          pagination.pageSize
+        }&offset=${pagination.pageIndex * pagination.pageSize}`,
+        // `http://localhost:3001/api/admin/console/users/activities?userId=${userid}&limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}`,
         {
           headers: {
             Authorization: user?.token,
@@ -292,10 +330,10 @@ const Users = () => {
     mutationFn: creditUser,
     onError: async (error) => {
       // setPinToast({ ...pinToast, error: true });
-      setCreditErrorToast(true)
+      setCreditErrorToast(true);
     },
     onSuccess: () => {
-      setCreditSuccessToast(true)
+      setCreditSuccessToast(true);
       queryClient.invalidateQueries("fetchUserWallet");
       setCreditDetails({ amount: "", approvalPin: "" });
       setWalletId(null);
@@ -321,10 +359,10 @@ const Users = () => {
     mutationFn: debitUser,
     onError: async (error) => {
       // setPinToast({ ...pinToast, error: true });
-      setDebitErrorToast(true)
+      setDebitErrorToast(true);
     },
     onSuccess: () => {
-      setDebitSuccessToast(true)
+      setDebitSuccessToast(true);
       queryClient.invalidateQueries("fetchUserWallet");
       setCreditDetails({ amount: "", approvalPin: "" });
       setWalletId(null);
@@ -381,8 +419,6 @@ const Users = () => {
     },
   });
 
- 
-
   const columns = useMemo(
     () => [
       {
@@ -419,7 +455,7 @@ const Users = () => {
       },
       {
         // accessorKey: "transactionDate",
-        accessorFn: (row) =>  format(new Date(row.transactionDate), "Pp"),
+        accessorFn: (row) => format(new Date(row.transactionDate), "Pp"),
         enableClickToCopy: false,
         header: "Date",
       },
@@ -456,6 +492,38 @@ const Users = () => {
     []
   );
 
+  const activitiesColumns = useMemo(
+    () => [
+      {
+        accessorKey: "Action",
+        enableClickToCopy: false,
+        header: "Action",
+      },
+      {
+        accessorKey: "Description",
+        enableClickToCopy: true,
+        header: "Description",
+      },
+      {
+        accessorKey: "ip",
+        enableClickToCopy: false,
+        header: "IP Address",
+      },
+      {
+        accessorKey: "browser",
+        enableClickToCopy: false,
+        header: "Browser",
+      },
+      {
+        // accessorKey: "transactionDate",
+        accessorFn: (row) => format(new Date(row.created_at), "Pp"),
+        enableClickToCopy: false,
+        header: "Date",
+      },
+    ],
+    []
+  );
+
   const handleCreditSuccessToastClose = (event, reason) => {
     setCreditSuccessToast(false);
   };
@@ -472,30 +540,65 @@ const Users = () => {
 
   return (
     <>
-    <Snackbar TransitionComponent={Slide} open={creditSuccessToast} autoHideDuration={6000} onClose={handleCreditSuccessToastClose}>
-        <Alert onClose={handleCreditSuccessToastClose} severity="success" sx={{ width: '100%' }}>
+      <Snackbar
+        TransitionComponent={Slide}
+        open={creditSuccessToast}
+        autoHideDuration={6000}
+        onClose={handleCreditSuccessToastClose}
+      >
+        <Alert
+          onClose={handleCreditSuccessToastClose}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
           {creditUserMutation?.data?.data?.message}
         </Alert>
-    </Snackbar>
+      </Snackbar>
 
-    <Snackbar TransitionComponent={Slide} open={creditErrorToast} autoHideDuration={6000} onClose={handleCreditErrorToastClose}>
-        <Alert onClose={handleCreditErrorToastClose} severity="warning" sx={{ width: '100%' }}>
+      <Snackbar
+        TransitionComponent={Slide}
+        open={creditErrorToast}
+        autoHideDuration={6000}
+        onClose={handleCreditErrorToastClose}
+      >
+        <Alert
+          onClose={handleCreditErrorToastClose}
+          severity="warning"
+          sx={{ width: "100%" }}
+        >
           {creditUserMutation?.error?.response?.data?.message}
         </Alert>
-    </Snackbar>
+      </Snackbar>
 
-
-    <Snackbar TransitionComponent={Slide} open={debitSuccessToast} autoHideDuration={6000} onClose={handleDebitSuccessToastClose}>
-        <Alert onClose={handleDebitSuccessToastClose} severity="success" sx={{ width: '100%' }}>
+      <Snackbar
+        TransitionComponent={Slide}
+        open={debitSuccessToast}
+        autoHideDuration={6000}
+        onClose={handleDebitSuccessToastClose}
+      >
+        <Alert
+          onClose={handleDebitSuccessToastClose}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
           {debitUserMutation?.data?.data?.message}
         </Alert>
-    </Snackbar>
+      </Snackbar>
 
-    <Snackbar TransitionComponent={Slide} open={debitErrorToast} autoHideDuration={6000} onClose={handleDebitErrorToastClose}>
-        <Alert onClose={handleDebitErrorToastClose} severity="warning" sx={{ width: '100%' }}>
+      <Snackbar
+        TransitionComponent={Slide}
+        open={debitErrorToast}
+        autoHideDuration={6000}
+        onClose={handleDebitErrorToastClose}
+      >
+        <Alert
+          onClose={handleDebitErrorToastClose}
+          severity="warning"
+          sx={{ width: "100%" }}
+        >
           {debitUserMutation?.error?.response?.data?.message}
         </Alert>
-    </Snackbar>
+      </Snackbar>
 
       <Grid
         container
@@ -509,8 +612,11 @@ const Users = () => {
           flexWrap: "wrap",
         }}
       >
-
-        <Grid item xs={12} sm={12} lg={6}
+        <Grid
+          item
+          xs={12}
+          sm={12}
+          lg={6}
           sx={{
             display: "flex",
             background: "",
@@ -520,7 +626,7 @@ const Users = () => {
         >
           {/* <BaseCard title=""> */}
           {/* <Card> */}
-            <Card sx={{ width: 400 }} xs={12} sm={12}>
+          <Card sx={{ width: 400 }} xs={12} sm={12}>
             <CardHeader
               avatar={
                 <Avatar
@@ -558,7 +664,10 @@ const Users = () => {
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 {/* <b>Joined:</b> {userDetails?.data?.user?.createdAt} */}
-                <b>Joined:</b> { userDetails?.data?.user?.createdAt ? format(new Date(userDetails?.data?.user?.createdAt), "Pp") : ""}
+                <b>Joined:</b>{" "}
+                {userDetails?.data?.user?.createdAt
+                  ? format(new Date(userDetails?.data?.user?.createdAt), "Pp")
+                  : ""}
               </Typography>
 
               <Divider variant="middle" />
@@ -598,299 +707,306 @@ const Users = () => {
           {/* <Divider orientation="vertical" variant="middle"  /> */}
         </Grid>
 
-{
-  user?.role === "root" ? ( <Grid item sm={12} xs={12} lg={6}>
-    <Box sx={{ width: "100%" }}>
-      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-        <Tabs
-          value={tabValue}
-          onChange={handleTabChange}
-          textColor="inherit"
-          centered
-          scrollButtons="auto"
-          aria-label=""
-        >
-          <Tab label="Credit User" {...a11yProps(0)} />
-          <Tab label="Debit User" {...a11yProps(1)} />
-        </Tabs>
-      </Box>
-      <TabPanel value={tabValue} index={0}>
-        <Box sx={{ pt: 3 }}>
-          <form>
-            <Card>
-              <CardHeader subheader=""   sx={{color: "green"}}title="Credit User Wallet" />
-              <Divider />
-              <CardContent>
-
-                <InputLabel id="demo-simple-select-standard-label">
-                  Currency
-                </InputLabel>
-                <Select
-                fullWidth
-                  labelId="demo-simple-select-standard-label"
-                  id="demo-simple-select-standard"
-                  value={walletId}
-                  defaultValue="None"
-                  onChange={handleWalletIdChange}
-                  label="Wallet"
+        {user?.role === "root" ? (
+          <Grid item sm={12} xs={12} lg={6}>
+            <Box sx={{ width: "100%" }}>
+              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <Tabs
+                  value={tabValue}
+                  onChange={handleTabChange}
+                  textColor="inherit"
+                  centered
+                  scrollButtons="auto"
+                  aria-label=""
                 >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-                  {userWallet?.data?.map((wallet, id) => (
-                    <MenuItem key={id} value={wallet.WId}>
-                      {wallet.SCCurrency}
-                    </MenuItem>
-                  ))}
-                </Select>
-
-                <TextField
-                  fullWidth
-                  label="Amount"
-                  margin="normal"
-                  name="amount"
-                  onChange={handleCreditChange}
-                  type="number"
-                  value={creditDetails.amount}
-                  variant="outlined"
-                />
-                <TextField
-                  autoComplete={false}
-                  fullWidth
-                  label="Approval Pin"
-                  margin="normal"
-                  name="approvalPin"
-                  onChange={handleCreditChange}
-                  type={creditDetails.approvalPin === '' ? "text" : "password"}
-                  value={creditDetails.approvalPin}
-                  variant="outlined"
-                />
-              </CardContent>
-              <Divider />
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  p: 2,
-                }}
-              >
-                <LoadingButton
-                  variant="contained"
-                  color="primary"
-                  loading={creditUserMutation.isLoading}
-                  disabled={
-                    creditDetails.amount === "" ||
-                    creditDetails.approvalPin === "" ||
-                    creditDetails.approvalPin.length <= 5 ||
-                    walletId === null
-                  }
-                  onClick={() => {
-                    creditUserMutation.mutate({...creditDetails, walletId})
-                  // setOpenModal2(true);
-                  }}
-                >
-                  Credit
-                </LoadingButton>
+                  <Tab label="Credit User" {...a11yProps(0)} />
+                  <Tab label="Debit User" {...a11yProps(1)} />
+                </Tabs>
               </Box>
-            </Card>
-          </form>
-        </Box>
-      </TabPanel>
-      <TabPanel value={tabValue} index={1}>
-      <Box sx={{ pt: 3 }}>
-          <form>
-            <Card>
-              <CardHeader subheader="" sx={{color: "red"}} title="Debit User Wallet" />
-              <Divider />
-              <CardContent>
+              <TabPanel value={tabValue} index={0}>
+                <Box sx={{ pt: 3 }}>
+                  <form>
+                    <Card>
+                      <CardHeader
+                        subheader=""
+                        sx={{ color: "green" }}
+                        title="Credit User Wallet"
+                      />
+                      <Divider />
+                      <CardContent>
+                        <InputLabel id="demo-simple-select-standard-label">
+                          Currency
+                        </InputLabel>
+                        <Select
+                          fullWidth
+                          labelId="demo-simple-select-standard-label"
+                          id="demo-simple-select-standard"
+                          value={walletId}
+                          defaultValue="None"
+                          onChange={handleWalletIdChange}
+                          label="Wallet"
+                        >
+                          <MenuItem value="">
+                            <em>None</em>
+                          </MenuItem>
+                          {userWallet?.data?.map((wallet, id) => (
+                            <MenuItem key={id} value={wallet.WId}>
+                              {wallet.SCCurrency}
+                            </MenuItem>
+                          ))}
+                        </Select>
 
-                <InputLabel id="demo-simple-select-standard-label">
-                  Currency
-                </InputLabel>
-                <Select
-                fullWidth
-                  labelId="demo-simple-select-standard-label"
-                  id="demo-simple-select-standard"
-                  value={walletId}
-                  defaultValue="None"
-                  onChange={handleWalletIdChange}
-                  label="wallet"
-                >
-                  <MenuItem value={null}>
-                    <em>None</em>
-                  </MenuItem>
-                  {userWallet?.data?.map((wallet, id) => (
-                    <MenuItem key={id} value={wallet.WId}>
-                      {wallet.SCCurrency}
-                    </MenuItem>
-                  ))}
-                </Select>
+                        <TextField
+                          fullWidth
+                          label="Amount"
+                          margin="normal"
+                          name="amount"
+                          onChange={handleCreditChange}
+                          type="number"
+                          value={creditDetails.amount}
+                          variant="outlined"
+                        />
+                        <TextField
+                          autoComplete={false}
+                          fullWidth
+                          label="Approval Pin"
+                          margin="normal"
+                          name="approvalPin"
+                          onChange={handleCreditChange}
+                          type={
+                            creditDetails.approvalPin === ""
+                              ? "text"
+                              : "password"
+                          }
+                          value={creditDetails.approvalPin}
+                          variant="outlined"
+                        />
+                      </CardContent>
+                      <Divider />
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "flex-end",
+                          p: 2,
+                        }}
+                      >
+                        <LoadingButton
+                          variant="contained"
+                          color="primary"
+                          loading={creditUserMutation.isLoading}
+                          disabled={
+                            creditDetails.amount === "" ||
+                            creditDetails.approvalPin === "" ||
+                            creditDetails.approvalPin.length <= 5 ||
+                            walletId === null
+                          }
+                          onClick={() => {
+                            creditUserMutation.mutate({
+                              ...creditDetails,
+                              walletId,
+                            });
+                            // setOpenModal2(true);
+                          }}
+                        >
+                          Credit
+                        </LoadingButton>
+                      </Box>
+                    </Card>
+                  </form>
+                </Box>
+              </TabPanel>
+              <TabPanel value={tabValue} index={1}>
+                <Box sx={{ pt: 3 }}>
+                  <form>
+                    <Card>
+                      <CardHeader
+                        subheader=""
+                        sx={{ color: "red" }}
+                        title="Debit User Wallet"
+                      />
+                      <Divider />
+                      <CardContent>
+                        <InputLabel id="demo-simple-select-standard-label">
+                          Currency
+                        </InputLabel>
+                        <Select
+                          fullWidth
+                          labelId="demo-simple-select-standard-label"
+                          id="demo-simple-select-standard"
+                          value={walletId}
+                          defaultValue="None"
+                          onChange={handleWalletIdChange}
+                          label="wallet"
+                        >
+                          <MenuItem value={null}>
+                            <em>None</em>
+                          </MenuItem>
+                          {userWallet?.data?.map((wallet, id) => (
+                            <MenuItem key={id} value={wallet.WId}>
+                              {wallet.SCCurrency}
+                            </MenuItem>
+                          ))}
+                        </Select>
 
-                <TextField
-                  fullWidth
-                  label="Amount"
-                  margin="normal"
-                  name="amount"
-                  onChange={handleDebitChange}
-                  type="number"
-                  value={debitDetails.amount}
-                  variant="outlined"
-                />
-                <TextField
-                  fullWidth
-                  label="Approval Pin"
-                  margin="normal"
-                  name="approvalPin"
-                  onChange={handleDebitChange}
-                  type="password"
-                  value={debitDetails.approvalPin}
-                  variant="outlined"
-                />
-              </CardContent>
-              <Divider />
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  p: 2,
-                }}
+                        <TextField
+                          fullWidth
+                          label="Amount"
+                          margin="normal"
+                          name="amount"
+                          onChange={handleDebitChange}
+                          type="number"
+                          value={debitDetails.amount}
+                          variant="outlined"
+                        />
+                        <TextField
+                          fullWidth
+                          label="Approval Pin"
+                          margin="normal"
+                          name="approvalPin"
+                          onChange={handleDebitChange}
+                          type="password"
+                          value={debitDetails.approvalPin}
+                          variant="outlined"
+                        />
+                      </CardContent>
+                      <Divider />
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "flex-end",
+                          p: 2,
+                        }}
+                      >
+                        <LoadingButton
+                          variant="contained"
+                          color="primary"
+                          loading={debitUserMutation.isLoading}
+                          disabled={
+                            debitDetails.amount === "" ||
+                            debitDetails.approvalPin === "" ||
+                            debitDetails.approvalPin.length <= 5 ||
+                            walletId === null
+                          }
+                          onClick={() => {
+                            debitUserMutation.mutate({
+                              ...debitDetails,
+                              walletId,
+                            });
+                            // setOpenModal2(true);
+                          }}
+                        >
+                          Debit
+                        </LoadingButton>
+                      </Box>
+                    </Card>
+                  </form>
+                </Box>
+              </TabPanel>
+            </Box>
+          </Grid>
+        ) : null}
+      </Grid>
+
+      <Grid
+        container
+        spacing={0}
+        xs={12}
+        lg={12}
+        sx={{
+          display: "flex",
+          background: "",
+          justifyContent: "center",
+          flexWrap: "wrap",
+        }}
+      >
+        <Grid item sm={12} xs={12} lg={12}>
+          <Box sx={{ width: "100%" }}>
+            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+              <Tabs
+                value={tabValue}
+                onChange={handleTabChange}
+                textColor="inherit"
+                // centered
+                scrollButtons="auto"
+                aria-label=""
               >
-                <LoadingButton
-                  variant="contained"
-                  color="primary"
-                  loading={debitUserMutation.isLoading}
-                  disabled={
-                    debitDetails.amount === "" ||
-                    debitDetails.approvalPin === "" ||
-                    debitDetails.approvalPin.length <= 5 ||
-                    walletId === null
-                  }
-                  onClick={() => {
-                    debitUserMutation.mutate({...debitDetails, walletId})
-                  // setOpenModal2(true);
-                  }}
-                >
-                  Debit
-                </LoadingButton>
+                <Tab label="Transactions" {...a11yProps(0)} />
+                <Tab label="Activities" {...a11yProps(1)} />
+              </Tabs>
+            </Box>
+            <TabPanel value={tabValue} index={0}>
+              <Box sx={{ pt: 3 }}>
+                <form>
+                  <Card>
+                    <CardHeader
+                      subheader=""
+                      title="User Transactions"
+                    />
+                    <Divider />
+                    <CardContent>
+                      
+                  <MaterialTable
+                  columns={columns}
+                  data={userTransactions?.data ?? []}
+                  rowCount={userTransactions?.count?.total ?? 0}
+                  isLoading={isLoading}
+                  isError={isError}
+                  isFetching={isFetching}
+                  status={status}
+                  setStatus={setStatus}
+                  handleStatus={handleStatus}
+                  pagination={pagination}
+                  setPagination={setPagination}
+                  setGlobalFilter={setGlobalFilter}
+                  globalFilter={globalFilter}
+                  refetch={refetchTransactions}
+
+                  />
+                    </CardContent>
+                
+                  </Card>
+                </form>
               </Box>
-            </Card>
-          </form>
-        </Box>
-      </TabPanel>
-    </Box>
-  </Grid>) : (null)
-}
-       
+            </TabPanel>
+
+            <TabPanel value={tabValue} index={1}>
+              <Box sx={{ pt: 3 }}>
+                <form>
+                  <Card>
+                    <CardHeader
+                      subheader=""
+                      title="User Activities"
+                    />
+                    <Divider />
+                    <CardContent>
+                    <MaterialTable
+                  columns={activitiesColumns}
+                  data={userActivities?.data ?? []}
+                  rowCount={userActivities?.count?.total ?? 0}
+                  isLoading={loadingActivities}
+                  isError={fetchActivitiesError}
+                  isFetching={fetchingActivities}
+                  status={status}
+                  setStatus={setStatus}
+                  handleStatus={handleStatus}
+                  pagination={pagination}
+                  setPagination={setPagination}
+                  setGlobalFilter={setGlobalFilter}
+                  globalFilter={globalFilter}
+                  refetch={refetchActivities}
+                  />
+                  
+                    </CardContent>
+                  </Card>
+                </form>
+              </Box>
+            </TabPanel>
+          </Box>
+        </Grid>
 
       </Grid>
 
-      <Typography
-        align="center"
-        marginTop={1}
-        variant="h3"
-        color="text.secondary"
-      >
-        <b>Transactions</b>
-      </Typography>
-
-      <MaterialReactTable
-         // enableColumnFilterModes
-        // enableColumnOrdering
-        // enableGrouping
-        // enablePinning
-        // enableRowActions
-        // enableRowSelection
-
-        columns={columns}
-        data={userTransactions?.data ?? []}
-        enableStickyHeader
-        enableStickyFooter
-        manualPagination
-        onPaginationChange={setPagination}
-        rowCount={userTransactions?.count?.total ?? 0}
-        onGlobalFilterChange={setGlobalFilter}
-        initialState={{ showColumnFilters: false }}
-        positionToolbarAlertBanner="bottom"
-        enableGlobalFilter={false}
-        muiToolbarAlertBannerProps={
-          isError
-            ? {
-                color: "error",
-                children:
-                  "Error loading data, Please use the refresh button on the table to retry",
-              }
-            : undefined
-        }
-        // getPaginationRowModel={(props)=> console.log(props, "propppp")}
-        // manualPagination
-        // onPaginationChange={}
-        // muiTablePaginationProps={}
-
-        renderTopToolbarCustomActions={({ table }) => {
-  
-          return (
-            <div style={{ display: "flex", gap: "0.5rem" }}>
-              <Tooltip arrow title="Refresh Data">
-                <IconButton onClick={() => refetch()}>
-                  <RefreshIcon />
-                </IconButton>
-              </Tooltip>
-  
-        <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-          <InputLabel id="demo-simple-select-standard-label">Status</InputLabel>
-          <Select
-            labelId="demo-simple-select-standard-label"
-            id="demo-simple-select-standard"
-            value={status}
-            defaultValue="None"
-            onChange={handleStatus}
-            label="Gender"
-          >
-
-            <MenuItem value="">
-              <em>None</em>
-            </MenuItem>
-            <MenuItem value={'completed'}>Completed</MenuItem>
-            <MenuItem value={'pending'}>Pending</MenuItem>
-            <MenuItem value={'processing'}>Processing</MenuItem>
-            <MenuItem value={'declined'}>Declined</MenuItem>
-          </Select>
-        </FormControl>
-  
-        {/* <FormControl sx={{ m: 1, width: '25ch' }} variant="standard">
-            <InputLabel htmlFor="standard-adornment-password">Email</InputLabel>
-            <Input
-              id="standard-adornment-password"
-              type={'text'}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-  
-                    aria-label="search"
-                    // onClick={handleClickShowPassword}
-                    // onMouseDown={handleMouseDownPassword}
-                  >
-                   <SearchIcon />
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-            </FormControl> */}
-  
-        
-  
-            </div>
-          );
-        }}
-
-        state={{
-          isLoading,
-          showAlertBanner: isError,
-          showProgressBars: isFetching,
-          pagination,
-        }}
-        muiTableContainerProps={{ sx: { height: "75vh" } }}
-      />
+      
     </>
   );
 };
