@@ -154,7 +154,6 @@ const Users = () => {
   };
 
   const handleStatus = (event) => {
-    console.log(event.target.value)
     setStatus(event.target.value);
     setPagination({
       pageIndex: 0,
@@ -274,7 +273,6 @@ const Users = () => {
     { keepPreviousData: true }
   );
 
-  
   const {
     data: userActivities,
     isError: fetchActivitiesError,
@@ -282,9 +280,7 @@ const Users = () => {
     isLoading: loadingActivities,
     refetch: refetchActivities,
   } = useQuery(
-    [
-      "fetchSingleUserActivities",
-    ],
+    ["fetchSingleUserActivities"],
     async () => {
       const { data } = await axios.get(
         `https://vigoplace.com/server/api/admin/console/users/activities?userId=${userid}&limit=${
@@ -387,7 +383,7 @@ const Users = () => {
     mutationKey: ["blockUser"],
     mutationFn: blockUser,
     onSuccess: () => {
-      queryClient.invalidateQueries("fetchUsers");
+      queryClient.invalidateQueries("fetchSingleUser");
     },
     onError: async (error) => {
       // setOpenToast(true);
@@ -412,7 +408,57 @@ const Users = () => {
     mutationKey: ["unblockUser"],
     mutationFn: unblockUser,
     onSuccess: () => {
-      queryClient.invalidateQueries("fetchUsers");
+      queryClient.invalidateQueries("fetchSingleUser");
+    },
+    onError: async (error) => {
+      // setOpenToast(true);
+    },
+  });
+
+  const flagUser = async (id) => {
+    const flaggedUser = await axios.post(
+      // "http://localhost:3001/api/admin/console/users/flag",
+      "https://vigoplace.com/server/api/admin/console/users/flag",
+      { userId: id },
+      {
+        headers: {
+          Authorization: user?.token,
+        },
+      }
+    );
+    return flaggedUser;
+  };
+
+  const flagUserMutation = useMutation({
+    mutationKey: ["flagUser"],
+    mutationFn: flagUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries("fetchSingleUser");
+    },
+    onError: async (error) => {
+      // setOpenToast(true);
+    },
+  });
+
+  const unflagUser = async (id) => {
+    const unflaggedUser = await axios.post(
+      // "http://localhost:3001/api/admin/console/users/unflag",
+      "https://vigoplace.com/server/api/admin/console/users/unflag",
+      { userId: id },
+      {
+        headers: {
+          Authorization: user?.token,
+        },
+      }
+    );
+    return unflaggedUser;
+  };
+
+  const unflagUserMutation = useMutation({
+    mutationKey: ["unflagUser"],
+    mutationFn: unflagUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries("fetchSingleUser");
     },
     onError: async (error) => {
       // setOpenToast(true);
@@ -702,6 +748,77 @@ const Users = () => {
                     </>
                   ))
                 : null}
+
+              {/* <Grid item sm={12} xs={12} lg={12} marginTop={8}> */}
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: "20px",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {userDetails?.data?.user?.status === "blocked" ? (
+                  <Button
+                  color='error'
+                  variant="contained"
+                  onClick={() => unblockMutation.mutate(userDetails?.data?.user?.id)}
+                  >
+                      {unblockMutation.isLoading ? (
+                    <CircularProgress size={23} color="inherit" />
+                  ) : (
+                    "Ublock"
+                  )}
+                    
+                  </Button>
+                ) : (
+                  <Button
+                  variant="contained"
+                  onClick={() => blockMutation.mutate(userDetails?.data?.user?.id)}
+                  >
+                  {blockMutation.isLoading ? (
+                <CircularProgress size={23} color="inherit" />
+              ) : (
+                "Block"
+              )}
+                
+              </Button>
+                )}
+
+                {userDetails?.data?.user?.flagged === 1 ? (
+                  <Button
+                  color="error"
+                  variant="contained"
+                  onClick={() => unflagUserMutation.mutate(userDetails?.data?.user?.id)}
+                  >
+                      {unflagUserMutation.isLoading ? (
+                    <CircularProgress size={23} color="inherit" />
+                  ) : (
+                    "Unflag"
+                  )}
+                    
+                  </Button>
+                ) : (
+                  <Button
+                  variant="contained"
+                  onClick={() => flagUserMutation.mutate(userDetails?.data?.user?.id)}
+                  >
+                  {flagUserMutation.isLoading ? (
+                <CircularProgress size={23} color="inherit" />
+              ) : (
+                "Flag"
+              )}
+                
+              </Button>
+                )}
+
+           
+
+               
+
+              </Box>
             </CardContent>
           </Card>
           {/* <Divider orientation="vertical" variant="middle"  /> */}
@@ -938,32 +1055,26 @@ const Users = () => {
               <Box sx={{ pt: 3 }}>
                 <form>
                   <Card>
-                    <CardHeader
-                      subheader=""
-                      title="User Transactions"
-                    />
+                    <CardHeader subheader="" title="User Transactions" />
                     <Divider />
                     <CardContent>
-                      
-                  <MaterialTable
-                  columns={columns}
-                  data={userTransactions?.data ?? []}
-                  rowCount={userTransactions?.count?.total ?? 0}
-                  isLoading={isLoading}
-                  isError={isError}
-                  isFetching={isFetching}
-                  status={status}
-                  setStatus={setStatus}
-                  handleStatus={handleStatus}
-                  pagination={pagination}
-                  setPagination={setPagination}
-                  setGlobalFilter={setGlobalFilter}
-                  globalFilter={globalFilter}
-                  refetch={refetchTransactions}
-
-                  />
+                      <MaterialTable
+                        columns={columns}
+                        data={userTransactions?.data ?? []}
+                        rowCount={userTransactions?.count?.total ?? 0}
+                        isLoading={isLoading}
+                        isError={isError}
+                        isFetching={isFetching}
+                        status={status}
+                        setStatus={setStatus}
+                        handleStatus={handleStatus}
+                        pagination={pagination}
+                        setPagination={setPagination}
+                        setGlobalFilter={setGlobalFilter}
+                        globalFilter={globalFilter}
+                        refetch={refetchTransactions}
+                      />
                     </CardContent>
-                
                   </Card>
                 </form>
               </Box>
@@ -973,29 +1084,25 @@ const Users = () => {
               <Box sx={{ pt: 3 }}>
                 <form>
                   <Card>
-                    <CardHeader
-                      subheader=""
-                      title="User Activities"
-                    />
+                    <CardHeader subheader="" title="User Activities" />
                     <Divider />
                     <CardContent>
-                    <MaterialTable
-                  columns={activitiesColumns}
-                  data={userActivities?.data ?? []}
-                  rowCount={userActivities?.count?.total ?? 0}
-                  isLoading={loadingActivities}
-                  isError={fetchActivitiesError}
-                  isFetching={fetchingActivities}
-                  status={status}
-                  setStatus={setStatus}
-                  handleStatus={handleStatus}
-                  pagination={pagination}
-                  setPagination={setPagination}
-                  setGlobalFilter={setGlobalFilter}
-                  globalFilter={globalFilter}
-                  refetch={refetchActivities}
-                  />
-                  
+                      <MaterialTable
+                        columns={activitiesColumns}
+                        data={userActivities?.data ?? []}
+                        rowCount={userActivities?.count?.total ?? 0}
+                        isLoading={loadingActivities}
+                        isError={fetchActivitiesError}
+                        isFetching={fetchingActivities}
+                        status={status}
+                        setStatus={setStatus}
+                        handleStatus={handleStatus}
+                        pagination={pagination}
+                        setPagination={setPagination}
+                        setGlobalFilter={setGlobalFilter}
+                        globalFilter={globalFilter}
+                        refetch={refetchActivities}
+                      />
                     </CardContent>
                   </Card>
                 </form>
@@ -1003,10 +1110,7 @@ const Users = () => {
             </TabPanel>
           </Box>
         </Grid>
-
       </Grid>
-
-      
     </>
   );
 };

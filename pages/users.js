@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import MaterialReactTable from "material-react-table";
 import { CircularProgress, IconButton, InputAdornment, Paper, Tab, Tooltip } from "@mui/material";
+import Autocomplete from '@mui/material/Autocomplete';
 import RefreshIcon from "@mui/icons-material/Refresh";
 import axios from "axios";
 import CheckIcon from '@mui/icons-material/Check';
@@ -12,6 +13,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import Input from '@mui/material/Input';
 import { useRouter } from 'next/router'
 import { format } from "date-fns"
+
 
 
 
@@ -31,7 +33,7 @@ import {
   ListItemIcon,
   MenuItem,
   Typography,
-  TextField,
+  TextField
 } from "@mui/material";
 
 //Icons Imports
@@ -41,6 +43,28 @@ import { UserBio } from "../src/components/dashboard/userBio";
 import { TabContext, TabList } from "@mui/lab";
 import TabPanel from '@mui/lab/TabPanel';
 import { useEffect } from "react";
+
+import Avatar from '@mui/material/Avatar';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import PropTypes from 'prop-types';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
+import Dialog from '@mui/material/Dialog';
+import PersonIcon from '@mui/icons-material/Person';
+import AddIcon from '@mui/icons-material/Add';
+import { blue } from '@mui/material/colors';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+
+
+
+
+const emails = ['username@gmail.com', 'user02@gmail.com'];
+
 
 
 const Users = () => {
@@ -63,8 +87,14 @@ const Users = () => {
   const [flagged, setFlagged] = React.useState('');
   const [isVerified, setIsverified] = React.useState('');
   const [email, setEmail] = React.useState('');
+  const [contactModal, setContactModal] = React.useState(false);
+  const [rowSelection, setRowSelection] = useState({});
+  const [contactUsers, setContactUsers] = useState([]);
+  const [notificationText, setNotificationText] = useState('');
 
 
+  // console.log({rowSelection})
+  // console.log({ contactUsers, notificationText })
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -95,6 +125,18 @@ const Users = () => {
       pageIndex: 0,
       pageSize: 10,
     })
+  };
+
+  const handleClose = (value) => {
+    setContactModal(false);
+  };
+
+  const handleNotificationText = (event) => {
+    setNotificationText(event.target.value);
+  };
+  const handleNotify = () => {
+    const userIds = contactUsers.map(user => user.userId)
+    notifyUserMutation.mutate({users: userIds, message: notificationText})
   };
 
 
@@ -198,6 +240,32 @@ const Users = () => {
     },
   });
 
+  const notifyUser = async ({users, message}) => {
+    const notification = await axios.post(
+      // "http://localhost:3001/api/notifications",
+      'https://vigoplace.com/server/api/notifications',
+      {users, message},
+      {
+        headers: {
+          Authorization: user?.token,
+        },
+      }
+    );
+    return notification;
+  };
+
+  const notifyUserMutation = useMutation({
+    mutationKey: ["notifyUser"],
+    mutationFn: notifyUser,
+    onSuccess: () => {
+      setNotificationText('')
+      handleClose()
+    },
+    onError: async (error) => {
+      // setOpenToast(true);
+    },
+  });
+
   useEffect(() => {
     setPagination({ ...pagination, pageIndex: 0 })
   }, [columnFilters])
@@ -267,7 +335,7 @@ const Users = () => {
     // },
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/users?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${gender !=='' ? `&gender=${gender}`:''}${status !=='' ? `&status=${status}`:''}${flagged !== '' ? `&flagged=${flagged}` : ''}${isVerified !=='' ? `&isVerified=${isVerified}`:''}${columnFilters?.length >=1 ?`&search=${JSON.stringify(columnFilters)}`:''}`,
+        `https://vigoplace.com/server/api/admin/console/users?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${gender !== '' ? `&gender=${gender}` : ''}${status !== '' ? `&status=${status}` : ''}${flagged !== '' ? `&flagged=${flagged}` : ''}${isVerified !== '' ? `&isVerified=${isVerified}` : ''}${columnFilters?.length >= 1 ? `&search=${JSON.stringify(columnFilters)}` : ''}`,
         // `http://localhost:3001/api/admin/console/users?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${gender !== '' ? `&gender=${gender}` : ''}${status !== '' ? `&status=${status}` : ''}${flagged !== '' ? `&flagged=${flagged}` : ''}${isVerified !== '' ? `&isVerified=${isVerified}` : ''}${columnFilters?.length >= 1 ? `&search=${JSON.stringify(columnFilters)}` : ''}`,
         {
           headers: {
@@ -408,72 +476,147 @@ const Users = () => {
     []
   );
 
-  return (
-    <MaterialReactTable
-      columns={columns}
-      data={data?.data ?? []}
-      // enableColumnFilterModes
-      // enableColumnOrdering
-      // enableGrouping
-      // enablePinning
 
-      enableRowActions
-      enableStickyHeader
-      enableStickyFooter
-      enableRowSelection
-      manualPagination
+  function SimpleDialog(props) {
+    const { onClose, selectedValue, open } = props;
 
-      onPaginationChange={setPagination}
-      rowCount={data?.count?.total ?? 0}
-      // onColumnFiltersChange={()=>{
-      //   setColumnFilters
-      // }}
-      onColumnFiltersChange={
-        setColumnFilters
-      }
-      onGlobalFilterChange={setGlobalFilter}
-      initialState={{ showColumnFilters: false }}
-      positionToolbarAlertBanner="bottom"
-      enableGlobalFilter={false}
+    const handleClose = () => {
+      onClose(selectedValue);
+    };
 
-      renderDetailPanel={({ row }) => {
-        // setWalletId(row.original.id)
-        // getUserWalletMutation.mutate(row.original.id)
-        return (
-          <>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "flex-start"
-              }}
+    const handleListItemClick = (value) => {
+      onClose(value);
+    };
+
+
+
+    return (
+      <Dialog onClose={handleClose} open={open}>
+        <DialogTitle>Set backup account</DialogTitle>
+        <List sx={{ pt: 0 }}>
+          {emails.map((email) => (
+            <ListItem disableGutters>
+              <ListItemButton onClick={() => handleListItemClick(email)} key={email}>
+                <ListItemAvatar>
+                  <Avatar sx={{ bgcolor: blue[100], color: blue[600] }}>
+                    <PersonIcon />
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText primary={email} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+
+          <ListItem disableGutters>
+            <ListItemButton
+              autoFocus
+              onClick={() => handleListItemClick('addAccount')}
             >
+              <ListItemAvatar>
+                <Avatar>
+                  <AddIcon />
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText primary="Add account" />
+            </ListItemButton>
+          </ListItem>
+        </List>
+      </Dialog>
+    );
+  }
 
-              <Box
-                sx={{
-                  marginRight: "20px",
-                }}
-              >
-                <img
-                  alt="avatar"
-                  height={200}
-                  src={row.original.photo}
-                  loading="lazy"
-                  style={{ borderRadius: "50%" }}
-                />
-              </Box>
+  SimpleDialog.propTypes = {
+    onClose: PropTypes.func.isRequired,
+    open: PropTypes.bool.isRequired,
+    selectedValue: PropTypes.string.isRequired,
+  };
 
+
+
+
+  return (
+    <>
+      <MaterialReactTable
+        columns={columns}
+        data={data?.data ?? []}
+        getRowId={(row) => {
+          // console.log({row})
+          return row.id
+        }}
+        // enableColumnFilterModes
+        // enableColumnOrdering
+        // enableGrouping
+        // enablePinning
+
+        enableRowActions
+        enableStickyHeader
+        enableStickyFooter
+        // enableRowSelection
+        manualPagination
+
+        onPaginationChange={setPagination}
+        rowCount={data?.count?.total ?? 0}
+        // onColumnFiltersChange={()=>{
+        //   setColumnFilters
+        // }}
+        onColumnFiltersChange={
+          setColumnFilters
+        }
+        onGlobalFilterChange={setGlobalFilter}
+        initialState={{ showColumnFilters: false }}
+        positionToolbarAlertBanner="bottom"
+        enableGlobalFilter={false}
+        muiTableBodyRowProps={({ row }) => ({
+          //implement row selection click events manually
+          onClick: () =>
+            setRowSelection((prev) => ({
+              ...prev,
+              [row.id]: !prev[row.id],
+            })),
+          selected: rowSelection[row.id],
+          sx: {
+            cursor: 'pointer',
+          },
+        })}
+
+        renderDetailPanel={({ row }) => {
+          // setWalletId(row.original.id)
+          // getUserWalletMutation.mutate(row.original.id)
+          return (
+            <>
               <Box
                 sx={{
                   display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
+                  alignItems: "flex-start"
                 }}
               >
-                <UserBio usersBio={row.original.bio} />
-                {/* <UserBalanceCard /> */}
-              </Box>
 
-              {/* <Box
+                <Box
+                  sx={{
+                    marginRight: "20px",
+                  }}
+                >
+                  <img
+                    alt="avatar"
+                    height={200}
+                    src={row.original.photo}
+                    loading="lazy"
+                    style={{ borderRadius: "50%" }}
+                  />
+                </Box>
+
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <UserBio usersBio={row.original.bio} />
+                  {/* <UserBalanceCard /> */}
+                </Box>
+
+                {/* <Box
               sx={{
                 // display: "flex",
                 // justifyContent: "space-between",
@@ -495,164 +638,209 @@ const Users = () => {
 </TabContext>
             </Box> */}
 
-            </Box>
+              </Box>
 
-          </>
-        )
-      }}
+            </>
+          )
+        }}
 
-      renderRowActionMenuItems={({ closeMenu, row, table }) => {
-        // console.log(table.getSelectedRowModel().flatRows[0]?.getValue('fullname'), 'table')
-        const handleDeactivate = () => {
-          blockMutation.mutate(row.original.id);
-        };
+        renderRowActionMenuItems={({ closeMenu, row, table }) => {
+          // console.log(table.getSelectedRowModel().flatRows[0]?.getValue('fullname'), 'table')
+          const handleDeactivate = () => {
+            blockMutation.mutate(row.original.id);
+          };
 
-        const handleActivate = () => {
-          // console.log(row.getValue("fullname"), "name");
-          unblockMutation.mutate(row.original.id);
-        };
+          const handleActivate = () => {
+            // console.log(row.getValue("fullname"), "name");
+            unblockMutation.mutate(row.original.id);
+          };
 
-        const handleFlag = () => {
-          flagUserMutation.mutate(row.original.id);
-        };
-        const handleUnFlag = () => {
-          unflagUserMutation.mutate(row.original.id);
-        };
+          const handleFlag = () => {
+            flagUserMutation.mutate(row.original.id);
+          };
+          const handleUnFlag = () => {
+            unflagUserMutation.mutate(row.original.id);
+          };
 
-        return [
+          return [
 
-          <MenuItem
-            key={0}
-            // onClick={handleDeactivate}
-            // onClick={() => handleDeactivate()}
-            sx={{ m: 0 }}
-          >
-            {
-              row.original?.status !== "blocked" ? (<Button
-                onClick={() => handleDeactivate()}
-                color="error"
-                // disabled={!table.getIsSomeRowsSelected('fullname')}
-                variant="contained"
-              >
-                {blockMutation.isLoading ? (
-                  <CircularProgress size={23} color="inherit" />
-                ) : (
-                  "Block"
-                )}
-                {/* {table.getRow().getValue()} */}
-              </Button>) : (<Button
-                onClick={() => handleActivate()}
-                color="success"
-                // disabled={!table.getIsSomeRowsSelected('fullname')}
-                variant="contained"
-              >
-                {unblockMutation.isLoading ? (
-                  <CircularProgress size={23} color="inherit" />
-                ) : (
-                  "Unblock"
-                )}
-                {/* {table.getRow().getValue()} */}
-              </Button>)
-            }
-
-          </MenuItem>
-          ,
-
-          <MenuItem
-            key={0}
-            // onClick={handleDeactivate}
-            // onClick={() => handleDeactivate()}
-            sx={{ m: 0 }}
-          >
-            {
-              row.original?.flagged ? (<Button
-                onClick={() => handleUnFlag()}
-                color="error"
-                // disabled={!table.getIsSomeRowsSelected('fullname')}
-                variant="contained"
-              >
-                {blockMutation.isLoading ? (
-                  <CircularProgress size={23} color="inherit" />
-                ) : (
-                  "unflag"
-                )}
-                {/* {table.getRow().getValue()} */}
-              </Button>) : (<Button
-                onClick={() => handleFlag()}
-                color="success"
-                // disabled={!table.getIsSomeRowsSelected('fullname')}
-                variant="contained"
-              >
-                {unblockMutation.isLoading ? (
-                  <CircularProgress size={23} color="inherit" />
-                ) : (
-                  "flag"
-                )}
-                {/* {table.getRow().getValue()} */}
-              </Button>)
-            }
-
-          </MenuItem>
-          ,
-
-          <MenuItem
-            key={1}
-            onClick={() => {
-              // View profile logic...
-              router.push(`/user/${row.original.id}`)
-              closeMenu();
-            }}
-            sx={{ m: 0 }}
-          >
-            <Button
-              color="success"
-              // disabled={!table.getIsSomeRowsSelected('fullname')}
-              variant="contained"
+            <MenuItem
+              key={0}
+              // onClick={handleDeactivate}
+              // onClick={() => handleDeactivate()}
+              sx={{ m: 0 }}
             >
-              View full Profile
-            </Button>
-          </MenuItem>,
-        ];
-      }}
+              {
+                row.original?.status !== "blocked" ? (<Button
+                  onClick={() => handleDeactivate()}
+                  color="error"
+                  // disabled={!table.getIsSomeRowsSelected('fullname')}
+                  variant="contained"
+                >
+                  {blockMutation.isLoading ? (
+                    <CircularProgress size={23} color="inherit" />
+                  ) : (
+                    "Block"
+                  )}
+                  {/* {table.getRow().getValue()} */}
+                </Button>) : (<Button
+                  onClick={() => handleActivate()}
+                  color="success"
+                  // disabled={!table.getIsSomeRowsSelected('fullname')}
+                  variant="contained"
+                >
+                  {unblockMutation.isLoading ? (
+                    <CircularProgress size={23} color="inherit" />
+                  ) : (
+                    "Unblock"
+                  )}
+                  {/* {table.getRow().getValue()} */}
+                </Button>)
+              }
 
-      muiToolbarAlertBannerProps={
-        isError
-          ? {
-            color: "error",
-            children:
-              "Error loading data, Please use the refresh button on the table to retry",
-          }
-          : undefined
-      }
+            </MenuItem>
+            ,
 
-      renderTopToolbarCustomActions={({ table }) => {
-        const handleDeactivate = () => {
-          table.getSelectedRowModel().flatRows.map((row) => {
-            alert("deactivating " + row.getValue("fullname"));
-          });
-        };
+            <MenuItem
+              key={0}
+              // onClick={handleDeactivate}
+              // onClick={() => handleDeactivate()}
+              sx={{ m: 0 }}
+            >
+              {
+                row.original?.flagged ? (<Button
+                  onClick={() => handleUnFlag()}
+                  color="error"
+                  // disabled={!table.getIsSomeRowsSelected('fullname')}
+                  variant="contained"
+                >
+                  {blockMutation.isLoading ? (
+                    <CircularProgress size={23} color="inherit" />
+                  ) : (
+                    "unflag"
+                  )}
+                  {/* {table.getRow().getValue()} */}
+                </Button>) : (<Button
+                  onClick={() => handleFlag()}
+                  color="success"
+                  // disabled={!table.getIsSomeRowsSelected('fullname')}
+                  variant="contained"
+                >
+                  {unblockMutation.isLoading ? (
+                    <CircularProgress size={23} color="inherit" />
+                  ) : (
+                    "flag"
+                  )}
+                  {/* {table.getRow().getValue()} */}
+                </Button>)
+              }
 
-        const handleActivate = () => {
-          table.getSelectedRowModel().flatRows.map((row) => {
-            alert("activating " + row.getValue("name"));
-          });
-        };
+            </MenuItem>
+            ,
 
-        const handleContact = () => {
-          table.getSelectedRowModel().flatRows.map((row) => {
-            alert("contact " + row.getValue("name"));
-          });
-        };
+            <MenuItem
+              key={1}
+              onClick={() => {
+                // View profile logic...
+                router.push(`/user/${row.original.id}`)
+                closeMenu();
+              }}
+              sx={{ m: 0 }}
+            >
+              <Button
+                color="success"
+                // disabled={!table.getIsSomeRowsSelected('fullname')}
+                variant="contained"
+              >
+                View full Profile
+              </Button>
+            </MenuItem>,
+          ];
+        }}
 
-        return (
-          <div style={{ display: "flex", gap: "0.5rem" }}>
-            <Tooltip arrow title="Refresh Data">
-              <IconButton onClick={() => refetch()}>
-                <RefreshIcon />
-              </IconButton>
-            </Tooltip>
+        muiToolbarAlertBannerProps={
+          isError
+            ? {
+              color: "error",
+              children:
+                "Error loading data, Please use the refresh button on the table to retry",
+            }
+            : undefined
+        }
 
-            <Button
+        renderTopToolbarCustomActions={({ table, row }) => {
+          const handleDeactivate = () => {
+            table.getSelectedRowModel().flatRows.map((row) => {
+              alert("deactivating " + row.getValue("fullname"));
+            });
+          };
+
+          const handleActivate = () => {
+            table.getSelectedRowModel().flatRows.map((row) => {
+              alert("activating " + row.getValue("name"));
+            });
+          };
+          const handleSelected = () => {
+            // console.log(rowSelection)
+            // console.log(table.getAllFlatColumns())
+            // console.log(table.getColumn
+            // console.log(table.getRow(4).original)
+            // console.log({sortrows})
+
+            // console.log({rowSelection})
+
+            const sortrows = Object.keys(rowSelection).filter(rowId => rowSelection[rowId] === true).map(rowId => {
+              // console.log(rowId)
+              // console.log(rowSelection[rowId] === true)
+              if (rowSelection[rowId] === true) {
+                return {
+                  fullname: table.getRow(rowId).original.fullname,
+                  userId: rowId
+                }
+              }
+              if (rowSelection[rowId] === false) {
+                return {}
+              }
+            })
+
+            const joinArrays = (arrays, iteratee) => {
+              // create a map
+              const map = new Map();
+
+              // iterate the arrays we pass to the function
+              arrays.forEach((array) => {
+                // iterate the objects in each array
+                array.forEach((object) => {
+                  // set a new key/value pair for each object
+                  // { 'Bob' => { name: 'Bob', food: 'Pizza' } }
+                  map.set(object[iteratee], object);
+                });
+              });
+
+              // return a new array from our map
+              return [...map.values()];
+            };
+
+            setContactUsers(joinArrays([contactUsers, sortrows], 'userId'));
+            setRowSelection({})
+          };
+
+          const handleContact = () => {
+            table.getSelectedRowModel().flatRows.map((row) => {
+              alert("contact " + row.getValue("name"));
+            });
+          };
+
+          return (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+              <Tooltip arrow title="Refresh Data">
+                <IconButton onClick={() => refetch()}>
+                  <RefreshIcon />
+                </IconButton>
+              </Tooltip>
+
+
+              {/* <Button
               color="error"
               disabled={!table.getIsSomeRowsSelected()}
               onClick={handleDeactivate}
@@ -669,121 +857,191 @@ const Users = () => {
               size="small"
             >
               Contact
-            </Button>
+            </Button> */}
 
-            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-              <InputLabel id="demo-simple-select-standard-label">Gender</InputLabel>
-              <Select
-                labelId="demo-simple-select-standard-label"
-                id="demo-simple-select-standard"
-                value={gender}
-                defaultValue="None"
-                onChange={handleGender}
-                label="Gender"
-              >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                <MenuItem value={'male'}>Male</MenuItem>
-                <MenuItem value={'female'}>Female</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-              <InputLabel id="demo-simple-select-standard-label">Flagged</InputLabel>
-              <Select
-                labelId="demo-simple-select-standard-label"
-                id="demo-simple-select-standard"
-                value={flagged}
-                // value={flagged ? "Flagged Users" : "Unflagged Users"}
-                defaultValue="all Users"
-                onChange={handleFlagged}
-                label="Flagged"
-              >
-                <MenuItem value="">
-                  <em>All Users</em>
-                </MenuItem>
-                <MenuItem value={1}>Flagged Users</MenuItem>
-                <MenuItem value={0}>Unflagged Users</MenuItem>
-              </Select>
-            </FormControl>
 
-            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-              <InputLabel id="demo-simple-select-standard-label">Status</InputLabel>
-              <Select
-                labelId="demo-simple-select-standard-label"
-                id="demo-simple-select-standard"
-                value={status}
-                defaultValue="None"
-                onChange={handleStatus}
-                label="Gender"
-              >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                <MenuItem value={'active'}>Active</MenuItem>
-                <MenuItem value={'inactive'}>Inactive</MenuItem>
-                <MenuItem value={'blocked'}>Blocked</MenuItem>
-                <MenuItem value={'deactivated'}>Deactivated</MenuItem>
-              </Select>
-            </FormControl>
-
-            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-              <InputLabel id="demo-simple-select-standard-label">Verified</InputLabel>
-              <Select
-                labelId="demo-simple-select-standard-label"
-                id="demo-simple-select-standard"
-                value={isVerified}
-                defaultValue="None"
-                onChange={handleVerified}
-                label="Gender"
-              >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                <MenuItem value={1}>Verified</MenuItem>
-                <MenuItem value={0}>Unverified</MenuItem>
-              </Select>
-            </FormControl>
-
-            {/* <FormControl sx={{ m: 1, width: '25ch' }} variant="standard">
-          <InputLabel htmlFor="standard-adornment-password">Email</InputLabel>
-          <Input
-            id="standard-adornment-password"
-            type={'text'}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-
-                  aria-label="search"
-                  // onClick={handleClickShowPassword}
-                  // onMouseDown={handleMouseDownPassword}
+              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                <InputLabel id="demo-simple-select-standard-label">Gender</InputLabel>
+                <Select
+                  labelId="demo-simple-select-standard-label"
+                  id="demo-simple-select-standard"
+                  value={gender}
+                  defaultValue="None"
+                  onChange={handleGender}
+                  label="Gender"
                 >
-                 <SearchIcon />
-                </IconButton>
-              </InputAdornment>
-            }
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value={'male'}>Male</MenuItem>
+                  <MenuItem value={'female'}>Female</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                <InputLabel id="demo-simple-select-standard-label">Flagged</InputLabel>
+                <Select
+                  labelId="demo-simple-select-standard-label"
+                  id="demo-simple-select-standard"
+                  value={flagged}
+                  // value={flagged ? "Flagged Users" : "Unflagged Users"}
+                  defaultValue="all Users"
+                  onChange={handleFlagged}
+                  label="Flagged"
+                >
+                  <MenuItem value="">
+                    <em>All Users</em>
+                  </MenuItem>
+                  <MenuItem value={1}>Flagged Users</MenuItem>
+                  <MenuItem value={0}>Unflagged Users</MenuItem>
+                </Select>
+              </FormControl>
+
+              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                <InputLabel id="demo-simple-select-standard-label">Status</InputLabel>
+                <Select
+                  labelId="demo-simple-select-standard-label"
+                  id="demo-simple-select-standard"
+                  value={status}
+                  defaultValue="None"
+                  onChange={handleStatus}
+                  label="Gender"
+                >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value={'active'}>Active</MenuItem>
+                  <MenuItem value={'inactive'}>Inactive</MenuItem>
+                  <MenuItem value={'blocked'}>Blocked</MenuItem>
+                  <MenuItem value={'deactivated'}>Deactivated</MenuItem>
+                </Select>
+              </FormControl>
+
+              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                <InputLabel id="demo-simple-select-standard-label">Verified</InputLabel>
+                <Select
+                  labelId="demo-simple-select-standard-label"
+                  id="demo-simple-select-standard"
+                  value={isVerified}
+                  defaultValue="None"
+                  onChange={handleVerified}
+                  label="Gender"
+                >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value={1}>Verified</MenuItem>
+                  <MenuItem value={0}>Unverified</MenuItem>
+                </Select>
+              </FormControl>
+
+        
+
+              <Box  width={"100%"}>
+                
+                <FormControl variant="standard" sx={{ m: 1, minWidth: 120, display: "flex", flexDirection: "row", flexWrap: "wrap", gap:"20px" }}>
+            <Autocomplete
+            sx={{minWidth: "50%"}}
+                  key={contactUsers}
+                  multiple
+                  limitTags={7}
+                  options={contactUsers || []}
+                  defaultValue={contactUsers}
+                  autoComplete={true}
+                  getOptionLabel={option => option.fullname}
+                  id="combo-box-demo"
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      // label="select users to notify"
+                      placeholder="selected users to notify"
+                    />
+                  )}
+                />
+
+                  <Button
+                    color="primary"
+                    onClick={() => setContactModal(!contactModal)}
+                    variant="contained"
+                    size="medium"
+                  >
+                    Send Notification
+                  </Button>
+
+                </FormControl>
+
+                {/* <SimpleDialog
+                open={contactModal}
+                onClose={handleClose}
+              /> */}
+
+<Dialog open={contactModal} onClose={handleClose}
+fullWidth
+maxWidth={"md"}
+>
+        <DialogContent>
+          <DialogContentText>
+            Enter Notification Text
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="normal"
+            id="name"
+            label="Enter Notification Text"
+            type="email"
+            fullWidth
+            variant="standard"
+            multiline
+            onChange={handleNotificationText}
           />
-          </FormControl> */}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleNotify}>
+            {
+              notifyUserMutation.isLoading ? (
+                <CircularProgress size={23} color="inherit" />
+              ) : (
+                "Notify"
+              )
+            }
+          </Button>
+        </DialogActions>
+      </Dialog>
 
+      
+              </Box>
 
+              {
+                table.getIsSomeRowsSelected() ? (
+                  <Button
+                    color="success"
+                    onClick={() => handleSelected()}
+                    variant="contained"
+                    size="small"
+                  >
+                    Add to Notification List
+                  </Button>) : (null)
+              }
 
-          </div>
-        );
-      }}
+            </div>
+          );
+        }}
 
-      // getPaginationRowModel={(props)=> console.log(props, "propppp")}
-      // manualPagination
-      // onPaginationChange={}
-      // muiTablePaginationProps={}
+        // getPaginationRowModel={(props)=> console.log(props, "propppp")}
+        // manualPagination
+        // onPaginationChange={}
+        // muiTablePaginationProps={}
 
-      state={{
-        isLoading,
-        showAlertBanner: isError,
-        showProgressBars: isFetching,
-        pagination,
-      }}
-      muiTableContainerProps={{ sx: { height: "75vh" } }}
-    />
+        state={{
+          isLoading,
+          showAlertBanner: isError,
+          showProgressBars: isFetching,
+          pagination,
+          rowSelection
+        }}
+        muiTableContainerProps={{ sx: { height: "75vh" } }}
+      />
+    </>
   );
 };
 Users.auth = true;
