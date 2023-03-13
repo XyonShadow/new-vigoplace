@@ -85,7 +85,8 @@ const Users = () => {
   const [gender, setGender] = React.useState('');
   const [status, setStatus] = React.useState('');
   const [flagged, setFlagged] = React.useState('');
-  const [isVerified, setIsverified] = React.useState('');
+  const [isVerified, setIsverified] = React.useState("");
+  const [wallet, setWallet] = React.useState(175);
   const [email, setEmail] = React.useState('');
   const [contactModal, setContactModal] = React.useState(false);
   const [rowSelection, setRowSelection] = useState({});
@@ -93,8 +94,6 @@ const Users = () => {
   const [notificationText, setNotificationText] = useState('');
 
 
-  // console.log({rowSelection})
-  // console.log({ contactUsers, notificationText })
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -118,6 +117,9 @@ const Users = () => {
       pageIndex: 0,
       pageSize: 10,
     })
+  };
+  const handleWallet = (event) => {
+    setWallet(event.target.value);
   };
   const handleFlagged = (event) => {
     setFlagged(event.target.value);
@@ -296,7 +298,6 @@ const Users = () => {
   //   },
   // });
 
-  // console.log(getUserWalletMutation.data, 'data me abeg')
 
   const { data, isError, isFetching, isLoading, refetch } = useQuery(
     [
@@ -309,7 +310,8 @@ const Users = () => {
       gender,
       status,
       isVerified,
-      flagged
+      flagged,
+      wallet,
     ],
     // async () => {
     //   // const url = new URL(
@@ -335,8 +337,8 @@ const Users = () => {
     // },
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/users?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${gender !== '' ? `&gender=${gender}` : ''}${status !== '' ? `&status=${status}` : ''}${flagged !== '' ? `&flagged=${flagged}` : ''}${isVerified !== '' ? `&isVerified=${isVerified}` : ''}${columnFilters?.length >= 1 ? `&search=${JSON.stringify(columnFilters)}` : ''}`,
-        // `http://localhost:3001/api/admin/console/users?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${gender !== '' ? `&gender=${gender}` : ''}${status !== '' ? `&status=${status}` : ''}${flagged !== '' ? `&flagged=${flagged}` : ''}${isVerified !== '' ? `&isVerified=${isVerified}` : ''}${columnFilters?.length >= 1 ? `&search=${JSON.stringify(columnFilters)}` : ''}`,
+        `https://vigoplace.com/server/api/admin/console/users?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}&walletCurrencyId=${wallet}${gender !== '' ? `&gender=${gender}` : ''}${status !== '' ? `&status=${status}` : ''}${flagged !== '' ? `&flagged=${flagged}` : ''}${isVerified !== '' ? `&isVerified=${isVerified}` : ''}${columnFilters?.length >= 1 ? `&search=${JSON.stringify(columnFilters)}` : ''}`,
+        // `http://localhost:3001/api/admin/console/users?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}&walletCurrencyId=${wallet}${gender !== '' ? `&gender=${gender}` : ''}${status !== '' ? `&status=${status}` : ''}${flagged !== '' ? `&flagged=${flagged}` : ''}${isVerified !== '' ? `&isVerified=${isVerified}` : ''}${columnFilters?.length >= 1 ? `&search=${JSON.stringify(columnFilters)}` : ''}`,
         {
           headers: {
             Authorization: user?.token,
@@ -382,7 +384,6 @@ const Users = () => {
   //   { keepPreviousData: true }
   // );
 
-  // console.log({walletId, wallet});
 
   const columns = useMemo(
     () => [
@@ -414,15 +415,16 @@ const Users = () => {
         ),
       },
       {
-        accessorKey: "gender",
-        enableClickToCopy: false,
-        enableColumnFilter: false,
-        header: "Gender",
-      },
-      {
         accessorKey: "email",
         enableClickToCopy: true,
         header: "Email",
+      },
+      {
+        accessorKey: "balance",
+        enableClickToCopy: false,
+        header: "Balance",
+        filterVariant: 'range',
+        // filterFn: 'lessThanOrEqualTo'
       },
       {
         accessorKey: "status",
@@ -437,6 +439,13 @@ const Users = () => {
         header: "Joined",
         enableColumnFilter: false,
       },
+      {
+        accessorKey: "gender",
+        enableClickToCopy: false,
+        enableColumnFilter: false,
+        header: "Gender",
+      },
+  
       {
         accessorKey: "phone",
         enableClickToCopy: false,
@@ -540,7 +549,6 @@ const Users = () => {
         columns={columns}
         data={data?.data ?? []}
         getRowId={(row) => {
-          // console.log({row})
           return row.id
         }}
         // enableColumnFilterModes
@@ -563,7 +571,7 @@ const Users = () => {
           setColumnFilters
         }
         onGlobalFilterChange={setGlobalFilter}
-        initialState={{ showColumnFilters: false }}
+        initialState={{ showColumnFilters: true }}
         positionToolbarAlertBanner="bottom"
         enableGlobalFilter={false}
         muiTableBodyRowProps={({ row }) => ({
@@ -781,17 +789,7 @@ const Users = () => {
             });
           };
           const handleSelected = () => {
-            // console.log(rowSelection)
-            // console.log(table.getAllFlatColumns())
-            // console.log(table.getColumn
-            // console.log(table.getRow(4).original)
-            // console.log({sortrows})
-
-            // console.log({rowSelection})
-
             const sortrows = Object.keys(rowSelection).filter(rowId => rowSelection[rowId] === true).map(rowId => {
-              // console.log(rowId)
-              // console.log(rowSelection[rowId] === true)
               if (rowSelection[rowId] === true) {
                 return {
                   fullname: table.getRow(rowId).original.fullname,
@@ -934,6 +932,21 @@ const Users = () => {
                 </Select>
               </FormControl>
 
+              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                <InputLabel id="demo-simple-select-standard-label">Wallet</InputLabel>
+                <Select
+                  labelId="demo-simple-select-standard-label"
+                  id="demo-simple-select-standard"
+                  value={wallet}
+                  defaultValue={wallet}
+                  onChange={handleWallet}
+                  label="Wallet"
+                >
+                  <MenuItem value={175}>NGN</MenuItem>
+                  <MenuItem value={251}>USD</MenuItem>
+                </Select>
+              </FormControl>
+
         
 
               <Box  width={"100%"}>
@@ -1027,7 +1040,6 @@ maxWidth={"md"}
           );
         }}
 
-        // getPaginationRowModel={(props)=> console.log(props, "propppp")}
         // manualPagination
         // onPaginationChange={}
         // muiTablePaginationProps={}
@@ -1039,6 +1051,7 @@ maxWidth={"md"}
           pagination,
           rowSelection
         }}
+        // enableColumnFilterModes
         muiTableContainerProps={{ sx: { height: "75vh" } }}
       />
     </>
