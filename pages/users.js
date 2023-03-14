@@ -86,7 +86,7 @@ const Users = () => {
   const [status, setStatus] = React.useState('');
   const [flagged, setFlagged] = React.useState('');
   const [isVerified, setIsverified] = React.useState("");
-  const [wallet, setWallet] = React.useState(175);
+  const [wallet, setWallet] = React.useState('null');
   const [email, setEmail] = React.useState('');
   const [contactModal, setContactModal] = React.useState(false);
   const [rowSelection, setRowSelection] = useState({});
@@ -942,6 +942,8 @@ const Users = () => {
                   onChange={handleWallet}
                   label="Wallet"
                 >
+                   
+                  <MenuItem value={"null"}>NONE</MenuItem>
                   <MenuItem value={175}>NGN</MenuItem>
                   <MenuItem value={251}>USD</MenuItem>
                 </Select>
