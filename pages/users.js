@@ -13,6 +13,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import Input from '@mui/material/Input';
 import { useRouter } from 'next/router'
 import { format } from "date-fns"
+import Link from 'next/link'
+
 
 
 
@@ -743,8 +745,7 @@ const Users = () => {
                 </Button>)
               }
 
-            </MenuItem>
-            ,
+            </MenuItem>,
 
             <MenuItem
               key={1}
@@ -761,6 +762,25 @@ const Users = () => {
                 variant="contained"
               >
                 View full Profile
+              </Button>
+            </MenuItem>,
+
+            <MenuItem
+              key={1}
+              // onClick={() => {
+              //   // View profile logic...
+              //   router.push(`/user/${row.original.id}`)
+              //   closeMenu();
+              // }}
+              sx={{ m: 0 }}
+            >
+              <Button
+                color="success"
+                // disabled={!table.getIsSomeRowsSelected('fullname')}
+                variant="contained"
+              >
+             <Link href={`https://web.vigoplace.com/profile/${row.original.id}?adt=${user?.token}`}>vigoplace web profile</Link>
+             {/* <Link href={`http://localhost:3002/profile/${row.original.id}?adt=${user?.token}`}>Goto Merchant</Link> */}
               </Button>
             </MenuItem>,
           ];
