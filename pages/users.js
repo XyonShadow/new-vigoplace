@@ -780,7 +780,7 @@ const Users = () => {
                 variant="contained"
               >
              <Link target="_blank"  href={`https://web.vigoplace.com/profile/${row.original.id}?adt=${user?.token}`}>vigoplace web profile</Link>
-             {/* <Link href={`http://localhost:3002/profile/${row.original.id}?adt=${user?.token}`}>Goto Merchant</Link> */}
+             {/* <Link target="_blank"  href={`http://localhost:3002/profile/${row.original.id}?adt=${user?.token}`}>vigoplace web profile</Link> */}
               </Button>
             </MenuItem>,
           ];

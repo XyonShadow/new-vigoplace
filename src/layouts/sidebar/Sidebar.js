@@ -150,8 +150,8 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
     ["paypalBalance"],
     async () => {
       const { data } = await axios.get(
-        // `https://vigoplace.com/server/api/admin/console/balance/paypal`,
-        `http://localhost:3001/api/admin/console/balance/paypal`,
+        `https://vigoplace.com/server/api/admin/console/balance/paypal`,
+        // `http://localhost:3001/api/admin/console/balance/paypal`,
         {
           headers: {
             Authorization: userInfo?.user?.token,

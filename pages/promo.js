@@ -72,9 +72,8 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Slide from '@mui/material/Slide';
-
-
-const emails = ["username@gmail.com", "user02@gmail.com"];
+import { NewUsersComponet } from "../src/components/promo/newSignedUpUsers";
+import { ReferralsComponet } from "../src/components/promo/referrals";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -121,20 +120,12 @@ const Promo = () => {
 
 
 
+
   const handleAccordionChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-  const handleGender = (event) => {
-    setGender(event.target.value);
-    setPagination({
-      pageIndex: 0,
-      pageSize: 10,
-    });
-  };
+
   const handleStatus = (event) => {
     setStatus(event.target.value);
     setPagination({
@@ -142,35 +133,12 @@ const Promo = () => {
       pageSize: 10,
     });
   };
-  const handleVerified = (event) => {
-    setIsverified(event.target.value);
-    setPagination({
-      pageIndex: 0,
-      pageSize: 10,
-    });
-  };
-  const handleWallet = (event) => {
-    setWallet(event.target.value);
-  };
-  const handleFlagged = (event) => {
-    setFlagged(event.target.value);
-    setPagination({
-      pageIndex: 0,
-      pageSize: 10,
-    });
-  };
+
 
   const handleClose = (value) => {
     setContactModal(false);
   };
 
-  const handleNotificationText = (event) => {
-    setNotificationText(event.target.value);
-  };
-  const handleNotify = () => {
-    const userIds = contactUsers.map((user) => user.userId);
-    notifyUserMutation.mutate({ users: userIds, message: notificationText });
-  };
 
   const handleReferralModalOpen = () => {
     setOpen(true);
@@ -213,131 +181,6 @@ const Promo = () => {
     }
   }, [open]);
 
-  const blockUser = async (id) => {
-    const blockedUser = await axios.post(
-      // "http://localhost:3001/api/admin/console/users/block",
-      "https://vigoplace.com/server/api/admin/console/users/block",
-      { userId: id },
-      {
-        headers: {
-          Authorization: user?.token,
-        },
-      }
-    );
-    return blockedUser;
-  };
-
-  const blockMutation = useMutation({
-    mutationKey: ["blockUser"],
-    mutationFn: blockUser,
-    onSuccess: () => {
-      queryClient.invalidateQueries("fetchUsers");
-    },
-    onError: async (error) => {
-      // setOpenToast(true);
-    },
-  });
-
-  const unblockUser = async (id) => {
-    const unblockedUser = await axios.post(
-      // "http://localhost:3001/api/admin/console/users/unblock",
-      "https://vigoplace.com/server/api/admin/console/users/unblock",
-      { userId: id },
-      {
-        headers: {
-          Authorization: user?.token,
-        },
-      }
-    );
-    return unblockedUser;
-  };
-
-  const unblockMutation = useMutation({
-    mutationKey: ["unblockUser"],
-    mutationFn: unblockUser,
-    onSuccess: () => {
-      queryClient.invalidateQueries("fetchUsers");
-    },
-    onError: async (error) => {
-      // setOpenToast(true);
-    },
-  });
-
-  const flagUser = async (id) => {
-    const flaggedUser = await axios.post(
-      // "http://localhost:3001/api/admin/console/users/flag",
-      "https://vigoplace.com/server/api/admin/console/users/flag",
-      { userId: id },
-      {
-        headers: {
-          Authorization: user?.token,
-        },
-      }
-    );
-    return flaggedUser;
-  };
-
-  const flagUserMutation = useMutation({
-    mutationKey: ["flagUser"],
-    mutationFn: flagUser,
-    onSuccess: () => {
-      queryClient.invalidateQueries("fetchUsers");
-    },
-    onError: async (error) => {
-      // setOpenToast(true);
-    },
-  });
-
-  const unflagUser = async (id) => {
-    const unflaggedUser = await axios.post(
-      // "http://localhost:3001/api/admin/console/users/unflag",
-      "https://vigoplace.com/server/api/admin/console/users/unflag",
-      { userId: id },
-      {
-        headers: {
-          Authorization: user?.token,
-        },
-      }
-    );
-    return unflaggedUser;
-  };
-
-  const unflagUserMutation = useMutation({
-    mutationKey: ["unflagUser"],
-    mutationFn: unflagUser,
-    onSuccess: () => {
-      queryClient.invalidateQueries("fetchUsers");
-    },
-    onError: async (error) => {
-      // setOpenToast(true);
-    },
-  });
-
-  const notifyUser = async ({ users, message }) => {
-    const notification = await axios.post(
-      // "http://localhost:3001/api/notifications",
-      "https://vigoplace.com/server/api/notifications",
-      { users, message },
-      {
-        headers: {
-          Authorization: user?.token,
-        },
-      }
-    );
-    return notification;
-  };
-
-  const notifyUserMutation = useMutation({
-    mutationKey: ["notifyUser"],
-    mutationFn: notifyUser,
-    onSuccess: () => {
-      setNotificationText("");
-      handleClose();
-    },
-    onError: async (error) => {
-      // setOpenToast(true);
-    },
-  });
 
   const rechargeReferral = async ({ userId }) => {
     const notification = await axios.post(
@@ -427,152 +270,152 @@ const Promo = () => {
   //   },
   // });
 
-  const { data: referrals, isError, isFetching, isLoading, refetch } = useQuery(
-    [
-      "fetchReferrals",
-      columnFilters, //refetch when columnFilters changes
-      globalFilter, //refetch when globalFilter changes
-      pagination.pageIndex, //refetch when pagination.pageIndex changes
-      pagination.pageSize, //refetch when pagination.pageSize changes
-      sorting, //refetch when sorting changes
-      gender,
-      status,
-      isVerified,
-      flagged,
-      wallet,
-    ],
-    // async () => {
-    //   // const url = new URL(
-    //   //   'localhost:3001/api/admin/console/users',
-    //   //   process.env.NODE_ENV === 'production'
-    //   //     ? 'https://www.material-react-table.com'
-    //   //     : 'http://localhost:30001',
-    //   // );
-    //   const url = new URL('localhost:3001/api/admin/console/users');
-    //   url.searchParams.set(
-    //     'start',
-    //     `${pagination.pageIndex * pagination.pageSize}`,
-    //   );
-    //   url.searchParams.set('size', `${pagination.pageSize}`);
-    //   url.searchParams.set('filters', JSON.stringify(columnFilters ?? []));
-    //   url.searchParams.set('globalFilter', globalFilter ?? '');
-    //   url.searchParams.set('sorting', JSON.stringify(sorting ?? []));
+  // const { data: referrals, isError, isFetching, isLoading, refetch } = useQuery(
+  //   [
+  //     "fetchReferrals",
+  //     columnFilters, //refetch when columnFilters changes
+  //     globalFilter, //refetch when globalFilter changes
+  //     pagination.pageIndex, //refetch when pagination.pageIndex changes
+  //     pagination.pageSize, //refetch when pagination.pageSize changes
+  //     sorting, //refetch when sorting changes
+  //     gender,
+  //     status,
+  //     isVerified,
+  //     flagged,
+  //     wallet,
+  //   ],
+  //   // async () => {
+  //   //   // const url = new URL(
+  //   //   //   'localhost:3001/api/admin/console/users',
+  //   //   //   process.env.NODE_ENV === 'production'
+  //   //   //     ? 'https://www.material-react-table.com'
+  //   //   //     : 'http://localhost:30001',
+  //   //   // );
+  //   //   const url = new URL('localhost:3001/api/admin/console/users');
+  //   //   url.searchParams.set(
+  //   //     'start',
+  //   //     `${pagination.pageIndex * pagination.pageSize}`,
+  //   //   );
+  //   //   url.searchParams.set('size', `${pagination.pageSize}`);
+  //   //   url.searchParams.set('filters', JSON.stringify(columnFilters ?? []));
+  //   //   url.searchParams.set('globalFilter', globalFilter ?? '');
+  //   //   url.searchParams.set('sorting', JSON.stringify(sorting ?? []));
 
-    //   const response = await fetch(url.href);
-    //   const json = await response.json();
-    //   return json;
+  //   //   const response = await fetch(url.href);
+  //   //   const json = await response.json();
+  //   //   return json;
 
-    // },
-    async () => {
-      const { data } = await axios.get(
-        // `http://localhost:3001/api/admin/console/users/referrals?limit=${
-        `https://vigoplace.com/server/api/admin/console/users/referrals?limit=${
-          pagination.pageSize
-        }&offset=${
-          pagination.pageIndex * pagination.pageSize
-        }&walletCurrencyId=${wallet}${
-          gender !== "" ? `&gender=${gender}` : ""
-        }${status !== "" ? `&status=${status}` : ""}${
-          flagged !== "" ? `&flagged=${flagged}` : ""
-        }${isVerified !== "" ? `&isVerified=${isVerified}` : ""}${
-          columnFilters?.length >= 1
-            ? `&search=${JSON.stringify(columnFilters)}`
-            : ""
-        }`,
-        // `http://localhost:3001/api/admin/console/users?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}&walletCurrencyId=${wallet}${gender !== '' ? `&gender=${gender}` : ''}${status !== '' ? `&status=${status}` : ''}${flagged !== '' ? `&flagged=${flagged}` : ''}${isVerified !== '' ? `&isVerified=${isVerified}` : ''}${columnFilters?.length >= 1 ? `&search=${JSON.stringify(columnFilters)}` : ''}`,
-        {
-          headers: {
-            Authorization: user?.token,
-          },
-        }
-      );
+  //   // },
+  //   async () => {
+  //     const { data } = await axios.get(
+  //       // `http://localhost:3001/api/admin/console/users/referrals?limit=${
+  //       `https://vigoplace.com/server/api/admin/console/users/referrals?limit=${
+  //         pagination.pageSize
+  //       }&offset=${
+  //         pagination.pageIndex * pagination.pageSize
+  //       }&walletCurrencyId=${wallet}${
+  //         gender !== "" ? `&gender=${gender}` : ""
+  //       }${status !== "" ? `&status=${status}` : ""}${
+  //         flagged !== "" ? `&flagged=${flagged}` : ""
+  //       }${isVerified !== "" ? `&isVerified=${isVerified}` : ""}${
+  //         columnFilters?.length >= 1
+  //           ? `&search=${JSON.stringify(columnFilters)}`
+  //           : ""
+  //       }`,
+  //       // `http://localhost:3001/api/admin/console/users?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}&walletCurrencyId=${wallet}${gender !== '' ? `&gender=${gender}` : ''}${status !== '' ? `&status=${status}` : ''}${flagged !== '' ? `&flagged=${flagged}` : ''}${isVerified !== '' ? `&isVerified=${isVerified}` : ''}${columnFilters?.length >= 1 ? `&search=${JSON.stringify(columnFilters)}` : ''}`,
+  //       {
+  //         headers: {
+  //           Authorization: user?.token,
+  //         },
+  //       }
+  //     );
 
-      return data;
-    },
-    {
-      onError: (err) => {
-        console.log(err, "err fetching users");
-      },
-      enabled: !!user?.token,
-    },
-    { keepPreviousData: true }
-  );
+  //     return data;
+  //   },
+  //   {
+  //     onError: (err) => {
+  //       console.log(err, "err fetching users");
+  //     },
+  //     enabled: !!user?.token,
+  //   },
+  //   { keepPreviousData: true }
+  // );
 
-  const { data: newSignups, isError: newSignupsError, isFetching:fetchingNewSignups, isLoading:loadingNewSignups, refetch: refetchNewSignups } = useQuery(
-    [
-      "newSignups",
-      columnFilters, //refetch when columnFilters changes
-      globalFilter, //refetch when globalFilter changes
-      pagination.pageIndex, //refetch when pagination.pageIndex changes
-      pagination.pageSize, //refetch when pagination.pageSize changes
-      sorting, //refetch when sorting changes
-      gender,
-      status,
-      isVerified,
-      flagged,
-      wallet,
-    ],
-    async () => {
-      const { data } = await axios.get(
-        // `http://localhost:3001/api/admin/console/users/new-signups?limit=${
-        `https://vigoplace.com/server/api/admin/console/users/new-signups?limit=${
-          pagination.pageSize
-        }&offset=${
-          pagination.pageIndex * pagination.pageSize
-        }&walletCurrencyId=${wallet}${
-          gender !== "" ? `&gender=${gender}` : ""
-        }${status !== "" ? `&status=${status}` : ""}${
-          flagged !== "" ? `&flagged=${flagged}` : ""
-        }${isVerified !== "" ? `&isVerified=${isVerified}` : ""}${
-          columnFilters?.length >= 1
-            ? `&search=${JSON.stringify(columnFilters)}`
-            : ""
-        }`,
+  // const { data: newSignups, isError: newSignupsError, isFetching:fetchingNewSignups, isLoading:loadingNewSignups, refetch: refetchNewSignups } = useQuery(
+  //   [
+  //     "newSignups",
+  //     columnFilters, //refetch when columnFilters changes
+  //     globalFilter, //refetch when globalFilter changes
+  //     pagination.pageIndex, //refetch when pagination.pageIndex changes
+  //     pagination.pageSize, //refetch when pagination.pageSize changes
+  //     sorting, //refetch when sorting changes
+  //     gender,
+  //     status,
+  //     isVerified,
+  //     flagged,
+  //     wallet,
+  //   ],
+  //   async () => {
+  //     const { data } = await axios.get(
+  //       `http://localhost:3001/api/admin/console/users/new-signups?limit=${
+  //       // `https://vigoplace.com/server/api/admin/console/users/new-signups?limit=${
+  //         pagination.pageSize
+  //       }&offset=${
+  //         pagination.pageIndex * pagination.pageSize
+  //       }&walletCurrencyId=${wallet}${
+  //         gender !== "" ? `&gender=${gender}` : ""
+  //       }${status !== "" ? `&status=${status}` : ""}${
+  //         flagged !== "" ? `&flagged=${flagged}` : ""
+  //       }${isVerified !== "" ? `&isVerified=${isVerified}` : ""}${
+  //         columnFilters?.length >= 1
+  //           ? `&search=${JSON.stringify(columnFilters)}`
+  //           : ""
+  //       }`,
 
-        {
-          headers: {
-            Authorization: user?.token,
-          },
-        }
-      );
+  //       {
+  //         headers: {
+  //           Authorization: user?.token,
+  //         },
+  //       }
+  //     );
 
-      return data;
-    },
-    {
-      onError: (err) => {
-        console.log(err, "err fetching users");
-      },
-      enabled: !!user?.token,
-    },
-    { keepPreviousData: true }
-  );
+  //     return data;
+  //   },
+  //   {
+  //     onError: (err) => {
+  //       console.log(err, "err fetching users");
+  //     },
+  //     enabled: !!user?.token,
+  //   },
+  //   { keepPreviousData: true }
+  // );
 
-  const { data: userReferrals, isError: userReferralsError, isFetching:fetchingUserReferrals, isLoading:loadingUserReferrals, refetch: refetchUserReferrals } = useQuery(
-    [
-      "userReferrals",
-      userId
-    ],
-    async () => {
-      const { data } = await axios.get(
-        // `http://localhost:3001/api/admin/console/users/referrals/${userId}`,
-        `https://vigoplace.com/server/api/admin/console/users/referrals/${userId}`,
-        {
-          headers: {
-            Authorization: user?.token,
-          },
-        }
-      );
+  // const { data: userReferrals, isError: userReferralsError, isFetching:fetchingUserReferrals, isLoading:loadingUserReferrals, refetch: refetchUserReferrals } = useQuery(
+  //   [
+  //     "userReferrals",
+  //     userId
+  //   ],
+  //   async () => {
+  //     const { data } = await axios.get(
+  //       // `http://localhost:3001/api/admin/console/users/referrals/${userId}`,
+  //       `https://vigoplace.com/server/api/admin/console/users/referrals/${userId}?status=${status}`,
+  //       {
+  //         headers: {
+  //           Authorization: user?.token,
+  //         },
+  //       }
+  //     );
 
-      return data;
-    },
-    {
-      onError: (err) => {
-        console.log(err, "err fetching users");
-      },
-      enabled: !!user?.token,
-    },
-    { keepPreviousData: true }
-  );
+  //     return data;
+  //   },
+  //   {
+  //     onError: (err) => {
+  //       console.log(err, "err fetching users");
+  //     },
+  //     enabled: !!user?.token,
+  //   },
+  //   { keepPreviousData: true }
+  // );
 
   const columns = useMemo(
     () => [
@@ -769,297 +612,11 @@ const Promo = () => {
         </AccordionSummary>
 
         <AccordionDetails>
-          <MaterialReactTable
-            columns={columns}
-            data={referrals?.data ?? []}
-            getRowId={(row) => {
-              return row.id;
-            }}
-            // enableColumnFilterModes
-            // enableColumnOrdering
-            // enableGrouping
-            // enablePinning
-
-            enableRowActions
-            enableStickyHeader
-            enableStickyFooter
-            // enableRowSelection
-            manualPagination
-            onPaginationChange={setPagination}
-            // rowCount={data?.count?.total ?? 0}
-            // onColumnFiltersChange={()=>{
-            //   setColumnFilters
-            // }}
-            onColumnFiltersChange={setColumnFilters}
-            onGlobalFilterChange={setGlobalFilter}
-            initialState={{ showColumnFilters: true }}
-            positionToolbarAlertBanner="bottom"
-            enableGlobalFilter={false}
-            muiTableBodyRowProps={({ row }) => ({
-              //implement row selection click events manually
-              onClick: () => setUserId(row.original.userId),
-              // onClick: () =>
-              //   setRowSelection((prev) => ({
-              //     ...prev,
-              //     [row.id]: !prev[row.id],
-              //   })),
-              selected: rowSelection[row.id],
-              sx: {
-                cursor: "pointer",
-              },
-            })}
-
-            renderRowActions={({ row, table }) => (
-              <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
-                <Tooltip title="Details">
-                <IconButton
-                  color="primary"
-                  onClick={() =>handleReferralModalOpen()}
-                >
-                  <MoreHorizIcon />
-                </IconButton>
-                </Tooltip>     
-                     
-                <Tooltip title="Details">
-                <IconButton
-                  color="primary"
-                  onClick={() =>handleConfirmModalOpen()}
-                >
-                  <Button variant="outlined">Recharge</Button>
-                </IconButton>
-                </Tooltip>          
-              </Box>
-            )}
-            muiToolbarAlertBannerProps={
-              isError
-                ? {
-                    color: "error",
-                    children:
-                      "Error loading data, Please use the refresh button on the table to retry",
-                  }
-                : undefined
-            }
-            renderTopToolbarCustomActions={({ table, row }) => {
-              // console.log(table.getIsSomeRowsSelected(), 'selebobo')
-              // console.log(table.getIsAllRowsSelected(), 'selebobo2')
-              // console.log(table.getRowModel().rows.length)
-
-              const handleDeactivate = () => {
-                table.getSelectedRowModel().flatRows.map((row) => {
-                  alert("deactivating " + row.getValue("fullname"));
-                });
-              };
-
-              const handleActivate = () => {
-                table.getSelectedRowModel().flatRows.map((row) => {
-                  alert("activating " + row.getValue("name"));
-                });
-              };
-              const handleSelected = () => {
-                const sortrows = Object.keys(rowSelection)
-                  .filter((rowId) => rowSelection[rowId] === true)
-                  .map((rowId) => {
-                    if (rowSelection[rowId] === true) {
-                      return {
-                        fullname: table.getRow(rowId).original.fullname,
-                        userId: rowId,
-                      };
-                    }
-                    if (rowSelection[rowId] === false) {
-                      return {};
-                    }
-                  });
-
-                const joinArrays = (arrays, iteratee) => {
-                  // create a map
-                  const map = new Map();
-
-                  // iterate the arrays we pass to the function
-                  arrays.forEach((array) => {
-                    // iterate the objects in each array
-                    array.forEach((object) => {
-                      // set a new key/value pair for each object
-                      // { 'Bob' => { name: 'Bob', food: 'Pizza' } }
-                      map.set(object[iteratee], object);
-                    });
-                  });
-
-                  // return a new array from our map
-                  return [...map.values()];
-                };
-
-                setContactUsers(joinArrays([contactUsers, sortrows], "userId"));
-                setRowSelection({});
-              };
-
-              const handleContact = () => {
-                table.getSelectedRowModel().flatRows.map((row) => {
-                  alert("contact " + row.getValue("name"));
-                });
-              };
-
-              return (
-                <div
-                  style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}
-                >
-                  <Tooltip arrow title="Refresh Data">
-                    <IconButton onClick={() => refetch()}>
-                      <RefreshIcon />
-                    </IconButton>
-                  </Tooltip>
-
-    
-
-                  <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                    <InputLabel id="demo-simple-select-standard-label">
-                      Status
-                    </InputLabel>
-                    <Select
-                      labelId="demo-simple-select-standard-label"
-                      id="demo-simple-select-standard"
-                      value={status}
-                      defaultValue="None"
-                      onChange={handleStatus}
-                      label="Gender"
-                    >
-                      <MenuItem value="">
-                        <em>None</em>
-                      </MenuItem>
-                      <MenuItem value={"pending"}>Pending</MenuItem>
-                      <MenuItem value={"processing"}>Processing</MenuItem>
-                      <MenuItem value={"completed"}>Completed</MenuItem>
-                      <MenuItem value={"failed"}>Failed</MenuItem>
-                    </Select>
-                  </FormControl>
-
-                </div>
-              );
-            }}
-            positionActionsColumn="last"
-            // manualPagination
-            // onPaginationChange={}
-            // muiTablePaginationProps={}
-
-            state={{
-              isLoading,
-              showAlertBanner: isError,
-              showProgressBars: isFetching,
-              pagination,
-              rowSelection,
-            }}
-            // enableColumnFilterModes
-            muiTableContainerProps={{ sx: { height: "75vh" } }}
-          />
-
-          <Dialog
-        open={open}
-        TransitionComponent={Transition}
-        onClose={handleReferralModalClose}
-        fullWidth={true}
-        maxWidth={"md"}
-        // <MenuItem value="xs">xs</MenuItem>
-        //         <MenuItem value="sm">sm</MenuItem>
-        //         <MenuItem value="md">md</MenuItem>
-        //         <MenuItem value="lg">lg</MenuItem>
-        //         <MenuItem value="xl">xl</MenuItem>
-        scroll={"paper"}
-        aria-labelledby="scroll-dialog-title"
-        aria-describedby="scroll-dialog-description"
-        width
-      >
-        <DialogTitle id="scroll-dialog-title">Referral Details</DialogTitle>
-        <DialogContent dividers={true}>
-          <DialogContentText
-            id="scroll-dialog-description"
-            ref={descriptionElementRef}
-            tabIndex={-1}
-          >
-            <MaterialReactTable
-            columns={userReferralColumns}
-            data={userReferrals?.data ?? []}
-            enableStickyHeader
-            // initialState={{ showColumnFilters: true }}
-            enableColumnActions={false}
-      enableColumnFilters={false}
-      enablePagination={false}
-      enableSorting={false}
-      enableBottomToolbar={false}
-      enableTopToolbar={false}
-            positionToolbarAlertBanner="bottom"
-            renderRowActions={({ row, table }) => (
-              <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
-                <Tooltip title="Details">
-                <IconButton
-                  color="primary"
-                  onClick={() =>handleReferralModalOpen()}
-                >
-                  <MoreHorizIcon />
-                </IconButton>
-                </Tooltip>          
-              </Box>
-            )}
-            muiToolbarAlertBannerProps={
-              isError
-                ? {
-                    color: "error",
-                    children:
-                      "Error loading data, Please use the refresh button on the table to retry",
-                  }
-                : undefined
-            }
-            state={{
-              isLoading,
-              showAlertBanner: isError,
-              showProgressBars: isFetching,
-            }}
-            // muiTableContainerProps={{ sx: { height: "75vh" } }}
-          />
-          </DialogContentText>
-        </DialogContent>
-        {/* <DialogActions>
-          <Button onClick={handleReferralModalClose}>Cancel</Button>
-          <Button onClick={handleReferralModalClose}>Subscribe</Button>
-        </DialogActions> */}
-      </Dialog>
-
-      <Dialog
-        open={openConfirmModal}
-        TransitionComponent={Transition}
-        onClose={handleConfirmModalClose}
-        fullWidth={true}
-        maxWidth={"sm"}
-        // <MenuItem value="xs">xs</MenuItem>
-        //         <MenuItem value="sm">sm</MenuItem>
-        //         <MenuItem value="md">md</MenuItem>
-        //         <MenuItem value="lg">lg</MenuItem>
-        //         <MenuItem value="xl">xl</MenuItem>
-        scroll={"paper"}
-        aria-labelledby="scroll-dialog-title"
-        aria-describedby="scroll-dialog-description"
-        width
-      >
-        <DialogTitle id="scroll-dialog-title">Recharge</DialogTitle>
-        <DialogContent dividers={true}>
-          <DialogContentText
-            id="scroll-dialog-description"
-            ref={descriptionElementRef}
-            tabIndex={-1}
-          >
-
-          <Typography variant="h3">Confirm Recharge</Typography>
-         
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button variant="contained" onClick={handleConfirmModalClose}>Cancel</Button>
-          <Button variant="contained" onClick={handleRechargeReferral}>{
-            rechargeReferralMutation.isLoading ? ( <CircularProgress size={23} color="inherit" />): ('Recharge')
-          }</Button>
-        </DialogActions>
-      </Dialog>
+        <ReferralsComponet user={user}/>
 
         </AccordionDetails>
       </Accordion>
+
 
       {/* table for new signups */}
       <Accordion
@@ -1079,7 +636,140 @@ const Promo = () => {
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-        <MaterialReactTable
+
+      <NewUsersComponet user={user}/>
+        </AccordionDetails>
+      </Accordion>
+
+    </>
+  );
+};
+
+const NewUsersComponets = ({user}) => {
+  const [status, setStatus] = React.useState("pending");
+  const [newSignupErrorAlert, setNewSignupErrorAlert] = React.useState(false);
+  const [newUser, setNewUser] = React.useState({});
+  const [userId, setUserId] = React.useState('');
+  const [openConfirmNewSignupModal, setOpenConfirmNewSignupModal] = React.useState(false);
+  const [columnFilters, setColumnFilters] = useState([]);
+  const [globalFilter, setGlobalFilter] = useState("");
+  const [sorting, setSorting] = useState([]);
+  const [rowSelection, setRowSelection] = useState({});
+
+  console.log({status})
+
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+  });
+
+  const handleStatus = (event) => {
+    setStatus(event.target.value);
+    setPagination({
+      pageIndex: 0,
+      pageSize: 10,
+    });
+  };
+
+  const handleConfirmModalClose = () => {
+    setOpenConfirmModal(false);
+  };
+  const handleConfirmNewSignUpModalOpen = (row) => {
+    setNewUser({userId: row.newUserId, creditNewUserId: row.newSignupId})
+    setOpenConfirmNewSignupModal(true);
+  };
+  const handleConfirmNewSignUpModalClose = () => {
+    setOpenConfirmNewSignupModal(false);
+    setNewUser({})
+
+  };
+
+  useEffect(() => {
+    setPagination({ ...pagination, pageIndex: 0 });
+  }, [columnFilters]);
+
+  const newSignupColumns = useMemo(
+    () => [
+      {
+        accessorFn: (row) => row.fullname,
+        // accessorFn: (row) => `${row.fullname}`,
+        id: "name", //id is still required when using accessorFn instead of accessorKey
+        header: "Full Name",
+        enableColumnFilter: false,
+      },
+      {
+        accessorKey: "phone",
+        enableClickToCopy: true,
+        header: "Mobile",
+        enableColumnFilter: false,
+      },
+      {
+        accessorKey: "status",
+        enableClickToCopy: false,
+        header: "Status",
+        enableColumnFilter: false,
+      },
+      {
+        accessorKey: "amount",
+        enableClickToCopy: false,
+        header: "Amount",
+        enableColumnFilter: false,
+      },
+      {
+        // accessorKey: "createdAt",
+        accessorFn: (row) => format(new Date(row.createdAt), "Pp"),
+        enableClickToCopy: false,
+        header: "Date",
+        enableColumnFilter: false,
+      },
+
+    ],
+    []
+  );
+
+
+
+  const { data: newSignups, isError: newSignupsError, isFetching:fetchingNewSignups, isLoading:loadingNewSignups, refetch: refetchNewSignups } = useQuery(
+    [
+      "newSignups",
+      status,
+      columnFilters, //refetch when columnFilters changes
+      globalFilter, //refetch when globalFilter changes
+      pagination.pageIndex, //refetch when pagination.pageIndex changes
+      pagination.pageSize, //refetch when pagination.pageSize changes
+      sorting, //refetch when sorting changes
+      status,
+    ],
+    async () => {
+      const { data } = await axios.get(
+        // `http://localhost:3001/api/admin/console/users/new-signups?limit=${
+        `https://vigoplace.com/server/api/admin/console/users/new-signups?limit=${
+          pagination.pageSize
+        }&offset=${
+          pagination.pageIndex * pagination.pageSize
+        }&status=${status}`,
+        // }${status !== "" || status !== null ? `&status=${status}` : ""}`,
+
+        {
+          headers: {
+            Authorization: user?.token,
+          },
+        }
+      );
+
+      return data;
+    },
+    {
+      onError: (err) => {
+        console.log(err, "err fetching users");
+      },
+      enabled: !!user?.token,
+    },
+    { keepPreviousData: true }
+  );
+
+  return(
+    <MaterialReactTable
             columns={newSignupColumns}
             data={newSignups?.data ?? []}
             getRowId={(row) => {
@@ -1096,7 +786,7 @@ const Promo = () => {
             // enableRowSelection
             manualPagination
             onPaginationChange={setPagination}
-            // rowCount={data?.count?.total ?? 0}
+            rowCount={newSignups?.totalCount ?? 0}
             // onColumnFiltersChange={()=>{
             //   setColumnFilters
             // }}
@@ -1133,7 +823,7 @@ const Promo = () => {
               </Box>
             )}
             muiToolbarAlertBannerProps={
-              isError
+              newSignupsError
                 ? {
                     color: "error",
                     children:
@@ -1146,60 +836,6 @@ const Promo = () => {
               // console.log(table.getIsAllRowsSelected(), 'selebobo2')
               // console.log(table.getRowModel().rows.length)
 
-              const handleDeactivate = () => {
-                table.getSelectedRowModel().flatRows.map((row) => {
-                  alert("deactivating " + row.getValue("fullname"));
-                });
-              };
-
-              const handleActivate = () => {
-                table.getSelectedRowModel().flatRows.map((row) => {
-                  alert("activating " + row.getValue("name"));
-                });
-              };
-              const handleSelected = () => {
-                const sortrows = Object.keys(rowSelection)
-                  .filter((rowId) => rowSelection[rowId] === true)
-                  .map((rowId) => {
-                    if (rowSelection[rowId] === true) {
-                      return {
-                        fullname: table.getRow(rowId).original.fullname,
-                        userId: rowId,
-                      };
-                    }
-                    if (rowSelection[rowId] === false) {
-                      return {};
-                    }
-                  });
-
-                const joinArrays = (arrays, iteratee) => {
-                  // create a map
-                  const map = new Map();
-
-                  // iterate the arrays we pass to the function
-                  arrays.forEach((array) => {
-                    // iterate the objects in each array
-                    array.forEach((object) => {
-                      // set a new key/value pair for each object
-                      // { 'Bob' => { name: 'Bob', food: 'Pizza' } }
-                      map.set(object[iteratee], object);
-                    });
-                  });
-
-                  // return a new array from our map
-                  return [...map.values()];
-                };
-
-                setContactUsers(joinArrays([contactUsers, sortrows], "userId"));
-                setRowSelection({});
-              };
-
-              const handleContact = () => {
-                table.getSelectedRowModel().flatRows.map((row) => {
-                  alert("contact " + row.getValue("name"));
-                });
-              };
-
               return (
                 <div
                   style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}
@@ -1209,26 +845,6 @@ const Promo = () => {
                       <RefreshIcon />
                     </IconButton>
                   </Tooltip>
-
-                  {/* <Button
-              color="error"
-              disabled={!table.getIsSomeRowsSelected()}
-              onClick={handleDeactivate}
-              variant="contained"
-              size="small"
-            >
-              Delete
-            </Button>
-            <Button
-              color="success"
-              disabled={!table.getIsSomeRowsSelected()}
-              onClick={handleContact}
-              variant="contained"
-              size="small"
-            >
-              Contact
-            </Button> */}
-    
 
                   <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
                     <InputLabel id="demo-simple-select-standard-label">
@@ -1261,6 +877,7 @@ const Promo = () => {
 
             state={{
               isLoading: loadingNewSignups,
+              isError: newSignupsError,
               showAlertBanner: newSignupsError,
               showProgressBars: fetchingNewSignups,
               pagination,
@@ -1269,48 +886,10 @@ const Promo = () => {
             // enableColumnFilterModes
             muiTableContainerProps={{ sx: { height: "75vh" } }}
           />
+  )
 
-<Dialog
-        open={openConfirmNewSignupModal}
-        TransitionComponent={Transition}
-        onClose={handleConfirmNewSignUpModalClose}
-        fullWidth={true}
-        maxWidth={"sm"}
-        // <MenuItem value="xs">xs</MenuItem>
-        //         <MenuItem value="sm">sm</MenuItem>
-        //         <MenuItem value="md">md</MenuItem>
-        //         <MenuItem value="lg">lg</MenuItem>
-        //         <MenuItem value="xl">xl</MenuItem>
-        scroll={"paper"}
-        aria-labelledby="scroll-dialog-title"
-        aria-describedby="scroll-dialog-description"
-        width
-      >
-        <DialogTitle id="scroll-dialog-title">Recharge</DialogTitle>
-        <DialogContent dividers={true}>
-          <DialogContentText
-            id="scroll-dialog-description"
-            ref={descriptionElementRef}
-            tabIndex={-1}
-          >
+}
 
-          <Typography variant="h3">Confirm Recharge</Typography>
-         
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button variant="contained" onClick={handleConfirmNewSignUpModalClose}>Cancel</Button>
-          <Button variant="contained" onClick={()=> rechargeNewSignupMutation.mutate(newUser)}>{
-            rechargeNewSignupMutation.isLoading ? ( <CircularProgress size={23} color="inherit" />): ('Recharge')
-          }</Button>
-        </DialogActions>
-      </Dialog>  
 
-        </AccordionDetails>
-      </Accordion>
-
-    </>
-  );
-};
 Promo.auth = true;
 export default Promo;
