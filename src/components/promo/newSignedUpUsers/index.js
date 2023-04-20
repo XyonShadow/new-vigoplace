@@ -238,7 +238,7 @@ export const NewUsersComponet = ({ user }) => {
                 color="primary"
               >
                 <Button 
-                // disabled={row.original.status === "completed" || row.original.status === "processing" }
+                disabled={row.original.status === "completed" || row.original.status === "processing" }
                 variant="outlined"
                 onClick={() => handleConfirmNewSignUpModalOpen(row.original)}
                 >Recharge</Button>
