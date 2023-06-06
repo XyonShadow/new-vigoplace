@@ -1,24 +1,26 @@
 import React, { useMemo, useState } from "react";
 import MaterialReactTable from "material-react-table";
-import { CircularProgress, IconButton, InputAdornment, Paper, Tab, Tooltip } from "@mui/material";
-import Autocomplete from '@mui/material/Autocomplete';
+import {
+  CircularProgress,
+  IconButton,
+  InputAdornment,
+  Paper,
+  Tab,
+  Tooltip,
+} from "@mui/material";
+import Autocomplete from "@mui/material/Autocomplete";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import axios from "axios";
-import CheckIcon from '@mui/icons-material/Check';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import SearchIcon from '@mui/icons-material/Search';
-import Input from '@mui/material/Input';
-import { useRouter } from 'next/router'
-import { format } from "date-fns"
-import Link from 'next/link'
-
-
-
-
-
+import CheckIcon from "@mui/icons-material/Check";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import SearchIcon from "@mui/icons-material/Search";
+import Input from "@mui/material/Input";
+import { useRouter } from "next/router";
+import { format } from "date-fns";
+import Link from "next/link";
 
 import {
   QueryClient,
@@ -35,7 +37,7 @@ import {
   ListItemIcon,
   MenuItem,
   Typography,
-  TextField
+  TextField,
 } from "@mui/material";
 
 //Icons Imports
@@ -43,58 +45,52 @@ import { AccountCircle, Send } from "@mui/icons-material";
 import { UserBalanceCard } from "../src/components/dashboard/userBalanceCard";
 import { UserBio } from "../src/components/dashboard/userBio";
 import { TabContext, TabList } from "@mui/lab";
-import TabPanel from '@mui/lab/TabPanel';
+import TabPanel from "@mui/lab/TabPanel";
 import { useEffect } from "react";
 
-import Avatar from '@mui/material/Avatar';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import PropTypes from 'prop-types';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-import Dialog from '@mui/material/Dialog';
-import PersonIcon from '@mui/icons-material/Person';
-import AddIcon from '@mui/icons-material/Add';
-import { blue } from '@mui/material/colors';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import Avatar from "@mui/material/Avatar";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import PropTypes from "prop-types";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemText from "@mui/material/ListItemText";
+import Dialog from "@mui/material/Dialog";
+import PersonIcon from "@mui/icons-material/Person";
+import AddIcon from "@mui/icons-material/Add";
+import { blue } from "@mui/material/colors";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
-
-
-
-const emails = ['username@gmail.com', 'user02@gmail.com'];
-
-
+const emails = ["username@gmail.com", "user02@gmail.com"];
 
 const Users = () => {
-  const router = useRouter()
+  const router = useRouter();
   const queryClient = useQueryClient();
   const getUser = useSession();
   const user = getUser?.data?.user;
-  const [value, setValue] = React.useState('1');
+  const [value, setValue] = React.useState("1");
   const [walletId, setWalletId] = React.useState(null);
 
   const [columnFilters, setColumnFilters] = useState([]);
-  const [globalFilter, setGlobalFilter] = useState('');
+  const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState([]);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
   });
-  const [gender, setGender] = React.useState('');
-  const [status, setStatus] = React.useState('');
-  const [flagged, setFlagged] = React.useState('');
+  const [gender, setGender] = React.useState("");
+  const [status, setStatus] = React.useState("");
+  const [flagged, setFlagged] = React.useState("");
   const [isVerified, setIsverified] = React.useState("");
-  const [wallet, setWallet] = React.useState('null');
-  const [email, setEmail] = React.useState('');
+  const [wallet, setWallet] = React.useState("null");
+  const [email, setEmail] = React.useState("");
   const [contactModal, setContactModal] = React.useState(false);
   const [rowSelection, setRowSelection] = useState({});
   const [contactUsers, setContactUsers] = useState([]);
-  const [notificationText, setNotificationText] = useState('');
-
+  const [notificationText, setNotificationText] = useState("");
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -104,21 +100,21 @@ const Users = () => {
     setPagination({
       pageIndex: 0,
       pageSize: 10,
-    })
+    });
   };
   const handleStatus = (event) => {
     setStatus(event.target.value);
     setPagination({
       pageIndex: 0,
       pageSize: 10,
-    })
+    });
   };
   const handleVerified = (event) => {
     setIsverified(event.target.value);
     setPagination({
       pageIndex: 0,
       pageSize: 10,
-    })
+    });
   };
   const handleWallet = (event) => {
     setWallet(event.target.value);
@@ -128,7 +124,7 @@ const Users = () => {
     setPagination({
       pageIndex: 0,
       pageSize: 10,
-    })
+    });
   };
 
   const handleClose = (value) => {
@@ -139,15 +135,14 @@ const Users = () => {
     setNotificationText(event.target.value);
   };
   const handleNotify = () => {
-    const userIds = contactUsers.map(user => user.userId)
-    notifyUserMutation.mutate({users: userIds, message: notificationText})
+    const userIds = contactUsers.map((user) => user.userId);
+    notifyUserMutation.mutate({ users: userIds, message: notificationText });
   };
-
 
   const blockUser = async (id) => {
     const blockedUser = await axios.post(
       // "http://localhost:3001/api/admin/console/users/block",
-      'https://vigoplace.com/server/api/admin/console/users/block',
+      "https://vigoplace.com/server/api/admin/console/users/block",
       { userId: id },
       {
         headers: {
@@ -172,7 +167,7 @@ const Users = () => {
   const unblockUser = async (id) => {
     const unblockedUser = await axios.post(
       // "http://localhost:3001/api/admin/console/users/unblock",
-      'https://vigoplace.com/server/api/admin/console/users/unblock',
+      "https://vigoplace.com/server/api/admin/console/users/unblock",
       { userId: id },
       {
         headers: {
@@ -197,7 +192,7 @@ const Users = () => {
   const flagUser = async (id) => {
     const flaggedUser = await axios.post(
       // "http://localhost:3001/api/admin/console/users/flag",
-      'https://vigoplace.com/server/api/admin/console/users/flag',
+      "https://vigoplace.com/server/api/admin/console/users/flag",
       { userId: id },
       {
         headers: {
@@ -222,7 +217,7 @@ const Users = () => {
   const unflagUser = async (id) => {
     const unflaggedUser = await axios.post(
       // "http://localhost:3001/api/admin/console/users/unflag",
-      'https://vigoplace.com/server/api/admin/console/users/unflag',
+      "https://vigoplace.com/server/api/admin/console/users/unflag",
       { userId: id },
       {
         headers: {
@@ -244,11 +239,11 @@ const Users = () => {
     },
   });
 
-  const notifyUser = async ({users, message}) => {
+  const notifyUser = async ({ users, message }) => {
     const notification = await axios.post(
       // "http://localhost:3001/api/notifications",
-      'https://vigoplace.com/server/api/notifications',
-      {users, message},
+      "https://vigoplace.com/server/api/notifications",
+      { users, message },
       {
         headers: {
           Authorization: user?.token,
@@ -262,8 +257,8 @@ const Users = () => {
     mutationKey: ["notifyUser"],
     mutationFn: notifyUser,
     onSuccess: () => {
-      setNotificationText('')
-      handleClose()
+      setNotificationText("");
+      handleClose();
     },
     onError: async (error) => {
       // setOpenToast(true);
@@ -271,9 +266,8 @@ const Users = () => {
   });
 
   useEffect(() => {
-    setPagination({ ...pagination, pageIndex: 0 })
-  }, [columnFilters])
-
+    setPagination({ ...pagination, pageIndex: 0 });
+  }, [columnFilters]);
 
   // const getUserWallet = async (id) => {
   //   const wallet = await axios.post(
@@ -299,7 +293,6 @@ const Users = () => {
   //     // setOpenToast(true);
   //   },
   // });
-
 
   const { data, isError, isFetching, isLoading, refetch } = useQuery(
     [
@@ -339,7 +332,19 @@ const Users = () => {
     // },
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/users?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}&walletCurrencyId=${wallet}${gender !== '' ? `&gender=${gender}` : ''}${status !== '' ? `&status=${status}` : ''}${flagged !== '' ? `&flagged=${flagged}` : ''}${isVerified !== '' ? `&isVerified=${isVerified}` : ''}${columnFilters?.length >= 1 ? `&search=${JSON.stringify(columnFilters)}` : ''}`,
+        `https://vigoplace.com/server/api/admin/console/users?limit=${
+          pagination.pageSize
+        }&offset=${
+          pagination.pageIndex * pagination.pageSize
+        }&walletCurrencyId=${wallet}${
+          gender !== "" ? `&gender=${gender}` : ""
+        }${status !== "" ? `&status=${status}` : ""}${
+          flagged !== "" ? `&flagged=${flagged}` : ""
+        }${isVerified !== "" ? `&isVerified=${isVerified}` : ""}${
+          columnFilters?.length >= 1
+            ? `&search=${JSON.stringify(columnFilters)}`
+            : ""
+        }`,
         // `http://localhost:3001/api/admin/console/users?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}&walletCurrencyId=${wallet}${gender !== '' ? `&gender=${gender}` : ''}${status !== '' ? `&status=${status}` : ''}${flagged !== '' ? `&flagged=${flagged}` : ''}${isVerified !== '' ? `&isVerified=${isVerified}` : ''}${columnFilters?.length >= 1 ? `&search=${JSON.stringify(columnFilters)}` : ''}`,
         {
           headers: {
@@ -386,7 +391,6 @@ const Users = () => {
   //   { keepPreviousData: true }
   // );
 
-
   const columns = useMemo(
     () => [
       {
@@ -402,15 +406,17 @@ const Users = () => {
               gap: "1rem",
             }}
           >
-            {
-              row.original.photo ? (<img
+            {row.original.photo ? (
+              <img
                 // alt={row.original.fullname}
                 height={30}
                 src={row.original.photo}
                 loading="lazy"
                 style={{ borderRadius: "50%" }}
-              />) : (<AccountCircleIcon sx={{ fontSize: '33px' }} />)
-            }
+              />
+            ) : (
+              <AccountCircleIcon sx={{ fontSize: "33px" }} />
+            )}
 
             <Typography>{cell.getValue()}</Typography>
           </Box>
@@ -425,7 +431,7 @@ const Users = () => {
         accessorKey: "balance",
         enableClickToCopy: false,
         header: "Balance",
-        filterVariant: 'range',
+        filterVariant: "range",
         // filterFn: 'lessThanOrEqualTo'
       },
       {
@@ -447,7 +453,7 @@ const Users = () => {
         enableColumnFilter: false,
         header: "Gender",
       },
-  
+
       {
         accessorKey: "phone",
         enableClickToCopy: false,
@@ -487,7 +493,6 @@ const Users = () => {
     []
   );
 
-
   function SimpleDialog(props) {
     const { onClose, selectedValue, open } = props;
 
@@ -499,15 +504,16 @@ const Users = () => {
       onClose(value);
     };
 
-
-
     return (
       <Dialog onClose={handleClose} open={open}>
         <DialogTitle>Set backup account</DialogTitle>
         <List sx={{ pt: 0 }}>
           {emails.map((email) => (
             <ListItem disableGutters>
-              <ListItemButton onClick={() => handleListItemClick(email)} key={email}>
+              <ListItemButton
+                onClick={() => handleListItemClick(email)}
+                key={email}
+              >
                 <ListItemAvatar>
                   <Avatar sx={{ bgcolor: blue[100], color: blue[600] }}>
                     <PersonIcon />
@@ -521,7 +527,7 @@ const Users = () => {
           <ListItem disableGutters>
             <ListItemButton
               autoFocus
-              onClick={() => handleListItemClick('addAccount')}
+              onClick={() => handleListItemClick("addAccount")}
             >
               <ListItemAvatar>
                 <Avatar>
@@ -542,16 +548,13 @@ const Users = () => {
     selectedValue: PropTypes.string.isRequired,
   };
 
-
-
-
   return (
     <>
       <MaterialReactTable
         columns={columns}
-        data={data?.data ?? []}
+        data={data?.data.sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)) ?? []}
         getRowId={(row) => {
-          return row.id
+          return row.id;
         }}
         // enableColumnFilterModes
         // enableColumnOrdering
@@ -563,15 +566,12 @@ const Users = () => {
         enableStickyFooter
         // enableRowSelection
         manualPagination
-
         onPaginationChange={setPagination}
         rowCount={data?.count?.total ?? 0}
         // onColumnFiltersChange={()=>{
         //   setColumnFilters
         // }}
-        onColumnFiltersChange={
-          setColumnFilters
-        }
+        onColumnFiltersChange={setColumnFilters}
         onGlobalFilterChange={setGlobalFilter}
         initialState={{ showColumnFilters: true }}
         positionToolbarAlertBanner="bottom"
@@ -585,10 +585,9 @@ const Users = () => {
             })),
           selected: rowSelection[row.id],
           sx: {
-            cursor: 'pointer',
+            cursor: "pointer",
           },
         })}
-
         renderDetailPanel={({ row }) => {
           // setWalletId(row.original.id)
           // getUserWalletMutation.mutate(row.original.id)
@@ -597,10 +596,9 @@ const Users = () => {
               <Box
                 sx={{
                   display: "flex",
-                  alignItems: "flex-start"
+                  alignItems: "flex-start",
                 }}
               >
-
                 <Box
                   sx={{
                     marginRight: "20px",
@@ -647,13 +645,10 @@ const Users = () => {
   <TabPanel value="2">Item Two</TabPanel>
 </TabContext>
             </Box> */}
-
               </Box>
-
             </>
-          )
+          );
         }}
-
         renderRowActionMenuItems={({ closeMenu, row, table }) => {
           // console.log(table.getSelectedRowModel().flatRows[0]?.getValue('fullname'), 'table')
           const handleDeactivate = () => {
@@ -673,15 +668,14 @@ const Users = () => {
           };
 
           return [
-
             <MenuItem
               key={0}
               // onClick={handleDeactivate}
               // onClick={() => handleDeactivate()}
               sx={{ m: 0 }}
             >
-              {
-                row.original?.status !== "blocked" ? (<Button
+              {row.original?.status !== "blocked" ? (
+                <Button
                   onClick={() => handleDeactivate()}
                   color="error"
                   // disabled={!table.getIsSomeRowsSelected('fullname')}
@@ -693,7 +687,9 @@ const Users = () => {
                     "Block"
                   )}
                   {/* {table.getRow().getValue()} */}
-                </Button>) : (<Button
+                </Button>
+              ) : (
+                <Button
                   onClick={() => handleActivate()}
                   color="success"
                   // disabled={!table.getIsSomeRowsSelected('fullname')}
@@ -705,20 +701,17 @@ const Users = () => {
                     "Unblock"
                   )}
                   {/* {table.getRow().getValue()} */}
-                </Button>)
-              }
-
-            </MenuItem>
-            ,
-
+                </Button>
+              )}
+            </MenuItem>,
             <MenuItem
               key={0}
               // onClick={handleDeactivate}
               // onClick={() => handleDeactivate()}
               sx={{ m: 0 }}
             >
-              {
-                row.original?.flagged ? (<Button
+              {row.original?.flagged ? (
+                <Button
                   onClick={() => handleUnFlag()}
                   color="error"
                   // disabled={!table.getIsSomeRowsSelected('fullname')}
@@ -730,7 +723,9 @@ const Users = () => {
                     "unflag"
                   )}
                   {/* {table.getRow().getValue()} */}
-                </Button>) : (<Button
+                </Button>
+              ) : (
+                <Button
                   onClick={() => handleFlag()}
                   color="success"
                   // disabled={!table.getIsSomeRowsSelected('fullname')}
@@ -742,16 +737,15 @@ const Users = () => {
                     "flag"
                   )}
                   {/* {table.getRow().getValue()} */}
-                </Button>)
-              }
-
+                </Button>
+              )}
             </MenuItem>,
 
             <MenuItem
               key={1}
               onClick={() => {
                 // View profile logic...
-                router.push(`/user/${row.original.id}`)
+                router.push(`/user/${row.original.id}`);
                 closeMenu();
               }}
               sx={{ m: 0 }}
@@ -779,23 +773,26 @@ const Users = () => {
                 // disabled={!table.getIsSomeRowsSelected('fullname')}
                 variant="contained"
               >
-             <Link target="_blank"  href={`https://web.vigoplace.com/profile/${row.original.id}?adt=${user?.token}`}>vigoplace web profile</Link>
-             {/* <Link target="_blank"  href={`http://localhost:3002/profile/${row.original.id}?adt=${user?.token}`}>vigoplace web profile</Link> */}
+                <Link
+                  target="_blank"
+                  href={`https://web.vigoplace.com/profile/${row.original.id}?adt=${user?.token}`}
+                >
+                  vigoplace web profile
+                </Link>
+                {/* <Link target="_blank"  href={`http://localhost:3002/profile/${row.original.id}?adt=${user?.token}`}>vigoplace web profile</Link> */}
               </Button>
             </MenuItem>,
           ];
         }}
-
         muiToolbarAlertBannerProps={
           isError
             ? {
-              color: "error",
-              children:
-                "Error loading data, Please use the refresh button on the table to retry",
-            }
+                color: "error",
+                children:
+                  "Error loading data, Please use the refresh button on the table to retry",
+              }
             : undefined
         }
-
         renderTopToolbarCustomActions={({ table, row }) => {
           const handleDeactivate = () => {
             table.getSelectedRowModel().flatRows.map((row) => {
@@ -809,17 +806,19 @@ const Users = () => {
             });
           };
           const handleSelected = () => {
-            const sortrows = Object.keys(rowSelection).filter(rowId => rowSelection[rowId] === true).map(rowId => {
-              if (rowSelection[rowId] === true) {
-                return {
-                  fullname: table.getRow(rowId).original.fullname,
-                  userId: rowId
+            const sortrows = Object.keys(rowSelection)
+              .filter((rowId) => rowSelection[rowId] === true)
+              .map((rowId) => {
+                if (rowSelection[rowId] === true) {
+                  return {
+                    fullname: table.getRow(rowId).original.fullname,
+                    userId: rowId,
+                  };
                 }
-              }
-              if (rowSelection[rowId] === false) {
-                return {}
-              }
-            })
+                if (rowSelection[rowId] === false) {
+                  return {};
+                }
+              });
 
             const joinArrays = (arrays, iteratee) => {
               // create a map
@@ -839,8 +838,8 @@ const Users = () => {
               return [...map.values()];
             };
 
-            setContactUsers(joinArrays([contactUsers, sortrows], 'userId'));
-            setRowSelection({})
+            setContactUsers(joinArrays([contactUsers, sortrows], "userId"));
+            setRowSelection({});
           };
 
           const handleContact = () => {
@@ -856,7 +855,6 @@ const Users = () => {
                   <RefreshIcon />
                 </IconButton>
               </Tooltip>
-
 
               {/* <Button
               color="error"
@@ -877,9 +875,10 @@ const Users = () => {
               Contact
             </Button> */}
 
-
               <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                <InputLabel id="demo-simple-select-standard-label">Gender</InputLabel>
+                <InputLabel id="demo-simple-select-standard-label">
+                  Gender
+                </InputLabel>
                 <Select
                   labelId="demo-simple-select-standard-label"
                   id="demo-simple-select-standard"
@@ -891,12 +890,14 @@ const Users = () => {
                   <MenuItem value="">
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value={'male'}>Male</MenuItem>
-                  <MenuItem value={'female'}>Female</MenuItem>
+                  <MenuItem value={"male"}>Male</MenuItem>
+                  <MenuItem value={"female"}>Female</MenuItem>
                 </Select>
               </FormControl>
               <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                <InputLabel id="demo-simple-select-standard-label">Flagged</InputLabel>
+                <InputLabel id="demo-simple-select-standard-label">
+                  Flagged
+                </InputLabel>
                 <Select
                   labelId="demo-simple-select-standard-label"
                   id="demo-simple-select-standard"
@@ -915,7 +916,9 @@ const Users = () => {
               </FormControl>
 
               <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                <InputLabel id="demo-simple-select-standard-label">Status</InputLabel>
+                <InputLabel id="demo-simple-select-standard-label">
+                  Status
+                </InputLabel>
                 <Select
                   labelId="demo-simple-select-standard-label"
                   id="demo-simple-select-standard"
@@ -927,15 +930,17 @@ const Users = () => {
                   <MenuItem value="">
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value={'active'}>Active</MenuItem>
-                  <MenuItem value={'inactive'}>Inactive</MenuItem>
-                  <MenuItem value={'blocked'}>Blocked</MenuItem>
-                  <MenuItem value={'deactivated'}>Deactivated</MenuItem>
+                  <MenuItem value={"active"}>Active</MenuItem>
+                  <MenuItem value={"inactive"}>Inactive</MenuItem>
+                  <MenuItem value={"blocked"}>Blocked</MenuItem>
+                  <MenuItem value={"deactivated"}>Deactivated</MenuItem>
                 </Select>
               </FormControl>
 
               <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                <InputLabel id="demo-simple-select-standard-label">Verified</InputLabel>
+                <InputLabel id="demo-simple-select-standard-label">
+                  Verified
+                </InputLabel>
                 <Select
                   labelId="demo-simple-select-standard-label"
                   id="demo-simple-select-standard"
@@ -953,7 +958,9 @@ const Users = () => {
               </FormControl>
 
               <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                <InputLabel id="demo-simple-select-standard-label">Wallet</InputLabel>
+                <InputLabel id="demo-simple-select-standard-label">
+                  Wallet
+                </InputLabel>
                 <Select
                   labelId="demo-simple-select-standard-label"
                   id="demo-simple-select-standard"
@@ -962,36 +969,42 @@ const Users = () => {
                   onChange={handleWallet}
                   label="Wallet"
                 >
-                   
                   <MenuItem value={"null"}>NONE</MenuItem>
                   <MenuItem value={175}>NGN</MenuItem>
                   <MenuItem value={251}>USD</MenuItem>
                 </Select>
               </FormControl>
 
-        
-
-              <Box  width={"100%"}>
-                
-                <FormControl variant="standard" sx={{ m: 1, minWidth: 120, display: "flex", flexDirection: "row", flexWrap: "wrap", gap:"20px" }}>
-            <Autocomplete
-            sx={{minWidth: "50%"}}
-                  key={contactUsers}
-                  multiple
-                  limitTags={7}
-                  options={contactUsers || []}
-                  defaultValue={contactUsers}
-                  autoComplete={true}
-                  getOptionLabel={option => option.fullname}
-                  id="combo-box-demo"
-                  renderInput={params => (
-                    <TextField
-                      {...params}
-                      // label="select users to notify"
-                      placeholder="selected users to notify"
-                    />
-                  )}
-                />
+              <Box width={"100%"}>
+                <FormControl
+                  variant="standard"
+                  sx={{
+                    m: 1,
+                    minWidth: 120,
+                    display: "flex",
+                    flexDirection: "row",
+                    flexWrap: "wrap",
+                    gap: "20px",
+                  }}
+                >
+                  <Autocomplete
+                    sx={{ minWidth: "50%" }}
+                    key={contactUsers}
+                    multiple
+                    limitTags={7}
+                    options={contactUsers || []}
+                    defaultValue={contactUsers}
+                    autoComplete={true}
+                    getOptionLabel={(option) => option.fullname}
+                    id="combo-box-demo"
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        // label="select users to notify"
+                        placeholder="selected users to notify"
+                      />
+                    )}
+                  />
 
                   <Button
                     color="primary"
@@ -1001,7 +1014,6 @@ const Users = () => {
                   >
                     Send Notification
                   </Button>
-
                 </FormControl>
 
                 {/* <SimpleDialog
@@ -1009,59 +1021,54 @@ const Users = () => {
                 onClose={handleClose}
               /> */}
 
-<Dialog open={contactModal} onClose={handleClose}
-fullWidth
-maxWidth={"md"}
->
-        <DialogContent>
-          <DialogContentText>
-            Enter Notification Text
-          </DialogContentText>
-          <TextField
-            autoFocus
-            margin="normal"
-            id="name"
-            label="Enter Notification Text"
-            type="email"
-            fullWidth
-            variant="standard"
-            multiline
-            onChange={handleNotificationText}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleNotify}>
-            {
-              notifyUserMutation.isLoading ? (
-                <CircularProgress size={23} color="inherit" />
-              ) : (
-                "Notify"
-              )
-            }
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      
+                <Dialog
+                  open={contactModal}
+                  onClose={handleClose}
+                  fullWidth
+                  maxWidth={"md"}
+                >
+                  <DialogContent>
+                    <DialogContentText>
+                      Enter Notification Text
+                    </DialogContentText>
+                    <TextField
+                      autoFocus
+                      margin="normal"
+                      id="name"
+                      label="Enter Notification Text"
+                      type="email"
+                      fullWidth
+                      variant="standard"
+                      multiline
+                      onChange={handleNotificationText}
+                    />
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleClose}>Cancel</Button>
+                    <Button onClick={handleNotify}>
+                      {notifyUserMutation.isLoading ? (
+                        <CircularProgress size={23} color="inherit" />
+                      ) : (
+                        "Notify"
+                      )}
+                    </Button>
+                  </DialogActions>
+                </Dialog>
               </Box>
 
-              {
-                table.getIsSomeRowsSelected() ? (
-                  <Button
-                    color="success"
-                    onClick={() => handleSelected()}
-                    variant="contained"
-                    size="small"
-                  >
-                    Add to Notification List
-                  </Button>) : (null)
-              }
-
+              {table.getIsSomeRowsSelected() ? (
+                <Button
+                  color="success"
+                  onClick={() => handleSelected()}
+                  variant="contained"
+                  size="small"
+                >
+                  Add to Notification List
+                </Button>
+              ) : null}
             </div>
           );
         }}
-
         // manualPagination
         // onPaginationChange={}
         // muiTablePaginationProps={}
@@ -1071,7 +1078,7 @@ maxWidth={"md"}
           showAlertBanner: isError,
           showProgressBars: isFetching,
           pagination,
-          rowSelection
+          rowSelection,
         }}
         // enableColumnFilterModes
         muiTableContainerProps={{ sx: { height: "75vh" } }}

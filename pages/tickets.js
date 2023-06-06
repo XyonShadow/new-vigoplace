@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo } from 'react'
-import { Box, Container, Grid } from '@mui/material';
+import React, { useEffect, useMemo } from "react";
+import { Box, Container, Grid } from "@mui/material";
 import BlogCard from "../src/components/dashboard/BlogCard";
 import SalesOverview from "../src/components/dashboard/SalesOverview";
 import DailyActivity from "../src/components/dashboard/DailyActivity";
@@ -14,14 +14,21 @@ import { ResolvedTickets } from "../src/components/dashboard/resolved-tickets";
 import { SettledTickets } from "../src/components/dashboard/settled-tickets";
 import { PendingTickets } from "../src/components/dashboard/pending-tickets";
 import MaterialReactTable from "material-react-table";
-import { CircularProgress, IconButton, InputAdornment, Paper, Tab, Tooltip } from "@mui/material";
+import {
+  CircularProgress,
+  IconButton,
+  InputAdornment,
+  Paper,
+  Tab,
+  Tooltip,
+} from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import axios from "axios";
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 import { format } from "date-fns";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import {
   QueryClient,
   QueryClientProvider,
@@ -30,37 +37,32 @@ import {
   useMutation,
 } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
-import {
-  Button,
-  MenuItem,
-  Typography,
-} from "@mui/material";
-import { useRouter } from 'next/router'
-
+import { Button, MenuItem, Typography } from "@mui/material";
+import { useRouter } from "next/router";
 
 function Tickets() {
-  const router = useRouter()
+  const router = useRouter();
   const queryClient = useQueryClient();
   const getUser = useSession();
   const user = getUser?.data?.user;
 
   const [columnFilters, setColumnFilters] = React.useState([]);
-  const [globalFilter, setGlobalFilter] = React.useState('');
+  const [globalFilter, setGlobalFilter] = React.useState("");
   const [sorting, setSorting] = React.useState([]);
   const [pagination, setPagination] = React.useState({
     pageIndex: 0,
     pageSize: 10,
   });
-  const [gender, setGender] = React.useState('');
-  const [status, setStatus] = React.useState('');
-  const [isVerified, setIsverified] = React.useState('');
-  const [ticketType, setTicketType] = React.useState('unassigned');
+  const [gender, setGender] = React.useState("");
+  const [status, setStatus] = React.useState("");
+  const [isVerified, setIsverified] = React.useState("");
+  const [ticketType, setTicketType] = React.useState("unassigned");
   const [rowSelection, setRowSelection] = React.useState({});
 
-console.log({rowSelection})
+  console.log({ rowSelection });
   useEffect(() => {
-    setPagination({...pagination, pageIndex: 0})
-  }, [columnFilters])
+    setPagination({ ...pagination, pageIndex: 0 });
+  }, [columnFilters]);
 
   const columns = useMemo(
     () => [
@@ -92,15 +94,15 @@ console.log({rowSelection})
         enableClickToCopy: false,
         // enableColumnFilter: false,
         header: "Status",
-        filterFn: 'equals',
+        filterFn: "equals",
         filterSelectOptions: [
-          { text: 'queued', value: 'Queued' },
-          { text: 'in-progress', value: 'In-progress' },
-          { text: 'resolved', value: 'Resolved' },
-          { text: 'closed', value: 'Closed' },
-          { text: 'permanently-closed', value: 'Permanently-closed' },
+          { text: "queued", value: "Queued" },
+          { text: "in-progress", value: "In-progress" },
+          { text: "resolved", value: "Resolved" },
+          { text: "closed", value: "Closed" },
+          { text: "permanently-closed", value: "Permanently-closed" },
         ],
-        filterVariant: 'select',
+        filterVariant: "select",
       },
       {
         accessorKey: "ticketReference",
@@ -129,11 +131,17 @@ console.log({rowSelection})
       gender,
       status,
       isVerified,
-      ticketType
+      ticketType,
     ],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/tickets/${ticketType}?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${columnFilters?.length >=1 ?`&search=${JSON.stringify(columnFilters)}`:''}`,
+        `https://vigoplace.com/server/api/admin/tickets/${ticketType}?limit=${
+          pagination.pageSize
+        }&offset=${pagination.pageIndex * pagination.pageSize}${
+          columnFilters?.length >= 1
+            ? `&search=${JSON.stringify(columnFilters)}`
+            : ""
+        }`,
         // `http://localhost:3001/api/admin/tickets/${ticketType}?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${columnFilters?.length >=1 ?`&search=${JSON.stringify(columnFilters)}`:''}`,
         {
           headers: {
@@ -141,7 +149,7 @@ console.log({rowSelection})
           },
         }
       );
-
+console.log(data)
       return data;
     },
     {
@@ -149,7 +157,7 @@ console.log({rowSelection})
         console.log(err, "err fetching users");
       },
       enabled: !!user?.token,
-    },
+    }
   );
 
   const handleTicketType = (event) => {
@@ -161,9 +169,8 @@ console.log({rowSelection})
     setPagination({
       pageIndex: 0,
       pageSize: 10,
-    })
+    });
   };
-
 
   return (
     <>
@@ -202,87 +209,83 @@ console.log({rowSelection})
       </Grid> */}
 
       <MaterialReactTable
-      columns={columns}
-      data={data?.data?.results ?? []}
-      // enableColumnFilterModes
-      // enableColumnOrdering
-      // enableGrouping
-      // enablePinning
+        columns={columns}
+        data={data?.data?.results.sort((a, b) => Date.parse(b.date) - Date.parse(a.date)) ?? []}
+        // enableColumnFilterModes
+        // enableColumnOrdering
+        // enableGrouping
+        // enablePinning
 
-      // enableRowActions
-      enableStickyHeader
-      enableStickyFooter
-      manualPagination
-      onPaginationChange={setPagination}
-      rowCount={data?.count?.total ?? 0}
-      // onColumnFiltersChange={()=>{
-      //   setColumnFilters
-      // }}
-      onColumnFiltersChange={
-        setColumnFilters
-      }
-      onGlobalFilterChange={setGlobalFilter}
-      initialState={{ showColumnFilters: false }}
-      positionToolbarAlertBanner="bottom"
-      enableGlobalFilter={false}
+        // enableRowActions
+        enableStickyHeader
+        enableStickyFooter
+        manualPagination
+        onPaginationChange={setPagination}
+        rowCount={data?.count?.total ?? 0}
+        // onColumnFiltersChange={()=>{
+        //   setColumnFilters
+        // }}
+        onColumnFiltersChange={setColumnFilters}
+        onGlobalFilterChange={setGlobalFilter}
+        initialState={{ showColumnFilters: false }}
+        positionToolbarAlertBanner="bottom"
+        enableGlobalFilter={false}
+        muiToolbarAlertBannerProps={
+          isError
+            ? {
+                color: "error",
+                children:
+                  "Error loading data, Please use the refresh button on the table to retry",
+              }
+            : undefined
+        }
+        onRowSelectionChange={setRowSelection} //connect internal row selection state to your own
+        muiTableBodyRowProps={({ row }) => ({
+          // onClick: () => setRowSelection(row.original),
+          onClick: () => router.push(`/tickets/${row.original.ticketId}`),
+          sx: { cursor: "pointer" },
+        })}
+        // muiTableBodyRowProps={({ row }) => ({
+        //   //implement row selection click events manually
+        //   onClick: () =>
+        //     setRowSelection((prev) => ({
+        //       ...prev,
+        //       [row.id]: !prev[row.id],
+        //     })),
+        //   selected: rowSelection[row.id],
+        //   sx: {
+        //     cursor: 'pointer',
+        //   },
+        // })}
 
-      muiToolbarAlertBannerProps={
-        isError
-          ? {
-              color: "error",
-              children:
-                "Error loading data, Please use the refresh button on the table to retry",
-            }
-          : undefined
-      }
-      onRowSelectionChange={setRowSelection} //connect internal row selection state to your own
-      muiTableBodyRowProps={({ row }) => ({
-        // onClick: () => setRowSelection(row.original),
-        onClick: () => router.push(`/tickets/${row.original.ticketId}`),
-        sx: { cursor: 'pointer' },
-      })}
+        renderTopToolbarCustomActions={({ table }) => {
+          // const handleDeactivate = () => {
+          //   table.getSelectedRowModel().flatRows.map((row) => {
+          //     alert("deactivating " + row.getValue("fullname"));
+          //   });
+          // };
 
-      // muiTableBodyRowProps={({ row }) => ({
-      //   //implement row selection click events manually
-      //   onClick: () =>
-      //     setRowSelection((prev) => ({
-      //       ...prev,
-      //       [row.id]: !prev[row.id],
-      //     })),
-      //   selected: rowSelection[row.id],
-      //   sx: {
-      //     cursor: 'pointer',
-      //   },
-      // })}
+          // const handleActivate = () => {
+          //   table.getSelectedRowModel().flatRows.map((row) => {
+          //     alert("activating " + row.getValue("name"));
+          //   });
+          // };
 
-      renderTopToolbarCustomActions={({ table }) => {
-        // const handleDeactivate = () => {
-        //   table.getSelectedRowModel().flatRows.map((row) => {
-        //     alert("deactivating " + row.getValue("fullname"));
-        //   });
-        // };
+          // const handleContact = () => {
+          //   table.getSelectedRowModel().flatRows.map((row) => {
+          //     alert("contact " + row.getValue("name"));
+          //   });
+          // };
 
-        // const handleActivate = () => {
-        //   table.getSelectedRowModel().flatRows.map((row) => {
-        //     alert("activating " + row.getValue("name"));
-        //   });
-        // };
+          return (
+            <div style={{ display: "flex", gap: "0.5rem" }}>
+              <Tooltip arrow title="Refresh Data">
+                <IconButton onClick={() => refetch()}>
+                  <RefreshIcon />
+                </IconButton>
+              </Tooltip>
 
-        // const handleContact = () => {
-        //   table.getSelectedRowModel().flatRows.map((row) => {
-        //     alert("contact " + row.getValue("name"));
-        //   });
-        // };
-
-        return (
-          <div style={{ display: "flex", gap: "0.5rem" }}>
-            <Tooltip arrow title="Refresh Data">
-              <IconButton onClick={() => refetch()}>
-                <RefreshIcon />
-              </IconButton>
-            </Tooltip>
-
-            {/* <Button
+              {/* <Button
               color="error"
               disabled={!table.getIsSomeRowsSelected()}
               onClick={handleDeactivate}
@@ -292,24 +295,25 @@ console.log({rowSelection})
               Delete
             </Button> */}
 
-      <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel id="demo-simple-select-standard-label">Ticket State</InputLabel>
-        <Select
-          labelId="demo-simple-select-standard-label"
-          id="demo-simple-select-standard"
-          value={ticketType}
-          defaultValue="unassigned"
-          onChange={handleTicketType}
-          label="Ticket State"
-        >
-          <MenuItem value="">
-          </MenuItem>
-          <MenuItem value={'unassigned'}>Unassigned</MenuItem>
-          <MenuItem value={'assigned'}>Assigned</MenuItem>
-        </Select>
-      </FormControl>
+              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                <InputLabel id="demo-simple-select-standard-label">
+                  Ticket State
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-standard-label"
+                  id="demo-simple-select-standard"
+                  value={ticketType}
+                  defaultValue="unassigned"
+                  onChange={handleTicketType}
+                  label="Ticket State"
+                >
+                  <MenuItem value=""></MenuItem>
+                  <MenuItem value={"unassigned"}>Unassigned</MenuItem>
+                  <MenuItem value={"assigned"}>Assigned</MenuItem>
+                </Select>
+              </FormControl>
 
-      {/* <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+              {/* <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
         <InputLabel id="demo-simple-select-standard-label">Status</InputLabel>
         <Select
           labelId="demo-simple-select-standard-label"
@@ -329,29 +333,28 @@ console.log({rowSelection})
           <MenuItem value={'permanently-closed'}>Permanently-closed</MenuItem>
         </Select>
       </FormControl> */}
-        </div>
-        );
-      }}
+            </div>
+          );
+        }}
+        // getPaginationRowModel={(props)=> console.log(props, "propppp")}
+        // manualPagination
+        // onPaginationChange={}
+        // muiTablePaginationProps={}
 
-      // getPaginationRowModel={(props)=> console.log(props, "propppp")}
-      // manualPagination
-      // onPaginationChange={}
-      // muiTablePaginationProps={}
-
-      state={{
-        isLoading,
-        showAlertBanner: isError,
-        showProgressBars: isFetching,
-        pagination,
-        rowSelection
-      }}
-      muiTableContainerProps={{ sx: { height: "75vh" } }}
-    />
+        state={{
+          isLoading,
+          showAlertBanner: isError,
+          showProgressBars: isFetching,
+          pagination,
+          rowSelection,
+        }}
+        muiTableContainerProps={{ sx: { height: "75vh" } }}
+      />
     </>
-  )
+  );
 }
 
-Tickets.auth = true
-Tickets.role = ['admin', 'subadmin', 'administrator']
+Tickets.auth = true;
+Tickets.role = ["admin", "subadmin", "administrator"];
 
-export default Tickets
+export default Tickets;
