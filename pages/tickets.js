@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Box, Container, Grid } from "@mui/material";
 import BlogCard from "../src/components/dashboard/BlogCard";
 import SalesOverview from "../src/components/dashboard/SalesOverview";
@@ -58,6 +58,7 @@ function Tickets() {
   const [isVerified, setIsverified] = React.useState("");
   const [ticketType, setTicketType] = React.useState("unassigned");
   const [rowSelection, setRowSelection] = React.useState({});
+  const [datalenght, setDatalenght] = useState(0)
 
   console.log({ rowSelection });
   useEffect(() => {
@@ -120,6 +121,7 @@ function Tickets() {
     []
   );
 
+
   const { data, isError, isFetching, isLoading, refetch } = useQuery(
     [
       "fetchTickets",
@@ -136,8 +138,8 @@ function Tickets() {
     async () => {
       const { data } = await axios.get(
         `https://vigoplace.com/server/api/admin/tickets/${ticketType}?limit=${
-          pagination.pageSize
-        }&offset=${pagination.pageIndex * pagination.pageSize}${
+          1000
+        }${
           columnFilters?.length >= 1
             ? `&search=${JSON.stringify(columnFilters)}`
             : ""
@@ -149,8 +151,18 @@ function Tickets() {
           },
         }
       );
-console.log(data)
-      return data;
+
+      setDatalenght(data?.count?.total)
+
+      const sortedData = data?.data?.results?.sort(
+        (a, b) => Date.parse(b.date) - Date.parse(a.date)
+      )
+      console.log(sortedData)
+      const paginatedData = sortedData.slice(
+        pagination.pageIndex * pagination.pageSize,
+        (pagination.pageIndex + 1) * pagination.pageSize
+      );
+      return paginatedData;
     },
     {
       onError: (err) => {
@@ -210,7 +222,9 @@ console.log(data)
 
       <MaterialReactTable
         columns={columns}
-        data={data?.data?.results.sort((a, b) => Date.parse(b.date) - Date.parse(a.date)) ?? []}
+        data={
+          data ?? []
+        }
         // enableColumnFilterModes
         // enableColumnOrdering
         // enableGrouping
@@ -221,7 +235,7 @@ console.log(data)
         enableStickyFooter
         manualPagination
         onPaginationChange={setPagination}
-        rowCount={data?.count?.total ?? 0}
+        rowCount={datalenght ?? 0}
         // onColumnFiltersChange={()=>{
         //   setColumnFilters
         // }}
