@@ -91,6 +91,7 @@ const Users = () => {
   const [rowSelection, setRowSelection] = useState({});
   const [contactUsers, setContactUsers] = useState([]);
   const [notificationText, setNotificationText] = useState("");
+  const [datalenght, setDatalenght] = useState(0)
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -333,9 +334,7 @@ const Users = () => {
     async () => {
       const { data } = await axios.get(
         `https://vigoplace.com/server/api/admin/console/users?limit=${
-          pagination.pageSize
-        }&offset=${
-          pagination.pageIndex * pagination.pageSize
+          10000000000
         }&walletCurrencyId=${wallet}${
           gender !== "" ? `&gender=${gender}` : ""
         }${status !== "" ? `&status=${status}` : ""}${
@@ -353,7 +352,16 @@ const Users = () => {
         }
       );
 
-      return data;
+      setDatalenght(data?.count?.total)
+
+      const sortedData = data?.data?.sort(
+        (a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)
+      )
+      const paginatedData = sortedData.slice(
+        pagination.pageIndex * pagination.pageSize,
+        (pagination.pageIndex + 1) * pagination.pageSize
+      );
+      return paginatedData;
     },
     {
       onError: (err) => {
@@ -552,7 +560,7 @@ const Users = () => {
     <>
       <MaterialReactTable
         columns={columns}
-        data={data?.data.sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)) ?? []}
+        data={data ?? []}
         getRowId={(row) => {
           return row.id;
         }}
@@ -567,7 +575,7 @@ const Users = () => {
         // enableRowSelection
         manualPagination
         onPaginationChange={setPagination}
-        rowCount={data?.count?.total ?? 0}
+        rowCount={datalenght ?? 0}
         // onColumnFiltersChange={()=>{
         //   setColumnFilters
         // }}

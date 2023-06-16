@@ -157,7 +157,6 @@ function Tickets() {
       const sortedData = data?.data?.results?.sort(
         (a, b) => Date.parse(b.date) - Date.parse(a.date)
       )
-      console.log(sortedData)
       const paginatedData = sortedData.slice(
         pagination.pageIndex * pagination.pageSize,
         (pagination.pageIndex + 1) * pagination.pageSize
