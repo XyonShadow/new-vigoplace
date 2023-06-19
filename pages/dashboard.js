@@ -7,6 +7,7 @@ import DailyActivity from "../src/components/dashboard/DailyActivity";
 import ProductPerfomance from "../src/components/dashboard/ProductPerfomance";
 import { Budget } from "../src/components/dashboard/budget";
 import { LatestOrders } from "../src/components/dashboard/latest-orders";
+import { KPI } from "../src/components/dashboard/kpi";
 import { TasksProgress } from "../src/components/dashboard/tasks-progress";
 import { TotalCustomers } from "../src/components/dashboard/total-customers";
 import { TotalProfit } from "../src/components/dashboard/total-profit";
@@ -237,6 +238,7 @@ export default function Index() {
             xs={12}
           >
             <LatestOrders />
+            <KPI />
           </Grid>
         </Grid>
       </Container>
