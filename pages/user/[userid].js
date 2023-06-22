@@ -123,10 +123,14 @@ const Users = () => {
   const [creditDetails, setCreditDetails] = useState({
     amount: "",
     approvalPin: "",
+    reasonType: "",
+    reasonDescription: "",
   });
   const [debitDetails, setDebitDetails] = useState({
     amount: "",
     approvalPin: "",
+    reasonType: "",
+    reasonDescription: "",
   });
 
   /* ******* onchange functions ********** */
@@ -584,6 +588,16 @@ const Users = () => {
     setDebitErrorToast(false);
   };
 
+  // Please change this section to fetch the reason type live from the api endpoint.
+  // This was added due to the fact that the api meant for this hasn't been deployed yet on production server.
+  const validReasonTypes = [
+    "Transaction",
+    "Reward",
+    "Salary",
+    "Fee",
+    "Payment",
+  ];
+
   return (
     <>
       <Snackbar
@@ -762,62 +776,61 @@ const Users = () => {
               >
                 {userDetails?.data?.user?.status === "blocked" ? (
                   <Button
-                  color='error'
-                  variant="contained"
-                  onClick={() => unblockMutation.mutate(userDetails?.data?.user?.id)}
+                    color="error"
+                    variant="contained"
+                    onClick={() =>
+                      unblockMutation.mutate(userDetails?.data?.user?.id)
+                    }
                   >
-                      {unblockMutation.isLoading ? (
-                    <CircularProgress size={23} color="inherit" />
-                  ) : (
-                    "Ublock"
-                  )}
-                    
+                    {unblockMutation.isLoading ? (
+                      <CircularProgress size={23} color="inherit" />
+                    ) : (
+                      "Ublock"
+                    )}
                   </Button>
                 ) : (
                   <Button
-                  variant="contained"
-                  onClick={() => blockMutation.mutate(userDetails?.data?.user?.id)}
+                    variant="contained"
+                    onClick={() =>
+                      blockMutation.mutate(userDetails?.data?.user?.id)
+                    }
                   >
-                  {blockMutation.isLoading ? (
-                <CircularProgress size={23} color="inherit" />
-              ) : (
-                "Block"
-              )}
-                
-              </Button>
+                    {blockMutation.isLoading ? (
+                      <CircularProgress size={23} color="inherit" />
+                    ) : (
+                      "Block"
+                    )}
+                  </Button>
                 )}
 
                 {userDetails?.data?.user?.flagged === 1 ? (
                   <Button
-                  color="error"
-                  variant="contained"
-                  onClick={() => unflagUserMutation.mutate(userDetails?.data?.user?.id)}
+                    color="error"
+                    variant="contained"
+                    onClick={() =>
+                      unflagUserMutation.mutate(userDetails?.data?.user?.id)
+                    }
                   >
-                      {unflagUserMutation.isLoading ? (
-                    <CircularProgress size={23} color="inherit" />
-                  ) : (
-                    "Unflag"
-                  )}
-                    
+                    {unflagUserMutation.isLoading ? (
+                      <CircularProgress size={23} color="inherit" />
+                    ) : (
+                      "Unflag"
+                    )}
                   </Button>
                 ) : (
                   <Button
-                  variant="contained"
-                  onClick={() => flagUserMutation.mutate(userDetails?.data?.user?.id)}
+                    variant="contained"
+                    onClick={() =>
+                      flagUserMutation.mutate(userDetails?.data?.user?.id)
+                    }
                   >
-                  {flagUserMutation.isLoading ? (
-                <CircularProgress size={23} color="inherit" />
-              ) : (
-                "Flag"
-              )}
-                
-              </Button>
+                    {flagUserMutation.isLoading ? (
+                      <CircularProgress size={23} color="inherit" />
+                    ) : (
+                      "Flag"
+                    )}
+                  </Button>
                 )}
-
-           
-
-               
-
               </Box>
             </CardContent>
           </Card>
@@ -873,6 +886,34 @@ const Users = () => {
                           ))}
                         </Select>
 
+                        {/* Credit Reason type section.. */}
+                        <InputLabel
+                          id="demo-simple-select-standard-label"
+                          style={{ marginTop: "18px" }}
+                        >
+                          Reason Type
+                        </InputLabel>
+                        <Select
+                          fullWidth
+                          labelId="demo-simple-select-standard-label"
+                          id="demo-simple-select-standard"
+                          defaultValue="None"
+                          onChange={(e) =>
+                            setCreditDetails((prev) => ({
+                              ...prev,
+                              ["reasonType"]: e.target.value,
+                            }))
+                          }
+                          label="Reason Type"
+                        >
+                          <MenuItem value="">None</MenuItem>
+                          {validReasonTypes.map((name, id) => (
+                            <MenuItem key={id} value={name}>
+                              {name}
+                            </MenuItem>
+                          ))}
+                        </Select>
+
                         <TextField
                           fullWidth
                           label="Amount"
@@ -881,6 +922,22 @@ const Users = () => {
                           onChange={handleCreditChange}
                           type="number"
                           value={creditDetails.amount}
+                          variant="outlined"
+                        />
+                        <TextField
+                          autoComplete={false}
+                          fullWidth
+                          label="Reason Description"
+                          margin="normal"
+                          name="reasonDescription"
+                          onChange={(e) =>
+                            setCreditDetails((prev) => ({
+                              ...prev,
+                              ["reasonDescription"]: e.target.value,
+                            }))
+                          }
+                          type={"text"}
+                          value={creditDetails.reasonDescription}
                           variant="outlined"
                         />
                         <TextField
@@ -899,6 +956,8 @@ const Users = () => {
                           variant="outlined"
                         />
                       </CardContent>
+                      {/* End of Credit reason type section */}
+
                       <Divider />
                       <Box
                         sx={{
@@ -965,6 +1024,34 @@ const Users = () => {
                           ))}
                         </Select>
 
+                        {/* Debit Reason type section */}
+                        <InputLabel
+                          id="demo-simple-select-standard-label"
+                          style={{ marginTop: "18px" }}
+                        >
+                          Reason Type
+                        </InputLabel>
+                        <Select
+                          fullWidth
+                          labelId="demo-simple-select-standard-label"
+                          id="demo-simple-select-standard"
+                          defaultValue="None"
+                          onChange={(e) =>
+                            setDebitDetails((prev) => ({
+                              ...prev,
+                              ["reasonType"]: e.target.value,
+                            }))
+                          }
+                          label="Reason Type"
+                        >
+                          <MenuItem value="">None</MenuItem>
+                          {validReasonTypes.map((name, id) => (
+                            <MenuItem key={id} value={name}>
+                              {name}
+                            </MenuItem>
+                          ))}
+                        </Select>
+
                         <TextField
                           fullWidth
                           label="Amount"
@@ -973,6 +1060,22 @@ const Users = () => {
                           onChange={handleDebitChange}
                           type="number"
                           value={debitDetails.amount}
+                          variant="outlined"
+                        />
+                        <TextField
+                          autoComplete={false}
+                          fullWidth
+                          label="Reason Description"
+                          margin="normal"
+                          name="reasonDescription"
+                          onChange={(e) =>
+                            setDebitDetails((prev) => ({
+                              ...prev,
+                              ["reasonDescription"]: e.target.value,
+                            }))
+                          }
+                          type={"text"}
+                          value={debitDetails.reasonDescription}
                           variant="outlined"
                         />
                         <TextField
@@ -986,6 +1089,7 @@ const Users = () => {
                           variant="outlined"
                         />
                       </CardContent>
+                      {/* End of Debit Reason type section */}
                       <Divider />
                       <Box
                         sx={{
