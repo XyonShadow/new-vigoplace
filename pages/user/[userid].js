@@ -311,11 +311,17 @@ const Users = () => {
 
   /* ********** Mutations *************** */
 
-  const creditUser = async ({ amount, approvalPin, walletId }) => {
+  const creditUser = async ({
+    amount,
+    approvalPin,
+    walletId,
+    reasonType,
+    reasonDescription,
+  }) => {
     const credit = await axios.post(
       // "http://localhost:3001/api/admin/console/users/wallet/credit",
       "https://vigoplace.com/server/api/admin/console/users/wallet/credit",
-      { amount, approvalPin, walletId },
+      { amount, approvalPin, walletId, reasonType, reasonDescription },
       {
         headers: {
           Authorization: user?.token,
@@ -977,10 +983,11 @@ const Users = () => {
                             walletId === null
                           }
                           onClick={() => {
-                            creditUserMutation.mutate({
+                            const mergedDetails = {
                               ...creditDetails,
                               walletId,
-                            });
+                            };
+                            creditUserMutation.mutate(mergedDetails);
                             // setOpenModal2(true);
                           }}
                         >
