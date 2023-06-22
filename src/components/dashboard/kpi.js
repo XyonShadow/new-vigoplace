@@ -16,55 +16,108 @@ import {
   TableRow,
   TableSortLabel,
   Tooltip,
+  Grid,
+  Paper,
+  styled,
 } from "@mui/material";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import axios from "axios";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import { SeverityPill } from "../severity-pill";
 
 const KPI = (props) => {
   const [checkedValues, setCheckedValues] = useState([]);
 
+  const getUser = useSession();
+  const user = getUser?.data?.user;
+
+  const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: "center",
+    color: theme.palette.text.secondary,
+  }));
+
+  const { data: kpis } = useQuery(
+    ["fetchkpi"],
+    async () => {
+      const { data } = await axios.get(
+        `https://vigoplace.com/server/api/admin/statistics/dashboard`,
+        {
+          headers: {
+            Authorization: user?.token,
+          },
+        }
+      );
+      console.log(data);
+      return data;
+    },
+    {
+      onError: (err) => {
+        console.log(err, "err fetching kpi");
+      },
+      enabled: !!user?.token,
+    }
+  );
+
   const firstCheckboxData = [
-    { id: "checkbox1", value: "value1", label: "Users" },
-    { id: "checkbox2", value: "value2", label: "Wallet count" },
-    { id: "checkbox3", value: "value2", label: "Verified emails" },
-    { id: "checkbox4", value: "value2", label: "Virtual accounts" },
-    { id: "checkbox5", value: "value2", label: "Verified phone numbers" },
+    { id: "users", value: "totalUsers", label: "Users" },
+    { id: "wallet", value: "totalWalletCount", label: "Wallet count" },
+    { id: "emails", value: "totalVerifiedEmails", label: "Verified emails" },
+    {
+      id: "virtual_accounts",
+      value: "totalVirtualAccounts",
+      label: "Virtual accounts",
+    },
+    {
+      id: "phone_numbers",
+      value: "totalVerifiedPhoneNumbers",
+      label: "Verified phone numbers",
+    },
   ];
 
   const secondCheckboxData = [
-    { id: "checkbox1", value: "value1", label: "Users" },
-    { id: "checkbox2", value: "value2", label: "Wallet count" },
-    { id: "checkbox3", value: "value2", label: "Verified emails" },
-    { id: "checkbox4", value: "value2", label: "Virtual accounts" },
-    { id: "checkbox5", value: "value2", label: "Verified phone numbers" },
+    { id: "basic_place", value: "basicPlaceCount", label: "Basic place" },
+    { id: "channel_place", value: "channelPlaceCount", label: "Channel place" },
+    { id: "contest_place", value: "contestPlaceCount", label: "Contest place" },
+    { id: "market_place", value: "marketPlaceCount", label: "Market place" },
   ];
 
   const thirdCheckboxData = [
-    { id: "checkbox1", value: "value1", label: "Users" },
-    { id: "checkbox2", value: "value2", label: "Wallet count" },
-    { id: "checkbox3", value: "value2", label: "Verified emails" },
-    { id: "checkbox4", value: "value2", label: "Virtual accounts" },
-    { id: "checkbox5", value: "value2", label: "Verified phone numbers" },
+    { id: "product_post", value: "productPostCount", label: "Product post" },
+    { id: "service_post", value: "servicePostCount", label: "Service post" },
+    { id: "gift_post", value: "giftPostCount", label: "Gift post" },
+    { id: "news_post", value: "newsPostCount", label: "News post" },
+    { id: "paid_post", value: "paidPostCount", label: "Paid post" },
   ];
 
   const fourthCheckboxData = [
-    { id: "checkbox1", value: "value1", label: "Users" },
-    { id: "checkbox2", value: "value2", label: "Wallet count" },
-    { id: "checkbox3", value: "value2", label: "Verified emails" },
-    { id: "checkbox4", value: "value2", label: "Virtual accounts" },
-    { id: "checkbox5", value: "value2", label: "Verified phone numbers" },
+    { id: "channel_place_revenue", value: "channelPlaceRevenue", label: "Channel place revenue" },
+    { id: "market_place_revenue", value: "marketPlaceRevenue", label: "Market place revenue" },
+    { id: "contest_place_revenue", value: "contestPlaceRevenue", label: "Contest place revenue" },
   ];
 
   const handleCheckboxChange = (event) => {
     const value = event.target.value;
+    const label = event.target.id;
     const isChecked = event.target.checked;
+    console.log(value);
+
+    const myObject = {}; // Step 2: Create an object
 
     if (isChecked) {
       // Add the checked value to the array
-      setCheckedValues([...checkedValues, value]);
+
+      // setCheckedLabel([...checkedLabel, label]);
+      myObject.value = value;
+      myObject.label = label;
+      setCheckedValues([...checkedValues, myObject]);
     } else {
       // Remove the unchecked value from the array
-      setCheckedValues(checkedValues.filter((v) => v !== value));
+      setCheckedValues(checkedValues.filter((v) => v.value !== value));
+      // setCheckedLabel(checkedLabel.filter((v) => v !== label));
     }
   };
 
@@ -92,7 +145,7 @@ const KPI = (props) => {
         sx={{
           display: "flex",
           justifyContent: "center",
-          gap: "6.5rem",
+          gap: "6rem",
           p: 5,
         }}
       >
@@ -127,15 +180,28 @@ const KPI = (props) => {
               <input type="date" id="end_date" name="end_date" />
             </Box>
           </Box>
-          <Box
+          <Grid
+            container
+            spacing={2}
             sx={{
               mt: "52px",
               width: "100%",
               height: "433px",
               background: "#F4F4F4",
               borderRadius: 1,
+              px: 4,
+              py: "37px",
+              overflowY: "auto",
             }}
-          ></Box>
+          >
+            {checkedValues.length === 0 && <>No data to display</>}
+            {checkedValues.map((checkedValue) => (
+              <Grid key={checkedValue.value} item xs={6}>
+                <>{checkedValue.label}</>
+                <Item>{kpis?.data?.[checkedValue.value]}</Item>
+              </Grid>
+            ))}
+          </Grid>
           <Box
             sx={{
               mt: 10,
@@ -196,7 +262,10 @@ const KPI = (props) => {
                   <label>{checkbox.label}</label>
                   <Checkbox
                     value={checkbox.value}
-                    checked={checkedValues.includes(checkbox.value)}
+                    id={checkbox.label}
+                    checked={checkedValues.some(
+                      (checkedValue) => checkedValue.value === checkbox.value
+                    )}
                     onChange={handleCheckboxChange}
                   />
                 </Box>
@@ -218,7 +287,10 @@ const KPI = (props) => {
                   <label>{checkbox.label}</label>
                   <Checkbox
                     value={checkbox.value}
-                    checked={checkedValues.includes(checkbox.value)}
+                    id={checkbox.label}
+                    checked={checkedValues.some(
+                      (checkedValue) => checkedValue.value === checkbox.value
+                    )}
                     onChange={handleCheckboxChange}
                   />
                 </Box>
@@ -240,7 +312,10 @@ const KPI = (props) => {
                   <label>{checkbox.label}</label>
                   <Checkbox
                     value={checkbox.value}
-                    checked={checkedValues.includes(checkbox.value)}
+                    id={checkbox.label}
+                    checked={checkedValues.some(
+                      (checkedValue) => checkedValue.value === checkbox.value
+                    )}
                     onChange={handleCheckboxChange}
                   />
                 </Box>
@@ -262,7 +337,10 @@ const KPI = (props) => {
                   <label>{checkbox.label}</label>
                   <Checkbox
                     value={checkbox.value}
-                    checked={checkedValues.includes(checkbox.value)}
+                    id={checkbox.label}
+                    checked={checkedValues.some(
+                      (checkedValue) => checkedValue.value === checkbox.value
+                    )}
                     onChange={handleCheckboxChange}
                   />
                 </Box>
