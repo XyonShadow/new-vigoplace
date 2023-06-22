@@ -346,11 +346,17 @@ const Users = () => {
     },
   });
 
-  const debitUser = async ({ amount, approvalPin, walletId }) => {
+  const debitUser = async ({
+    amount,
+    approvalPin,
+    walletId,
+    reasonType,
+    reasonDescription,
+  }) => {
     const credit = await axios.post(
       // "http://localhost:3001/api/admin/console/users/wallet/debit",
       "https://vigoplace.com/server/api/admin/console/users/wallet/debit",
-      { amount, approvalPin, walletId },
+      { amount, approvalPin, walletId, reasonType, reasonDescription },
       {
         headers: {
           Authorization: user?.token,
