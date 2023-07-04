@@ -40,6 +40,13 @@ const Menuitems = [
     roles: ['admin', 'administrator']
 
   },
+  {
+    title: "Post Categorization",
+    icon: "post",
+    href: "/logs",
+    roles: ['admin', 'administrator']
+
+  },
 
   // {
   //   title: "Buttons",

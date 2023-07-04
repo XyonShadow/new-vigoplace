@@ -8,6 +8,7 @@ import ProductPerfomance from "../src/components/dashboard/ProductPerfomance";
 import { Budget } from "../src/components/dashboard/budget";
 import { LatestOrders } from "../src/components/dashboard/latest-orders";
 import  KPI  from "../src/components/dashboard/kpi";
+import PostCategorization from "../src/components/dashboard/post-categorization";
 import { TasksProgress } from "../src/components/dashboard/tasks-progress";
 import { TotalCustomers } from "../src/components/dashboard/total-customers";
 import { TotalProfit } from "../src/components/dashboard/total-profit";
@@ -239,6 +240,7 @@ export default function Index() {
           >
             {/* <LatestOrders /> */}
             <KPI />
+            <PostCategorization />
           </Grid>
         </Grid>
       </Container>
