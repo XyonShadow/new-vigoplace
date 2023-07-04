@@ -90,11 +90,11 @@ const PostCategorization = (props) => {
             </TabList>
           </Box>
           <TabPanel value="1">
-            <Carousel navButtonsAlwaysVisible height={100} autoPlay={false} indicators={false} fullHeightHover={false} NextIcon={<NavigateNextOutlinedIcon />}>
+             <Carousel navButtonsAlwaysVisible height={100} autoPlay={false} indicators={false} fullHeightHover={false} NextIcon={<NavigateNextOutlinedIcon />}>
               {items.map((item, i) => (
                 <Item key={i} item={item} />
               ))}
-            </Carousel>
+            </Carousel> 
           </TabPanel>
           <TabPanel value="2">Categorized Posts</TabPanel>
         </TabContext>

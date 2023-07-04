@@ -12,6 +12,7 @@ import createEmotionCache from "../src/createEmotionCache";
 import FullLayout from "../src/layouts/FullLayout";
 import HomeLayout from "../src/layouts/HomeLayout";
 import "../styles/style.css";
+import global from "../styles/global.css";
 import Index from "./index";
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
