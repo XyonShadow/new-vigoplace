@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {MdOutlineArrowBackIosNew, MdArrowForwardIos} from "react-icons/md";
 import {AiOutlineSearch} from "react-icons/ai"
+import { Postmodal } from "./Postmodal";
 
 // import "./Styles.module.css"; 
 
@@ -11,6 +12,7 @@ export function Postcategorization1() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredResults, setFilteredResults] = useState([]);
+  const [openModal, setOpenModal] = useState(false)
 
   const handleTabChange = (newTab) => {
     setTab(newTab);
@@ -28,16 +30,29 @@ export function Postcategorization1() {
     setCurrentIndex(newIndex);
   };
 
+  const prevSlide1 = () => {
+    const isFirstSlide = currentIndex === 0;
+    const newIndex = isFirstSlide ? contentData.length - 1 : currentIndex - 1;
+    setCurrentIndex(newIndex);
+  };
+
+  const nextSlide1 = () => {
+    const isLastSlide = currentIndex === contentData.length - 1;
+    const newIndex = isLastSlide ? 0 : currentIndex + 1;
+    setCurrentIndex(newIndex);
+  };
+
   const handleSearch = (event) => {
     const value = event.target.value;
     setSearchTerm(value);
 
-    const filtered = contentData.filter((item) =>
-  item.title.toLowerCase().includes(value.toLowerCase())
-);
+    const filtered = contentData.filter((item) => {
+      return item.title?.toUpperCase().includes(searchTerm?.toUpperCase());
+    });
+    
 setFilteredResults(filtered);
 setSearchTerm(value);
-console.log(filtered)
+// console.log(filtered)
   };;
 
  const contentData = [
@@ -109,18 +124,22 @@ console.log(filtered)
                 <div className="text-center text-base text-[#706464] capitalize font-bold p-10">
                         {unCategorizedData[currentIndex].text}
                       </div>
-
+                  <div className="flex items-end justify-end mr-5 mt-24">
+                <button className="bg-[#F93636] py-3 px-5 rounded-md text-white text-sm" onClick={() => setOpenModal(true)}>Delete Post</button> 
+                </div>
+                
                 </div>
               </div>
               <div>
-                <h2 className="text-[#706464] pt-14 text-start text-2xl pb-5">
+                <h2 className="text-[#706464] pt-14 text-start text-xl pb-5">
                   Description
                 </h2>
                 <div className={`${unCategorizedData[currentIndex]}`}>
                 <div className="w-[300px] h-[200px] bg-[#f4f4f4] rounded-md overflow-auto">
                 <div className="text-center text-sm text-[#706464] mt-4 p-3">
                         {unCategorizedData[currentIndex].Description}
-                      </div>    
+                      </div>   
+
                 </div>
                 </div>
                 </div>
@@ -135,6 +154,7 @@ console.log(filtered)
             </div>
             </div>
       </div>
+      <Postmodal open={openModal} onClose={() => setOpenModal(false)}/>
 
               <div className="flex justify-between items-center -mt-80 p-3 text-white">
                 <div><MdOutlineArrowBackIosNew size={25} className="rounded-xl bg-blue-500 p-1 cursor-pointer" onClick={prevSlide}/></div> 
@@ -152,14 +172,16 @@ console.log(filtered)
             <div className="w-[420px] h-[620px] bg-[#f4f4f4]  rounded-xl">  
                 <p className="text-start p-2 pl-10 font-bold text-[#706464] text-lg">Post category</p>
               <div className="flex flex-col items-center justify-center">
-              <div className="bg-white w-[350px] h-[550px] rounded-md"></div>
+              <div className="bg-white w-[350px] h-[550px] rounded-md">
+                <p className="text-center text-2xl pt-60 capitalize">{contentData[currentIndex].title}</p>
+              </div>
             </div>
             </div>
             </div>
             <div className="flex justify-between p-7 -mt-80 text-white">
-                <div><MdOutlineArrowBackIosNew size={25} className="rounded-xl bg-blue-500 p-1"/></div> 
+                <div><MdOutlineArrowBackIosNew size={25} className="rounded-xl bg-blue-500 p-1 " onClick={prevSlide1}/></div> 
                 <div>
-              <MdArrowForwardIos size={25} className="rounded-xl bg-blue-500 p-1"/>
+              <MdArrowForwardIos size={25} className="rounded-xl bg-blue-500 p-1 " onClick={nextSlide1}/>
                 </div>
               </div>
             </>}
@@ -167,7 +189,7 @@ console.log(filtered)
       </div>
       <div className="w-[320px] h-[850px] bg-[#DFDCDC]">
         <div className="pl-5 pt-24 relative">
-          <div className="absolute left-8 top-28"><AiOutlineSearch size={20}/></div>
+          <div className="absolute left-8 top-28"><AiOutlineSearch size={20} onClick={handleSearch}/></div>
         <input type="text" className="w-[270px] h-[50px] pl-10 rounded-md focus:outline-blue-500" placeholder="Search category..."/>
           </div>
 
@@ -175,7 +197,7 @@ console.log(filtered)
           <div className="bg-[#F4F4F4] w-[268px] rounded-md h-[390px] flex p-3 justify-center overflow-auto">
 
         <div className="space-y-5">
-        {filteredResults.length > 0 ? (
+        {searchTerm !== "" && filteredResults.length > 0 ? (
   filteredResults.map((item) => (
     <div key={item.id} className="bg-white w-[220px] rounded-md h-10 p-2">
       <p className="text-center text-base text-[#706464] capitalize">{item.title}</p>
