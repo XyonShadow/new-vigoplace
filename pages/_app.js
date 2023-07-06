@@ -10,6 +10,7 @@ import { CacheProvider } from "@emotion/react";
 import theme from "../src/theme/theme";
 import createEmotionCache from "../src/createEmotionCache";
 import FullLayout from "../src/layouts/FullLayout";
+// import styles from "./styles.module.css"
 import HomeLayout from "../src/layouts/HomeLayout";
 import "../styles/style.css";
 import global from "../styles/global.css";

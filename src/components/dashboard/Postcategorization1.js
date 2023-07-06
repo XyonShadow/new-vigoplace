@@ -1,35 +1,43 @@
 import React, { useState } from "react";
 import {MdOutlineArrowBackIosNew, MdArrowForwardIos} from "react-icons/md";
 
+// import "./Styles.module.css"; 
+
+
 export function Postcategorization1() {
  
   const [tab, setTab] = useState(0);
-
-
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredResults, setFilteredResults] = useState([]);
 
   const handleTabChange = (newTab) => {
     setTab(newTab);
   };
 
-  const [currentIndex, setCurrentIndex] = useState(0);
-
   const prevSlide = () => {
-const isFirstSlide = currentIndex === 0;
-const newIndex = isFirstSlide ? unCategorizedData.length - 1 : currentIndex - 1;
-setCurrentIndex(newIndex);
-  }
+    const isFirstSlide = currentIndex === 0;
+    const newIndex = isFirstSlide ? unCategorizedData.length - 1 : currentIndex - 1;
+    setCurrentIndex(newIndex);
+  };
 
   const nextSlide = () => {
-   const isLastSlide = currentIndex === unCategorizedData.length - 1;
-   const newIndex = isLastSlide ? 0 : currentIndex + 1;
-   setCurrentIndex(newIndex);
-      }
+    const isLastSlide = currentIndex === unCategorizedData.length - 1;
+    const newIndex = isLastSlide ? 0 : currentIndex + 1;
+    setCurrentIndex(newIndex);
+  };
 
-      const handleSearch = (event) => {
-        const value = event.target.value;
-        setSearchTerm(value);
+  const handleSearch = (event) => {
+    const value = event.target.value;
+    setSearchTerm(value);
 
-      const [searchTerm, setSearchTerm] = useState('');
+    const filtered = contentData.filter((item) =>
+  item.title.toLowerCase().includes(value.toLowerCase())
+);
+setFilteredResults(filtered);
+setSearchTerm(value);
+console.log(filtered)
+  };;
 
  const contentData = [
     { id: 1, title: 'category 1' },
@@ -45,13 +53,13 @@ setCurrentIndex(newIndex);
   
   const unCategorizedData = [
     { id: 1, text: 'Uncategorized Post 1', Description: "Lorem ipsum dolor sit amet consectetur. Maecenas mattis,tortor nunc et massa. Nunc elementum quam id nulla dignissim pellentesque. Lorem ipsum dolor sit amet consectetur.  Maecenas mattis tortor nunc et massa. Nunc elementum quam idnulla dignissim pellentesque"},
-    { id: 2, text: 'Uncategorized Post 2', Description: "Lorem ipsum dolor sit amet consectetur. Maecenas mattis,tortor nunc et massa. Nunc elementum quam id nulla dignissim pellentesque. Lorem ipsum dolor sit amet consectetur.  Maecenas mattis tortor nunc et massa. Nunc elementum quam idnulla dignissim pellentesque" },
+    { id: 2, text: 'Uncategorized Post 2', Description: "Maecenas mattis,tortor nunc et massa. Nunc elementum quam id nulla dignissim pellentesque. Lorem ipsum dolor sit amet consectetur.  Maecenas mattis tortor nunc et massa. Nunc elementum quam idnulla dignissim pellentesque. Lorem ipsum dolor sit amet consectetur. " },
     { id: 3, text: 'Uncategorized Post 3', Description: "Lorem ipsum dolor sit amet consectetur. Maecenas mattis,tortor nunc et massa. Nunc elementum quam id nulla dignissim pellentesque. Lorem ipsum dolor sit amet consectetur.  Maecenas mattis tortor nunc et massa. Nunc elementum quam idnulla dignissim pellentesque" },
-    { id: 4, text: 'Uncategorized Post 4', Description: "Lorem ipsum dolor sit amet consectetur. Maecenas mattis,tortor nunc et massa. Nunc elementum quam id nulla dignissim pellentesque. Lorem ipsum dolor sit amet consectetur.  Maecenas mattis tortor nunc et massa. Nunc elementum quam idnulla dignissim pellentesque" },
+    { id: 4, text: 'Uncategorized Post 4', Description: "Maecenas mattis,tortor nunc et massa. Nunc elementum quam id nulla dignissim pellentesque. Lorem ipsum dolor sit amet consectetur.  Maecenas mattis tortor nunc et massa. Nunc elementum quam idnulla dignissim pellentesque Lorem ipsum dolor sit amet consectetur." },
     { id: 5, text: 'Uncategorized Post 5', Description: "Lorem ipsum dolor sit amet consectetur. Maecenas mattis,tortor nunc et massa. Nunc elementum quam id nulla dignissim pellentesque. Lorem ipsum dolor sit amet consectetur.  Maecenas mattis tortor nunc et massa. Nunc elementum quam idnulla dignissim pellentesque" },
-    { id: 6, text: 'Uncategorized Post 6', Description: "Lorem ipsum dolor sit amet consectetur. Maecenas mattis,tortor nunc et massa. Nunc elementum quam id nulla dignissim pellentesque. Lorem ipsum dolor sit amet consectetur.  Maecenas mattis tortor nunc et massa. Nunc elementum quam idnulla dignissim pellentesque" },
+    { id: 6, text: 'Uncategorized Post 6', Description: "Maecenas mattis,tortor nunc et massa. Nunc elementum quam id nulla dignissim pellentesque. Lorem ipsum dolor sit amet consectetur.  Maecenas mattis tortor nunc et massa. Nunc elementum quam idnulla dignissim pellentesque Lorem ipsum dolor sit amet consectetur." },
     { id: 7, text: 'Uncategorized Post 7', Description: "Lorem ipsum dolor sit amet consectetur. Maecenas mattis,tortor nunc et massa. Nunc elementum quam id nulla dignissim pellentesque. Lorem ipsum dolor sit amet consectetur.  Maecenas mattis tortor nunc et massa. Nunc elementum quam idnulla dignissim pellentesque" },
-    { id: 8, text: 'Uncategorized Post 8', Description: "Lorem ipsum dolor sit amet consectetur. Maecenas mattis,tortor nunc et massa. Nunc elementum quam id nulla dignissim pellentesque. Lorem ipsum dolor sit amet consectetur.  Maecenas mattis tortor nunc et massa. Nunc elementum quam idnulla dignissim pellentesque" }
+    { id: 8, text: 'Uncategorized Post 8', Description: "Maecenas mattis,tortor nunc et massa. Nunc elementum quam id nulla dignissim pellentesque. Lorem ipsum dolor sit amet consectetur.  Maecenas mattis tortor nunc et massa. Nunc elementum quam idnulla dignissim pellentesque Lorem ipsum dolor sit amet consectetur." }
   ];
 
   return (
@@ -93,14 +101,13 @@ setCurrentIndex(newIndex);
           {tab === 0 && (
             <>
             <div className="flex justify-evenly">  
-              <div className="pl-12">  
+              <div className={`pl-12 Styles.fade-In`}>  
               <div className=" pt-14">
                 <div className="w-[290px] h-[280px] bg-[#f4f4f4] rounded-md">
-                  <div className={`${unCategorizedData[currentIndex]}`}>
-                  {unCategorizedData.map((data) => (
-          <p className="text-center ttext-baseext-[#706464] capitalize ">{data.text}</p>
-      ))}
-                  </div>
+                <div className="text-center text-base text-[#706464] capitalize font-bold p-10">
+                        {unCategorizedData[currentIndex].text}
+                      </div>
+
                 </div>
               </div>
               <div>
@@ -109,10 +116,9 @@ setCurrentIndex(newIndex);
                 </h2>
                 <div className={`${unCategorizedData[currentIndex]}`}>
                 <div className="w-[300px] h-[200px] bg-[#f4f4f4] rounded-md overflow-auto">
-                {unCategorizedData.map((data) => (
-          <p className="text-center text-sm text-[#706464] p-5">{data.Description}</p>
-      ))}
-                 
+                <div className="text-center text-sm text-[#706464] mt-4 p-3">
+                        {unCategorizedData[currentIndex].Description}
+                      </div>    
                 </div>
                 </div>
                 </div>
@@ -159,6 +165,7 @@ setCurrentIndex(newIndex);
       </div>
       <div className="w-[320px] h-[850px] bg-[#DFDCDC]">
         <div className="pl-5 pt-24">
+          <button className="bg-red-200 text-sm" onClick={handleSearch}>search</button>
         <input type="text" className="w-[270px] h-[50px] pl-5 rounded-md focus:outline-blue-500" placeholder="Search category..."/>
           </div>
 
@@ -166,11 +173,19 @@ setCurrentIndex(newIndex);
           <div className="bg-[#F4F4F4] w-[268px] rounded-md h-[390px] flex p-3 justify-center overflow-auto">
 
         <div className="space-y-5">
-      {contentData.map((item) => (
-        <div key={item.id} className="bg-white w-[220px] rounded-md h-10 p-2">
-          <p className="text-center ttext-baseext-[#706464] capitalize ">{item.title}</p>
-        </div>
-      ))}
+        {filteredResults.length > 0 ? (
+  filteredResults.map((item) => (
+    <div key={item.id} className="bg-white w-[220px] rounded-md h-10 p-2">
+      <p className="text-center text-base text-[#706464] capitalize">{item.title}</p>
+    </div>
+  ))
+) : (
+  contentData.map((item) => (
+    <div key={item.id} className="bg-white w-[220px] rounded-md h-10 p-2">
+      <p className="text-center text-base text-[#706464] capitalize">{item.title}</p>
+    </div>
+  ))
+)}
     </div>
     </div>
           </div>
