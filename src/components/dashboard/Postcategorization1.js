@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {MdOutlineArrowBackIosNew, MdArrowForwardIos} from "react-icons/md";
+import {AiOutlineSearch} from "react-icons/ai"
 
 // import "./Styles.module.css"; 
 
@@ -65,11 +66,12 @@ console.log(filtered)
   return (
     <section className="flex justify-center pt-14">
       <div className="pt-2 w-[770px] h-[850px] bg-white rounded-l-3xl">
-        <div className="p-5 pl-10 border-b-2 border-[#f4f4f4]">
+        <div className="p-5 pl-10 border-b-2 border-[#f4f4f4] relative">
+        <div className="absolute left-12 top-9"><AiOutlineSearch size={20}/></div>
           <input
             type="text"
             placeholder="Post id:"
-            className="pl-3 focus:outline-blue-400 w-[350px] h-[40px] rounded-md bg-[#F4F4F4]"
+            className="pl-10 focus:outline-blue-400 w-[350px] h-[50px] rounded-md bg-[#F4F4F4]"
           />
         </div>
 
@@ -164,9 +166,9 @@ console.log(filtered)
         </article>
       </div>
       <div className="w-[320px] h-[850px] bg-[#DFDCDC]">
-        <div className="pl-5 pt-24">
-          <button className="bg-red-200 text-sm" onClick={handleSearch}>search</button>
-        <input type="text" className="w-[270px] h-[50px] pl-5 rounded-md focus:outline-blue-500" placeholder="Search category..."/>
+        <div className="pl-5 pt-24 relative">
+          <div className="absolute left-8 top-28"><AiOutlineSearch size={20}/></div>
+        <input type="text" className="w-[270px] h-[50px] pl-10 rounded-md focus:outline-blue-500" placeholder="Search category..."/>
           </div>
 
             <div className="flex justify-center mt-10">
