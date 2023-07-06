@@ -1,28 +1,62 @@
 import React, { useState } from "react";
+import {MdOutlineArrowBackIosNew, MdArrowForwardIos} from "react-icons/md";
 
 export function Postcategorization1() {
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  const [content, setContent] = useState("Initial content");
+ 
   const [tab, setTab] = useState(0);
 
-  const handleContentChange = () => {
-    if (content === "Initial content") {
-      setContent("New content");
-    } else {
-      setContent("Initial content");
-    }
-  };
+
 
   const handleTabChange = (newTab) => {
     setTab(newTab);
   };
 
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const prevSlide = () => {
+const isFirstSlide = currentIndex === 0;
+const newIndex = isFirstSlide ? unCategorizedData.length - 1 : currentIndex - 1;
+setCurrentIndex(newIndex);
+  }
+
+  const nextSlide = () => {
+   const isLastSlide = currentIndex === unCategorizedData.length - 1;
+   const newIndex = isLastSlide ? 0 : currentIndex + 1;
+   setCurrentIndex(newIndex);
+      }
+
+      const handleSearch = (event) => {
+        const value = event.target.value;
+        setSearchTerm(value);
+
+      const [searchTerm, setSearchTerm] = useState('');
+
+ const contentData = [
+    { id: 1, title: 'category 1' },
+    { id: 2, title: 'category 2' },
+    { id: 3, title: 'category 3' },
+    { id: 4, title: 'category 4' },
+    { id: 5, title: 'category 5' },
+    { id: 6, title: 'category 6' },
+    { id: 7, title: 'category 7' },
+    { id: 8, title: 'category 8' }
+  ];
+    
+  
+  const unCategorizedData = [
+    { id: 1, text: 'Uncategorized Post 1', Description: "Lorem ipsum dolor sit amet consectetur. Maecenas mattis,tortor nunc et massa. Nunc elementum quam id nulla dignissim pellentesque. Lorem ipsum dolor sit amet consectetur.  Maecenas mattis tortor nunc et massa. Nunc elementum quam idnulla dignissim pellentesque"},
+    { id: 2, text: 'Uncategorized Post 2', Description: "Lorem ipsum dolor sit amet consectetur. Maecenas mattis,tortor nunc et massa. Nunc elementum quam id nulla dignissim pellentesque. Lorem ipsum dolor sit amet consectetur.  Maecenas mattis tortor nunc et massa. Nunc elementum quam idnulla dignissim pellentesque" },
+    { id: 3, text: 'Uncategorized Post 3', Description: "Lorem ipsum dolor sit amet consectetur. Maecenas mattis,tortor nunc et massa. Nunc elementum quam id nulla dignissim pellentesque. Lorem ipsum dolor sit amet consectetur.  Maecenas mattis tortor nunc et massa. Nunc elementum quam idnulla dignissim pellentesque" },
+    { id: 4, text: 'Uncategorized Post 4', Description: "Lorem ipsum dolor sit amet consectetur. Maecenas mattis,tortor nunc et massa. Nunc elementum quam id nulla dignissim pellentesque. Lorem ipsum dolor sit amet consectetur.  Maecenas mattis tortor nunc et massa. Nunc elementum quam idnulla dignissim pellentesque" },
+    { id: 5, text: 'Uncategorized Post 5', Description: "Lorem ipsum dolor sit amet consectetur. Maecenas mattis,tortor nunc et massa. Nunc elementum quam id nulla dignissim pellentesque. Lorem ipsum dolor sit amet consectetur.  Maecenas mattis tortor nunc et massa. Nunc elementum quam idnulla dignissim pellentesque" },
+    { id: 6, text: 'Uncategorized Post 6', Description: "Lorem ipsum dolor sit amet consectetur. Maecenas mattis,tortor nunc et massa. Nunc elementum quam id nulla dignissim pellentesque. Lorem ipsum dolor sit amet consectetur.  Maecenas mattis tortor nunc et massa. Nunc elementum quam idnulla dignissim pellentesque" },
+    { id: 7, text: 'Uncategorized Post 7', Description: "Lorem ipsum dolor sit amet consectetur. Maecenas mattis,tortor nunc et massa. Nunc elementum quam id nulla dignissim pellentesque. Lorem ipsum dolor sit amet consectetur.  Maecenas mattis tortor nunc et massa. Nunc elementum quam idnulla dignissim pellentesque" },
+    { id: 8, text: 'Uncategorized Post 8', Description: "Lorem ipsum dolor sit amet consectetur. Maecenas mattis,tortor nunc et massa. Nunc elementum quam id nulla dignissim pellentesque. Lorem ipsum dolor sit amet consectetur.  Maecenas mattis tortor nunc et massa. Nunc elementum quam idnulla dignissim pellentesque" }
+  ];
+
   return (
     <section className="flex justify-center pt-14">
-      <div className="pt-2 w-[700px] h-[850px] bg-white rounded-l-3xl">
+      <div className="pt-2 w-[770px] h-[850px] bg-white rounded-l-3xl">
         <div className="p-5 pl-10 border-b-2 border-[#f4f4f4]">
           <input
             type="text"
@@ -57,30 +91,55 @@ export function Postcategorization1() {
             </div>
           </div>
           {tab === 0 && (
-            <div className="flex flex-col justify-center items-center">
+            <>
+            <div className="flex justify-evenly">  
+              <div className="pl-12">  
               <div className=" pt-14">
-                <div className="w-[450px] h-[300px] bg-[#f4f4f4]"></div>
+                <div className="w-[290px] h-[280px] bg-[#f4f4f4] rounded-md">
+                  <div className={`${unCategorizedData[currentIndex]}`}>
+                  {unCategorizedData.map((data) => (
+          <p className="text-center ttext-baseext-[#706464] capitalize ">{data.text}</p>
+      ))}
+                  </div>
+                </div>
               </div>
               <div>
                 <h2 className="text-[#706464] pt-14 text-start text-2xl pb-5">
                   Description
                 </h2>
-                <div className="">
-                <div className="w-[450px] h-[150px] bg-[#f4f4f4]">
-                  <p className="text-sm p-5">
-                    Lorem ipsum dolor sit amet consectetur. Maecenas mattis
-                    tortor nunc et massa. Nunc elementum quam id nulla dignissim
-                    pellentesque. Lorem ipsum dolor sit amet consectetur.
-                    Maecenas mattis tortor nunc et massa. Nunc elementum quam id
-                    nulla dignissim pellentesque.{" "}
-                  </p>
+                <div className={`${unCategorizedData[currentIndex]}`}>
+                <div className="w-[300px] h-[200px] bg-[#f4f4f4] rounded-md overflow-auto">
+                {unCategorizedData.map((data) => (
+          <p className="text-center text-sm text-[#706464] p-5">{data.Description}</p>
+      ))}
+                 
+                </div>
                 </div>
                 </div>
               </div>
+              
+              <div className="flex justify-center pt-10">
+            <div className="w-[290px] h-[620px] bg-[#f4f4f4]  rounded-xl">  
+                <p className="text-start p-2 pl-10 font-bold text-[#706464] text-lg">Post category</p>
+              <div className="flex flex-col items-center justify-center">
+              <div className="bg-white w-[250px] h-[550px] rounded-md"></div>
             </div>
+            </div>
+            </div>
+      </div>
+
+              <div className="flex justify-between items-center -mt-80 p-3 text-white">
+                <div><MdOutlineArrowBackIosNew size={25} className="rounded-xl bg-blue-500 p-1 cursor-pointer" onClick={prevSlide}/></div> 
+                <div>
+              <MdArrowForwardIos size={25} className="rounded-xl bg-blue-500 p-1 cursor-pointer" onClick={nextSlide} />
+                </div>
+              </div>
+              </>
           )}
 
           {tab === 1 && 
+          <>
+
           <div className="flex justify-center pt-10">
             <div className="w-[420px] h-[620px] bg-[#f4f4f4]  rounded-xl">  
                 <p className="text-start p-2 pl-10 font-bold text-[#706464] text-lg">Post category</p>
@@ -88,13 +147,38 @@ export function Postcategorization1() {
               <div className="bg-white w-[350px] h-[550px] rounded-md"></div>
             </div>
             </div>
-            </div>}
+            </div>
+            <div className="flex justify-between p-7 -mt-80 text-white">
+                <div><MdOutlineArrowBackIosNew size={25} className="rounded-xl bg-blue-500 p-1"/></div> 
+                <div>
+              <MdArrowForwardIos size={25} className="rounded-xl bg-blue-500 p-1"/>
+                </div>
+              </div>
+            </>}
         </article>
       </div>
-      <div className="w-[380px] h-[850px] bg-[#DFDCDC]">
-        <div className="pl-12 pt-20">
-          <input type="text" className="w-[290px] h-[40px] pl-5 rounded-md focus:outline-blue-500" placeholder="Search category..."/>
+      <div className="w-[320px] h-[850px] bg-[#DFDCDC]">
+        <div className="pl-5 pt-24">
+        <input type="text" className="w-[270px] h-[50px] pl-5 rounded-md focus:outline-blue-500" placeholder="Search category..."/>
+          </div>
+
+            <div className="flex justify-center mt-10">
+          <div className="bg-[#F4F4F4] w-[268px] rounded-md h-[390px] flex p-3 justify-center overflow-auto">
+
+        <div className="space-y-5">
+      {contentData.map((item) => (
+        <div key={item.id} className="bg-white w-[220px] rounded-md h-10 p-2">
+          <p className="text-center ttext-baseext-[#706464] capitalize ">{item.title}</p>
         </div>
+      ))}
+    </div>
+    </div>
+          </div>
+       <p className="pl-7 pt-32 text-[#706464]">Create a new categories</p>
+       <div className="mt-5 pl-5">
+       <input type="text" className="w-[220px] h-[50px] pl-5 rounded-l-md focus:outline-blue-500" value={searchTerm} onChange={handleSearch} placeholder="New category..."/>
+      <button className="p-[14px] rounded-r-lg bg-blue-500 text-white">Save</button>
+       </div>
       </div>
     </section>
   );
