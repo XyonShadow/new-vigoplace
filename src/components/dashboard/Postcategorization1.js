@@ -12,7 +12,7 @@ export function Postcategorization1() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredResults, setFilteredResults] = useState([]);
-  const [openModal, setOpenModal] = useState(false)
+  const [openModal, setOpenModal] = useState(false);
 
   const handleTabChange = (newTab) => {
     setTab(newTab);
@@ -47,7 +47,7 @@ export function Postcategorization1() {
     setSearchTerm(value);
 
     const filtered = contentData.filter((item) => {
-      return item.title?.toUpperCase().includes(searchTerm?.toUpperCase());
+      return item.title.toUpperCase().includes(searchTerm?.toUpperCase());
     });
     
 setFilteredResults(filtered);
@@ -189,8 +189,8 @@ setSearchTerm(value);
       </div>
       <div className="w-[320px] h-[850px] bg-[#DFDCDC]">
         <div className="pl-5 pt-24 relative">
-          <div className="absolute left-8 top-28"><AiOutlineSearch size={20} onClick={handleSearch}/></div>
-        <input type="text" className="w-[270px] h-[50px] pl-10 rounded-md focus:outline-blue-500" placeholder="Search category..."/>
+          <div className="absolute right-10 top-28"><AiOutlineSearch size={20} onClick={handleSearch}/></div>
+        <input type="text" className="w-[270px] h-[50px] pl-5 rounded-md focus:outline-blue-500" placeholder="Search category..." onChange={handleSearch}/>
           </div>
 
             <div className="flex justify-center mt-10">
