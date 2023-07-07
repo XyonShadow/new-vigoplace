@@ -190,19 +190,24 @@ setSearchTerm(value);
       <div className="w-[320px] h-[850px] bg-[#DFDCDC]">
         <div className="pl-5 pt-24 relative">
           <div className="absolute right-10 top-28"><AiOutlineSearch size={20} onClick={handleSearch}/></div>
-        <input type="text" className="w-[270px] h-[50px] pl-5 rounded-md focus:outline-blue-500" placeholder="Search category..." onChange={handleSearch}/>
+        <input type="text" className="w-[270px] h-[50px] pl-5 rounded-md focus:outline-blue-500" placeholder="Search category..." value={searchTerm} onChange={handleSearch}/>
           </div>
 
             <div className="flex justify-center mt-10">
           <div className="bg-[#F4F4F4] w-[268px] rounded-md h-[390px] flex p-3 justify-center overflow-auto">
 
         <div className="space-y-5">
-        {searchTerm !== "" && filteredResults.length > 0 ? (
-  filteredResults.map((item) => (
-    <div key={item.id} className="bg-white w-[220px] rounded-md h-10 p-2">
-      <p className="text-center text-base text-[#706464] capitalize">{item.title}</p>
-    </div>
-  ))
+          
+        {searchTerm !== "" ? (
+  filteredResults.length > 0 ? (
+    filteredResults.map((item) => (
+      <div key={item.id} className="bg-white w-[220px] rounded-md h-10 p-2">
+        <p className="text-center text-base text-[#706464] capitalize">{item.title}</p>
+      </div>
+    ))
+  ) : (
+    <p className="text-center text-base text-[#706464]">Not found</p>
+  )
 ) : (
   contentData.map((item) => (
     <div key={item.id} className="bg-white w-[220px] rounded-md h-10 p-2">
@@ -210,12 +215,13 @@ setSearchTerm(value);
     </div>
   ))
 )}
+
     </div>
     </div>
           </div>
        <p className="pl-7 pt-32 text-[#706464]">Create a new categories</p>
        <div className="mt-5 pl-5">
-       <input type="text" className="w-[220px] h-[50px] pl-5 rounded-l-md focus:outline-blue-500" value={searchTerm} onChange={handleSearch} placeholder="New category..."/>
+       <input type="text" className="w-[220px] h-[50px] pl-5 rounded-l-md focus:outline-blue-500" placeholder="New category..."/>
       <button className="p-[14px] rounded-r-lg bg-blue-500 text-white">Save</button>
        </div>
       </div>
