@@ -8,12 +8,10 @@ import ProductPerfomance from "../src/components/dashboard/ProductPerfomance";
 import { Budget } from "../src/components/dashboard/budget";
 import { LatestOrders } from "../src/components/dashboard/latest-orders";
 import  KPI  from "../src/components/dashboard/kpi";
-// import PostCategorization from "../src/components/dashboard/post-categorization";
 import { TasksProgress } from "../src/components/dashboard/tasks-progress";
 import { TotalCustomers } from "../src/components/dashboard/total-customers";
 import { TotalProfit } from "../src/components/dashboard/total-profit";
 import { fetchRouteRoles } from '../hooks/useRouteRoles';
-import { Postcategorization1 } from "../src/components/dashboard/Postcategorization1";
 import axios from 'axios';
 import {
   useQueryClient,
@@ -241,8 +239,6 @@ export default function Index() {
           >
             {/* <LatestOrders /> */}
             <KPI />
-            {/* <PostCategorization /> */}
-            <Postcategorization1 />
           </Grid>
         </Grid>
       </Container>
