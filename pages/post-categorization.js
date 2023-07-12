@@ -3,6 +3,7 @@ import { Postcategorization1 } from "../src/components/dashboard/Postcategorizat
 
 const PostCategorization = () => {
   return (
+    
    <Postcategorization1 />
   )
 }

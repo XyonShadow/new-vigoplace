@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 
 export function Postmodal({ open, onClose, postId, onDelete}) {
-    // const  [id, setId] = useState("");
 
 
   const API_BASE_URL = 'https://vigoplace.com/server';
@@ -15,7 +14,7 @@ export function Postmodal({ open, onClose, postId, onDelete}) {
     if (!response.ok) {
       throw new Error(data.error); 
     }
-    // console.log(data)
+    console.log(data)
     return data;
   };
 

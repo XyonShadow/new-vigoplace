@@ -1,27 +1,39 @@
-import React, { useState } from "react";
-import { MdOutlineArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
+import React, { useState, useEffect } from "react";
+// import { MdOutlineArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
 import { AiOutlineSearch } from "react-icons/ai";
-import { Postmodal } from "./Postmodal";
 import { useQuery } from "@tanstack/react-query";
+import { UncategorizedPost } from "./UncategorizedPost";
+import { CategorizedPost } from "./CategorizedPost";
 
 // import "./Styles.module.css";
 
 export function Postcategorization1() {
+
   const [tab, setTab] = useState(0);
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredResults, setFilteredResults] = useState([]);
-  const [openModal, setOpenModal] = useState(false);
-  const [deletedIndex, setDeletedIndex] = useState(null);
-  
+  const [newCategories, setNewCategories] = useState("");
+  const [currentIndex, setCurrentIndex] = useState(0);
 
+  const API_BASE_URL = "https://vigoplace.com/server/";
 
-
-  const handleDelete = () => {
-    setDeletedIndex(currentIndex);
-    setOpenModal(false);
-    
+  const fetchData = async () => {
+    const response = await fetch(`${API_BASE_URL}/api/admin/categories`);
+    const data = await response.json();
+    return data;
   };
+
+  const { data: categoryList, isLoading, error } = useQuery(["categorizedData"], fetchData);
+
+  // const { data: uncategorizedPost } = useQuery(["uncategorizedData"], uncategorizedData);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
 
   const handleTabChange = (newTab) => {
     setTab(newTab);
@@ -32,7 +44,7 @@ export function Postcategorization1() {
     setSearchTerm(value);
 
     const filtered = contentData.filter((item) => {
-      return item.title.toUpperCase().includes(searchTerm?.toUpperCase());
+      return item.OCName.toUpperCase().includes(searchTerm?.toUpperCase());
     });
 
     setFilteredResults(filtered);
@@ -40,111 +52,62 @@ export function Postcategorization1() {
     // console.log(filtered)
   };
 
-  const contentData = [
-    { id: 1, title: "category 1" },
-    { id: 2, title: "category 2" },
-    { id: 3, title: "category 3" },
-    { id: 4, title: "category 4" },
-    { id: 5, title: "category 5" },
-    { id: 6, title: "category 6" },
-    { id: 7, title: "category 7" },
-    { id: 8, title: "category 8" },
-  ];
 
-  const API_BASE_URL = "https://vigoplace.com/server/";
-
-  const fetchData = async () => {
-    const response = await fetch(`${API_BASE_URL}/api/admin/uncategorized`);
-    const data = await response.json();
-    // console.log(data);
-    return data;
+  const handleClick = () => {
+    console.log(newCategories)
+    fetch("https://vigoplace.com/server/api/admin/categories", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        categories: [newCategories]
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to create category");
+        }
+        return response.json(); // Parse the response as JSON
+      })
+      .then((data) => {
+        console.log(data);
+        setNewCategories("")
+      })
+      .catch((error) => {
+        console.error("Error creating category:", error);
+        // Display an error message to the user or handle the error appropriately
+      });
   };
 
-  const { data, isLoading, error } = useQuery(["uncategorizedData"], fetchData);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
-
-  const prevSlide = () => {
-    const isFirstSlide = currentIndex === 0;
-    const newIndex = isFirstSlide ? data.data.length - 1 : currentIndex - 1;
-    setCurrentIndex(newIndex);
+  const handlePostClick = (category) => {
+    const postId = categoryList.data[currentIndex].POId;
+    fetch("https://vigoplace.com/server/api/admin/categorization", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        category: [category],
+        postId: postId,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to create category");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error("Error creating category:", error);
+      });
   };
 
-  const nextSlide = () => {
-    const isLastSlide = currentIndex === data.data.length - 1;
-    const newIndex = isLastSlide ? 0 : currentIndex + 1;
-    setCurrentIndex(newIndex);
-  };
 
-  const prevSlide1 = () => {
-    const isFirstSlide = currentIndex === 0;
-    const newIndex = isFirstSlide ? contentData.length - 1 : currentIndex - 1;
-    setCurrentIndex(newIndex);
-  };
 
-  const nextSlide1 = () => {
-    const isLastSlide = currentIndex === contentData.length - 1;
-    const newIndex = isLastSlide ? 0 : currentIndex + 1;
-    setCurrentIndex(newIndex);
-  };
-
-  // const unCategorizedData = [
-  //   {
-  //     id: 1,
-  //     text: "Uncategorized Post 1",
-  //     Description:
-  //       "Lorem ipsum dolor sit amet consectetur. Maecenas mattis,tortor nunc et massa. Nunc elementum quam id nulla dignissim pellentesque. Lorem ipsum dolor sit amet consectetur.  Maecenas mattis tortor nunc et massa. Nunc elementum quam idnulla dignissim pellentesque",
-  //   },
-  //   {
-  //     id: 2,
-  //     text: "Uncategorized Post 2",
-  //     Description:
-  //       "Maecenas mattis,tortor nunc et massa. Nunc elementum quam id nulla dignissim pellentesque. Lorem ipsum dolor sit amet consectetur.  Maecenas mattis tortor nunc et massa. Nunc elementum quam idnulla dignissim pellentesque. Lorem ipsum dolor sit amet consectetur. ",
-  //   },
-  //   {
-  //     id: 3,
-  //     text: "Uncategorized Post 3",
-  //     Description:
-  //       "Lorem ipsum dolor sit amet consectetur. Maecenas mattis,tortor nunc et massa. Nunc elementum quam id nulla dignissim pellentesque. Lorem ipsum dolor sit amet consectetur.  Maecenas mattis tortor nunc et massa. Nunc elementum quam idnulla dignissim pellentesque",
-  //   },
-  //   {
-  //     id: 4,
-  //     text: "Uncategorized Post 4",
-  //     Description:
-  //       "Maecenas mattis,tortor nunc et massa. Nunc elementum quam id nulla dignissim pellentesque. Lorem ipsum dolor sit amet consectetur.  Maecenas mattis tortor nunc et massa. Nunc elementum quam idnulla dignissim pellentesque Lorem ipsum dolor sit amet consectetur.",
-  //   },
-  //   {
-  //     id: 5,
-  //     text: "Uncategorized Post 5",
-  //     Description:
-  //       "Lorem ipsum dolor sit amet consectetur. Maecenas mattis,tortor nunc et massa. Nunc elementum quam id nulla dignissim pellentesque. Lorem ipsum dolor sit amet consectetur.  Maecenas mattis tortor nunc et massa. Nunc elementum quam idnulla dignissim pellentesque",
-  //   },
-  //   {
-  //     id: 6,
-  //     text: "Uncategorized Post 6",
-  //     Description:
-  //       "Maecenas mattis,tortor nunc et massa. Nunc elementum quam id nulla dignissim pellentesque. Lorem ipsum dolor sit amet consectetur.  Maecenas mattis tortor nunc et massa. Nunc elementum quam idnulla dignissim pellentesque Lorem ipsum dolor sit amet consectetur.",
-  //   },
-  //   {
-  //     id: 7,
-  //     text: "Uncategorized Post 7",
-  //     Description:
-  //       "Lorem ipsum dolor sit amet consectetur. Maecenas mattis,tortor nunc et massa. Nunc elementum quam id nulla dignissim pellentesque. Lorem ipsum dolor sit amet consectetur.  Maecenas mattis tortor nunc et massa. Nunc elementum quam idnulla dignissim pellentesque",
-  //   },
-  //   {
-  //     id: 8,
-  //     text: "Uncategorized Post 8",
-  //     Description:
-  //       "Maecenas mattis,tortor nunc et massa. Nunc elementum quam id nulla dignissim pellentesque. Lorem ipsum dolor sit amet consectetur.  Maecenas mattis tortor nunc et massa. Nunc elementum quam idnulla dignissim pellentesque Lorem ipsum dolor sit amet consectetur.",
-  //   },
-  // ];
-//  if (currentIndex === deletedIndex) return null;
   return (
     <section className="flex justify-center pt-14">
       <div className="pt-2 w-[770px] h-[850px] bg-white rounded-l-3xl">
@@ -186,131 +149,13 @@ export function Postcategorization1() {
           </div>
           {tab === 0 && (
             <>
-              <div className="flex justify-evenly">
-                <div className={`pl-12 Styles.fade-In`}>
-                  <div className=" pt-14">
-                    <div className="w-[290px] h-[280px] bg-[#f4f4f4] rounded-md">
-                      <div className="text-center text-base text-[#706464] capitalize font-bold">
-                        {data && data.data && (
-                          <div key={data.data[currentIndex].POId}>
-                            {data.data[currentIndex].PMMedia.includes(
-                              ".mp4"
-                            ) ? (
-                              <video
-                                src={data.data[currentIndex].PMMedia}
-                                controls
-                                className="w-[290px] h-[280px]"
-                              />
-                            ) : (
-                              <img
-                                src={data.data[currentIndex].PMMedia}
-                                alt=""
-                                className="w-[290px] h-[280px]"
-                              />
-                            )}
-                          </div>
-                        )}
-                        {/* {unCategorizedData[currentIndex].text} */}
-                      </div>
-                      <div className="relative">
-                        <button
-                          className="bg-[#F93636] py-3 px-5 rounded-md text-white text-sm absolute right-3 -top-16 z-20"
-                          onClick={() => setOpenModal(true)}
-                        >
-                          Delete Post
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    <h2 className="text-[#706464] pt-14 text-start text-xl pb-5">
-                      Description
-                    </h2>
-                    <div className={`${data.data[currentIndex]}`}>
-                      <div className="w-[300px] h-[200px] bg-[#f4f4f4] rounded-md overflow-auto">
-                        <div className="text-center text-sm text-[#706464] mt-4 p-3">
-                          {data && data.data && (
-                            <div key={data.data[currentIndex].POId}>
-                              {data.data.length > 0
-                                ? data.data[currentIndex].description
-                                : ""}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex justify-center pt-10">
-                  <div className="w-[290px] h-[620px] bg-[#f4f4f4]  rounded-xl">
-                    <p className="text-start p-2 pl-10 font-bold text-[#706464] text-lg">
-                      Post category
-                    </p>
-                    <div className="flex flex-col items-center justify-center">
-                      <div className="bg-white w-[250px] h-[550px] rounded-md"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <Postmodal
-                open={openModal}
-                onClose={() => setOpenModal(false)}
-                postId={data.data[currentIndex].POId}
-                onDelete={handleDelete}
-              />
-
-              <div className="flex justify-between items-center -mt-80 p-3 text-white">
-                <div>
-                  <MdOutlineArrowBackIosNew
-                    size={25}
-                    className="rounded-xl bg-blue-500 p-1 cursor-pointer"
-                    onClick={prevSlide}
-                  />
-                </div>
-                <div>
-                  <MdArrowForwardIos
-                    size={25}
-                    className="rounded-xl bg-blue-500 p-1 cursor-pointer"
-                    onClick={nextSlide}
-                  />
-                </div>
-              </div>
+              <UncategorizedPost />
             </>
           )}
 
           {tab === 1 && (
             <>
-              <div className="flex justify-center pt-10">
-                <div className="w-[420px] h-[620px] bg-[#f4f4f4]  rounded-xl">
-                  <p className="text-start p-2 pl-10 font-bold text-[#706464] text-lg">
-                    Post category
-                  </p>
-                  <div className="flex flex-col items-center justify-center">
-                    <div className="bg-white w-[350px] h-[550px] rounded-md">
-                      <p className="text-center text-2xl pt-60 capitalize">
-                        {contentData[currentIndex].title}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="flex justify-between p-7 -mt-80 text-white">
-                <div>
-                  <MdOutlineArrowBackIosNew
-                    size={25}
-                    className="rounded-xl bg-blue-500 p-1 "
-                    onClick={prevSlide1}
-                  />
-                </div>
-                <div>
-                  <MdArrowForwardIos
-                    size={25}
-                    className="rounded-xl bg-blue-500 p-1 "
-                    onClick={nextSlide1}
-                  />
-                </div>
-              </div>
+              <CategorizedPost />
             </>
           )}
         </article>
@@ -336,11 +181,11 @@ export function Postcategorization1() {
                 filteredResults.length > 0 ? (
                   filteredResults.map((item) => (
                     <div
-                      key={item.id}
+                      key={item.OCId}
                       className="bg-white w-[220px] rounded-md h-10 p-2"
                     >
                       <p className="text-center text-base text-[#706464] capitalize">
-                        {item.title}
+                        {item.OCName}
                       </p>
                     </div>
                   ))
@@ -350,13 +195,14 @@ export function Postcategorization1() {
                   </p>
                 )
               ) : (
-                contentData.map((item) => (
+                categoryList?.data.map((item) => (
                   <div
-                    key={item.id}
+                    key={item.OCId}
                     className="bg-white w-[220px] rounded-md h-10 p-2"
+                    onClick={() => {handlePostClick(item.OCName)}}
                   >
                     <p className="text-center text-base text-[#706464] capitalize">
-                      {item.title}
+                      {item.OCName}
                     </p>
                   </div>
                 ))
@@ -370,8 +216,13 @@ export function Postcategorization1() {
             type="text"
             className="w-[220px] h-[50px] pl-5 rounded-l-md focus:outline-blue-500"
             placeholder="New category..."
+            value={newCategories}
+            onChange={(e) => {setNewCategories(e.target.value)}}
           />
-          <button className="p-[14px] rounded-r-lg bg-blue-500 text-white">
+          <button
+            className="p-[14px] rounded-r-lg bg-[#8135F9] text-white"
+            onClick={handleClick}
+          >
             Save
           </button>
         </div>
