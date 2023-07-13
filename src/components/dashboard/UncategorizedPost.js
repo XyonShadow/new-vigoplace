@@ -85,7 +85,7 @@ export const UncategorizedPost = () => {
           </div>
         </div>
         <div>
-          <h2 className='text-[#706464] pt-7 text-start text-xl'>Post Type:</h2>
+          <h2 className='text-[#706464] pt-7 text-start text-base'>Post Type: {data.data[currentIndex].postType}</h2>
         </div>
       </div>
       <div>
