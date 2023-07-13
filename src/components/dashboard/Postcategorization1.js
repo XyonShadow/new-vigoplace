@@ -14,6 +14,9 @@ export function Postcategorization1() {
   const [filteredResults, setFilteredResults] = useState([]);
   const [newCategories, setNewCategories] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [uncategorizedDataState, setUncategorizedDataState] = useState(null);
+
 
   const API_BASE_URL = "https://vigoplace.com/server/";
 
@@ -23,17 +26,39 @@ export function Postcategorization1() {
     return data;
   };
 
-  const { data: categoryList, isLoading, error } = useQuery(["categorizedData"], fetchData);
+  const { data: categoryList, isLoading: categoryListLoading, error: categoryListError } = useQuery(
+    ["categorizedData"],
+    fetchData
+  );
 
-  // const { data: uncategorizedPost } = useQuery(["uncategorizedData"], uncategorizedData);
 
-  if (isLoading) {
+  const fetchUncategorizedData = async () => {
+    const response = await fetch(`${API_BASE_URL}/api/admin/uncategorized`);
+    const data = await response.json();
+    return data;
+  };
+
+  const { data: uncategorizedData, isLoading: uncategorizedDataLoading, error: uncategorizedDataError } = useQuery(
+    ["uncategorizedData"],
+    fetchUncategorizedData
+  );
+
+  useEffect(() => {
+    if (uncategorizedData) {
+      // Update currentIndex based on the uncategorized data length
+      setCurrentIndex(0);
+    }
+  }, [uncategorizedData]);
+
+  if (categoryListLoading || uncategorizedDataLoading) {
     return <div>Loading...</div>;
   }
 
-  if (error) {
-    return <div>Error: {error.message}</div>;
+  if (categoryListError || uncategorizedDataError) {
+    return <div>Error: {categoryListError?.message || uncategorizedDataError?.message}</div>;
   }
+
+
 
   const handleTabChange = (newTab) => {
     setTab(newTab);
@@ -80,8 +105,10 @@ export function Postcategorization1() {
       });
   };
 
-  const handlePostClick = (category) => {
-    const postId = categoryList.data[currentIndex].POId;
+   const handlePostClick = (category) => {
+    const postId = uncategorizedData?.data[currentIndex]?.POId;
+    setSelectedCategory(category);
+
     fetch("https://vigoplace.com/server/api/admin/categorization", {
       method: "POST",
       headers: {
@@ -105,6 +132,7 @@ export function Postcategorization1() {
         console.error("Error creating category:", error);
       });
   };
+
 
 
 
@@ -149,7 +177,7 @@ export function Postcategorization1() {
           </div>
           {tab === 0 && (
             <>
-              <UncategorizedPost />
+              <UncategorizedPost category={selectedCategory}/>
             </>
           )}
 
