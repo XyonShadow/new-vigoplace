@@ -53,7 +53,7 @@ export const UncategorizedPost = () => {
     <div><div className="flex justify-evenly">
     <div className={`pl-12 Styles.fade-In`}>
       <div className=" pt-14">
-        <div className="w-[290px] h-[280px] bg-[#f4f4f4] rounded-md">
+        <div className="w-[370px] h-[370px] bg-[#f4f4f4] rounded-md">
           <div className="text-center text-base text-[#706464] capitalize font-bold">
             {data && data.data && (
               <div key={data.data[currentIndex].POId}>
@@ -63,13 +63,13 @@ export const UncategorizedPost = () => {
                   <video
                     src={data.data[currentIndex].PMMedia}
                     controls
-                    className="w-[290px] h-[280px]"
+                    className="w-[370px] h-[370px]"
                   />
                 ) : (
                   <img
                     src={data.data[currentIndex].PMMedia}
                     alt=""
-                    className="w-[290px] h-[280px]"
+                    className="w-[370px] h-[370px]"
                   />
                 )}
               </div>
@@ -93,7 +93,7 @@ export const UncategorizedPost = () => {
           Description
         </h2>
         <div className={`${data.data[currentIndex]}`}>
-          <div className="w-[300px] h-[200px] bg-[#f4f4f4] rounded-md overflow-auto">
+          <div className="w-[300px] h-[100px] bg-[#f4f4f4] rounded-md overflow-auto">
             <div className="text-center text-base text-[#706464] mt-4 p-3">
               {data && data.data && (
                 <div key={data.data[currentIndex].POId}>
