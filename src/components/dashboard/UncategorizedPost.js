@@ -94,7 +94,7 @@ export const UncategorizedPost = () => {
         </h2>
         <div className={`${data.data[currentIndex]}`}>
           <div className="w-[300px] h-[200px] bg-[#f4f4f4] rounded-md overflow-auto">
-            <div className="text-center text-sm text-[#706464] mt-4 p-3">
+            <div className="text-center text-base text-[#706464] mt-4 p-3">
               {data && data.data && (
                 <div key={data.data[currentIndex].POId}>
                   {data.data.length > 0

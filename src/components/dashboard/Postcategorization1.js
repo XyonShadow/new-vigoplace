@@ -127,6 +127,7 @@ export function Postcategorization1() {
       })
       .then((data) => {
         console.log(data);
+        console.log(category)
       })
       .catch((error) => {
         console.error("Error creating category:", error);
