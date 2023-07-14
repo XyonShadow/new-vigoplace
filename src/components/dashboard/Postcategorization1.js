@@ -153,28 +153,28 @@ export function Postcategorization1() {
 
         <article className="mt-5">
           <div className="border-b-2 font-bold border-[#f4f4f4] flex space-x-56 pl-14">
-            <div className="">
-              <h2
-                className={`border-b-2 ${
-                  tab === 0 ? "border-blue-500 transition-all duration-300" : ""
-                } pb-2 cursor-pointer text-lg`}
-                onClick={() => handleTabChange(0)}
-              >
-                Uncategorized Post
-              </h2>
-            </div>
             <div>
-              <h2
-                className={`cursor-pointer text-lg ${
-                  tab === 1
-                    ? "border-b-2 border-blue-500 pb-2 transition-all duration-300"
-                    : ""
-                }`}
-                onClick={() => handleTabChange(1)}
-              >
-                Categorized Post
-              </h2>
-            </div>
+  <button
+    className={`border-b-2 ${
+      tab === 0 ? "border-b-[#8135F9] transition-all duration-300" : ""
+    } pb-2 cursor-pointer text-lg focus:outline-none`}
+    onClick={() => handleTabChange(0)}
+  >
+    Uncategorized Post
+  </button>
+</div>
+<div>
+  <button
+    className={`cursor-pointer text-lg ${
+      tab === 1
+        ? "border-b-2 border-b-[#8135F9] pb-2 transition-all duration-300"
+        : ""
+    } focus:outline-none`}
+    onClick={() => handleTabChange(1)}
+  >
+    Categorized Post
+  </button>
+</div>
           </div>
           {tab === 0 && (
             <>
@@ -189,23 +189,23 @@ export function Postcategorization1() {
           )}
         </article>
       </div>
-      <div className="w-[320px] h-[850px] bg-[#DFDCDC]">
+      <div className="w-[300px] h-[850px] bg-[#DFDCDC]">
         <div className="pl-5 pt-24 relative">
           <div className="absolute right-10 top-28">
             <AiOutlineSearch size={20} onClick={handleSearch} />
           </div>
           <input
             type="text"
-            className="w-[270px] h-[50px] pl-5 rounded-md focus:outline-blue-500"
+            className="w-[260px] h-[50px] pl-5 rounded-md focus:outline-blue-500"
             placeholder="Search category..."
             value={searchTerm}
             onChange={handleSearch}
           />
         </div>
 
-        <div className="flex justify-center mt-10">
-          <div className="bg-[#F4F4F4] w-[268px] rounded-md h-[390px] flex p-3 justify-center overflow-auto">
-            <div className="space-y-5">
+        <div className="mt-10 justify-center flex">
+          <div className="bg-[#F4F4F4] w-[248px] h-[400px] py-3 rounded-xl overflow-auto flex items-center">
+            <div className="space-y-5 mx-auto my-auto">
               {searchTerm !== "" ? (
                 filteredResults.length > 0 ? (
                   filteredResults.map((item) => (
@@ -227,7 +227,7 @@ export function Postcategorization1() {
                 categoryList?.data.map((item) => (
                   <div
                     key={item.OCId}
-                    className="bg-white w-[220px] rounded-md h-10 p-2"
+                    className="bg-white w-[200px] rounded-md h-10 p-2"
                     onClick={() => {handlePostClick(item.OCName)}}
                   >
                     <p className="text-center text-base text-[#706464] capitalize">
@@ -243,7 +243,7 @@ export function Postcategorization1() {
         <div className="mt-5 pl-5">
           <input
             type="text"
-            className="w-[220px] h-[50px] pl-5 rounded-l-md focus:outline-blue-500"
+            className="w-[190px] h-[50px] pl-5 rounded-l-md focus:outline-blue-500"
             placeholder="New category..."
             value={newCategories}
             onChange={(e) => {setNewCategories(e.target.value)}}
