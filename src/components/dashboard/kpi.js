@@ -1,6 +1,4 @@
-import { useState } from "react";
-import { format } from "date-fns";
-import { v4 as uuid } from "uuid";
+import { useState, useEffect } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import {
   Box,
@@ -8,26 +6,23 @@ import {
   Button,
   Card,
   Checkbox,
-  CardHeader,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  TableSortLabel,
-  Tooltip,
   Grid,
   Paper,
   styled,
+  useTheme
 } from "@mui/material";
-import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import axios from "axios";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
-import { SeverityPill } from "../severity-pill";
+
 
 const KPI = (props) => {
-  const [checkedValues, setCheckedValues] = useState([]);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [checkedCheckboxes, setCheckedCheckboxes] = useState([]);
+
+
+  const theme = useTheme();
 
   const getUser = useSession();
   const user = getUser?.data?.user;
@@ -40,18 +35,34 @@ const KPI = (props) => {
     color: theme.palette.text.secondary,
   }));
 
-  const { data: kpis } = useQuery(
+  const { data: kpis, refetch } = useQuery(
     ["fetchkpi"],
     async () => {
-      const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/statistics/dashboard`,
-        {
-          headers: {
-            Authorization: user?.token,
-          },
-        }
-      );
-      console.log(data);
+      let url = "https://vigoplace.com/server/api/admin/statistics/dashboard";
+
+      if (startDate && endDate) {
+        url += `?startDate=${startDate}&endDate=${endDate}`;
+      }
+      const { data } = await axios.get(url, {
+        params: {
+          totalOrders: checkedCheckboxes.includes("totalOrders"),
+          users: checkedCheckboxes.includes("users"),
+          payout: checkedCheckboxes.includes("payout"),
+          virtualAccount: checkedCheckboxes.includes("virtualAccount"),
+          marketPlaceCount: checkedCheckboxes.includes("marketPlaceCount"),
+          channelPlaceCount: checkedCheckboxes.includes("channelPlaceCount"),
+          contestPlaceCount: checkedCheckboxes.includes("contestPlaceCount"),
+          basicPlaceCount: checkedCheckboxes.includes("basicPlaceCount"),
+          newsPostCount: checkedCheckboxes.includes("newsPostCount"),
+          giftPostCount: checkedCheckboxes.includes("giftPostCount"),
+          walletCount: checkedCheckboxes.includes("walletCount"),
+          verifiedEmailCount: checkedCheckboxes.includes("verifiedEmailCount"),
+          verifiedPhoneCount: checkedCheckboxes.includes("verifiedPhoneCount"),
+        },
+        headers: {
+          Authorization: user?.token,
+        },
+      });
       return data;
     },
     {
@@ -61,6 +72,11 @@ const KPI = (props) => {
       enabled: !!user?.token,
     }
   );
+
+  useEffect(() => {
+    // When any of the query parameters change, trigger a refetch
+    refetch();
+  }, [startDate, endDate, checkedCheckboxes]);
 
   const firstCheckboxData = [
     { id: "users", value: "totalUsers", label: "Users" },
@@ -94,30 +110,47 @@ const KPI = (props) => {
   ];
 
   const fourthCheckboxData = [
-    { id: "channel_place_revenue", value: "channelPlaceRevenue", label: "Channel place revenue" },
-    { id: "market_place_revenue", value: "marketPlaceRevenue", label: "Market place revenue" },
-    { id: "contest_place_revenue", value: "contestPlaceRevenue", label: "Contest place revenue" },
+    {
+      id: "channel_place_revenue",
+      value: "channelPlaceRevenue",
+      label: "Channel place revenue",
+    },
+    {
+      id: "market_place_revenue",
+      value: "marketPlaceRevenue",
+      label: "Market place revenue",
+    },
+    {
+      id: "contest_place_revenue",
+      value: "contestPlaceRevenue",
+      label: "Contest place revenue",
+    },
   ];
 
-  const handleCheckboxChange = (event) => {
-    const value = event.target.value;
-    const label = event.target.id;
-    const isChecked = event.target.checked;
-    console.log(value);
+  const handleStartDateChange = (event) => {
+    setStartDate(event.target.value);
+  };
 
+  const handleEndDateChange = (event) => {
+    setEndDate(event.target.value);
+  };
+
+  const handleCheckboxChange = (event) => {
+    const { value, checked, id } = event.target;
     const myObject = {}; // Step 2: Create an object
 
-    if (isChecked) {
-      // Add the checked value to the array
-
-      // setCheckedLabel([...checkedLabel, label]);
+    if (checked) {
+      console.log("I'm chexkkedddd")
       myObject.value = value;
-      myObject.label = label;
-      setCheckedValues([...checkedValues, myObject]);
+      myObject.label = id;
+      // setCheckedValues([...checkedValues, myObject]);
+      setCheckedCheckboxes((prevState) => [...prevState, myObject]);
     } else {
-      // Remove the unchecked value from the array
-      setCheckedValues(checkedValues.filter((v) => v.value !== value));
-      // setCheckedLabel(checkedLabel.filter((v) => v !== label));
+      console.log("Unche  kedddddddd")
+      // setCheckedValues(checkedValues.filter((v) => v.value !== value));
+      setCheckedCheckboxes((prevState) =>
+        prevState.filter((item) => item.value !== value)
+      );
     }
   };
 
@@ -135,6 +168,9 @@ const KPI = (props) => {
         <Typography
           sx={{
             color: "white",
+            [theme.breakpoints.down('sm')]: {
+              fontSize: "12px"
+             },
           }}
         >
           To begin enter your start and end date then click on the checkbox to
@@ -147,37 +183,49 @@ const KPI = (props) => {
           justifyContent: "center",
           gap: "6rem",
           p: 5,
+          [theme.breakpoints.down('sm')]: {
+           flexDirection: 'column',
+           p:2
+          },
         }}
       >
-        <Box sx={{ width: "60%" }}>
+        <Box sx={{ width: "60%", [theme.breakpoints.down('sm')]: {
+           width: "100%"
+          }, }}>
           <Box sx={{ display: "flex", gap: 3 }}>
             <Box sx={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-              <label htmlFor="birthday">
+              <label htmlFor="startDate">
                 {" "}
                 <Typography
                   sx={{
                     fontWeight: 500,
                     fontSize: "14px",
+                    [theme.breakpoints.down('sm')]: {
+                      fontSize: "12px"
+                     },
                   }}
                 >
                   Start date
                 </Typography>
               </label>
-              <input type="date" id="start_date" name="start_date" />
+              <input className="text-xs" type="date" id="startDate" value={startDate} onChange={handleStartDateChange} />
             </Box>
             <Box sx={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-              <label htmlFor="birthday">
+              <label htmlFor="endDate">
                 {" "}
                 <Typography
                   sx={{
                     fontWeight: 500,
                     fontSize: "14px",
+                    [theme.breakpoints.down('sm')]: {
+                      fontSize: "12px"
+                     },
                   }}
                 >
                   End date
                 </Typography>
               </label>
-              <input type="date" id="end_date" name="end_date" />
+              <input className="text-xs" type="date" id="endDate" value={endDate} onChange={handleEndDateChange} />
             </Box>
           </Box>
           <Grid
@@ -192,37 +240,21 @@ const KPI = (props) => {
               px: 4,
               py: "37px",
               overflowY: "auto",
+              [theme.breakpoints.down('sm')]: {
+                ml: 0,
+                fontSize: "14px",
+                px: 1,
+               },
             }}
           >
-            {checkedValues.length === 0 && <>No data to display</>}
-            {checkedValues.map((checkedValue) => (
-              <Grid key={checkedValue.value} item xs={6}>
+            {checkedCheckboxes.length === 0 && <>No data to display</>}
+            {checkedCheckboxes.map((checkedValue) => (
+              <Grid key={checkedValue.label} item xs={6}>
                 <>{checkedValue.label}</>
                 <Item>{kpis?.data?.[checkedValue.value]}</Item>
               </Grid>
             ))}
           </Grid>
-          <Box
-            sx={{
-              mt: 10,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <Typography
-              sx={{
-                color: "#282424",
-                fontWeight: 500,
-                fontSize: "14px",
-              }}
-            >
-              Click the submit button to get your results
-            </Typography>
-            <Button variant="contained" sx={{ background: "#8135F9" }}>
-              Submit
-            </Button>
-          </Box>
         </Box>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           <Typography
@@ -241,10 +273,15 @@ const KPI = (props) => {
               maxHeight: "600px",
               gap: 4,
               background: "#F4F4F4",
-              overflowY: "scroll",
+              overflowY: "auto",
               border: "1px solid #E6E6E6",
               borderRadius: 1,
               p: 3,
+              [theme.breakpoints.down('sm')]: {
+                p:1,
+                maxHeight: "400px",
+                fontSize: "14px",
+               },
             }}
           >
             <Box
@@ -263,7 +300,7 @@ const KPI = (props) => {
                   <Checkbox
                     value={checkbox.value}
                     id={checkbox.label}
-                    checked={checkedValues.some(
+                    checked={checkedCheckboxes.some(
                       (checkedValue) => checkedValue.value === checkbox.value
                     )}
                     onChange={handleCheckboxChange}
@@ -288,7 +325,7 @@ const KPI = (props) => {
                   <Checkbox
                     value={checkbox.value}
                     id={checkbox.label}
-                    checked={checkedValues.some(
+                    checked={checkedCheckboxes.some(
                       (checkedValue) => checkedValue.value === checkbox.value
                     )}
                     onChange={handleCheckboxChange}
@@ -313,7 +350,7 @@ const KPI = (props) => {
                   <Checkbox
                     value={checkbox.value}
                     id={checkbox.label}
-                    checked={checkedValues.some(
+                    checked={checkedCheckboxes.some(
                       (checkedValue) => checkedValue.value === checkbox.value
                     )}
                     onChange={handleCheckboxChange}
@@ -338,7 +375,7 @@ const KPI = (props) => {
                   <Checkbox
                     value={checkbox.value}
                     id={checkbox.label}
-                    checked={checkedValues.some(
+                    checked={checkedCheckboxes.some(
                       (checkedValue) => checkedValue.value === checkbox.value
                     )}
                     onChange={handleCheckboxChange}
