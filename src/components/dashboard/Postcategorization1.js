@@ -175,8 +175,8 @@ export function Postcategorization1() {
             type="text"
             placeholder="Post id:"
             className="pl-10 focus:outline-blue-400 w-[350px] h-[50px] rounded-md bg-[#F4F4F4]"
-            value={FilteredImages}
-            onChange={idSearch}
+            // value={FilteredImages}
+            // onChange={idSearch}
           />
         </div>
 
