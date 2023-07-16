@@ -7,6 +7,8 @@ import {
   LazyLoadComponent,
 } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
+// import { toast } from 'react-toastify';
+
 
 
 
@@ -22,7 +24,9 @@ export const UncategorizedPost = () => {
   const fetchData = async () => {
     const response = await fetch(`${API_BASE_URL}/api/admin/uncategorized`);
     const data = await response.json();
+    console.log(data);
     return data;
+    
   };
 
   const { data, isLoading, error } = useQuery(["uncategorizedData"], fetchData);
@@ -70,6 +74,7 @@ export const UncategorizedPost = () => {
     const newIndex = isLastSlide ? 0 : currentIndex + 1;
     setCurrentIndex(newIndex);
   };
+  
   return (
     <div>
       <div className="flex justify-evenly">
@@ -79,7 +84,7 @@ export const UncategorizedPost = () => {
               <div className="text-center text-base text-[#706464] capitalize font-bold">   
                 {data && data.data && (
                   <div key={data.data[currentIndex].POId}>
-                    {data.data[currentIndex].PMMedia.includes(".mp4") ? (
+                    {data.data[currentIndex].PMType === "videos" ? (
                       
                       <LazyLoadComponent>
                         <video
@@ -92,7 +97,7 @@ export const UncategorizedPost = () => {
                       <LazyLoadImage
                         src={data.data[currentIndex].PMMedia}
                         alt=""
-                        className="w-[370px] h-[380px]"
+                        className="w-[_370px] h-[380px]"
                         effect="blur"
                       />
                     )}
@@ -134,7 +139,7 @@ export const UncategorizedPost = () => {
               Post category
             </p>
             <div className="flex flex-col items-center justify-center">
-              <div className="bg-white w-[250px] h-[550px] rounded-md">
+              <div className="bg-white w-[250px] h-[550px] rounded-md overflow-auto">
                 <div className="space-y-5 py-3 rounded-xl overflow-auto flex flex-col items-center">
                 {categoryList?.data.map((item) => (
                   <div
@@ -147,6 +152,9 @@ export const UncategorizedPost = () => {
                   </p>
                 </div>
                 ))}
+                </div>
+                <div className="flex justify-center pt-7 pb-2">
+                  <button className="bg-[#8135F9] px-14 h-10 text-white rounded-md text-base">Submit</button>
                 </div>
               </div>
             </div>

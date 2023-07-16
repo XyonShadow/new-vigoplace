@@ -4,6 +4,9 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { useQuery } from "@tanstack/react-query";
 import { UncategorizedPost } from "./UncategorizedPost";
 import { CategorizedPost } from "./CategorizedPost";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 // import "./Styles.module.css";
 
@@ -16,6 +19,7 @@ export function Postcategorization1() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [uncategorizedDataState, setUncategorizedDataState] = useState(null);
+  const [FilteredImages, setFilteredImages] = useState([])
 
 
   const API_BASE_URL = "https://vigoplace.com/server/";
@@ -26,9 +30,13 @@ export function Postcategorization1() {
     return data;
   };
 
-  const { data: categoryList, isLoading: categoryListLoading, error: categoryListError } = useQuery(
+  const { data: categoryList, isLoading: categoryListLoading, error: categoryListError, refetch: refetchcategoryList } = useQuery(
     ["categorizedData"],
-    fetchData
+    fetchData,
+    {
+      staleTime: 0,
+      refetchInterval: 10000,
+    }
   );
 
 
@@ -48,7 +56,7 @@ export function Postcategorization1() {
       // Update currentIndex based on the uncategorized data length
       setCurrentIndex(0);
     }
-  }, [uncategorizedData]);
+  }, [uncategorizedData, categoryList, fetchData]);
 
   if (categoryListLoading || uncategorizedDataLoading) {
     return <div>Loading...</div>;
@@ -58,7 +66,9 @@ export function Postcategorization1() {
     return <div>Error: {categoryListError?.message || uncategorizedDataError?.message}</div>;
   }
 
-
+// useEffect(() => {
+// if (categoryList)
+// },[])
 
   const handleTabChange = (newTab) => {
     setTab(newTab);
@@ -71,11 +81,25 @@ export function Postcategorization1() {
     const filtered = categoryList.data.filter((item) => {
       return item.OCName.toUpperCase().includes(searchTerm?.toUpperCase());
     });
-
     setFilteredResults(filtered);
     setSearchTerm(value);
     // console.log(filtered)
   };
+
+
+//   const idSearch = (event) => {
+// const value = event.target.value;
+// setFilteredImages(value);
+
+//     const Filtering = uncategorizedData?.data.filter(() => {
+//       return item.POId === parseInt(value)
+//     });
+//     setFilteredImages(Filtering)
+//   }
+
+
+
+
 
 
   const handleClick = () => {
@@ -105,6 +129,7 @@ export function Postcategorization1() {
       });
   };
 
+
    const handlePostClick = (category) => {
     const postId = uncategorizedData?.data[currentIndex]?.POId;
     setSelectedCategory(category);
@@ -127,10 +152,12 @@ export function Postcategorization1() {
       })
       .then((data) => {
         console.log(data);
+        toast.success('Sucessfully categorized this post!');
         console.log(category)
       })
       .catch((error) => {
         console.error("Error creating category:", error);
+        toast.error('Error categorizing this post!');
       });
   };
 
@@ -148,6 +175,8 @@ export function Postcategorization1() {
             type="text"
             placeholder="Post id:"
             className="pl-10 focus:outline-blue-400 w-[350px] h-[50px] rounded-md bg-[#F4F4F4]"
+            value={FilteredImages}
+            onChange={idSearch}
           />
         </div>
 
@@ -227,7 +256,7 @@ export function Postcategorization1() {
                 categoryList?.data.map((item) => (
                   <div
                     key={item.OCId}
-                    className="bg-white w-[200px] rounded-md h-10 p-2"
+                    className="bg-white w-[200px] rounded-md h-10 p-2 cursor-pointer" 
                     onClick={() => {handlePostClick(item.OCName)}}
                   >
                     <p className="text-center text-base text-[#706464] capitalize">

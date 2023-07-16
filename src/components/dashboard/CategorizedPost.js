@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { MdOutlineArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Postmodal } from "./Postmodal";
 import { GrFormClose } from "react-icons/gr";
 import {
@@ -9,51 +9,40 @@ import {
 } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 
-export const CategorizedPost = (postId) => {
+export const CategorizedPost = () => {
   const [openModal, setOpenModal] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [deletedIndex, setDeletedIndex] = useState(null);
 
   const API_BASE_URL = "https://vigoplace.com/server/";
 
-  const fetchData = async () => {
-    const response = await fetch(`${API_BASE_URL}/api/admin/uncategorized`);
-    const data = await response.json();
-    return data;
-  };
-
-  const { data, isLoading, error } = useQuery(["uncategorizedData"], fetchData);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
+const deletePost = async (OPCPostId) => {
+  const response = await fetch(`${API_BASE_URL}/api/admin/categorization/${OPCPostId}`, {
+    method: 'DELETE',
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error); 
   }
+  return data;
+};
 
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
+const { mutate } = useMutation(deletePost);
 
-  const deletePost = async (postId) => {
-    const response = await fetch(`${API_BASE_URL}/api/admin/categorization/${postId}`, {
-      method: 'DELETE',
-    });
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.error); 
-    }
-    console.log(data)
-    return data;
-  };
-
-  const { mutate } = useMutation(deletePost);
-  
- const categoryDelete = async () => {
+const categoryDelete = async (OPCPostId) => {
   try {
-    await mutate(postId);
-    handleDelete(); // Trigger the delete action in the parent component
+    // Mutate the data (perform the actual deletion)
+    await mutate(OPCPostId);
+
+    // Manually invalidate the "categorizedData" query to trigger a refetch
+    const queryClient = useQueryClient();
+    queryClient.invalidateQueries("categorizedData");
   } catch (error) {
     console.error('Error deleting post:', error);
   }
- }
+};
+
+  
 
 
 
@@ -84,15 +73,17 @@ export const CategorizedPost = (postId) => {
 
   const prevSlide = () => {
     const isFirstSlide = currentIndex === 0;
-    const newIndex = isFirstSlide ? data.data.length - 1 : currentIndex - 1;
+    const newIndex = isFirstSlide ? categorizedItem?.data.length - 1 : currentIndex - 1;
     setCurrentIndex(newIndex);
   };
 
   const nextSlide = () => {
-    const isLastSlide = currentIndex === data.data.length - 1;
+    const isLastSlide = currentIndex === categorizedItem?.data.length - 1;
     const newIndex = isLastSlide ? 0 : currentIndex + 1;
     setCurrentIndex(newIndex);
   };
+
+  
   return (
     <div>
       <div className="flex justify-evenly">
@@ -100,9 +91,9 @@ export const CategorizedPost = (postId) => {
           <div className=" pt-14">
             <div className="w-[370px] h-[370px] bg-[#f4f4f4] rounded-md">
               <div className="text-center text-base text-[#706464] capitalize font-bold">
-                {data && data.data && (
-                  <div key={data.data[currentIndex].POId}>
-                    {data.data[currentIndex].PMMedia.includes(".mp4") ? (
+                {categorizedItem?.data && (
+                  <div key={categorizedItem?.data[currentIndex].PMPOId}>
+                    {categorizedItem?.data[currentIndex].PMType === "video" ? (
                       <LazyLoadComponent>
                         <video
                           src={data.data[currentIndex].PMMedia}
@@ -112,7 +103,7 @@ export const CategorizedPost = (postId) => {
                       </LazyLoadComponent>
                     ) : (
                       <LazyLoadImage
-                        src={data.data[currentIndex].PMMedia}
+                        src={categorizedItem?.data[currentIndex].PMMedia}
                         alt=""
                         className="w-[370px] h-[370px]"
                         effect="blur"
@@ -132,7 +123,7 @@ export const CategorizedPost = (postId) => {
             </div>
             <div>
               <h2 className="text-[#706464] pt-7 text-start text-base">
-                Post Type: {data.data[currentIndex].postType}
+                Post Type: {categorizedItem?.data[currentIndex].postType}
               </h2>
             </div>
           </div>
@@ -140,13 +131,13 @@ export const CategorizedPost = (postId) => {
             <h2 className="text-[#706464] pt-7 text-start text-xl pb-3">
               Description
             </h2>
-            <div className={`${data.data[currentIndex]}`}>
+            <div className={`${categorizedItem?.data[currentIndex]}`}>
               <div className="w-[370px] h-[120px] bg-[#f4f4f4] rounded-md overflow-auto">
                 <div className="text-center text-sm text-[#706464] mt-4 p-3">
-                  {data && data.data && (
-                    <div key={data.data[currentIndex].POId}>
-                      {data.data.length > 0
-                        ? data.data[currentIndex].description
+                  {categorizedItem?.data && (
+                    <div key={categorizedItem?.data[currentIndex].PMPOId}>
+                      {categorizedItem?.data.length > 0
+                        ? categorizedItem?.data[currentIndex].description
                         : ""}
                     </div>
                   )}
@@ -163,14 +154,14 @@ export const CategorizedPost = (postId) => {
             </p>
             <div className="flex flex-col items-center justify-center">
               <div className="space-y-3">
-                {categorizedItem?.data.map((item) => (
+                {categorizedItem?.data.map((item, index) => (
                   <div
                     className="bg-white w-[220px] rounded-md h-12 p-3 pl-3 flex justify-between"
-                    key={item.OPCPostId}
+                    key={index}
                   >
                     <p className="text-[#706464]">{item.OPCCategory}</p>
-                    <GrFormClose className="cursor-pointer" onClick={() => {categoryDelete(postId)}}/>
-                  </div>
+                    <GrFormClose className="cursor-pointer" onClick={() => categoryDelete(item.OPCPostId)} />
+                    </div>
                 ))}
               </div>
             </div>
@@ -180,7 +171,7 @@ export const CategorizedPost = (postId) => {
       <Postmodal
         open={openModal}
         onClose={() => setOpenModal(false)}
-        postId={data.data[currentIndex].POId}
+        postId={categorizedItem?.data[currentIndex].POId}
         onDelete={handleDelete}
       />
 
