@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { MdOutlineArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
 import { Postmodal } from "./Postmodal";
 import { GrFormClose } from "react-icons/gr";
 import {
@@ -8,41 +8,54 @@ import {
   LazyLoadComponent,
 } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 export const CategorizedPost = () => {
   const [openModal, setOpenModal] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
+    const [categorizedData, setCategorizedData] = useState([]);
   const [deletedIndex, setDeletedIndex] = useState(null);
 
   const API_BASE_URL = "https://vigoplace.com/server/";
 
-const deletePost = async (OPCPostId) => {
-  const response = await fetch(`${API_BASE_URL}/api/admin/categorization/${OPCPostId}`, {
-    method: 'DELETE',
+  const deletePost = async (postId) => {
+  const API_BASE_URL = "https://vigoplace.com/server/";
+  const response = await fetch(`${API_BASE_URL}/api/admin/categorization/${postId}`, {
+    method: "DELETE",
   });
   const data = await response.json();
   if (!response.ok) {
-    throw new Error(data.error); 
+    throw new Error(data.error);
   }
   return data;
 };
 
-const { mutate } = useMutation(deletePost);
-
-const categoryDelete = async (OPCPostId) => {
-  try {
-    // Mutate the data (perform the actual deletion)
-    await mutate(OPCPostId);
-
-    // Manually invalidate the "categorizedData" query to trigger a refetch
-    const queryClient = useQueryClient();
-    queryClient.invalidateQueries("categorizedData");
-  } catch (error) {
-    console.error('Error deleting post:', error);
-  }
-};
-
   
+   const mutation = useMutation(deletePost, {
+    onSuccess: (data, postId) => {
+      queryClient.invalidateQueries("categorizedPost");
+
+      setCategorizedData((prevData) =>
+        prevData.filter((post) => post.id !== postId)
+      );
+      toast.success('Sucessfully deleted the category!');
+
+    },
+  });
+
+  const categoryDelete = async (postId) => {
+    try {
+      await mutation.mutateAsync(postId);
+      // toast.success('Sucessfully deleted the category!');
+    } catch (error) {
+      console.error("Error deleting post:", error);
+      toast.error('error deleting the category!');
+
+    }
+  };
+const queryClient = useQueryClient();
 
 
 
@@ -67,8 +80,9 @@ const categoryDelete = async (OPCPostId) => {
   }
 
   const handleDelete = () => {
-    setDeletedIndex(currentIndex);
     setOpenModal(false);
+    const postId = categorizedItem?.data[currentIndex].OPCPostId;
+    categoryDelete(postId);
   };
 
   const prevSlide = () => {
@@ -93,17 +107,17 @@ const categoryDelete = async (OPCPostId) => {
               <div className="text-center text-base text-[#706464] capitalize font-bold">
                 {categorizedItem?.data && (
                   <div key={categorizedItem?.data[currentIndex].PMPOId}>
-                    {categorizedItem?.data[currentIndex].PMType === "video" ? (
+                    {categorizedItem?.data[currentIndex].PMMedia[0].type === "video" ? (
                       <LazyLoadComponent>
                         <video
-                          src={data.data[currentIndex].PMMedia}
+                          src={categorizedItem?.data[currentIndex].PMMedia[0].media}
                           className="w-[370px] h-[370px]"
                           controls
                         />
                       </LazyLoadComponent>
                     ) : (
                       <LazyLoadImage
-                        src={categorizedItem?.data[currentIndex].PMMedia}
+                        src={categorizedItem?.data[currentIndex].PMMedia[0].media}
                         alt=""
                         className="w-[370px] h-[370px]"
                         effect="blur"
@@ -160,7 +174,7 @@ const categoryDelete = async (OPCPostId) => {
                     key={index}
                   >
                     <p className="text-[#706464]">{item.OPCCategory}</p>
-                    <GrFormClose className="cursor-pointer" onClick={() => categoryDelete(item.OPCPostId)} />
+                    <GrFormClose size={20}  className="cursor-pointer" onClick={() => categoryDelete(item.OPCPostId)} />
                     </div>
                 ))}
               </div>

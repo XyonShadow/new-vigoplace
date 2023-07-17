@@ -66,10 +66,6 @@ export function Postcategorization1() {
     return <div>Error: {categoryListError?.message || uncategorizedDataError?.message}</div>;
   }
 
-// useEffect(() => {
-// if (categoryList)
-// },[])
-
   const handleTabChange = (newTab) => {
     setTab(newTab);
   };
@@ -87,19 +83,10 @@ export function Postcategorization1() {
   };
 
 
-//   const idSearch = (event) => {
-// const value = event.target.value;
-// setFilteredImages(value);
-
-//     const Filtering = uncategorizedData?.data.filter(() => {
-//       return item.POId === parseInt(value)
-//     });
-//     setFilteredImages(Filtering)
-//   }
-
-
-
-
+  const handleSearchChange = (event) => {
+    setFilteredImages(event.target.value); 
+  };
+  
 
 
   const handleClick = () => {
@@ -117,7 +104,7 @@ export function Postcategorization1() {
         if (!response.ok) {
           throw new Error("Failed to create category");
         }
-        return response.json(); // Parse the response as JSON
+        return response.json(); 
       })
       .then((data) => {
         console.log(data);
@@ -125,7 +112,6 @@ export function Postcategorization1() {
       })
       .catch((error) => {
         console.error("Error creating category:", error);
-        // Display an error message to the user or handle the error appropriately
       });
   };
 
@@ -175,8 +161,8 @@ export function Postcategorization1() {
             type="text"
             placeholder="Post id:"
             className="pl-10 focus:outline-blue-400 w-[350px] h-[50px] rounded-md bg-[#F4F4F4]"
-            // value={FilteredImages}
-            // onChange={idSearch}
+            value={FilteredImages}
+            onChange={handleSearchChange}
           />
         </div>
 
@@ -207,7 +193,10 @@ export function Postcategorization1() {
           </div>
           {tab === 0 && (
             <>
-              <UncategorizedPost category={selectedCategory}/>
+              <UncategorizedPost category={selectedCategory}
+               images={uncategorizedData?.data || []}
+               filteredImages={FilteredImages} 
+              />
             </>
           )}
 
@@ -218,29 +207,30 @@ export function Postcategorization1() {
           )}
         </article>
       </div>
-      <div className="w-[300px] h-[850px] bg-[#DFDCDC]">
-        <div className="pl-5 pt-24 relative">
-          <div className="absolute right-10 top-28">
+      <div className="w-[280px] h-[850px] bg-[#DFDCDC]">
+        <p className="text-lg pt-12 pl-7 text-[#706464]">Search categories</p>
+        <div className="pl-7 pt-10 relative">
+          <div className="absolute right-10 top-14">
             <AiOutlineSearch size={20} onClick={handleSearch} />
           </div>
           <input
             type="text"
-            className="w-[260px] h-[50px] pl-5 rounded-md focus:outline-blue-500"
+            className="w-[235px] h-[50px] pl-5 rounded-md focus:outline-blue-500"
             placeholder="Search category..."
             value={searchTerm}
             onChange={handleSearch}
           />
         </div>
 
-        <div className="mt-10 justify-center flex">
-          <div className="bg-[#F4F4F4] w-[248px] h-[400px] py-3 rounded-xl overflow-auto flex items-center">
-            <div className="space-y-5 mx-auto my-auto">
+        <div className="mt-10 justify-center flex flex-col items-center">
+          <div className="bg-[#F4F4F4] w-[238px] h-[400px] py-3 rounded-xl overflow-auto">
+            <div className="space-y-5 py-3 overflow-auto flex flex-col items-center">
               {searchTerm !== "" ? (
                 filteredResults.length > 0 ? (
                   filteredResults.map((item) => (
                     <div
                       key={item.OCId}
-                      className="bg-white w-[220px] rounded-md h-10 p-2"
+                      className="bg-white w-[180px] rounded-md h-10 p-2"
                     >
                       <p className="text-center text-base text-[#706464] capitalize">
                         {item.OCName}
@@ -256,7 +246,7 @@ export function Postcategorization1() {
                 categoryList?.data.map((item) => (
                   <div
                     key={item.OCId}
-                    className="bg-white w-[200px] rounded-md h-10 p-2 cursor-pointer" 
+                    className="bg-white w-[180px] rounded-md h-10 p-2 cursor-pointer" 
                     onClick={() => {handlePostClick(item.OCName)}}
                   >
                     <p className="text-center text-base text-[#706464] capitalize">
@@ -268,7 +258,7 @@ export function Postcategorization1() {
             </div>
           </div>
         </div>
-        <p className="pl-7 pt-32 text-[#706464]">Create a new categories</p>
+        <p className="pl-7 pt-24 text-[#706464]">Create a new categories</p>
         <div className="mt-5 pl-5">
           <input
             type="text"

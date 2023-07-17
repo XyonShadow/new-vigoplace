@@ -12,7 +12,7 @@ import "react-lazy-load-image-component/src/effects/blur.css";
 
 
 
-export const UncategorizedPost = () => {
+export const UncategorizedPost = ({images, filteredImages}) => {
   const [openModal, setOpenModal] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [deletedIndex, setDeletedIndex] = useState(null);
@@ -28,6 +28,11 @@ export const UncategorizedPost = () => {
     return data;
     
   };
+  
+  // const handleFilter = images.filter(
+  //   (image) =>
+  //     image.PMMedia[0].media.toLowerCase().includes(filteredImages.toLowerCase()) // Use the searchTerm prop here
+  // );
 
   const { data, isLoading, error } = useQuery(["uncategorizedData"], fetchData);
 
@@ -80,24 +85,24 @@ export const UncategorizedPost = () => {
       <div className="flex justify-evenly">
         <div className={`pl-4 Styles.fade-In`}>
           <div className=" pt-10">
-            <div className="w-[370px] h-[380px] bg-[#f4f4f4] rounded-md">
+            <div className="w-[390px] h-[382px] bg-[#f4f4f4] rounded-md">
               <div className="text-center text-base text-[#706464] capitalize font-bold">   
-                {data && data.data && (
+                {data && data.data && data.data.length > 0 && (
                   <div key={data.data[currentIndex].POId}>
-                    {data.data[currentIndex].PMType === "videos" ? (
+                    {data.data[currentIndex].PMMedia[0].type === "videos" ? (
                       
                       <LazyLoadComponent>
                         <video
-                          src={data.data[currentIndex].PMMedia}
-                          className="w-[370px] h-[380px]"
+                          src={data.data[currentIndex].PMMedia[0].media}
+                          className="w-[390px] h-[382px]"
                           controls
                         />
                       </LazyLoadComponent>
                     ) : (
                       <LazyLoadImage
-                        src={data.data[currentIndex].PMMedia}
+                        src={data.data[currentIndex].PMMedia[0].media}
                         alt=""
-                        className="w-[_370px] h-[380px]"
+                        className="w-[_390px] h-[382px]"
                         effect="blur"
                       />
                     )}
@@ -124,7 +129,7 @@ export const UncategorizedPost = () => {
               Description
             </h2>
             <div className={`${data.data[currentIndex]}`}>
-              <div className="w-[370px] h-[120px] bg-[#f4f4f4] rounded-md overflow-auto">
+              <div className="w-[390px] h-[120px] bg-[#f4f4f4] rounded-md overflow-auto">
                 <div className="text-center text-sm text-[#706464] mt-2 p-3">
                 <p>{data.data[currentIndex].description}</p>
                 </div>
@@ -179,7 +184,7 @@ export const UncategorizedPost = () => {
         <div>
           <MdArrowForwardIos
             size={18}
-            className="rounded-xl bg-[#8135F9] p-1 cursor-pointer absolute -top-[420px] right-[325px]"
+            className="rounded-xl bg-[#8135F9] p-1 cursor-pointer absolute -top-[420px] right-[320px]"
             onClick={nextSlide}
           />
         </div>
