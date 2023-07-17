@@ -6,6 +6,10 @@ import { useQuery } from "@tanstack/react-query";
 
 
 const PostCategorization = () => {
+
+  
+  const API_BASE_URL = "https://vigoplace.com/server/";
+
   const fetchData = async () => {
     const response = await fetch(`${API_BASE_URL}/api/admin/uncategorized`);
     const data = await response.json();
