@@ -47,6 +47,7 @@ const KPI = (props) => {
         params: {
           totalOrders: checkedCheckboxes.includes("totalOrders"),
           users: checkedCheckboxes.includes("users"),
+          deletedUsers: checkedCheckboxes.includes("totalDeletedUsers"),
           payout: checkedCheckboxes.includes("payout"),
           virtualAccount: checkedCheckboxes.includes("virtualAccount"),
           marketPlaceCount: checkedCheckboxes.includes("marketPlaceCount"),
@@ -63,6 +64,7 @@ const KPI = (props) => {
           Authorization: user?.token,
         },
       });
+      console.log(data)
       return data;
     },
     {
@@ -80,6 +82,7 @@ const KPI = (props) => {
 
   const firstCheckboxData = [
     { id: "users", value: "totalUsers", label: "Users" },
+    { id: "deleted_users", value: "totalDeletedUsers", label: "Deleted Users" },
     { id: "wallet", value: "totalWalletCount", label: "Wallet count" },
     { id: "emails", value: "totalVerifiedEmails", label: "Verified emails" },
     {
@@ -102,11 +105,11 @@ const KPI = (props) => {
   ];
 
   const thirdCheckboxData = [
-    { id: "product_post", value: "productPostCount", label: "Product post" },
-    { id: "service_post", value: "servicePostCount", label: "Service post" },
+    // { id: "product_post", value: "productPostCount", label: "Product post" },
+    // { id: "service_post", value: "servicePostCount", label: "Service post" },
     { id: "gift_post", value: "giftPostCount", label: "Gift post" },
     { id: "news_post", value: "newsPostCount", label: "News post" },
-    { id: "paid_post", value: "paidPostCount", label: "Paid post" },
+    // { id: "paid_post", value: "paidPostCount", label: "Paid post" },
   ];
 
   const fourthCheckboxData = [
@@ -125,6 +128,12 @@ const KPI = (props) => {
       value: "contestPlaceRevenue",
       label: "Contest place revenue",
     },
+
+    // {
+    //   id: "contest_place_revenue",
+    //   value: "contestPlaceRevenue",
+    //   label: "Contest place revenue",
+    // },
   ];
 
   const handleStartDateChange = (event) => {
@@ -140,7 +149,6 @@ const KPI = (props) => {
     const myObject = {}; // Step 2: Create an object
 
     if (checked) {
-      console.log("I'm chexkkedddd")
       myObject.value = value;
       myObject.label = id;
       // setCheckedValues([...checkedValues, myObject]);
