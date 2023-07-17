@@ -29,10 +29,15 @@ export const UncategorizedPost = ({images, filteredImages}) => {
     
   };
   
-  // const handleFilter = images.filter(
-  //   (image) =>
-  //     image.PMMedia[0].media.toLowerCase().includes(filteredImages.toLowerCase()) // Use the searchTerm prop here
-  // );
+  // const handleFilter = images.filter((image) => {
+  //   // Check if image object and PMPOId property exist and are not undefined
+  //   if (image && image.PMPOId !== undefined) {
+  //     return image.PMPOId.toString().includes(searchInput);
+  //   }
+  //   // If image or PMPOId is undefined, exclude this entry from the filter
+  //   return false;
+  // });
+  
 
   const { data, isLoading, error } = useQuery(["uncategorizedData"], fetchData);
 
@@ -87,27 +92,49 @@ export const UncategorizedPost = ({images, filteredImages}) => {
           <div className=" pt-10">
             <div className="w-[390px] h-[382px] bg-[#f4f4f4] rounded-md">
               <div className="text-center text-base text-[#706464] capitalize font-bold">   
-                {data && data.data && data.data.length > 0 && (
-                  <div key={data.data[currentIndex].POId}>
-                    {data.data[currentIndex].PMMedia[0].type === "videos" ? (
-                      
-                      <LazyLoadComponent>
-                        <video
-                          src={data.data[currentIndex].PMMedia[0].media}
+              {filteredImages && filteredImages.length > 0 ? (
+                 <div key={filteredImages[currentIndex].POId}>
+                 {filteredImages[currentIndex].PMMedia[0].type === "videos" ? (
+                   <LazyLoadComponent>
+                     <video
+                       src={filteredImages[currentIndex].PMMedia[0].media}
                           className="w-[390px] h-[382px]"
                           controls
                         />
                       </LazyLoadComponent>
                     ) : (
                       <LazyLoadImage
-                        src={data.data[currentIndex].PMMedia[0].media}
+                        src={filteredImages[currentIndex].PMMedia[0].media}
                         alt=""
                         className="w-[_390px] h-[382px]"
                         effect="blur"
                       />
                     )}
                   </div>
-                )}
+              ) : images && images.length > 0 ? (
+                // Display images if filteredImages is empty
+                <div key={images[currentIndex].POId}>
+                  {images[currentIndex].PMMedia[0].type === "videos" ? (
+                    <LazyLoadComponent>
+                      <video
+                        src={images[currentIndex].PMMedia[0].media}
+                        className="w-[390px] h-[382px]"
+                        controls
+                      />
+                    </LazyLoadComponent>
+                  ) : (
+                    <LazyLoadImage
+                      src={images[currentIndex].PMMedia[0].media}
+                      alt=""
+                      className="w-[_390px] h-[382px]"
+                      effect="blur"
+                    />
+                  )}
+                </div>
+              ) : (
+                // Handle the case when images or filteredImages are not available
+                <div>Not Found</div>
+              )}
               </div>
               <div className="relative">
                 <button

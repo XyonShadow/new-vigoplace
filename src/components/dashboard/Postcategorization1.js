@@ -10,7 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 // import "./Styles.module.css";
 
-export function Postcategorization1() {
+export function Postcategorization1({data}) {
 
   const [tab, setTab] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
@@ -19,7 +19,8 @@ export function Postcategorization1() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [uncategorizedDataState, setUncategorizedDataState] = useState(null);
-  const [FilteredImages, setFilteredImages] = useState([])
+  // const [FilteredImages, setFilteredImages] = useState([])
+  const [searchInput, setSearchInput] = useState("")
 
 
   const API_BASE_URL = "https://vigoplace.com/server/";
@@ -84,7 +85,18 @@ export function Postcategorization1() {
 
 
   const handleSearchChange = (event) => {
-    setFilteredImages(event.target.value); 
+    const value = event.target.value;
+    setSearchInput(value);
+    handleUncategorizedSearch(value);
+  };
+
+
+  const handleUncategorizedSearch = (searchInput) => {
+    const filtered = data.data.filter((image) => {
+      const media = image.PMMedia[0]?.media; 
+      return media && media.toLowerCase().includes(searchInput.toLowerCase());
+    });
+    setFilteredResults(filtered);
   };
   
 
@@ -161,7 +173,7 @@ export function Postcategorization1() {
             type="text"
             placeholder="Post id:"
             className="pl-10 focus:outline-blue-400 w-[350px] h-[50px] rounded-md bg-[#F4F4F4]"
-            value={FilteredImages}
+            value={searchInput}
             onChange={handleSearchChange}
           />
         </div>
@@ -194,8 +206,8 @@ export function Postcategorization1() {
           {tab === 0 && (
             <>
               <UncategorizedPost category={selectedCategory}
-               images={uncategorizedData?.data || []}
-               filteredImages={FilteredImages} 
+               images={data.data}
+               filteredImages={filteredResults} 
               />
             </>
           )}
