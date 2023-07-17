@@ -274,7 +274,7 @@ export function Postcategorization1({data}) {
         <div className="mt-5 pl-5">
           <input
             type="text"
-            className="w-[190px] h-[50px] pl-5 rounded-l-md focus:outline-blue-500"
+            className="w-[180px] h-[50px] pl-5 rounded-l-md focus:outline-blue-500"
             placeholder="New category..."
             value={newCategories}
             onChange={(e) => {setNewCategories(e.target.value)}}
