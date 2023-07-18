@@ -18,7 +18,7 @@ export function Postcategorization1({data}) {
   const [newCategories, setNewCategories] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [uncategorizedDataState, setUncategorizedDataState] = useState(null);
+  const [filteredCategoryResults, setFilteredCategoryResults] = useState([]);
   // const [FilteredImages, setFilteredImages] = useState([])
   const [searchInput, setSearchInput] = useState("")
 
@@ -76,11 +76,9 @@ export function Postcategorization1({data}) {
     setSearchTerm(value);
 
     const filtered = categoryList.data.filter((item) => {
-      return item.OCName.toUpperCase().includes(searchTerm?.toUpperCase());
+      return item.OCName.toUpperCase().includes(searchTerm.toUpperCase());
     });
-    setFilteredResults(filtered);
-    setSearchTerm(value);
-    // console.log(filtered)
+    setFilteredCategoryResults(filtered);
   };
 
 
@@ -165,7 +163,7 @@ export function Postcategorization1({data}) {
   return (
     <section className="flex justify-center pt-14">
       <div className="pt-2 w-[770px] h-[850px] bg-white rounded-l-3xl">
-        <div className="p-5 pl-10 border-b-2 border-[#f4f4f4] relative">
+        <div className="p-5 pl-10  border-[#f4f4f4] relative">
           <div className="absolute left-12 top-9">
             <AiOutlineSearch size={20} />
           </div>
@@ -178,12 +176,12 @@ export function Postcategorization1({data}) {
           />
         </div>
 
-        <article className="mt-5">
-          <div className="border-b-2 font-bold border-[#f4f4f4] flex space-x-56 pl-14">
+        <article className="mt-3">
+          <div className="font-bold border-[#f4f4f4] flex pl-10">
             <div>
   <button
-    className={`border-b-2 ${
-      tab === 0 ? "border-b-[#8135F9] transition-all duration-300" : ""
+    className={`border-b-2 px-[102px] py-4 border-2 ${
+      tab === 0 ? "border-b-[#8135F9] hover:bg-[#8135F9]  hover:text-white transition-all duration-300 " : ""
     } pb-2 cursor-pointer text-lg focus:outline-none`}
     onClick={() => handleTabChange(0)}
   >
@@ -192,9 +190,9 @@ export function Postcategorization1({data}) {
 </div>
 <div>
   <button
-    className={`cursor-pointer text-lg ${
+    className={`cursor-pointer text-lg px-[101.6px] py-3 border-2 ${
       tab === 1
-        ? "border-b-2 border-b-[#8135F9] pb-2 transition-all duration-300"
+        ? "border-b-2  border-b-[#8135F9] pb-2 hover:bg-[#8135F9] py-4 hover:text-white transition-all duration-300"
         : ""
     } focus:outline-none`}
     onClick={() => handleTabChange(1)}
@@ -219,7 +217,7 @@ export function Postcategorization1({data}) {
           )}
         </article>
       </div>
-      <div className="w-[280px] h-[850px] bg-[#DFDCDC]">
+      <div className="w-[283px] h-[850px] bg-[#DFDCDC]">
         <p className="text-lg pt-12 pl-7 text-[#706464]">Search categories</p>
         <div className="pl-7 pt-10 relative">
           <div className="absolute right-10 top-14">
@@ -238,8 +236,8 @@ export function Postcategorization1({data}) {
           <div className="bg-[#F4F4F4] w-[238px] h-[400px] py-3 rounded-xl overflow-auto">
             <div className="space-y-5 py-3 overflow-auto flex flex-col items-center">
               {searchTerm !== "" ? (
-                filteredResults.length > 0 ? (
-                  filteredResults.map((item) => (
+                filteredCategoryResults.length > 0 ? (
+                  filteredCategoryResults.map((item) => (
                     <div
                       key={item.OCId}
                       className="bg-white w-[180px] rounded-md h-10 p-2"

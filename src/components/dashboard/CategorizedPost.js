@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { MdOutlineArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
-import { useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Postmodal } from "./Postmodal";
 import { GrFormClose } from "react-icons/gr";
 import {
@@ -11,53 +11,44 @@ import "react-lazy-load-image-component/src/effects/blur.css";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
 export const CategorizedPost = () => {
   const [openModal, setOpenModal] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
-    const [categorizedData, setCategorizedData] = useState([]);
-  const [deletedIndex, setDeletedIndex] = useState(null);
+  const [categorizedData, setCategorizedData] = useState([]);
 
   const API_BASE_URL = "https://vigoplace.com/server/";
 
   const deletePost = async (postId) => {
-  const API_BASE_URL = "https://vigoplace.com/server/";
-  const response = await fetch(`${API_BASE_URL}/api/admin/categorization/${postId}`, {
-    method: "DELETE",
-  });
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(data.error);
-  }
-  return data;
-};
+    const response = await fetch(`${API_BASE_URL}/api/admin/categorization/${postId}`, {
+      method: "DELETE",
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.error);
+    }
+    return data;
+  };
 
-  
-   const mutation = useMutation(deletePost, {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation(deletePost, {
     onSuccess: (data, postId) => {
       queryClient.invalidateQueries("categorizedPost");
-
       setCategorizedData((prevData) =>
         prevData.filter((post) => post.id !== postId)
       );
-      toast.success('Sucessfully deleted the category!');
-
+      toast.success('Successfully deleted the category!');
     },
   });
 
   const categoryDelete = async (postId) => {
     try {
       await mutation.mutateAsync(postId);
-      // toast.success('Sucessfully deleted the category!');
     } catch (error) {
       console.error("Error deleting post:", error);
-      toast.error('error deleting the category!');
-
+      toast.error('Error deleting the category!');
     }
   };
-const queryClient = useQueryClient();
-
-
 
   const fetchCategory = async () => {
     const response = await fetch(`${API_BASE_URL}/api/admin/categorized`);
@@ -65,13 +56,17 @@ const queryClient = useQueryClient();
     return data;
   };
 
-  const {
-    data: categorizedItem,
-    isFetching,
-    isError,
-  } = useQuery(["categorizedPost"], fetchCategory);
+  const { data: categorizedItem, isLoading, isError } = useQuery(
+    ["categorizedPost"],
+    fetchCategory,
+    {
+      onSuccess: (data) => {
+        setCategorizedData(data?.data || []);
+      },
+    }
+  );
 
-  if (isFetching) {
+  if (isLoading) {
     return <div>Loading...</div>;
   }
 
@@ -81,49 +76,40 @@ const queryClient = useQueryClient();
 
   const handleDelete = () => {
     setOpenModal(false);
-    const postId = categorizedItem?.data[currentIndex].OPCPostId;
+    const postId = categorizedData[currentIndex]?.OPCPostId;
     categoryDelete(postId);
   };
 
   const prevSlide = () => {
-    const isFirstSlide = currentIndex === 0;
-    const newIndex = isFirstSlide ? categorizedItem?.data.length - 1 : currentIndex - 1;
-    setCurrentIndex(newIndex);
+    setCurrentIndex((prevIndex) => (prevIndex - 1 + categorizedData?.length) % categorizedData?.length);
   };
 
   const nextSlide = () => {
-    const isLastSlide = currentIndex === categorizedItem?.data.length - 1;
-    const newIndex = isLastSlide ? 0 : currentIndex + 1;
-    setCurrentIndex(newIndex);
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % categorizedData?.length);
   };
 
-  
   return (
     <div>
       <div className="flex justify-evenly">
         <div className={`pl-5 Styles.fade-In`}>
-          <div className=" pt-14">
+          <div className="pt-14">
             <div className="w-[370px] h-[370px] bg-[#f4f4f4] rounded-md">
               <div className="text-center text-base text-[#706464] capitalize font-bold">
-                {categorizedItem?.data && (
-                  <div key={categorizedItem?.data[currentIndex].PMPOId}>
-                    {categorizedItem?.data[currentIndex].PMMedia[0].type === "video" ? (
-                      <LazyLoadComponent>
-                        <video
-                          src={categorizedItem?.data[currentIndex].PMMedia[0].media}
-                          className="w-[370px] h-[370px]"
-                          controls
-                        />
-                      </LazyLoadComponent>
-                    ) : (
-                      <LazyLoadImage
-                        src={categorizedItem?.data[currentIndex].PMMedia[0].media}
-                        alt=""
-                        className="w-[370px] h-[370px]"
-                        effect="blur"
-                      />
-                    )}
-                  </div>
+                {categorizedData?.[currentIndex]?.PMMedia[0]?.type === "video" ? (
+                  <LazyLoadComponent>
+                    <video
+                      src={categorizedData[currentIndex]?.PMMedia[0]?.media}
+                      className="w-[370px] h-[370px]"
+                      controls
+                    />
+                  </LazyLoadComponent>
+                ) : (
+                  <LazyLoadImage
+                    src={categorizedData[currentIndex]?.PMMedia[0]?.media}
+                    alt=""
+                    className="w-[370px] h-[370px]"
+                    effect="blur"
+                  />
                 )}
               </div>
               <div className="relative">
@@ -137,7 +123,7 @@ const queryClient = useQueryClient();
             </div>
             <div>
               <h2 className="text-[#706464] pt-7 text-start text-base">
-                Post Type: {categorizedItem?.data[currentIndex].postType}
+                Post Type: {categorizedData[currentIndex]?.postType}
               </h2>
             </div>
           </div>
@@ -145,16 +131,10 @@ const queryClient = useQueryClient();
             <h2 className="text-[#706464] pt-7 text-start text-xl pb-3">
               Description
             </h2>
-            <div className={`${categorizedItem?.data[currentIndex]}`}>
+            <div>
               <div className="w-[370px] h-[120px] bg-[#f4f4f4] rounded-md overflow-auto">
                 <div className="text-center text-sm text-[#706464] mt-4 p-3">
-                  {categorizedItem?.data && (
-                    <div key={categorizedItem?.data[currentIndex].PMPOId}>
-                      {categorizedItem?.data.length > 0
-                        ? categorizedItem?.data[currentIndex].description
-                        : ""}
-                    </div>
-                  )}
+                  {categorizedData[currentIndex]?.description}
                 </div>
               </div>
             </div>
@@ -168,14 +148,14 @@ const queryClient = useQueryClient();
             </p>
             <div className="flex flex-col items-center justify-center">
               <div className="space-y-3">
-                {categorizedItem?.data.map((item, index) => (
+                {categorizedData.map((item, index) => (
                   <div
                     className="bg-white w-[220px] rounded-md h-12 p-3 pl-3 flex justify-between"
                     key={index}
                   >
                     <p className="text-[#706464]">{item.OPCCategory}</p>
-                    <GrFormClose size={20}  className="cursor-pointer" onClick={() => categoryDelete(item.OPCPostId)} />
-                    </div>
+                    <GrFormClose size={20} className="cursor-pointer" onClick={() => categoryDelete(item.OPCPostId)} />
+                  </div>
                 ))}
               </div>
             </div>
@@ -185,41 +165,33 @@ const queryClient = useQueryClient();
       <Postmodal
         open={openModal}
         onClose={() => setOpenModal(false)}
-        postId={categorizedItem?.data[currentIndex].POId}
+        postId={categorizedData[currentIndex]?.POId}
         onDelete={handleDelete}
       />
 
-      <div className="relative  text-white">
-        <div>
-          <MdOutlineArrowBackIosNew
-            size={18}
-            className="rounded-xl bg-[#8135F9] p-1 cursor-pointer absolute -top-[420px] left-3"
-            onClick={prevSlide}
-          />
-        </div>
-        <div>
-          <MdArrowForwardIos
-            size={18}
-            className="rounded-xl bg-[#8135F9] p-1 cursor-pointer absolute -top-[420px] right-[325px]"
-            onClick={nextSlide}
-          />
-        </div>
+      <div className="relative text-white">
+        <MdOutlineArrowBackIosNew
+          size={18}
+          className="rounded-xl bg-[#8135F9] p-1 cursor-pointer absolute -top-[420px] left-3"
+          onClick={prevSlide}
+        />
+        <MdArrowForwardIos
+          size={18}
+          className="rounded-xl bg-[#8135F9] p-1 cursor-pointer absolute -top-[420px] right-[325px]"
+          onClick={nextSlide}
+        />
       </div>
       <div className="flex justify-between items-center -mt-80 p-3 text-white">
-        <div>
-          <MdOutlineArrowBackIosNew
-            size={25}
-            className="rounded-xl bg-[#8135F9] p-1 cursor-pointer"
-            onClick={prevSlide}
-          />
-        </div>
-        <div>
-          <MdArrowForwardIos
-            size={25}
-            className="rounded-xl bg-[#8135F9] p-1 cursor-pointer"
-            onClick={nextSlide}
-          />
-        </div>
+        <MdOutlineArrowBackIosNew
+          size={25}
+          className="rounded-xl bg-[#8135F9] p-1 cursor-pointer"
+          onClick={prevSlide}
+        />
+        <MdArrowForwardIos
+          size={25}
+          className="rounded-xl bg-[#8135F9] p-1 cursor-pointer"
+          onClick={nextSlide}
+        />
       </div>
     </div>
   );

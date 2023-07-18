@@ -28,16 +28,6 @@ export const UncategorizedPost = ({images, filteredImages}) => {
     return data;
     
   };
-  
-  // const handleFilter = images.filter((image) => {
-  //   // Check if image object and PMPOId property exist and are not undefined
-  //   if (image && image.PMPOId !== undefined) {
-  //     return image.PMPOId.toString().includes(searchInput);
-  //   }
-  //   // If image or PMPOId is undefined, exclude this entry from the filter
-  //   return false;
-  // });
-  
 
   const { data, isLoading, error } = useQuery(["uncategorizedData"], fetchData);
 
@@ -94,7 +84,7 @@ export const UncategorizedPost = ({images, filteredImages}) => {
               <div className="text-center text-base text-[#706464] capitalize font-bold">   
               {filteredImages && filteredImages.length > 0 ? (
                  <div key={filteredImages[currentIndex].POId}>
-                 {filteredImages[currentIndex].PMMedia[0].type === "videos" ? (
+                 {filteredImages[currentIndex].PMMedia[0]?.type === "videos" ? (
                    <LazyLoadComponent>
                      <video
                        src={filteredImages[currentIndex].PMMedia[0].media}
