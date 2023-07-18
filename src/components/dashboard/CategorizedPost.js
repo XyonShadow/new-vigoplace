@@ -133,7 +133,7 @@ export const CategorizedPost = () => {
             </h2>
             <div>
               <div className="w-[370px] h-[120px] bg-[#f4f4f4] rounded-md overflow-auto">
-                <div className="text-center text-sm text-[#706464] mt-4 p-3">
+                <div className="text-center text-sm text-[#706464] mt-2 p-3">
                   {categorizedData[currentIndex]?.description}
                 </div>
               </div>
