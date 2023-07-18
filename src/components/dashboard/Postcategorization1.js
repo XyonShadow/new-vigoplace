@@ -74,12 +74,13 @@ export function Postcategorization1({data}) {
   const handleSearch = (event) => {
     const value = event.target.value;
     setSearchTerm(value);
-
+  
     const filtered = categoryList.data.filter((item) => {
-      return item.OCName.toUpperCase().includes(searchTerm.toUpperCase());
+      return item.OCName.toUpperCase().includes(value.toUpperCase());
     });
     setFilteredCategoryResults(filtered);
   };
+  
 
 
   const handleSearchChange = (event) => {
