@@ -20,12 +20,9 @@ export function Postcategorization1({data, categorizedData}) {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [filteredCategoryResults, setFilteredCategoryResults] = useState([]);
   // const [FilteredImages, setFilteredImages] = useState([])
-  const [searchInput, setSearchInput] = useState("")
-  const [categoryResults, setCategoryResults] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
+  const [categoryResults, setCategoryResults] = useState([])
 
-  const UncategorizedPostMemo = React.memo(UncategorizedPost);
-  const CategorizedPostMemo = React.memo(CategorizedPost);
-  
 
   const API_BASE_URL = "https://vigoplace.com/server/";
 
@@ -61,7 +58,7 @@ export function Postcategorization1({data, categorizedData}) {
       // Update currentIndex based on the uncategorized data length
       setCurrentIndex(0);
     }
-  }, [uncategorizedData, fetchData]);
+  }, [uncategorizedData, categoryList, fetchData]);
 
   if (categoryListLoading || uncategorizedDataLoading) {
     return <div>Loading...</div>;
@@ -71,14 +68,13 @@ export function Postcategorization1({data, categorizedData}) {
     return <div>Error: {categoryListError?.message || uncategorizedDataError?.message}</div>;
   }
 
-
   const handleTabChange = (newTab) => {
     setTab(newTab);
   };
 
   const handleSearch = (event) => {
     const value = event.target.value;
-    setSearchInput(value);
+    setSearchTerm(value);
   
     const filtered = categoryList.data.filter((item) => {
       return item.OCName.toUpperCase().includes(value.toUpperCase());
@@ -93,9 +89,7 @@ export function Postcategorization1({data, categorizedData}) {
     setSearchInput(value);
     handleUncategorizedSearch(value);
     handleCategorizedSearch(value);
-    handleSearch(value); // Also update the category list search
   };
-
 
 
   const handleUncategorizedSearch = (searchInput) => {
@@ -105,7 +99,7 @@ export function Postcategorization1({data, categorizedData}) {
     });
     setFilteredResults(filtered);
   };
-
+  
   const handleCategorizedSearch = (searchInput) => {
     const categorizedFiltered = categorizedData.filter ((item) => {
       const media = item.PMMedia[0]?.media;
@@ -113,7 +107,6 @@ export function Postcategorization1({data, categorizedData}) {
     });
     setCategoryResults(categorizedFiltered);
   }
-  
 
 
   const handleClick = () => {
@@ -174,25 +167,6 @@ export function Postcategorization1({data, categorizedData}) {
       });
   };
 
-  // useEffect(() => {
-  //   if (uncategorizedData) {
-  //     const uncategorizedImages = uncategorizedData.data;
-  //     setCategoryResults(uncategorizedImages);
-  //   }
-  //   if (categoryList) {
-  //     const categories = categoryList.data;
-  //     setCategoryResults(categories);
-  //   }
-
-  // }, [uncategorizedData, categoryList]);
-
-  // useEffect(() => {
-  //   if (categoryList) {
-  //     const categories = categoryList.data;
-  //     setCategoryResults(categories);
-  //   }
-  // }, [categoryList]);
-
 
 
 
@@ -239,7 +213,7 @@ export function Postcategorization1({data, categorizedData}) {
           </div>
           {tab === 0 && (
             <>
-              <UncategorizedPostMemo category={selectedCategory}
+              <UncategorizedPost category={selectedCategory}
                images={data.data}
                filteredImages={filteredResults} 
               />
@@ -248,7 +222,7 @@ export function Postcategorization1({data, categorizedData}) {
 
           {tab === 1 && (
             <>
-              <CategorizedPostMemo 
+              <CategorizedPost 
               images={categorizedData}
                categoryResults={categoryResults}/>
             </>
@@ -265,7 +239,7 @@ export function Postcategorization1({data, categorizedData}) {
             type="text"
             className="w-[235px] h-[50px] pl-5 rounded-md focus:outline-blue-500"
             placeholder="Search category..."
-            value={searchInput}
+            value={searchTerm}
             onChange={handleSearch}
           />
         </div>
@@ -273,7 +247,7 @@ export function Postcategorization1({data, categorizedData}) {
         <div className="mt-10 justify-center flex flex-col items-center">
           <div className="bg-[#F4F4F4] w-[238px] h-[400px] py-3 rounded-xl overflow-auto">
             <div className="space-y-5 py-3 overflow-auto flex flex-col items-center">
-              {searchInput !== "" ? (
+              {searchTerm !== "" ? (
                 filteredCategoryResults.length > 0 ? (
                   filteredCategoryResults.map((item) => (
                     <div
@@ -326,4 +300,3 @@ export function Postcategorization1({data, categorizedData}) {
     </section>
   );
 }
-

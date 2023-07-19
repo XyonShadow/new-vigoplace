@@ -285,7 +285,7 @@ export const CategorizedPost = ({ images, categoryResults }) => {
                           <GrFormClose
                             size={20}
                             className="cursor-pointer"
-                            onClick={() => categoryDelete(item.OPCPostId)}
+                            onClick={() => categoryDelete(item.POId)}
                           />
                         </div>
                       ))}
