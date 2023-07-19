@@ -8,10 +8,10 @@ import {
   LazyLoadComponent,
 } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-export const CategorizedPost = () => {
+export const CategorizedPost = ({ images, categoryResults }) => {
   const [openModal, setOpenModal] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [categorizedData, setCategorizedData] = useState([]);
@@ -19,36 +19,66 @@ export const CategorizedPost = () => {
   const API_BASE_URL = "https://vigoplace.com/server/";
 
   const deletePost = async (postId) => {
-    const response = await fetch(`${API_BASE_URL}/api/admin/categorization/${postId}`, {
-      method: "DELETE",
-    });
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.error);
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/admin/categorization/${postId}`, {
+        method: "DELETE",
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
+
+      return data;
+    } catch (error) {
+      throw new Error(`Error deleting post: ${error.message}`);
     }
-    return data;
   };
 
   const queryClient = useQueryClient();
 
   const mutation = useMutation(deletePost, {
     onSuccess: (data, postId) => {
+      console.log("Mutation onSuccess called");
+      console.log("Data:", data);
+      console.log("postId:", postId);
+
       queryClient.invalidateQueries("categorizedPost");
       setCategorizedData((prevData) =>
-        prevData.filter((post) => post.id !== postId)
+        prevData.filter((post) => post.OPCPostId !== postId)
       );
-      toast.success('Successfully deleted the category!');
+      toast.success("Successfully deleted the category!");
+    },
+    onError: (error) => {
+      console.error("Error deleting post:", error);
+      toast.error("Error deleting the category!");
     },
   });
 
   const categoryDelete = async (postId) => {
     try {
+      console.log("Calling categoryDelete with postId:", postId);
       await mutation.mutateAsync(postId);
     } catch (error) {
       console.error("Error deleting post:", error);
-      toast.error('Error deleting the category!');
+      toast.error("Error deleting the category!");
     }
   };
+
+
+  
+  
+  // const categoryDelete = async (postId) => {
+  //   try {
+  //     console.log("Calling categoryDelete with postId:", postId);
+  //     await mutation.mutateAsync(postId);
+  //   } catch (error) {
+  //     console.error("Error deleting post:", error);
+  //     toast.error("Error deleting the category!");
+  //   }
+  // };
+  
+  
 
   const fetchCategory = async () => {
     const response = await fetch(`${API_BASE_URL}/api/admin/categorized`);
@@ -56,32 +86,43 @@ export const CategorizedPost = () => {
     return data;
   };
 
-  const { data: categorizedItem, isLoading, isError } = useQuery(
-    ["categorizedPost"],
-    fetchCategory,
-    {
-      onSuccess: (data) => {
-        setCategorizedData(data?.data || []);
-      },
-    }
-  );
+  const {
+    data: categorizedItem,
+    isLoading,
+    isError,
+  } = useQuery(["categorizedPost"], fetchCategory, {
+    onSuccess: (data) => {
+      setCategorizedData(data?.data || []);
+    },
+  });
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
   if (isError) {
-    return <div>Error: {error.message}</div>;
+    return <div>Error: </div>;
   }
 
   const handleDelete = () => {
     setOpenModal(false);
-    const postId = categorizedData[currentIndex]?.OPCPostId;
-    categoryDelete(postId);
+    if (categorizedData && categorizedData.length > 0 && categoryResults && categoryResults.length > 0) {
+      const postId = categoryResults[currentIndex]?.POId;
+      if (postId !== undefined) {
+        categoryDelete(postId);
+      } else {
+        console.error("postId is undefined.");
+      }
+    } else {
+      console.error("categorizedData or categoryResults is empty or null.");
+    }
   };
-
+  
   const prevSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + categorizedData?.length) % categorizedData?.length);
+    setCurrentIndex(
+      (prevIndex) =>
+        (prevIndex - 1 + categorizedData?.length) % categorizedData?.length
+    );
   };
 
   const nextSlide = () => {
@@ -89,29 +130,59 @@ export const CategorizedPost = () => {
   };
 
   return (
+    //
     <div>
       <div className="flex justify-evenly">
         <div className={`pl-5 Styles.fade-In`}>
           <div className="pt-14">
             <div className="w-[370px] h-[370px] bg-[#f4f4f4] rounded-md">
               <div className="text-center text-base text-[#706464] capitalize font-bold">
-                {categorizedData?.[currentIndex]?.PMMedia[0]?.type === "video" ? (
-                  <LazyLoadComponent>
-                    <video
-                      src={categorizedData[currentIndex]?.PMMedia[0]?.media}
-                      className="w-[370px] h-[370px]"
-                      controls
-                    />
-                  </LazyLoadComponent>
+                {categoryResults && categoryResults.length > 0 ? (
+                  <div key={categoryResults[currentIndex].POId}>
+                    {categoryResults[currentIndex].PMMedia[0]?.type ===
+                    "videos" ? (
+                      <LazyLoadComponent>
+                        <video
+                          src={categoryResults[currentIndex].PMMedia[0].media}
+                          className="w-[390px] h-[382px]"
+                          controls
+                        />
+                      </LazyLoadComponent>
+                    ) : (
+                      <LazyLoadImage
+                        src={categoryResults[currentIndex].PMMedia[0].media}
+                        alt=""
+                        className="w-[_390px] h-[382px]"
+                        effect="blur"
+                      />
+                    )}
+                  </div>
+                ) : images && images.length > 0 ? (
+                  // Display images if categoryResults is empty
+                  <div key={images[currentIndex].POId}>
+                    {images[currentIndex].PMMedia[0].type === "videos" ? (
+                      <LazyLoadComponent>
+                        <video
+                          src={images[currentIndex].PMMedia[0].media}
+                          className="w-[390px] h-[382px]"
+                          controls
+                        />
+                      </LazyLoadComponent>
+                    ) : (
+                      <LazyLoadImage
+                        src={images[currentIndex].PMMedia[0].media}
+                        alt=""
+                        className="w-[_390px] h-[382px]"
+                        effect="blur"
+                      />
+                    )}
+                  </div>
                 ) : (
-                  <LazyLoadImage
-                    src={categorizedData[currentIndex]?.PMMedia[0]?.media}
-                    alt=""
-                    className="w-[370px] h-[370px]"
-                    effect="blur"
-                  />
+                  // Handle the case when images or categoryResults are not available
+                  <div>Not Found</div>
                 )}
               </div>
+
               <div className="relative">
                 <button
                   className="bg-[#F93636] py-3 px-5 rounded-md text-white text-sm absolute right-3 -top-16 z-20"
@@ -149,12 +220,22 @@ export const CategorizedPost = () => {
             <div className="flex flex-col items-center justify-center">
               <div className="space-y-3">
                 {categorizedData.map((item, index) => (
-                  <div
-                    className="bg-white w-[220px] rounded-md h-12 p-3 pl-3 flex justify-between"
-                    key={index}
-                  >
-                    <p className="text-[#706464]">{item.OPCCategory}</p>
-                    <GrFormClose size={20} className="cursor-pointer" onClick={() => categoryDelete(item.OPCPostId)} />
+                  <div key={index}>
+                    <div className="flex flex-col space-y-3">
+                      {item.OPCCategory.map((category, catIndex) => (
+                        <div
+                          key={catIndex}
+                          className="bg-white w-[220px] rounded-md h-12 p-3 pl-3 flex justify-between"
+                        >
+                          <p className="text-[#706464]">{category}</p>
+                          <GrFormClose
+                            size={20}
+                            className="cursor-pointer"
+                            onClick={() => categoryDelete(item.OPCPostId)}
+                          />
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -165,7 +246,7 @@ export const CategorizedPost = () => {
       <Postmodal
         open={openModal}
         onClose={() => setOpenModal(false)}
-        postId={categorizedData[currentIndex]?.POId}
+        postId={categoryResults[currentIndex]?.POId}
         onDelete={handleDelete}
       />
 

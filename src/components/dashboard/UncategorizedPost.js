@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import { Postmodal } from "./Postmodal";
 import { MdOutlineArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
+import { MdOutlineKeyboardArrowRight, MdOutlineKeyboardArrowLeft} from "react-icons/md"
 import { useQuery } from "@tanstack/react-query";
 import {
   LazyLoadImage,
   LazyLoadComponent,
 } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
-// import { toast } from 'react-toastify';
+import { GrFormClose } from "react-icons/gr";
+// import  HlsPlayer  from 'react-hls-player';
+// import ReactPlayer from 'react-player';
 
 
 
@@ -16,7 +19,61 @@ export const UncategorizedPost = ({images, filteredImages}) => {
   const [openModal, setOpenModal] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [deletedIndex, setDeletedIndex] = useState(null);
-  // const LazyLoad = dynamic(() => import("react-lazyload"), { ssr: false });
+  const [categorizedData, setCategorizedData] = useState([]);
+  
+  // const VideoPlayer = ({ media, type }) => {
+  //   console.log('Video URL:', media);
+  
+  //   if (type === 'videos') {
+  //     if (!media) {
+  //       return <div>Video URL is undefined</div>;
+      // }
+
+  //     if (media.endsWith('.m3u8')) {
+  //       // return (
+  //     //     <div>
+  //     //       <LazyLoadComponent>
+  //     //         <HlsPlayer
+  //     //           url={media}
+  //     //           width="390px"
+  //     //           height="382px"
+  //     //           controls
+  //     //         />
+  //     //       </LazyLoadComponent>
+  //     //     </div>
+  //     //   );
+  //     // } else {
+  //       return (
+  //         <div>
+  //           <LazyLoadComponent>
+  //             <ReactPlayer
+  //             playing
+  //               url={media}
+  //               width="390px"
+  //               height="382px"
+  //               controls
+  //             />
+  //           </LazyLoadComponent>
+  //         </div>
+  //       );
+  //     }
+  //   } else {
+  //     return (
+  //       <div>
+  //         <LazyLoadImage
+  //           src={media}
+  //           alt=""
+  //           width={390}
+  //           height={382}
+  //           effect="blur"
+  //         />
+  //       </div>
+  //     );
+  //   }
+  // };
+  
+
+
 
   const API_BASE_URL = "https://vigoplace.com/server/";
 
@@ -39,22 +96,27 @@ export const UncategorizedPost = ({images, filteredImages}) => {
     return <div>Error: {error.message}</div>;
   }
 
-  const fetchCategories = async () => {
-    const response = await fetch(`${API_BASE_URL}/api/admin/categories`);
+  const fetchCategory = async () => {
+    const response = await fetch(`${API_BASE_URL}/api/admin/categorized`);
     const data = await response.json();
     return data;
   };
 
-  const { data: categoryList, isLoading: categoryListLoading, error: categoryListError } = useQuery(
-    ["categorizedData"],
-    fetchCategories
-  );
+  const {
+    data: categorizedItem,
+    categorizedItemisLoading,
+    categorizedItemisError,
+  } = useQuery(["categorizedPost"], fetchCategory, {
+    onSuccess: (data) => {
+      setCategorizedData(data?.data || []);
+    },
+  });
 
-  if (categoryListLoading) {
+  if (categorizedItemisLoading) {
     return <div>Loading...</div>;
   }
 
-  if (categoryListError ) {
+  if (categorizedItemisError ) {
     return <div>Error: {categoryListError?.message?.message}</div>;
   }
 
@@ -74,6 +136,57 @@ export const UncategorizedPost = ({images, filteredImages}) => {
     const newIndex = isLastSlide ? 0 : currentIndex + 1;
     setCurrentIndex(newIndex);
   };
+
+  const prevSlide1 = () => {
+    let newIndex = currentIndex - 1;
+  
+    while (newIndex !== currentIndex) {
+      if (newIndex < 0) {
+        newIndex = data.data.length - 1;
+      }
+  
+      if (
+        (filteredImages && hasMultipleImages(filteredImages[newIndex])) ||
+        (images && hasMultipleImages(images[newIndex]))
+      ) {
+        setCurrentIndex(newIndex);
+        break;
+      }
+  
+      newIndex = newIndex - 1;
+    }
+  };
+  
+  const nextSlide1 = () => {
+    let newIndex = currentIndex + 1;
+  
+    while (newIndex !== currentIndex) {
+      if (newIndex >= data.data.length) {
+        newIndex = 0;
+      }
+  
+      if (
+        (filteredImages && hasMultipleImages(filteredImages[newIndex])) ||
+        (images && hasMultipleImages(images[newIndex]))
+      ) {
+        setCurrentIndex(newIndex);
+        break;
+      }
+  
+      newIndex = newIndex + 1;
+    }
+  };
+  
+  const hasMultipleImages = (post) => {
+    return post?.PMMedia?.length > 1;
+  };
+  
+
+  const isAtBeginning = currentIndex === 0;
+  // Check if carousel is at the end (last image)
+  const isAtEnd =
+    (filteredImages && currentIndex === filteredImages.length - 1) ||
+    (images && currentIndex === images.length - 1);
   
   return (
     <div>
@@ -96,7 +209,7 @@ export const UncategorizedPost = ({images, filteredImages}) => {
                       <LazyLoadImage
                         src={filteredImages[currentIndex].PMMedia[0].media}
                         alt=""
-                        className="w-[_390px] h-[382px]"
+                        className="w-[390px] h-[382px]"
                         effect="blur"
                       />
                     )}
@@ -124,7 +237,8 @@ export const UncategorizedPost = ({images, filteredImages}) => {
               ) : (
                 // Handle the case when images or filteredImages are not available
                 <div>Not Found</div>
-              )}
+              )}                  
+
               </div>
               <div className="relative">
                 <button
@@ -156,31 +270,36 @@ export const UncategorizedPost = ({images, filteredImages}) => {
         </div>
 
         <div className="flex justify-center pt-10">
-          <div className="w-[290px] h-[620px] bg-[#f4f4f4]  rounded-xl">
+          <div className="w-[290px] h-[620px] bg-[#f4f4f4]  rounded-xl overflow-auto">
             <p className="text-start p-2 pl-10 font-bold text-[#706464] text-lg">
               Post category
             </p>
             <div className="flex flex-col items-center justify-center">
-              <div className="bg-white w-[250px] h-[550px] rounded-md overflow-auto">
-                <div className="space-y-5 py-3 rounded-xl overflow-auto flex flex-col items-center">
-                {categoryList?.data.map((item) => (
+            
+                <div className="space-y-3 py-3 rounded-xl flex flex-col items-center">
+                {categorizedData.map((item, index) => (
                   <div
-                  key={item.OCId}
-                  className="bg-[#f4f4f4] w-[200px] rounded-md h-10 p-2"
-                  onClick={() => {handlePostClick(item.OCName)}}
+                  key={index}
+                  className="flex flex-col space-y-3"
                 >
-                  <p className="text-center text-base text-[#706464] capitalize">
-                    {item.OCName}
-                  </p>
+                  {item.OPCCategory.map((category, catIndex) => (
+                        <div
+                          key={catIndex}
+                          className="bg-white w-[220px] rounded-md h-12 p-3 pl-3 flex justify-between"
+                        >
+                          <p className="text-[#706464]">{category}</p>
+                          <GrFormClose
+                            size={20}
+                            className="cursor-pointer"
+                            onClick={() => categoryDelete(item.OPCPostId)}
+                          />
+                        </div>
+                      ))}
                 </div>
                 ))}
                 </div>
-                <div className="flex justify-center pt-7 pb-2">
-                  <button className="bg-[#8135F9] px-14 h-10 text-white rounded-md text-base">Submit</button>
-                </div>
               </div>
             </div>
-          </div>
         </div>
       </div>
       
@@ -191,20 +310,27 @@ export const UncategorizedPost = ({images, filteredImages}) => {
         onDelete={handleDelete}
       />
 <div className="relative  text-white">
-        <div>
-          <MdOutlineArrowBackIosNew
-            size={18}
-            className="rounded-xl bg-[#8135F9] p-1 cursor-pointer absolute -top-[420px] left-3"
-            onClick={prevSlide}
-          />
-        </div>
-        <div>
-          <MdArrowForwardIos
-            size={18}
-            className="rounded-xl bg-[#8135F9] p-1 cursor-pointer absolute -top-[420px] right-[320px]"
-            onClick={nextSlide}
-          />
-        </div>
+  <div>
+<MdOutlineKeyboardArrowLeft
+  size={18}
+  className={`rounded-xl bg-[#8135F9] p-1 cursor-pointer absolute -top-[420px] left-3 ${
+    (!hasMultipleImages(filteredImages[currentIndex]) && !hasMultipleImages(images[currentIndex])) || isAtBeginning ? "opacity-50 cursor-not-allowed" : ""
+  }`}
+  onClick={!hasMultipleImages(filteredImages[currentIndex]) && !hasMultipleImages(images[currentIndex]) || isAtBeginning ? null : prevSlide1}
+  disabled={!hasMultipleImages(filteredImages[currentIndex]) && !hasMultipleImages(images[currentIndex]) || isAtBeginning}
+/>
+</div>
+
+<div>
+<MdOutlineKeyboardArrowRight
+  size={18}
+  className={`rounded-xl bg-[#8135F9] p-1 cursor-pointer absolute -top-[420px] right-[320px] ${
+    (!hasMultipleImages(filteredImages[currentIndex]) && !hasMultipleImages(images[currentIndex])) || isAtEnd ? "opacity-50 cursor-not-allowed" : ""
+  }`}
+  onClick={!hasMultipleImages(filteredImages[currentIndex]) && !hasMultipleImages(images[currentIndex]) || isAtEnd ? null : nextSlide1}
+  disabled={!hasMultipleImages(filteredImages[currentIndex]) && !hasMultipleImages(images[currentIndex]) || isAtEnd}
+/>
+</div>
       </div>
       <div className="flex justify-between items-center -mt-80 p-3 text-white">
         <div>

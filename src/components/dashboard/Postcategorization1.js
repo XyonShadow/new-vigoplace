@@ -10,7 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 // import "./Styles.module.css";
 
-export function Postcategorization1({data}) {
+export function Postcategorization1({data, categorizedData}) {
 
   const [tab, setTab] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
@@ -21,7 +21,11 @@ export function Postcategorization1({data}) {
   const [filteredCategoryResults, setFilteredCategoryResults] = useState([]);
   // const [FilteredImages, setFilteredImages] = useState([])
   const [searchInput, setSearchInput] = useState("")
+  const [categoryResults, setCategoryResults] = useState([]);
 
+  const UncategorizedPostMemo = React.memo(UncategorizedPost);
+  const CategorizedPostMemo = React.memo(CategorizedPost);
+  
 
   const API_BASE_URL = "https://vigoplace.com/server/";
 
@@ -67,6 +71,7 @@ export function Postcategorization1({data}) {
     return <div>Error: {categoryListError?.message || uncategorizedDataError?.message}</div>;
   }
 
+
   const handleTabChange = (newTab) => {
     setTab(newTab);
   };
@@ -87,7 +92,9 @@ export function Postcategorization1({data}) {
     const value = event.target.value;
     setSearchInput(value);
     handleUncategorizedSearch(value);
+    handleCategorizedSearch(value);
   };
+
 
 
   const handleUncategorizedSearch = (searchInput) => {
@@ -97,6 +104,14 @@ export function Postcategorization1({data}) {
     });
     setFilteredResults(filtered);
   };
+
+  const handleCategorizedSearch = (searchInput) => {
+    const categorizedFiltered = categorizedData.filter ((item) => {
+      const media = item.PMMedia[0]?.media;
+      return media && media.toLowerCase().includes(searchInput.toLowerCase());
+    });
+    setCategoryResults(categorizedFiltered);
+  }
   
 
 
@@ -204,7 +219,7 @@ export function Postcategorization1({data}) {
           </div>
           {tab === 0 && (
             <>
-              <UncategorizedPost category={selectedCategory}
+              <UncategorizedPostMemo category={selectedCategory}
                images={data.data}
                filteredImages={filteredResults} 
               />
@@ -213,7 +228,9 @@ export function Postcategorization1({data}) {
 
           {tab === 1 && (
             <>
-              <CategorizedPost />
+              <CategorizedPostMemo 
+              images={categorizedData}
+               categoryResults={categoryResults}/>
             </>
           )}
         </article>
@@ -289,3 +306,4 @@ export function Postcategorization1({data}) {
     </section>
   );
 }
+
