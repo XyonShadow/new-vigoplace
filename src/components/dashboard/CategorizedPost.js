@@ -10,12 +10,10 @@ import {
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { MdOutlineKeyboardArrowRight, MdOutlineKeyboardArrowLeft} from "react-icons/md"
-
-
-
-
-
+import {
+  MdOutlineKeyboardArrowRight,
+  MdOutlineKeyboardArrowLeft,
+} from "react-icons/md";
 
 export const CategorizedPost = ({ images, categoryResults }) => {
   const [openModal, setOpenModal] = useState(false);
@@ -23,12 +21,18 @@ export const CategorizedPost = ({ images, categoryResults }) => {
   const [categorizedData, setCategorizedData] = useState([]);
 
   const API_BASE_URL = "https://vigoplace.com/server/";
+  if (categoryResults.length > 1) {
+    console.log(categoryResults);
+  }
 
   const deletePost = async (postId) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/admin/categorization/${postId}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/api/admin/categorization/${postId}`,
+        {
+          method: "DELETE",
+        }
+      );
       const data = await response.json();
 
       if (!response.ok) {
@@ -76,8 +80,7 @@ export const CategorizedPost = ({ images, categoryResults }) => {
   const isAtEnd =
     (categoryResults && currentIndex === categoryResults.length - 1) ||
     (images && currentIndex === images.length - 1);
-  
-  
+
   // const categoryDelete = async (postId) => {
   //   try {
   //     console.log("Calling categoryDelete with postId:", postId);
@@ -87,8 +90,6 @@ export const CategorizedPost = ({ images, categoryResults }) => {
   //     toast.error("Error deleting the category!");
   //   }
   // };
-  
-  
 
   const fetchCategory = async () => {
     const response = await fetch(`${API_BASE_URL}/api/admin/categorized`);
@@ -116,7 +117,12 @@ export const CategorizedPost = ({ images, categoryResults }) => {
 
   const handleDelete = () => {
     setOpenModal(false);
-    if (categorizedData && categorizedData.length > 0 && categoryResults && categoryResults.length > 0) {
+    if (
+      categorizedData &&
+      categorizedData.length > 0 &&
+      categoryResults &&
+      categoryResults.length > 0
+    ) {
       const postId = categoryResults[currentIndex]?.POId;
       if (postId !== undefined) {
         categoryDelete(postId);
@@ -127,7 +133,7 @@ export const CategorizedPost = ({ images, categoryResults }) => {
       console.error("categorizedData or categoryResults is empty or null.");
     }
   };
-  
+
   const prevSlide = () => {
     setCurrentIndex(
       (prevIndex) =>
@@ -141,12 +147,12 @@ export const CategorizedPost = ({ images, categoryResults }) => {
 
   const prevSlide1 = () => {
     let newIndex = currentIndex - 1;
-  
+
     while (newIndex !== currentIndex) {
       if (newIndex < 0) {
         newIndex = categorizedData.length - 1;
       }
-  
+
       if (
         (categoryResults && hasMultipleImages(categoryResults[newIndex])) ||
         (images && hasMultipleImages(images[newIndex]))
@@ -154,19 +160,19 @@ export const CategorizedPost = ({ images, categoryResults }) => {
         setCurrentIndex(newIndex);
         break;
       }
-  
+
       newIndex = newIndex - 1;
     }
   };
-  
+
   const nextSlide1 = () => {
     let newIndex = currentIndex + 1;
-  
+
     while (newIndex !== currentIndex) {
       if (newIndex >= categorizedData.length) {
         newIndex = 0;
       }
-  
+
       if (
         (categoryResults && hasMultipleImages(categoryResults[newIndex])) ||
         (images && hasMultipleImages(images[newIndex]))
@@ -174,11 +180,11 @@ export const CategorizedPost = ({ images, categoryResults }) => {
         setCurrentIndex(newIndex);
         break;
       }
-  
+
       newIndex = newIndex + 1;
     }
   };
-  
+
   const hasMultipleImages = (post) => {
     return post?.PMMedia?.length > 1;
   };
@@ -273,25 +279,24 @@ export const CategorizedPost = ({ images, categoryResults }) => {
             </p>
             <div className="flex flex-col items-center justify-center">
               <div className="space-y-3">
-                {categorizedData.map((item, index) => (
-                  <div key={index}>
-                    <div className="flex flex-col space-y-3">
-                      {item.OPCCategory.map((category, catIndex) => (
-                        <div
-                          key={catIndex}
-                          className="bg-white w-[220px] rounded-md h-12 p-3 pl-3 flex justify-between"
-                        >
-                          <p className="text-[#706464]">{category}</p>
-                          <GrFormClose
-                            size={20}
-                            className="cursor-pointer"
-                            onClick={() => categoryDelete(item.POId)}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
+                {categorizedData[currentIndex]?.OPCCategory?.map(
+                  (item, index) => {
+                    console.log(item);
+                    return (
+                      <div
+                        key={index}
+                        className="bg-white w-[220px] rounded-md h-12 p-3 pl-3 flex justify-between"
+                      >
+                        <p className="text-[#706464]">{item}</p>
+                        <GrFormClose
+                          size={20}
+                          className="cursor-pointer"
+                          onClick={() => categoryDelete(item.POId)}
+                        />
+                      </div>
+                    );
+                  }
+                )}
               </div>
             </div>
           </div>
@@ -305,25 +310,52 @@ export const CategorizedPost = ({ images, categoryResults }) => {
       />
 
       <div className="relative text-white">
-<MdOutlineKeyboardArrowLeft
-  size={18}
-  className={`rounded-xl bg-[#8135F9] p-1 cursor-pointer absolute -top-[420px] left-3 ${
-    (!hasMultipleImages(categoryResults[currentIndex]) && !hasMultipleImages(images[currentIndex])) || isAtBeginning ? "opacity-50 cursor-not-allowed" : ""
-  }`}
-  onClick={!hasMultipleImages(categoryResults[currentIndex]) && !hasMultipleImages(images[currentIndex]) || isAtBeginning ? null : prevSlide1}
-  disabled={!hasMultipleImages(categoryResults[currentIndex]) && !hasMultipleImages(images[currentIndex]) || isAtBeginning}
-/>
+        <MdOutlineKeyboardArrowLeft
+          size={18}
+          className={`rounded-xl bg-[#8135F9] p-1 cursor-pointer absolute -top-[420px] left-3 ${
+            (!hasMultipleImages(categoryResults[currentIndex]) &&
+              !hasMultipleImages(images[currentIndex])) ||
+            isAtBeginning
+              ? "opacity-50 cursor-not-allowed"
+              : ""
+          }`}
+          onClick={
+            (!hasMultipleImages(categoryResults[currentIndex]) &&
+              !hasMultipleImages(images[currentIndex])) ||
+            isAtBeginning
+              ? null
+              : prevSlide1
+          }
+          disabled={
+            (!hasMultipleImages(categoryResults[currentIndex]) &&
+              !hasMultipleImages(images[currentIndex])) ||
+            isAtBeginning
+          }
+        />
 
-
-<MdOutlineKeyboardArrowRight
-  size={18}
-  className={`rounded-xl bg-[#8135F9] p-1 cursor-pointer absolute -top-[420px] right-[320px] ${
-    (!hasMultipleImages(categoryResults[currentIndex]) && !hasMultipleImages(images[currentIndex])) || isAtEnd ? "opacity-50 cursor-not-allowed" : ""
-  }`}
-  onClick={!hasMultipleImages(categoryResults[currentIndex]) && !hasMultipleImages(images[currentIndex]) || isAtEnd ? null : nextSlide1}
-  disabled={!hasMultipleImages(categoryResults[currentIndex]) && !hasMultipleImages(images[currentIndex]) || isAtEnd}
-/>
-</div>
+        <MdOutlineKeyboardArrowRight
+          size={18}
+          className={`rounded-xl bg-[#8135F9] p-1 cursor-pointer absolute -top-[420px] right-[320px] ${
+            (!hasMultipleImages(categoryResults[currentIndex]) &&
+              !hasMultipleImages(images[currentIndex])) ||
+            isAtEnd
+              ? "opacity-50 cursor-not-allowed"
+              : ""
+          }`}
+          onClick={
+            (!hasMultipleImages(categoryResults[currentIndex]) &&
+              !hasMultipleImages(images[currentIndex])) ||
+            isAtEnd
+              ? null
+              : nextSlide1
+          }
+          disabled={
+            (!hasMultipleImages(categoryResults[currentIndex]) &&
+              !hasMultipleImages(images[currentIndex])) ||
+            isAtEnd
+          }
+        />
+      </div>
 
       <div className="flex justify-between items-center -mt-80 p-3 text-white">
         <MdOutlineArrowBackIosNew

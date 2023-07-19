@@ -4,14 +4,12 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { useQuery } from "@tanstack/react-query";
 import { UncategorizedPost } from "./UncategorizedPost";
 import { CategorizedPost } from "./CategorizedPost";
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // import "./Styles.module.css";
 
-export function Postcategorization1({data, categorizedData}) {
-
+export function Postcategorization1({ data, categorizedData }) {
   const [tab, setTab] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredResults, setFilteredResults] = useState([]);
@@ -21,8 +19,7 @@ export function Postcategorization1({data, categorizedData}) {
   const [filteredCategoryResults, setFilteredCategoryResults] = useState([]);
   // const [FilteredImages, setFilteredImages] = useState([])
   const [searchInput, setSearchInput] = useState("");
-  const [categoryResults, setCategoryResults] = useState([])
-
+  const [categoryResults, setCategoryResults] = useState([]);
 
   const API_BASE_URL = "https://vigoplace.com/server/";
 
@@ -32,15 +29,15 @@ export function Postcategorization1({data, categorizedData}) {
     return data;
   };
 
-  const { data: categoryList, isLoading: categoryListLoading, error: categoryListError, refetch: refetchcategoryList } = useQuery(
-    ["categorizedData"],
-    fetchData,
-    {
-      staleTime: 0,
-      refetchInterval: 10000,
-    }
-  );
-
+  const {
+    data: categoryList,
+    isLoading: categoryListLoading,
+    error: categoryListError,
+    refetch: refetchcategoryList,
+  } = useQuery(["categorizedData"], fetchData, {
+    staleTime: 0,
+    refetchInterval: 10000,
+  });
 
   const fetchUncategorizedData = async () => {
     const response = await fetch(`${API_BASE_URL}/api/admin/uncategorized`);
@@ -48,10 +45,11 @@ export function Postcategorization1({data, categorizedData}) {
     return data;
   };
 
-  const { data: uncategorizedData, isLoading: uncategorizedDataLoading, error: uncategorizedDataError } = useQuery(
-    ["uncategorizedData"],
-    fetchUncategorizedData
-  );
+  const {
+    data: uncategorizedData,
+    isLoading: uncategorizedDataLoading,
+    error: uncategorizedDataError,
+  } = useQuery(["uncategorizedData"], fetchUncategorizedData);
 
   useEffect(() => {
     if (uncategorizedData) {
@@ -65,7 +63,11 @@ export function Postcategorization1({data, categorizedData}) {
   }
 
   if (categoryListError || uncategorizedDataError) {
-    return <div>Error: {categoryListError?.message || uncategorizedDataError?.message}</div>;
+    return (
+      <div>
+        Error: {categoryListError?.message || uncategorizedDataError?.message}
+      </div>
+    );
   }
 
   const handleTabChange = (newTab) => {
@@ -75,14 +77,12 @@ export function Postcategorization1({data, categorizedData}) {
   const handleSearch = (event) => {
     const value = event.target.value;
     setSearchTerm(value);
-  
+
     const filtered = categoryList.data.filter((item) => {
       return item.OCName.toUpperCase().includes(value.toUpperCase());
     });
     setFilteredCategoryResults(filtered);
   };
-  
-
 
   const handleSearchChange = (event) => {
     const value = event.target.value;
@@ -91,52 +91,49 @@ export function Postcategorization1({data, categorizedData}) {
     handleCategorizedSearch(value);
   };
 
-
   const handleUncategorizedSearch = (searchInput) => {
     const filtered = data.data.filter((image) => {
-      const media = image.PMMedia[0]?.media; 
+      const media = image.PMMedia[0]?.media;
       return media && media.toLowerCase().includes(searchInput.toLowerCase());
     });
     setFilteredResults(filtered);
   };
-  
+
   const handleCategorizedSearch = (searchInput) => {
-    const categorizedFiltered = categorizedData.filter ((item) => {
+    const categorizedFiltered = categorizedData.filter((item) => {
       const media = item.PMMedia[0]?.media;
       return media && media.toLowerCase().includes(searchInput.toLowerCase());
     });
     setCategoryResults(categorizedFiltered);
-  }
-
+  };
 
   const handleClick = () => {
-    console.log(newCategories)
+    console.log(newCategories);
     fetch("https://vigoplace.com/server/api/admin/categories", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        categories: [newCategories]
+        categories: [newCategories],
       }),
     })
       .then((response) => {
         if (!response.ok) {
           throw new Error("Failed to create category");
         }
-        return response.json(); 
+        return response.json();
       })
       .then((data) => {
         console.log(data);
-        setNewCategories("")
+        setNewCategories("");
       })
       .catch((error) => {
         console.error("Error creating category:", error);
       });
   };
 
-
-   const handlePostClick = (category) => {
+  const handlePostClick = (category) => {
     const postId = uncategorizedData?.data[currentIndex]?.POId;
     setSelectedCategory(category);
 
@@ -158,17 +155,14 @@ export function Postcategorization1({data, categorizedData}) {
       })
       .then((data) => {
         console.log(data);
-        toast.success('Sucessfully categorized this post!');
-        console.log(category)
+        toast.success("Sucessfully categorized this post!");
+        console.log(category);
       })
       .catch((error) => {
         console.error("Error creating category:", error);
-        toast.error('Error categorizing this post!');
+        toast.error("Error categorizing this post!");
       });
   };
-
-
-
 
   return (
     <section className="flex justify-center pt-14">
@@ -189,42 +183,46 @@ export function Postcategorization1({data, categorizedData}) {
         <article className="mt-3">
           <div className="font-bold border-[#f4f4f4] flex pl-10">
             <div>
-  <button
-    className={`border-b-2 px-[102px] py-4 border-2 ${
-      tab === 0 ? "border-b-[#8135F9] hover:bg-[#8135F9]  hover:text-white transition-all duration-300 " : ""
-    } pb-2 cursor-pointer text-lg focus:outline-none`}
-    onClick={() => handleTabChange(0)}
-  >
-    Uncategorized Post
-  </button>
-</div>
-<div>
-  <button
-    className={`cursor-pointer text-lg px-[101.6px] py-3 border-2 ${
-      tab === 1
-        ? "border-b-2  border-b-[#8135F9] pb-2 hover:bg-[#8135F9] py-4 hover:text-white transition-all duration-300"
-        : ""
-    } focus:outline-none`}
-    onClick={() => handleTabChange(1)}
-  >
-    Categorized Post
-  </button>
-</div>
+              <button
+                className={`border-b-2 px-[102px] py-4 border-2 ${
+                  tab === 0
+                    ? "border-b-[#8135F9] hover:bg-[#8135F9]  hover:text-white transition-all duration-300 "
+                    : ""
+                } pb-2 cursor-pointer text-lg focus:outline-none`}
+                onClick={() => handleTabChange(0)}
+              >
+                Uncategorized Post
+              </button>
+            </div>
+            <div>
+              <button
+                className={`cursor-pointer text-lg px-[101.6px] py-3 border-2 ${
+                  tab === 1
+                    ? "border-b-2  border-b-[#8135F9] pb-2 hover:bg-[#8135F9] py-4 hover:text-white transition-all duration-300"
+                    : ""
+                } focus:outline-none`}
+                onClick={() => handleTabChange(1)}
+              >
+                Categorized Post
+              </button>
+            </div>
           </div>
           {tab === 0 && (
             <>
-              <UncategorizedPost category={selectedCategory}
-               images={data.data}
-               filteredImages={filteredResults} 
+              <UncategorizedPost
+                category={selectedCategory}
+                images={data.data}
+                filteredImages={filteredResults}
               />
             </>
           )}
 
           {tab === 1 && (
             <>
-              <CategorizedPost 
-              images={categorizedData}
-               categoryResults={categoryResults}/>
+              <CategorizedPost
+                images={categorizedData}
+                categoryResults={categoryResults}
+              />
             </>
           )}
         </article>
@@ -268,8 +266,10 @@ export function Postcategorization1({data, categorizedData}) {
                 categoryList?.data.map((item) => (
                   <div
                     key={item.OCId}
-                    className="bg-white w-[180px] rounded-md h-10 p-2 cursor-pointer" 
-                    onClick={() => {handlePostClick(item.OCName)}}
+                    className="bg-white w-[180px] rounded-md h-10 p-2 cursor-pointer"
+                    onClick={() => {
+                      handlePostClick(item.OCName);
+                    }}
                   >
                     <p className="text-center text-base text-[#706464] capitalize">
                       {item.OCName}
@@ -287,7 +287,9 @@ export function Postcategorization1({data, categorizedData}) {
             className="w-[180px] h-[50px] pl-5 rounded-l-md focus:outline-blue-500"
             placeholder="New category..."
             value={newCategories}
-            onChange={(e) => {setNewCategories(e.target.value)}}
+            onChange={(e) => {
+              setNewCategories(e.target.value);
+            }}
           />
           <button
             className="p-[14px] rounded-r-lg bg-[#8135F9] text-white"
