@@ -24,57 +24,6 @@ export const UncategorizedPost = ({ images, filteredImages }) => {
   const [deletedIndex, setDeletedIndex] = useState(null);
   const [categorizedData, setCategorizedData] = useState([]);
 
-  // const VideoPlayer = ({ media, type }) => {
-  //   console.log('Video URL:', media);
-
-  //   if (type === 'videos') {
-  //     if (!media) {
-  //       return <div>Video URL is undefined</div>;
-  // }
-
-  //     if (media.endsWith('.m3u8')) {
-  //       // return (
-  //     //     <div>
-  //     //       <LazyLoadComponent>
-  //     //         <HlsPlayer
-  //     //           url={media}
-  //     //           width="390px"
-  //     //           height="382px"
-  //     //           controls
-  //     //         />
-  //     //       </LazyLoadComponent>
-  //     //     </div>
-  //     //   );
-  //     // } else {
-  //       return (
-  //         <div>
-  //           <LazyLoadComponent>
-  //             <ReactPlayer
-  //             playing
-  //               url={media}
-  //               width="390px"
-  //               height="382px"
-  //               controls
-  //             />
-  //           </LazyLoadComponent>
-  //         </div>
-  //       );
-  //     }
-  //   } else {
-  //     return (
-  //       <div>
-  //         <LazyLoadImage
-  //           src={media}
-  //           alt=""
-  //           width={390}
-  //           height={382}
-  //           effect="blur"
-  //         />
-  //       </div>
-  //     );
-  //   }
-  // };
-
   const HLSVideoPlayer = ({ videoUrl, posterUrl, width, height }) => {
     const videoRef = useRef(null);
     const playerRef = useRef(null);
