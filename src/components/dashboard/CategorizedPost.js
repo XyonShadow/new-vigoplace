@@ -10,6 +10,12 @@ import {
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { MdOutlineKeyboardArrowRight, MdOutlineKeyboardArrowLeft} from "react-icons/md"
+
+
+
+
+
 
 export const CategorizedPost = ({ images, categoryResults }) => {
   const [openModal, setOpenModal] = useState(false);
@@ -65,7 +71,11 @@ export const CategorizedPost = ({ images, categoryResults }) => {
     }
   };
 
-
+  const isAtBeginning = currentIndex === 0;
+  // Check if carousel is at the end (last image)
+  const isAtEnd =
+    (categoryResults && currentIndex === categoryResults.length - 1) ||
+    (images && currentIndex === images.length - 1);
   
   
   // const categoryDelete = async (postId) => {
@@ -129,6 +139,50 @@ export const CategorizedPost = ({ images, categoryResults }) => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % categorizedData?.length);
   };
 
+  const prevSlide1 = () => {
+    let newIndex = currentIndex - 1;
+  
+    while (newIndex !== currentIndex) {
+      if (newIndex < 0) {
+        newIndex = categorizedData.length - 1;
+      }
+  
+      if (
+        (categoryResults && hasMultipleImages(categoryResults[newIndex])) ||
+        (images && hasMultipleImages(images[newIndex]))
+      ) {
+        setCurrentIndex(newIndex);
+        break;
+      }
+  
+      newIndex = newIndex - 1;
+    }
+  };
+  
+  const nextSlide1 = () => {
+    let newIndex = currentIndex + 1;
+  
+    while (newIndex !== currentIndex) {
+      if (newIndex >= categorizedData.length) {
+        newIndex = 0;
+      }
+  
+      if (
+        (categoryResults && hasMultipleImages(categoryResults[newIndex])) ||
+        (images && hasMultipleImages(images[newIndex]))
+      ) {
+        setCurrentIndex(newIndex);
+        break;
+      }
+  
+      newIndex = newIndex + 1;
+    }
+  };
+  
+  const hasMultipleImages = (post) => {
+    return post?.PMMedia?.length > 1;
+  };
+
   return (
     //
     <div>
@@ -160,7 +214,7 @@ export const CategorizedPost = ({ images, categoryResults }) => {
                 ) : images && images.length > 0 ? (
                   // Display images if categoryResults is empty
                   <div key={images[currentIndex].POId}>
-                    {images[currentIndex].PMMedia[0].type === "videos" ? (
+                    {images[currentIndex]?.PMMedia[0].type === "videos" ? (
                       <LazyLoadComponent>
                         <video
                           src={images[currentIndex].PMMedia[0].media}
@@ -251,17 +305,26 @@ export const CategorizedPost = ({ images, categoryResults }) => {
       />
 
       <div className="relative text-white">
-        <MdOutlineArrowBackIosNew
-          size={18}
-          className="rounded-xl bg-[#8135F9] p-1 cursor-pointer absolute -top-[420px] left-3"
-          onClick={prevSlide}
-        />
-        <MdArrowForwardIos
-          size={18}
-          className="rounded-xl bg-[#8135F9] p-1 cursor-pointer absolute -top-[420px] right-[325px]"
-          onClick={nextSlide}
-        />
-      </div>
+<MdOutlineKeyboardArrowLeft
+  size={18}
+  className={`rounded-xl bg-[#8135F9] p-1 cursor-pointer absolute -top-[420px] left-3 ${
+    (!hasMultipleImages(categoryResults[currentIndex]) && !hasMultipleImages(images[currentIndex])) || isAtBeginning ? "opacity-50 cursor-not-allowed" : ""
+  }`}
+  onClick={!hasMultipleImages(categoryResults[currentIndex]) && !hasMultipleImages(images[currentIndex]) || isAtBeginning ? null : prevSlide1}
+  disabled={!hasMultipleImages(categoryResults[currentIndex]) && !hasMultipleImages(images[currentIndex]) || isAtBeginning}
+/>
+
+
+<MdOutlineKeyboardArrowRight
+  size={18}
+  className={`rounded-xl bg-[#8135F9] p-1 cursor-pointer absolute -top-[420px] right-[320px] ${
+    (!hasMultipleImages(categoryResults[currentIndex]) && !hasMultipleImages(images[currentIndex])) || isAtEnd ? "opacity-50 cursor-not-allowed" : ""
+  }`}
+  onClick={!hasMultipleImages(categoryResults[currentIndex]) && !hasMultipleImages(images[currentIndex]) || isAtEnd ? null : nextSlide1}
+  disabled={!hasMultipleImages(categoryResults[currentIndex]) && !hasMultipleImages(images[currentIndex]) || isAtEnd}
+/>
+</div>
+
       <div className="flex justify-between items-center -mt-80 p-3 text-white">
         <MdOutlineArrowBackIosNew
           size={25}

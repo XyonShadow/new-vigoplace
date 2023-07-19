@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Postmodal } from "./Postmodal";
 import { MdOutlineArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
 import { MdOutlineKeyboardArrowRight, MdOutlineKeyboardArrowLeft} from "react-icons/md"
@@ -11,6 +11,10 @@ import "react-lazy-load-image-component/src/effects/blur.css";
 import { GrFormClose } from "react-icons/gr";
 // import  HlsPlayer  from 'react-hls-player';
 // import ReactPlayer from 'react-player';
+import videojs from "video.js";
+import "video.js/dist/video-js.css";
+import Hls from "hls.js";
+
 
 
 
@@ -71,6 +75,70 @@ export const UncategorizedPost = ({images, filteredImages}) => {
   //     );
   //   }
   // };
+
+  const HLSVideoPlayer = ({ videoUrl, posterUrl, width, height }) => {
+    const videoRef = useRef(null);
+    const playerRef = useRef(null);
+  
+    useEffect(() => {
+      const videoElement = videoRef.current;
+  
+      if (!videoElement) return;
+      const playerOptions = {
+        sources: [{ src: videoUrl, type: "application/x-mpegURL" }],
+        controls: true,
+        autoplay: true,
+        preload: "auto",
+        poster: posterUrl,
+        width: width,
+        height: height,
+      };
+
+      const hls = new Hls();
+      const player = videojs(videoElement, playerOptions);
+  
+      if (Hls.isSupported()) {
+        hls.loadSource(videoUrl);
+        hls.attachMedia(videoElement);
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          videoElement.play();
+        });
+      } else if (videoElement.canPlayType("application/vnd.apple.mpegurl")) {
+        videoElement.src = videoUrl;
+        videoElement.addEventListener("loadedmetadata", () => {
+          videoElement.play();
+        });
+      }
+  
+      playerRef.current = player;
+  
+      return () => {
+        if (hls) {
+          hls.destroy();
+        }
+        if (player) {
+          player.dispose();
+        }
+      };
+    }, [videoUrl, posterUrl, width, height]);
+  
+    return (
+      <div data-vjs-player>
+        <video
+          ref={videoRef}
+          className="video-js vjs-big-play-centered"
+          controls
+          poster={posterUrl} // Add the poster image URL if you have one
+        >
+          <LazyLoadComponent>
+            <source src={videoUrl} type="application/x-mpegURL" />
+          </LazyLoadComponent>
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    );
+  };
+  
   
 
 
@@ -196,50 +264,47 @@ export const UncategorizedPost = ({images, filteredImages}) => {
             <div className="w-[390px] h-[382px] bg-[#f4f4f4] rounded-md">
               <div className="text-center text-base text-[#706464] capitalize font-bold">   
               {filteredImages && filteredImages.length > 0 ? (
-                 <div key={filteredImages[currentIndex].POId}>
-                 {filteredImages[currentIndex].PMMedia[0]?.type === "videos" ? (
-                   <LazyLoadComponent>
-                     <video
-                       src={filteredImages[currentIndex].PMMedia[0].media}
-                          className="w-[390px] h-[382px]"
-                          controls
-                        />
-                      </LazyLoadComponent>
-                    ) : (
-                      <LazyLoadImage
-                        src={filteredImages[currentIndex].PMMedia[0].media}
-                        alt=""
-                        className="w-[390px] h-[382px]"
-                        effect="blur"
-                      />
-                    )}
-                  </div>
-              ) : images && images.length > 0 ? (
-                // Display images if filteredImages is empty
-                <div key={images[currentIndex].POId}>
-                  {images[currentIndex].PMMedia[0].type === "videos" ? (
-                    <LazyLoadComponent>
-                      <video
-                        src={images[currentIndex].PMMedia[0].media}
-                        className="w-[390px] h-[382px]"
-                        controls
-                      />
-                    </LazyLoadComponent>
-                  ) : (
-                    <LazyLoadImage
-                      src={images[currentIndex].PMMedia[0].media}
-                      alt=""
-                      className="w-[_390px] h-[382px]"
-                      effect="blur"
-                    />
-                  )}
-                </div>
-              ) : (
-                // Handle the case when images or filteredImages are not available
-                <div>Not Found</div>
-              )}                  
-
-              </div>
+  <div key={filteredImages[currentIndex].POId}>
+    {filteredImages[currentIndex].PMMedia[0]?.type === "video" ? (
+      <HLSVideoPlayer
+        videoUrl={filteredImages[currentIndex].PMMedia[0].media}
+        width={390}
+        height={382}
+        posterUrl={filteredImages[currentIndex].posterImage}
+      />
+    ) : (
+      <LazyLoadImage
+        src={filteredImages[currentIndex].PMMedia[0].media}
+        alt=""
+        className="w-[390px] h-[382px]"
+        effect="blur"
+      />
+    )}
+  </div>
+) : images && images.length > 0 ? (
+  // Display images if filteredImages is empty
+  <div key={images[currentIndex].POId}>
+    {images[currentIndex].PMMedia[0].type === "video" ? (
+      <HLSVideoPlayer
+        videoUrl={filteredImages[currentIndex].PMMedia[0].media}
+        posterUrl={images[currentIndex].posterImage}
+        width={390}
+        height={382}
+      />
+    ) : (
+      <LazyLoadImage
+        src={images[currentIndex].PMMedia[0].media}
+        alt=""
+        className="w-[390px] h-[382px]"
+        effect="blur"
+      />
+    )}
+  </div>
+) : (
+  // Handle the case when images or filteredImages are not available
+  <div>Not Found</div>
+)}                  
+    </div>
               <div className="relative">
                 <button
                   className="bg-[#F93636] py-3 px-5 rounded-md text-white text-sm absolute right-5 -top-16 z-20"
