@@ -5,18 +5,20 @@ import {
   MdOutlineKeyboardArrowRight,
   MdOutlineKeyboardArrowLeft,
 } from "react-icons/md";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   LazyLoadImage,
   LazyLoadComponent,
 } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { GrFormClose } from "react-icons/gr";
-// import  HlsPlayer  from 'react-hls-player';
-// import ReactPlayer from 'react-player';
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
 import Hls from "hls.js";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+
 
 export const UncategorizedPost = ({ images, filteredImages }) => {
   const [openModal, setOpenModal] = useState(false);
@@ -45,18 +47,79 @@ export const UncategorizedPost = ({ images, filteredImages }) => {
       const hls = new Hls();
       const player = videojs(videoElement, playerOptions);
 
-      if (Hls.isSupported()) {
-        hls.loadSource(videoUrl);
-        hls.attachMedia(videoElement);
-        hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          videoElement.play();
-        });
-      } else if (videoElement.canPlayType("application/vnd.apple.mpegurl")) {
-        videoElement.src = videoUrl;
-        videoElement.addEventListener("loadedmetadata", () => {
-          videoElement.play();
-        });
-      }
+      const HLSVideoPlayer = ({ videoUrl, posterUrl, width, height }) => {
+        const videoRef = useRef(null);
+        const playerRef = useRef(null);
+      
+        useEffect(() => {
+          const videoElement = videoRef.current;
+      
+          if (!videoElement) return;
+      
+          const playerOptions = {
+            sources: [{ src: videoUrl, type: "application/x-mpegURL" }],
+            controls: true,
+            autoplay: true,
+            preload: "auto",
+            poster: posterUrl,
+            width: width,
+            height: height,
+          };
+      
+          console.log("videoUrl:", videoUrl); // Check videoUrl value
+      
+          const hls = new Hls();
+          const player = videojs(videoElement, playerOptions);
+      
+          if (typeof videoUrl === "string" && videoUrl.trim() !== "") {
+            if (Hls.isSupported()) {
+              hls.loadSource(videoUrl);
+              hls.attachMedia(videoElement);
+              hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                videoElement.play();
+              });
+            } else if (videoElement.canPlayType("application/vnd.apple.mpegurl")) {
+              videoElement.src = videoUrl;
+              videoElement.addEventListener("loadedmetadata", () => {
+                videoElement.play();
+              });
+            }
+          } else {
+            // console.error("Invalid videoUrl:", videoUrl);
+          }
+
+    //       const currentPost = data?.data[currentIndex]?.PMMedia;
+    // console.log(currentPost);
+      
+          playerRef.current = player;
+      
+          return () => {
+            if (hls) {
+              hls.destroy();
+            }
+            if (player) {
+              player.dispose();
+            }
+          };
+        }, [videoUrl, posterUrl, width, height]);
+      
+        return (
+          <div data-vjs-player>
+            <video
+              ref={videoRef}
+              className="video-js vjs-big-play-centered"
+              controls
+              poster={posterUrl} // Add the poster image URL if you have one
+            >
+              <LazyLoadComponent>
+                <source src={videoUrl} type="application/x-mpegURL" />
+              </LazyLoadComponent>
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        );
+      };
+      
 
       playerRef.current = player;
 
@@ -86,6 +149,7 @@ export const UncategorizedPost = ({ images, filteredImages }) => {
       </div>
     );
   };
+  
 
   const API_BASE_URL = "https://vigoplace.com/server/";
 
@@ -133,6 +197,56 @@ export const UncategorizedPost = ({ images, filteredImages }) => {
   const handleDelete = () => {
     setDeletedIndex(currentIndex);
     setOpenModal(false);
+  };
+
+  const deletePost = async (postId) => {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/admin/categorization/${postId}`,
+        {
+          method: "DELETE",
+        }
+      );
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
+
+      return data;
+    } catch (error) {
+      throw new Error(`Error deleting post: ${error.message}`);
+    }
+  };
+
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation(deletePost, {
+    onSuccess: (data, postId) => {
+      console.log("Mutation onSuccess called");
+      console.log("Data:", data);
+      console.log("postId:", postId);
+
+      queryClient.invalidateQueries("categorizedPost");
+      setCategorizedData((prevData) =>
+        prevData.filter((post) => post.OPCPostId !== postId)
+      );
+      toast.success("Successfully deleted the category!");
+    },
+    onError: (error) => {
+      console.error("Error deleting post:", error);
+      toast.error("Error deleting the category!");
+    },
+  });
+
+  const categoryDelete = async (postId) => {
+    try {
+      console.log("Calling categoryDelete with postId:", postId);
+      await mutation.mutateAsync(postId);
+    } catch (error) {
+      console.error("Error deleting post:", error);
+      toast.error("Error deleting the category!");
+    }
   };
 
   const prevSlide = () => {
@@ -205,18 +319,18 @@ export const UncategorizedPost = ({ images, filteredImages }) => {
             <div className="w-[390px] h-[382px] bg-[#f4f4f4] rounded-md">
               <div className="text-center text-base text-[#706464] capitalize font-bold">
                 {filteredImages && filteredImages.length > 0 ? (
-                  <div key={filteredImages[currentIndex].POId}>
+                  <div key={filteredImages[currentIndex]?.POId}>
                     {filteredImages[currentIndex]?.PMMedia[0]?.type ===
                     "video" ? (
                       <HLSVideoPlayer
-                        videoUrl={filteredImages[currentIndex].PMMedia[0].media}
+                        videoUrl={filteredImages[currentIndex]?.PMMedia[0].media}
                         width={390}
                         height={382}
                         posterUrl={filteredImages[currentIndex].posterImage}
                       />
                     ) : (
                       <LazyLoadImage
-                        src={filteredImages[currentIndex].PMMedia[0].media}
+                        src={filteredImages[currentIndex]?.PMMedia[0].media}
                         alt=""
                         className="w-[390px] h-[382px]"
                         effect="blur"
@@ -228,14 +342,14 @@ export const UncategorizedPost = ({ images, filteredImages }) => {
                   <div key={images[currentIndex].POId}>
                     {images[currentIndex].PMMedia[0].type === "video" ? (
                       <HLSVideoPlayer
-                        videoUrl={filteredImages[currentIndex].PMMedia[0].media}
+                        videoUrl={filteredImages[currentIndex]?.PMMedia[0].media}
                         posterUrl={images[currentIndex].posterImage}
                         width={390}
                         height={382}
                       />
                     ) : (
                       <LazyLoadImage
-                        src={images[currentIndex].PMMedia[0].media}
+                        src={images[currentIndex]?.PMMedia[0].media}
                         alt=""
                         className="w-[390px] h-[382px]"
                         effect="blur"
@@ -283,7 +397,7 @@ export const UncategorizedPost = ({ images, filteredImages }) => {
             </p>
             <div className="flex flex-col items-center justify-center">
               <div className="space-y-3 py-3 rounded-xl flex flex-col items-center">
-                {categorizedData.map((item, index) => (
+                {/* {categorizedData.map((item, index) => (
                   <div key={index} className="flex flex-col space-y-3">
                     {item.OPCCategory.map((category, catIndex) => (
                       <div
@@ -294,12 +408,12 @@ export const UncategorizedPost = ({ images, filteredImages }) => {
                         <GrFormClose
                           size={20}
                           className="cursor-pointer"
-                          onClick={() => categoryDelete(item.OPCPostId)}
+                          onClick={() => categoryDelete(item.POId)}
                         />
                       </div>
                     ))}
                   </div>
-                ))}
+                ))} */}
               </div>
             </div>
           </div>

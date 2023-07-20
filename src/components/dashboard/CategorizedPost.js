@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { MdOutlineArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Postmodal } from "./Postmodal";
@@ -14,11 +14,84 @@ import {
   MdOutlineKeyboardArrowRight,
   MdOutlineKeyboardArrowLeft,
 } from "react-icons/md";
+import videojs from "video.js";
+import "video.js/dist/video-js.css";
+import Hls from "hls.js";
+
+
+
 
 export const CategorizedPost = ({ images, categoryResults }) => {
   const [openModal, setOpenModal] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [categorizedData, setCategorizedData] = useState([]);
+
+
+
+  const HLSVideoPlayer = ({ videoUrl, posterUrl, width, height }) => {
+    const videoRef = useRef(null);
+    const playerRef = useRef(null);
+
+    useEffect(() => {
+      const videoElement = videoRef.current;
+
+      if (!videoElement) return;
+      const playerOptions = {
+        sources: [{ src: videoUrl, type: "application/x-mpegURL" }],
+        controls: true,
+        autoplay: true,
+        preload: "auto",
+        poster: posterUrl,
+        width: width,
+        height: height,
+      };
+
+      const hls = new Hls();
+      const player = videojs(videoElement, playerOptions);
+
+      if (Hls.isSupported()) {
+        hls.loadSource(videoUrl);
+        hls.attachMedia(videoElement);
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          videoElement.play();
+        });
+      } else if (videoElement.canPlayType("application/vnd.apple.mpegurl")) {
+        videoElement.src = videoUrl;
+        videoElement.addEventListener("loadedmetadata", () => {
+          videoElement.play();
+        });
+      }
+
+      playerRef.current = player;
+
+      return () => {
+        if (hls) {
+          hls.destroy();
+        }
+        if (player) {
+          player.dispose();
+        }
+      };
+    }, [videoUrl, posterUrl, width, height]);
+
+    return (
+      <div data-vjs-player>
+        <video
+          ref={videoRef}
+          className="video-js vjs-big-play-centered"
+          controls
+          poster={posterUrl} // Add the poster image URL if you have one
+        >
+          <LazyLoadComponent>
+            <source src={videoUrl} type="application/x-mpegURL" />
+          </LazyLoadComponent>
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    );
+  };
+
+
 
   const API_BASE_URL = "https://vigoplace.com/server/";
   if (categoryResults.length > 1) {
@@ -68,12 +141,15 @@ export const CategorizedPost = ({ images, categoryResults }) => {
   const categoryDelete = async (postId) => {
     try {
       console.log("Calling categoryDelete with postId:", postId);
-      await mutation.mutateAsync(postId);
+      const response = await mutation.mutateAsync(postId);
+      console.log("Delete Response:", response);
+      toast.success("Successfully deleted the category!");
     } catch (error) {
       console.error("Error deleting post:", error);
       toast.error("Error deleting the category!");
     }
   };
+  
 
   const isAtBeginning = currentIndex === 0;
   // Check if carousel is at the end (last image)
@@ -199,20 +275,19 @@ export const CategorizedPost = ({ images, categoryResults }) => {
               <div className="text-center text-base text-[#706464] capitalize font-bold">
                 {categoryResults && categoryResults.length > 0 ? (
                   <div key={categoryResults[currentIndex].POId}>
-                    {categoryResults[currentIndex].PMMedia[0]?.type ===
-                    "videos" ? (
-                      <LazyLoadComponent>
-                        <video
-                          src={categoryResults[currentIndex].PMMedia[0].media}
-                          className="w-[390px] h-[382px]"
-                          controls
-                        />
-                      </LazyLoadComponent>
+                    {categoryResults[currentIndex]?.PMMedia[0]?.type ===
+                    "video" ? (
+                      <HLSVideoPlayer
+                        videoUrl={categoryResults[currentIndex].PMMedia[0].media}
+                        width={390}
+                        height={382}
+                        posterUrl={categoryResults[currentIndex].posterImage}
+                      />
                     ) : (
                       <LazyLoadImage
                         src={categoryResults[currentIndex].PMMedia[0].media}
                         alt=""
-                        className="w-[_390px] h-[382px]"
+                        className="w-[390px] h-[382px]"
                         effect="blur"
                       />
                     )}
@@ -220,19 +295,18 @@ export const CategorizedPost = ({ images, categoryResults }) => {
                 ) : images && images.length > 0 ? (
                   // Display images if categoryResults is empty
                   <div key={images[currentIndex].POId}>
-                    {images[currentIndex]?.PMMedia[0].type === "videos" ? (
-                      <LazyLoadComponent>
-                        <video
-                          src={images[currentIndex].PMMedia[0].media}
-                          className="w-[390px] h-[382px]"
-                          controls
-                        />
-                      </LazyLoadComponent>
+                    {images[currentIndex].PMMedia[0].type === "video" ? (
+                      <HLSVideoPlayer
+                        videoUrl={categoryResults[currentIndex].PMMedia[0].media}
+                        posterUrl={images[currentIndex].posterImage}
+                        width={390}
+                        height={382}
+                      />
                     ) : (
                       <LazyLoadImage
                         src={images[currentIndex].PMMedia[0].media}
                         alt=""
-                        className="w-[_390px] h-[382px]"
+                        className="w-[390px] h-[382px]"
                         effect="blur"
                       />
                     )}
@@ -291,7 +365,7 @@ export const CategorizedPost = ({ images, categoryResults }) => {
                         <GrFormClose
                           size={20}
                           className="cursor-pointer"
-                          onClick={() => categoryDelete(item.POId)}
+                          onClick={() =>  categoryDelete(categorizedData[currentIndex]?.POId)}
                         />
                       </div>
                     );

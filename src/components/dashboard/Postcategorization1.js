@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 // import { MdOutlineArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
 import { AiOutlineSearch } from "react-icons/ai";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { UncategorizedPost } from "./UncategorizedPost";
 import { CategorizedPost } from "./CategorizedPost";
 import { toast } from "react-toastify";
@@ -50,6 +50,8 @@ export function Postcategorization1({ data, categorizedData }) {
     isLoading: uncategorizedDataLoading,
     error: uncategorizedDataError,
   } = useQuery(["uncategorizedData"], fetchUncategorizedData);
+
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (uncategorizedData) {
@@ -156,6 +158,7 @@ export function Postcategorization1({ data, categorizedData }) {
       .then((data) => {
         console.log(data);
         toast.success("Sucessfully categorized this post!");
+        queryClient.refetchQueries(["uncategorizedData"]);
         console.log(category);
       })
       .catch((error) => {
