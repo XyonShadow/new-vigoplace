@@ -180,6 +180,7 @@ export const CategorizedPost = ({ images, categoryResults }) => {
   } = useQuery(["categorizedPost"], fetchCategory, {
     onSuccess: (data) => {
       setCategorizedData(data?.data || []);
+      queryClient.invalidateQueries("categorizedPost");
     },
   });
 
