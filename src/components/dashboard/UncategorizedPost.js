@@ -25,6 +25,10 @@ export const UncategorizedPost = ({ images, filteredImages }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [deletedIndex, setDeletedIndex] = useState(null);
   const [categorizedData, setCategorizedData] = useState([]);
+  const [showIcon, setShowIcon] = useState(false);
+  const [newIndex, setNewIndex] = useState(0);
+  const hasMedia = filteredImages[currentIndex]?.PMMedia.length > 0;
+  const maxIndex = filteredImages[newIndex]?.PMMedia.length - 1;
 
   const HLSVideoPlayer = ({ videoUrl, posterUrl, width, height }) => {
     const videoRef = useRef(null);
@@ -259,80 +263,100 @@ export const UncategorizedPost = ({ images, filteredImages }) => {
     const isLastSlide = currentIndex === data.data.length - 1;
     const newIndex = isLastSlide ? 0 : currentIndex + 1;
     setCurrentIndex(newIndex);
+    console.log(data.data[currentIndex])
   };
 
-  const prevSlide1 = () => {
-    let newIndex = currentIndex - 1;
+  // const prevSlide1 = () => {
+  //   let newIndex = currentIndex - 1;
 
-    while (newIndex !== currentIndex) {
-      if (newIndex < 0) {
-        newIndex = data.data.length - 1;
-      }
+  //   while (newIndex !== currentIndex) {
+  //     if (newIndex < 0) {
+  //       newIndex = data.data.length - 1;
+  //     }
 
-      if (
-        (filteredImages && hasMultipleImages(filteredImages[newIndex])) ||
-        (images && hasMultipleImages(images[newIndex]))
-      ) {
-        setCurrentIndex(newIndex);
-        break;
-      }
+  //     if (
+  //       (filteredImages && hasMultipleImages(filteredImages[newIndex])) ||
+  //       (images && hasMultipleImages(images[newIndex]))
+  //     ) {
+  //       setCurrentIndex(newIndex);
+  //       break;
+  //     }
 
-      newIndex = newIndex - 1;
+  //     newIndex = newIndex - 1;
+  //   }
+  // };
+
+  // const nextSlide1 = () => {
+  //   let newIndex = currentIndex + 1;
+
+  //   while (newIndex !== currentIndex) {
+  //     if (newIndex >= data.data.length) {
+  //       newIndex = 0;
+  //     }
+
+  //     if (
+  //       (filteredImages && hasMultipleImages(filteredImages[newIndex])) ||
+  //       (images && hasMultipleImages(images[newIndex]))
+  //     ) {
+  //       setCurrentIndex(newIndex);
+  //       break;
+  //     }
+
+  //     newIndex = newIndex + 1;
+  //   }
+  // };
+
+  const Carousel = () => {
+  if (hasMedia) {
+    setShowIcon(true);
+
+  }
+  }
+
+  const leftSlide = () => {
+    if (hasMedia && newIndex > 0) {
+      setNewIndex((prevIndex) => prevIndex - 1);
     }
   };
 
-  const nextSlide1 = () => {
-    let newIndex = currentIndex + 1;
-
-    while (newIndex !== currentIndex) {
-      if (newIndex >= data.data.length) {
-        newIndex = 0;
-      }
-
-      if (
-        (filteredImages && hasMultipleImages(filteredImages[newIndex])) ||
-        (images && hasMultipleImages(images[newIndex]))
-      ) {
-        setCurrentIndex(newIndex);
-        break;
-      }
-
-      newIndex = newIndex + 1;
+  const rightSlide = () => {
+    if (hasMedia && newIndex < maxIndex) {
+      setNewIndex((prevIndex) => prevIndex + 1);
     }
   };
 
-  const hasMultipleImages = (post) => {
-    return post?.PMMedia?.length > 1;
-  };
+  // const hasMultipleImages = (post) => {
+  //   return post?.PMMedia?.length > 1;
+  // };
 
-  const isAtBeginning = currentIndex === 0;
-  // Check if carousel is at the end (last image)
-  const isAtEnd =
-    (filteredImages && currentIndex === filteredImages.length - 1) ||
-    (images && currentIndex === images.length - 1);
+  // const isAtBeginning = currentIndex === 0;
+  // // Check if carousel is at the end (last image)
+  // const isAtEnd =
+  //   (filteredImages && currentIndex === filteredImages.length - 1) ||
+  //   (images && currentIndex === images.length - 1);
 
   return (
     <div>
-      <div className="flex justify-evenly">
-        <div className={`pl-4 Styles.fade-In`}>
+      <div className="sm:flex-row sm:justify-evenly flex-col flex justify-center items-center">
+        <div className={`2xl:pl-7 xl:pl-7 lg:pl-7 md:pl-3 Styles.fade-In`}>
           <div className=" pt-10">
-            <div className="w-[390px] h-[382px] bg-[#f4f4f4] rounded-md">
+            <div className="2xl:w-[390px] xl:w-[380px] lg:w-[360px] md:w-[255px] w-[270px] 2xl:h-[335px] h-[300px] xl:h-[335px] lg:h-[335px] md:h-[310px] bg-[#f4f4f4] rounded-md">
               <div className="text-center text-base text-[#706464] capitalize font-bold">
                 {filteredImages && filteredImages.length > 0 ? (
                   <div key={filteredImages[currentIndex]?.POId}>
                     {filteredImages[currentIndex]?.PMMedia[0]?.type ===
                     "video" ? (
                       <HLSVideoPlayer
-                        videoUrl={filteredImages[currentIndex]?.PMMedia[0].media}
+                        videoUrl={filteredImages[currentIndex]?.PMMedia[0]?.media}
                         width={390}
                         height={382}
                         posterUrl={filteredImages[currentIndex].posterImage}
                       />
                     ) : (
                       <LazyLoadImage
-                        src={filteredImages[currentIndex]?.PMMedia[0].media}
+                        src={filteredImages[currentIndex]?.PMMedia[0]?.media}
                         alt=""
-                        className="w-[390px] h-[382px]"
+                        className="2xl:w-[390px] xl:w-[380px] lg:w-[360px] md:w-[255px] w-[250px] 2xl:h-[382px] xl:h-[335px] lg:h-[335px] h-[300px] md:h-[310px]"
                         effect="blur"
                       />
                     )}
@@ -340,18 +364,18 @@ export const UncategorizedPost = ({ images, filteredImages }) => {
                 ) : images && images.length > 0 ? (
                   // Display images if filteredImages is empty
                   <div key={images[currentIndex].POId}>
-                    {images[currentIndex].PMMedia[0].type === "video" ? (
+                    {images[currentIndex].PMMedia[0]?.type === "video" ? (
                       <HLSVideoPlayer
-                        videoUrl={filteredImages[currentIndex]?.PMMedia[0].media}
+                        videoUrl={filteredImages[currentIndex]?.PMMedia[0]?.media}
                         posterUrl={images[currentIndex].posterImage}
                         width={390}
                         height={382}
                       />
                     ) : (
                       <LazyLoadImage
-                        src={images[currentIndex]?.PMMedia[0].media}
+                        src={images[currentIndex]?.PMMedia[0]?.media}
                         alt=""
-                        className="w-[390px] h-[382px]"
+                        className="2xl:w-[390px] xl:w-[380px] lg:w-[360px] md:w-[255px] w-[270px] h-[300px] 2xl:h-[382px] xl:h-[335px] lg:h-[335px] md:h-[310px]"
                         effect="blur"
                       />
                     )}
@@ -371,17 +395,17 @@ export const UncategorizedPost = ({ images, filteredImages }) => {
               </div>
             </div>
             <div>
-              <h2 className="text-[#706464] pt-7 text-start text-base">
+              <h2 className="text-[#706464] 2xl:pt-7 xl:pt-7 lg:pt-7 text-start text-base md:pt-8 pt-7">
                 Post Type: {data.data[currentIndex].postType}
               </h2>
             </div>
           </div>
           <div>
-            <h2 className="text-[#706464] pt-7 text-start text-xl pb-3">
+            <h2 className="text-[#706464] pt-7 text-start text-xl sm:pb-5 pb-5">
               Description
             </h2>
             <div className={`${data.data[currentIndex]}`}>
-              <div className="w-[390px] h-[120px] bg-[#f4f4f4] rounded-md overflow-auto">
+              <div className="2xl:w-[380px] xl:w-[380px] lg:w-[360px] md:w-[245px] w-[270px] h-[100px] 2xl:h-[150px] xl:h-[150px] lg:h-[150px] md:h-[177px] bg-[#f4f4f4] rounded-md overflow-auto">
                 <div className="text-center text-sm text-[#706464] mt-2 p-3">
                   <p>{data.data[currentIndex].description}</p>
                 </div>
@@ -390,30 +414,31 @@ export const UncategorizedPost = ({ images, filteredImages }) => {
           </div>
         </div>
 
-        <div className="flex justify-center pt-10">
-          <div className="w-[290px] h-[620px] bg-[#f4f4f4]  rounded-xl overflow-auto">
+        <div className="flex justify-center pt-14">
+          <div className="2xl:w-[290px] xl:w-[290px] lg:w-[290px] md:w-[230px] w-[270px] sm:h-[620px] h-[300px] bg-[#f4f4f4]  rounded-xl overflow-auto">
             <p className="text-start p-2 pl-10 font-bold text-[#706464] text-lg">
               Post category
             </p>
             <div className="flex flex-col items-center justify-center">
               <div className="space-y-3 py-3 rounded-xl flex flex-col items-center">
-                {/* {categorizedData.map((item, index) => (
-                  <div key={index} className="flex flex-col space-y-3">
-                    {item.OPCCategory.map((category, catIndex) => (
+              {categorizedData[currentIndex]?.OPCCategory?.map(
+                  (item, index) => {
+                    console.log(item);
+                    return (
                       <div
-                        key={catIndex}
-                        className="bg-white w-[220px] rounded-md h-12 p-3 pl-3 flex justify-between"
+                        key={index}
+                        className="bg-white 2xl:w-[240px] xl:w-[240px] lg:w-[240px] md:w-[190px] w-[200px] rounded-md h-12 p-3 pl-3 flex justify-between"
                       >
-                        <p className="text-[#706464]">{category}</p>
+                        <p className="text-[#706464]">{item}</p>
                         <GrFormClose
                           size={20}
                           className="cursor-pointer"
-                          onClick={() => categoryDelete(item.POId)}
+                          onClick={() =>  categoryDelete(categorizedData[currentIndex]?.POId)}
                         />
                       </div>
-                    ))}
-                  </div>
-                ))} */}
+                    );
+                  }
+                )}
               </div>
             </div>
           </div>
@@ -426,69 +451,41 @@ export const UncategorizedPost = ({ images, filteredImages }) => {
         postId={data.data[currentIndex].POId}
         onDelete={handleDelete}
       />
+       {showIcon && (
       <div className="relative  text-white">
         <div>
           <MdOutlineKeyboardArrowLeft
-            size={18}
-            className={`rounded-xl bg-[#8135F9] p-1 cursor-pointer absolute -top-[420px] left-3 ${
-              (!hasMultipleImages(filteredImages[currentIndex]) &&
-                !hasMultipleImages(images[currentIndex])) ||
-              isAtBeginning
-                ? "opacity-50 cursor-not-allowed"
-                : ""
-            }`}
-            onClick={
-              (!hasMultipleImages(filteredImages[currentIndex]) &&
-                !hasMultipleImages(images[currentIndex])) ||
-              isAtBeginning
-                ? null
-                : prevSlide1
-            }
-            disabled={
-              (!hasMultipleImages(filteredImages[currentIndex]) &&
-                !hasMultipleImages(images[currentIndex])) ||
-              isAtBeginning
-            }
+            // size={18}
+            className={`rounded-xl bg-[#8135F9] sm:text-sm text-[15px] p-1 cursor-pointer absolute sm:-top-[430px] -top-[720px] left-3`}
+            onClick={leftSlide}
           />
         </div>
 
         <div>
+          
           <MdOutlineKeyboardArrowRight
-            size={18}
-            className={`rounded-xl bg-[#8135F9] p-1 cursor-pointer absolute -top-[420px] right-[320px] ${
-              (!hasMultipleImages(filteredImages[currentIndex]) &&
-                !hasMultipleImages(images[currentIndex])) ||
-              isAtEnd
-                ? "opacity-50 cursor-not-allowed"
-                : ""
-            }`}
-            onClick={
-              (!hasMultipleImages(filteredImages[currentIndex]) &&
-                !hasMultipleImages(images[currentIndex])) ||
-              isAtEnd
-                ? null
-                : nextSlide1
-            }
-            disabled={
-              (!hasMultipleImages(filteredImages[currentIndex]) &&
-                !hasMultipleImages(images[currentIndex])) ||
-              isAtEnd
-            }
+            // size={18}
+            className={`rounded-xl bg-[#8135F9] sm:text-sm text-[15px] p-1 cursor-pointer absolute sm:-top-[430px] -top-[720px] lg:right-[300px] xl:right-[310px] 2xl:right[310px] md:right-[240px] right-[15px]`}
+            onClick={rightSlide}
+           
           />
+          
         </div>
+    
       </div>
-      <div className="flex justify-between items-center -mt-80 p-3 text-white">
+       )}
+      <div className="flex justify-between items-center sm:-mt-80 -mt-[570px] sm:p-3 p-1 text-white">
         <div>
           <MdOutlineArrowBackIosNew
-            size={25}
-            className="rounded-xl bg-[#8135F9] p-1 cursor-pointer"
+            // size={25}
+            className="rounded-xl bg-[#8135F9] p-1 cursor-pointer text-xl sm:text-2xl"
             onClick={prevSlide}
           />
         </div>
         <div>
           <MdArrowForwardIos
-            size={25}
-            className="rounded-xl bg-[#8135F9] p-1 cursor-pointer"
+            // size={25}
+            className="rounded-xl bg-[#8135F9] p-1 cursor-pointer text-xl sm:text-2xl"
             onClick={nextSlide}
           />
         </div>

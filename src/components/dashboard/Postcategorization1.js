@@ -168,30 +168,31 @@ export function Postcategorization1({ data, categorizedData }) {
   };
 
   return (
-    <section className="flex justify-center pt-14">
-      <div className="pt-2 w-[770px] h-[850px] bg-white rounded-l-3xl">
-        <div className="p-5 pl-10  border-[#f4f4f4] relative">
-          <div className="absolute left-12 top-9">
+    <section className="">
+      <div className="sm:flex-row justify-center flex flex-col items-center h-full bg-white sm:bg-transparent w-full  2xl:w-[900px] pt-3 sm:pt-0">
+      <div className="pt-2 2xl:w-[770px] xl:w-[770px] lg:w-[770px] md:w-[550px] w-[350px] sm:h-[850px]  bg-white rounded-l-3xl">
+        <div className="p-5 2xl:pl-10 xl:pl-10 lg:pl-10 md:pl-6 border-[#f4f4f4] relative">
+          <div className="absolute sm:left-12 left-10 top-9">
             <AiOutlineSearch size={20} />
           </div>
           <input
             type="text"
             placeholder="Post id:"
-            className="pl-10 focus:outline-blue-400 w-[350px] h-[50px] rounded-md bg-[#F4F4F4]"
+            className="2xl:pl-10 xl:pl-10 lg:pl-10 md:pl-12 pl-12 focus:outline-blue-400 sm:w-[350px] w-[300px] h-[50px] rounded-md bg-[#F4F4F4]"
             value={searchInput}
             onChange={handleSearchChange}
           />
         </div>
 
         <article className="mt-3">
-          <div className="font-bold border-[#f4f4f4] flex pl-10">
+          <div className="font-bold border-[#f4f4f4] flex 2xl:pl-10 xl:pl-10 lg:pl-10 md:pl-6 pl-3">
             <div>
               <button
-                className={`border-b-2 px-[102px] py-4 border-2 ${
+                className={`border-b-2 2xl:px-[102px] xl:px-[110.6px] py-4 border-2 ${
                   tab === 0
                     ? "border-b-[#8135F9] hover:bg-[#8135F9]  hover:text-white transition-all duration-300 "
                     : ""
-                } pb-2 cursor-pointer text-lg focus:outline-none`}
+                } pb-2 cursor-pointer 2xl:text-lg xl:text-base md:text-sm lg:px-[99.4px] md:px-[66.2px] px-3 focus:outline-none`}
                 onClick={() => handleTabChange(0)}
               >
                 Uncategorized Post
@@ -199,7 +200,7 @@ export function Postcategorization1({ data, categorizedData }) {
             </div>
             <div>
               <button
-                className={`cursor-pointer text-lg px-[101.6px] py-3 border-2 ${
+                className={`cursor-pointer 2xl:text-lg xl:text-base 2xl:px-[101.6px] px-3 md:text-sm xl:px-[110.6px] lg:px-[99.4px] md:px-[66.2px] py-3 border-2 ${
                   tab === 1
                     ? "border-b-2  border-b-[#8135F9] pb-2 hover:bg-[#8135F9] py-4 hover:text-white transition-all duration-300"
                     : ""
@@ -230,15 +231,15 @@ export function Postcategorization1({ data, categorizedData }) {
           )}
         </article>
       </div>
-      <div className="w-[283px] h-[850px] bg-[#DFDCDC]">
-        <p className="text-lg pt-12 pl-7 text-[#706464]">Search categories</p>
-        <div className="pl-7 pt-10 relative">
-          <div className="absolute right-10 top-14">
+      <div className="2xl:w-[283px] xl:w-[283px] lg:w-[283px] md:w-[250px] sm:h-[850px] w-[270px] bg-[#DFDCDC] sm:mt-0 mt-[620px] h-[600px] overflow-auto">
+        <p className="text-lg sm:pt-12 pt-5 pl-7 text-[#706464]">Search categories</p>
+        <div className="pl-7 sm:pt-10 pt-5 relative">
+          <div className="absolute right-10 sm:top-14 top-[35px]">
             <AiOutlineSearch size={20} onClick={handleSearch} />
           </div>
           <input
             type="text"
-            className="w-[235px] h-[50px] pl-5 rounded-md focus:outline-blue-500"
+            className="2xl:w-[235px] xl:w-[220px] lg:w-[220px] md:w-[200px] h-[50px] pl-5 rounded-md focus:outline-blue-500"
             placeholder="Search category..."
             value={searchTerm}
             onChange={handleSearch}
@@ -246,14 +247,14 @@ export function Postcategorization1({ data, categorizedData }) {
         </div>
 
         <div className="mt-10 justify-center flex flex-col items-center">
-          <div className="bg-[#F4F4F4] w-[238px] h-[400px] py-3 rounded-xl overflow-auto">
+          <div className="bg-[#F4F4F4] 2xl:w-[238px] xl:w-[220px] lg:w-[210px] md:w-[190px] w-[220px] h-[400px] py-3 rounded-xl overflow-auto">
             <div className="space-y-5 py-3 overflow-auto flex flex-col items-center">
               {searchTerm !== "" ? (
                 filteredCategoryResults.length > 0 ? (
                   filteredCategoryResults.map((item) => (
                     <div
                       key={item.OCId}
-                      className="bg-white w-[180px] rounded-md h-10 p-2"
+                      className="bg-white 2xl:w-[170px] xl:w-[170px] md:w-[150px] rounded-md h-10 p-2"
                     >
                       <p className="text-center text-base text-[#706464] capitalize">
                         {item.OCName}
@@ -269,12 +270,12 @@ export function Postcategorization1({ data, categorizedData }) {
                 categoryList?.data.map((item) => (
                   <div
                     key={item.OCId}
-                    className="bg-white w-[180px] rounded-md h-10 p-2 cursor-pointer"
+                    className="bg-white 2xl:w-[180px] xl:w-[170px] lg:w-[170px] md:w-[150px] w-[160px] rounded-md h-10 p-2 cursor-pointer"
                     onClick={() => {
                       handlePostClick(item.OCName);
                     }}
                   >
-                    <p className="text-center text-base text-[#706464] capitalize">
+                    <p className="text-center 2xl:text-base xl:text-base lg:text-base md:text-sm text-[#706464] capitalize">
                       {item.OCName}
                     </p>
                   </div>
@@ -283,11 +284,11 @@ export function Postcategorization1({ data, categorizedData }) {
             </div>
           </div>
         </div>
-        <p className="pl-7 pt-24 text-[#706464]">Create a new categories</p>
-        <div className="mt-5 pl-5">
+        <p className="pl-7 2xl:pt-24 xl:pt-24 lg:pt-24 pt-14 md:pt-14 text-[#706464]">Create a new categories</p>
+        <div className="mt-5 pl-5 flex 2xl:flex-row xl:flex-row lg:flex-row lg:gap-0 2xl:gap-0 xl:gap-0 md:flex-col md:gap-4 pb-5">
           <input
             type="text"
-            className="w-[180px] h-[50px] pl-5 rounded-l-md focus:outline-blue-500"
+            className="2xl:w-[180px] xl:w-[160px] lg:w-[160px] md:w-[170px] w-[150px] h-[50px] pl-5 rounded-l-md focus:outline-blue-500"
             placeholder="New category..."
             value={newCategories}
             onChange={(e) => {
@@ -295,12 +296,13 @@ export function Postcategorization1({ data, categorizedData }) {
             }}
           />
           <button
-            className="p-[14px] rounded-r-lg bg-[#8135F9] text-white"
+            className="md:w-[167px] 2xl:w-[60px] xl:w-[60px] lg:w-[60px]  p-3 md:h-12 xl:h-[50px] 2xl:h-[50px] lg:h-[50px] rounded-r-lg bg-[#8135F9] text-white"
             onClick={handleClick}
           >
             Save
           </button>
         </div>
+      </div>
       </div>
     </section>
   );
