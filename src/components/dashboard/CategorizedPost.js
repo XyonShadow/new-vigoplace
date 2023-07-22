@@ -126,7 +126,7 @@ export const CategorizedPost = ({ images, categoryResults }) => {
       console.log("Data:", data);
       console.log("postId:", postId);
 
-      queryClient.invalidateQueries("categorizedPost");
+      // queryClient.invalidateQueries("categorizedPost");
       setCategorizedData((prevData) =>
         prevData.filter((post) => post.OPCPostId !== postId)
       );
@@ -141,9 +141,12 @@ export const CategorizedPost = ({ images, categoryResults }) => {
   const categoryDelete = async (postId) => {
     try {
       console.log("Calling categoryDelete with postId:", postId);
-      const response = await mutation.mutateAsync(postId);
-      console.log("Delete Response:", response);
-      toast.success("Successfully deleted the category!");
+      await mutation.mutateAsync(postId);
+      setCategorizedData((prevData) =>
+      prevData.map((post) =>
+        post.POId === postId ? { ...post, OPCCategory: [] } : post
+      )
+    )
     } catch (error) {
       console.error("Error deleting post:", error);
       toast.error("Error deleting the category!");
@@ -296,7 +299,7 @@ export const CategorizedPost = ({ images, categoryResults }) => {
                 ) : images && images.length > 0 ? (
                   // Display images if categoryResults is empty
                   <div key={images[currentIndex].POId}>
-                    {images[currentIndex].PMMedia[0].type === "video" ? (
+                    {images[currentIndex]?.PMMedia[0].type === "video" ? (
                       <HLSVideoPlayer
                         videoUrl={categoryResults[currentIndex].PMMedia[0].media}
                         posterUrl={images[currentIndex].posterImage}

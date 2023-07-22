@@ -20,6 +20,30 @@ export function Postcategorization1({ data, categorizedData }) {
   // const [FilteredImages, setFilteredImages] = useState([])
   const [searchInput, setSearchInput] = useState("");
   const [categoryResults, setCategoryResults] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+
+
+  const handleCategoryChange = (category) => {
+    setSelectedCategories((prevSelected) => {
+      // Check if the category is already in the selectedCategories array
+      const isAlreadySelected = prevSelected.some((cat) => cat.OCId === category.OCId);
+  
+      if (isAlreadySelected) {
+        // If the category is already selected, remove it from the array
+        return prevSelected.filter((cat) => cat.OCId !== category.OCId);
+      } else {
+        // If the category is not yet selected, add it to the array
+        return [...prevSelected, category];
+      }
+    });
+    console.log(category);
+  };
+  
+    
+    const handleCategorySelection = (selectedCategories) => {
+      setSelectedCategories(selectedCategories);
+    };
+  
 
   const API_BASE_URL = "https://vigoplace.com/server/";
 
@@ -217,6 +241,8 @@ export function Postcategorization1({ data, categorizedData }) {
                 category={selectedCategory}
                 images={data.data}
                 filteredImages={filteredResults}
+                selectedCategories={selectedCategories}
+                handleCategorySelection={handleCategorySelection}
               />
             </>
           )}
@@ -267,16 +293,17 @@ export function Postcategorization1({ data, categorizedData }) {
                   </p>
                 )
               ) : (
-                categoryList?.data.map((item) => (
+                categoryList?.data.map((category) => (
                   <div
-                    key={item.OCId}
+                    key={category.OCId}
                     className="bg-white 2xl:w-[180px] xl:w-[170px] lg:w-[170px] md:w-[150px] w-[160px] rounded-md h-10 p-2 cursor-pointer"
-                    onClick={() => {
-                      handlePostClick(item.OCName);
-                    }}
+                    // onClick={() => {
+                    //   handlePostClick(item.OCName);
+                    // }}
+                    onClick={() => {handleCategoryChange(category)}}
                   >
                     <p className="text-center 2xl:text-base xl:text-base lg:text-base md:text-sm text-[#706464] capitalize">
-                      {item.OCName}
+                      {category.OCName}
                     </p>
                   </div>
                 ))

@@ -20,7 +20,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 
 
-export const UncategorizedPost = ({ images, filteredImages }) => {
+export const UncategorizedPost = ({ images, filteredImages,selectedCategories, handleCategorySelection }) => {
   const [openModal, setOpenModal] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [deletedIndex, setDeletedIndex] = useState(null);
@@ -155,6 +155,18 @@ export const UncategorizedPost = ({ images, filteredImages }) => {
   };
   
 
+ useEffect(() => {
+    const storedCategories = localStorage.getItem("selectedCategories");
+    if (storedCategories) {
+      handleCategorySelection(JSON.parse(storedCategories));
+    }
+  }, []);
+
+  // Save selected categories to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("selectedCategories", JSON.stringify(selectedCategories));
+  }, [handleCategorySelection]);
+
   const API_BASE_URL = "https://vigoplace.com/server/";
 
   const fetchData = async () => {
@@ -247,6 +259,14 @@ export const UncategorizedPost = ({ images, filteredImages }) => {
     try {
       console.log("Calling categoryDelete with postId:", postId);
       await mutation.mutateAsync(postId);
+      setSelectedCategories((prevSelectedCategories) =>
+      prevSelectedCategories.filter((category) => category.OCId !== postId)
+    );
+      setCategorizedData((prevData) =>
+      prevData.map((post) =>
+        post.POId === postId ? { ...post, OPCCategory: [] } : post
+      )
+    )
     } catch (error) {
       console.error("Error deleting post:", error);
       toast.error("Error deleting the category!");
@@ -344,6 +364,11 @@ export const UncategorizedPost = ({ images, filteredImages }) => {
               <div className="text-center text-base text-[#706464] capitalize font-bold">
                 {filteredImages && filteredImages.length > 0 ? (
                   <div key={filteredImages[currentIndex]?.POId}>
+                    {filteredImages[newIndex]?.PMMedia.media((item, index) => {
+                      <div key={index}>
+                        {/* {filteredImages[newIndex]?.PMMedia.media.type === "video" ? } */}
+                      </div>
+                    })}
                     {filteredImages[currentIndex]?.PMMedia[0]?.type ===
                     "video" ? (
                       <HLSVideoPlayer
@@ -414,14 +439,29 @@ export const UncategorizedPost = ({ images, filteredImages }) => {
           </div>
         </div>
 
-        <div className="flex justify-center pt-14">
+        <div className="flex justify-center pt-12">
           <div className="2xl:w-[290px] xl:w-[290px] lg:w-[290px] md:w-[230px] w-[270px] sm:h-[620px] h-[300px] bg-[#f4f4f4]  rounded-xl overflow-auto">
             <p className="text-start p-2 pl-10 font-bold text-[#706464] text-lg">
               Post category
             </p>
-            <div className="flex flex-col items-center justify-center">
+            {selectedCategories?.length > 0 && (
+               <div className="flex flex-col items-center justify-center">
               <div className="space-y-3 py-3 rounded-xl flex flex-col items-center">
-              {categorizedData[currentIndex]?.OPCCategory?.map(
+              <div className="2xl:w-[240px] xl:w-[240px] lg:w-[240px] md:w-[190px] w-[200px] rounded-md">
+        <ul className="space-y-5">
+          {selectedCategories.map((category) => (
+            <li key={category.OCId} className="bg-white flex justify-between p-3 pl-3 rounded-md">
+              <span>{category.OCName}</span>
+              <GrFormClose
+                size={20}
+                className="cursor-pointer"
+                onClick={() => handleCategoryChange(category)}
+              />
+            </li>
+          ))}
+        </ul>
+      </div>
+              {/* {categorizedData[currentIndex]?.OPCCategory?.map(
                   (item, index) => {
                     console.log(item);
                     return (
@@ -438,9 +478,11 @@ export const UncategorizedPost = ({ images, filteredImages }) => {
                       </div>
                     );
                   }
-                )}
+                )} */}
               </div>
             </div>
+            )}
+           
           </div>
         </div>
       </div>
