@@ -26,36 +26,44 @@ export function Postcategorization1({ data, categorizedData }) {
 
 
   const handleCategoryChange = (category, postIndex) => {
-    setSelectedCategories((prevSelected) => {
-      const isAlreadySelected = prevSelected.some((cat) => cat.OCId === category.OCId);
-  
-      if (isAlreadySelected) {
-        return prevSelected.filter((cat) => cat.OCId !== category.OCId);
+    setSelectedCategories((prevSelectedCategories) => {
+      const updatedCategories = { ...prevSelectedCategories };
+      if (updatedCategories.hasOwnProperty(currentIndex)) {
+        const prevSelected = updatedCategories[currentIndex];
+        if (Array.isArray(prevSelected)) {
+          const isAlreadySelected = prevSelected.some((cat) => cat.OCId === category.OCId);
+          if (isAlreadySelected) {
+            updatedCategories[currentIndex] = prevSelected.filter((cat) => cat.OCId !== category.OCId);
+          } else {
+            updatedCategories[currentIndex] = [...prevSelected, category];
+          }
+        } else {
+          // If prevSelected is not an array, handle it accordingly (initialize or handle other cases)
+          updatedCategories[currentIndex] = [category];
+        }
       } else {
-        return [...prevSelected, category];
+        updatedCategories[currentIndex] = [category];
       }
+      return updatedCategories;
     });
-  
-    setSelectedCategoryIndexes((prevIndexes) => {
-      const existingIndexes = new Set(prevIndexes[postIndex] || []);
-      const selectedCategoryIndex = selectedCategories.indexOf(category);
-  
-      // Toggle the selected category index for the current post
-      if (existingIndexes.has(selectedCategoryIndex)) {
-        existingIndexes.delete(selectedCategoryIndex);
-      } else {
-        existingIndexes.add(selectedCategoryIndex);
-      }
-  
-      return { ...prevIndexes, [postIndex]: Array.from(existingIndexes) };
-    });
+
   };
   
   
     
     const handleCategorySelection = (selectedCategories) => {
       setSelectedCategories(selectedCategories);
+
+      // setSelectedCategories(selectedCategories);
+      // setSelectedCategories((prevSelectedCategories) => ({
+      //   ...prevSelectedCategories,
+      //   [currentIndex]: categories,
+      // }));
     };
+
+    const handleCategories = (category) => {
+      setSelectedCategories(selectedCategories);
+    }
   
 
   const API_BASE_URL = "https://vigoplace.com/server/";
@@ -255,7 +263,7 @@ export function Postcategorization1({ data, categorizedData }) {
                 images={data.data}
                 filteredImages={filteredResults}
                 selectedCategories={selectedCategories}
-                handleCategorySelection={setSelectedCategories}
+                handleCategorySelection={handleCategorySelection}
               />
             </>
           )}

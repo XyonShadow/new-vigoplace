@@ -157,10 +157,24 @@ export const UncategorizedPost = ({ images, filteredImages,selectedCategories, h
   
 
   const handleCategoryChange = (category) => {
-    handleCategorySelection((prevSelectedCategories) =>
-      prevSelectedCategories.filter((cat) => cat.OCId !== category.OCId)
-    );
+    handleCategorySelection((prevSelectedCategories) => {
+      const updatedCategories = { ...prevSelectedCategories };
+      if (updatedCategories.hasOwnProperty(currentIndex)) {
+        updatedCategories[currentIndex] = updatedCategories[currentIndex].filter(
+          (cat) => cat.OCId !== category.OCId
+        );
+        if (updatedCategories[currentIndex].length === 0) {
+          delete updatedCategories[currentIndex];
+        }
+      }
+  
+      return updatedCategories;
+    });
   };
+  
+
+
+
 
 useEffect(() => {
     const storedCategories = localStorage.getItem("selectedCategories");
@@ -460,12 +474,13 @@ useEffect(() => {
             <p className="text-start p-2 pl-10 font-bold text-[#706464] text-lg">
               Post category
             </p>
-            {selectedCategories?.length > 0 && (
+            
+      {selectedCategories[currentIndex]?.length > 0 && (
                <div className="flex flex-col items-center justify-center">
               <div className="space-y-3 py-3 rounded-xl flex flex-col items-center">
               <div className="2xl:w-[240px] xl:w-[240px] lg:w-[240px] md:w-[190px] w-[200px] rounded-md">
         <ul className="space-y-5">
-          {selectedCategories.map((category) => (
+          {selectedCategories[currentIndex]?.map((category) => (
             <li key={category.OCId} className="bg-white flex justify-between p-3 pl-3 rounded-md">
               <span>{category.OCName}</span>
               <GrFormClose
