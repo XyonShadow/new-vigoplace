@@ -27,6 +27,7 @@ export const UncategorizedPost = ({ images, filteredImages,selectedCategories, h
   const [categorizedData, setCategorizedData] = useState([]);
   const [showIcon, setShowIcon] = useState(false);
   const [newIndex, setNewIndex] = useState(0);
+  const [selectedCategoryIndexes, setSelectedCategoryIndexes] = useState({});
   const hasMedia = filteredImages[currentIndex]?.PMMedia.length > 0;
   const maxIndex = filteredImages[newIndex]?.PMMedia.length - 1;
 
@@ -155,17 +156,32 @@ export const UncategorizedPost = ({ images, filteredImages,selectedCategories, h
   };
   
 
- useEffect(() => {
+  const handleCategoryChange = (category) => {
+    handleCategorySelection((prevSelectedCategories) =>
+      prevSelectedCategories.filter((cat) => cat.OCId !== category.OCId)
+    );
+  };
+
+useEffect(() => {
     const storedCategories = localStorage.getItem("selectedCategories");
     if (storedCategories) {
       handleCategorySelection(JSON.parse(storedCategories));
     }
+
+    const storedIndexes = localStorage.getItem("selectedCategoryIndexes");
+    if (storedIndexes) {
+      setSelectedCategoryIndexes(JSON.parse(storedIndexes));
+    }
   }, []);
 
-  // Save selected categories to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem("selectedCategories", JSON.stringify(selectedCategories));
-  }, [handleCategorySelection]);
+    localStorage.setItem("selectedCategoryIndexes", JSON.stringify(selectedCategoryIndexes));
+  }, [selectedCategories, selectedCategoryIndexes])
+
+
+
+
 
   const API_BASE_URL = "https://vigoplace.com/server/";
 

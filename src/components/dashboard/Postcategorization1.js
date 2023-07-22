@@ -21,23 +21,36 @@ export function Postcategorization1({ data, categorizedData }) {
   const [searchInput, setSearchInput] = useState("");
   const [categoryResults, setCategoryResults] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedCategoryIndexes, setSelectedCategoryIndexes] = useState({});
 
 
-  const handleCategoryChange = (category) => {
+
+  const handleCategoryChange = (category, postIndex) => {
     setSelectedCategories((prevSelected) => {
-      // Check if the category is already in the selectedCategories array
       const isAlreadySelected = prevSelected.some((cat) => cat.OCId === category.OCId);
   
       if (isAlreadySelected) {
-        // If the category is already selected, remove it from the array
         return prevSelected.filter((cat) => cat.OCId !== category.OCId);
       } else {
-        // If the category is not yet selected, add it to the array
         return [...prevSelected, category];
       }
     });
-    console.log(category);
+  
+    setSelectedCategoryIndexes((prevIndexes) => {
+      const existingIndexes = new Set(prevIndexes[postIndex] || []);
+      const selectedCategoryIndex = selectedCategories.indexOf(category);
+  
+      // Toggle the selected category index for the current post
+      if (existingIndexes.has(selectedCategoryIndex)) {
+        existingIndexes.delete(selectedCategoryIndex);
+      } else {
+        existingIndexes.add(selectedCategoryIndex);
+      }
+  
+      return { ...prevIndexes, [postIndex]: Array.from(existingIndexes) };
+    });
   };
+  
   
     
     const handleCategorySelection = (selectedCategories) => {
@@ -242,7 +255,7 @@ export function Postcategorization1({ data, categorizedData }) {
                 images={data.data}
                 filteredImages={filteredResults}
                 selectedCategories={selectedCategories}
-                handleCategorySelection={handleCategorySelection}
+                handleCategorySelection={setSelectedCategories}
               />
             </>
           )}
