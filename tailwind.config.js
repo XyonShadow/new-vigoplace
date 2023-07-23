@@ -12,6 +12,7 @@ module.exports = {
     extend: {
       screens: {
         mini: "268px",
+        large: "2560px",
       },
     },
   },

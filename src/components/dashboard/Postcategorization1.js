@@ -26,17 +26,19 @@ export function Postcategorization1({ data, categorizedData }) {
 
   const localCategory = useRef(false);
   useEffect(() => {
-    console.log("rendered");
     if (!localCategory.current) {
       const category = localStorage.getItem("categoryData");
       if (category) {
         setSelectedCategories(JSON.parse(category));
+        console.log("fetched category");
+
+        localCategory.current = true;
       }
-      localCategory.current = true;
     }
 
-    if (localCategory.current) {
+    if (localCategory.current && Object.keys(selectedCategories).length > 0) {
       localStorage.setItem("categoryData", JSON.stringify(selectedCategories));
+      console.log("updated category");
     }
   }, [rerender]);
 
@@ -213,30 +215,30 @@ export function Postcategorization1({ data, categorizedData }) {
 
   return (
     <section className="">
-      <div className="sm:flex-row justify-center flex flex-col items-center h-full bg-white sm:bg-transparent w-full  2xl:w-[900px] pt-3 sm:pt-0">
-        <div className="pt-2 2xl:w-[770px] xl:w-[770px] lg:w-[770px] md:w-[550px] w-[350px] sm:h-[850px]  bg-white rounded-l-3xl">
-          <div className="p-5 2xl:pl-10 xl:pl-10 lg:pl-10 md:pl-6 border-[#f4f4f4] relative">
-            <div className="absolute sm:left-12 left-10 top-9">
+      <div className="sm:flex-row justify-center flex flex-col items-center h-full bg-white sm:bg-transparent w-full  2xl:w-[900px] pt-3 sm:pt-0 large:w-[1220px]">
+        <div className="pt-2 2xl:w-[770px] xl:w-[770px] lg:w-[770px] md:w-[550px] w-[350px] sm:h-[850px] large:w-[1100px]  bg-white rounded-l-3xl">
+          <div className="p-5 2xl:pl-10 xl:pl-10 lg:pl-10 md:pl-6 border-[#f4f4f4] relative large:pl-20">
+            <div className="absolute sm:left-12 left-10 top-9 large:left-24">
               <AiOutlineSearch size={20} />
             </div>
             <input
               type="text"
               placeholder="Post id:"
-              className="2xl:pl-10 xl:pl-10 lg:pl-10 md:pl-12 pl-12 focus:outline-blue-400 sm:w-[350px] w-[300px] h-[50px] rounded-md bg-[#F4F4F4]"
+              className="2xl:pl-10 xl:pl-10 lg:pl-10 md:pl-12 pl-12 large:pl-14 focus:outline-blue-400 sm:w-[350px] w-[300px] h-[50px] rounded-md bg-[#F4F4F4]"
               value={searchInput}
               onChange={handleSearchChange}
             />
           </div>
 
           <article className="mt-3">
-            <div className="font-bold border-[#f4f4f4] flex 2xl:pl-10 xl:pl-10 lg:pl-10 md:pl-6 pl-3">
+            <div className="font-bold border-[#f4f4f4] flex 2xl:pl-10 xl:pl-10 lg:pl-10 md:pl-6 pl-6 large:pl-20">
               <div>
                 <button
-                  className={`border-b-2 2xl:px-[102px] xl:px-[110.6px] py-4 border-2 ${
+                  className={`border-b-2 2xl:px-[102px] xl:px-[110.6px] px-[20px] large:px-[130px] py-4 border-2 ${
                     tab === 0
                       ? "border-b-[#8135F9] hover:bg-[#8135F9]  hover:text-white transition-all duration-300 "
                       : ""
-                  } pb-2 cursor-pointer 2xl:text-lg xl:text-base md:text-sm lg:px-[99.4px] md:px-[66.2px] px-3 focus:outline-none`}
+                  } pb-2 cursor-pointer 2xl:text-lg xl:text-base md:text-sm text-xs lg:px-[99.4px] md:px-[66.2px] focus:outline-none`}
                   onClick={() => handleTabChange(0)}
                 >
                   Uncategorized Post
@@ -244,7 +246,7 @@ export function Postcategorization1({ data, categorizedData }) {
               </div>
               <div>
                 <button
-                  className={`cursor-pointer 2xl:text-lg xl:text-base 2xl:px-[101.6px] px-3 md:text-sm xl:px-[110.6px] lg:px-[99.4px] md:px-[66.2px] py-3 border-2 ${
+                  className={`cursor-pointer 2xl:text-lg xl:text-base 2xl:px-[101.6px] px-[20px] large:px-[130px] text-xs md:text-sm xl:px-[110.6px] lg:px-[99.4px] md:px-[66.2px] py-3 border-2 ${
                     tab === 1
                       ? "border-b-2  border-b-[#8135F9] pb-2 hover:bg-[#8135F9] py-4 hover:text-white transition-all duration-300"
                       : ""
@@ -279,7 +281,7 @@ export function Postcategorization1({ data, categorizedData }) {
             )}
           </article>
         </div>
-        <div className="2xl:w-[283px] xl:w-[283px] lg:w-[283px] md:w-[250px] sm:h-[850px] w-[270px] bg-[#DFDCDC] sm:mt-0 mt-[620px] h-[600px] overflow-auto">
+        <div className="2xl:w-[283px] xl:w-[283px] lg:w-[283px] md:w-[250px] sm:h-[850px] w-[270px] bg-[#DFDCDC] sm:mt-0 mt-[620px] h-[600px] overflow-auto large:w-[350px]">
           <p className="text-lg sm:pt-12 pt-5 pl-7 text-[#706464]">
             Search categories
           </p>

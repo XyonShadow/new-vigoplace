@@ -17,7 +17,7 @@ import "video.js/dist/video-js.css";
 import Hls from "hls.js";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import ReactPlayer from "react-player";
 export const UncategorizedPost = ({
   currentPostId,
   updateCurrentPost,
@@ -33,136 +33,27 @@ export const UncategorizedPost = ({
   const [categorizedData, setCategorizedData] = useState([]);
   const [showIcon, setShowIcon] = useState(false);
   const [newIndex, setNewIndex] = useState(0);
-  const [selectedCategoryIndexes, setSelectedCategoryIndexes] = useState({});
   const hasMedia = filteredImages[currentIndex]?.PMMedia.length > 0;
   const maxIndex = filteredImages[newIndex]?.PMMedia.length - 1;
 
-  const HLSVideoPlayer = ({ videoUrl, posterUrl, width, height }) => {
-    const videoRef = useRef(null);
-    const playerRef = useRef(null);
+  const handleCategoryChange = (category) => {
+    handleCategorySelection((prevSelectedCategories) => {
+      const currentCategories = prevSelectedCategories[currentPostId];
 
-    useEffect(() => {
-      const videoElement = videoRef.current;
+      if (!currentCategories) {
+        return prevSelectedCategories;
+      }
 
-      if (!videoElement) return;
-      const playerOptions = {
-        sources: [{ src: videoUrl, type: "application/x-mpegURL" }],
-        controls: true,
-        autoplay: true,
-        preload: "auto",
-        poster: posterUrl,
-        width: width,
-        height: height,
+      const updatedCategories = currentCategories.filter(
+        (c) => c.OCId !== category.OCId
+      );
+
+      return {
+        ...prevSelectedCategories,
+        [currentPostId]: updatedCategories,
       };
-
-      const hls = new Hls();
-      const player = videojs(videoElement, playerOptions);
-
-      const HLSVideoPlayer = ({ videoUrl, posterUrl, width, height }) => {
-        const videoRef = useRef(null);
-        const playerRef = useRef(null);
-
-        useEffect(() => {
-          const videoElement = videoRef.current;
-
-          if (!videoElement) return;
-
-          const playerOptions = {
-            sources: [{ src: videoUrl, type: "application/x-mpegURL" }],
-            controls: true,
-            autoplay: true,
-            preload: "auto",
-            poster: posterUrl,
-            width: width,
-            height: height,
-          };
-
-          console.log("videoUrl:", videoUrl); // Check videoUrl value
-
-          const hls = new Hls();
-          const player = videojs(videoElement, playerOptions);
-
-          if (typeof videoUrl === "string" && videoUrl.trim() !== "") {
-            if (Hls.isSupported()) {
-              hls.loadSource(videoUrl);
-              hls.attachMedia(videoElement);
-              hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                videoElement.play();
-              });
-            } else if (
-              videoElement.canPlayType("application/vnd.apple.mpegurl")
-            ) {
-              videoElement.src = videoUrl;
-              videoElement.addEventListener("loadedmetadata", () => {
-                videoElement.play();
-              });
-            }
-          } else {
-            // console.error("Invalid videoUrl:", videoUrl);
-          }
-
-          //       const currentPost = data?.data[currentIndex]?.PMMedia;
-          // console.log(currentPost);
-
-          playerRef.current = player;
-
-          return () => {
-            if (hls) {
-              hls.destroy();
-            }
-            if (player) {
-              player.dispose();
-            }
-          };
-        }, [videoUrl, posterUrl, width, height]);
-
-        return (
-          <div data-vjs-player>
-            <video
-              ref={videoRef}
-              className="video-js vjs-big-play-centered"
-              controls
-              poster={posterUrl} // Add the poster image URL if you have one
-            >
-              <LazyLoadComponent>
-                <source src={videoUrl} type="application/x-mpegURL" />
-              </LazyLoadComponent>
-              Your browser does not support the video tag.
-            </video>
-          </div>
-        );
-      };
-
-      playerRef.current = player;
-
-      return () => {
-        if (hls) {
-          hls.destroy();
-        }
-        if (player) {
-          player.dispose();
-        }
-      };
-    }, [videoUrl, posterUrl, width, height]);
-
-    return (
-      <div data-vjs-player>
-        <video
-          ref={videoRef}
-          className="video-js vjs-big-play-centered"
-          controls
-          poster={posterUrl} // Add the poster image URL if you have one
-        >
-          <LazyLoadComponent>
-            <source src={videoUrl} type="application/x-mpegURL" />
-          </LazyLoadComponent>
-          Your browser does not support the video tag.
-        </video>
-      </div>
-    );
+    });
   };
-
-  const handleCategoryChange = (category) => {};
 
   useEffect(() => {
     // update the current image
@@ -257,23 +148,23 @@ export const UncategorizedPost = ({
     },
   });
 
-  const categoryDelete = async (postId) => {
-    try {
-      console.log("Calling categoryDelete with postId:", postId);
-      await mutation.mutateAsync(postId);
-      setSelectedCategories((prevSelectedCategories) =>
-        prevSelectedCategories.filter((category) => category.OCId !== postId)
-      );
-      setCategorizedData((prevData) =>
-        prevData.map((post) =>
-          post.POId === postId ? { ...post, OPCCategory: [] } : post
-        )
-      );
-    } catch (error) {
-      console.error("Error deleting post:", error);
-      toast.error("Error deleting the category!");
-    }
-  };
+  // const categoryDelete = async (postId) => {
+  //   try {
+  //     console.log("Calling categoryDelete with postId:", postId);
+  //     await mutation.mutateAsync(postId);
+  //     setSelectedCategories((prevSelectedCategories) =>
+  //       prevSelectedCategories.filter((category) => category.OCId !== postId)
+  //     );
+  //     setCategorizedData((prevData) =>
+  //       prevData.map((post) =>
+  //         post.POId === postId ? { ...post, OPCCategory: [] } : post
+  //       )
+  //     );
+  //   } catch (error) {
+  //     console.error("Error deleting post:", error);
+  //     toast.error("Error deleting the category!");
+  //   }
+  // };
 
   const prevSlide = () => {
     updateCurrentPost();
@@ -285,68 +176,9 @@ export const UncategorizedPost = ({
   const nextSlide = () => {
     const isLastSlide = currentIndex === data.data.length - 1;
     const newIndex = isLastSlide ? 0 : currentIndex + 1;
-    handleCategorySelection((prevSelectedCategories) => {
-      const updatedCategories = { ...prevSelectedCategories };
-
-      // If there are no selected categories for the new post, initialize an empty array
-      if (!updatedCategories.hasOwnProperty(newIndex)) {
-        updatedCategories[newIndex] = [];
-      }
-
-      return updatedCategories;
-    });
-
-    setSelectedCategoryIndexes((prevSelectedIndexes) => {
-      const updatedIndexes = { ...prevSelectedIndexes };
-
-      // Set the currentIndex as the selected index for the current post
-      updatedIndexes[currentIndex] = newIndex;
-
-      return updatedIndexes;
-    });
-
     setCurrentIndex(newIndex);
+    console.log(data.data[currentIndex]);
   };
-
-  // const prevSlide1 = () => {
-  //   let newIndex = currentIndex - 1;
-
-  //   while (newIndex !== currentIndex) {
-  //     if (newIndex < 0) {
-  //       newIndex = data.data.length - 1;
-  //     }
-
-  //     if (
-  //       (filteredImages && hasMultipleImages(filteredImages[newIndex])) ||
-  //       (images && hasMultipleImages(images[newIndex]))
-  //     ) {
-  //       setCurrentIndex(newIndex);
-  //       break;
-  //     }
-
-  //     newIndex = newIndex - 1;
-  //   }
-  // };
-
-  // const nextSlide1 = () => {
-  //   let newIndex = currentIndex + 1;
-
-  //   while (newIndex !== currentIndex) {
-  //     if (newIndex >= data.data.length) {
-  //       newIndex = 0;
-  //     }
-
-  //     if (
-  //       (filteredImages && hasMultipleImages(filteredImages[newIndex])) ||
-  //       (images && hasMultipleImages(images[newIndex]))
-  //     ) {
-  //       setCurrentIndex(newIndex);
-  //       break;
-  //     }
-
-  //     newIndex = newIndex + 1;
-  //   }
-  // };
 
   const Carousel = () => {
     if (hasMedia) {
@@ -366,39 +198,35 @@ export const UncategorizedPost = ({
     }
   };
 
-  // const hasMultipleImages = (post) => {
-  //   return post?.PMMedia?.length > 1;
-  // };
-
-  // const isAtBeginning = currentIndex === 0;
-  // // Check if carousel is at the end (last image)
-  // const isAtEnd =
-  //   (filteredImages && currentIndex === filteredImages.length - 1) ||
-  //   (images && currentIndex === images.length - 1);
+  console.log("media" + images[currentIndex]?.PMMedia[0]?.media);
 
   return (
     <div>
-      <div className="sm:flex-row sm:justify-evenly flex-col flex justify-center items-center">
+      <div className="sm:flex-row sm:justify-evenly large:justify-around flex-col flex justify-center items-center">
         <div className={`2xl:pl-7 xl:pl-7 lg:pl-7 md:pl-3 Styles.fade-In`}>
           <div className=" pt-10">
             <div className="2xl:w-[390px] xl:w-[380px] lg:w-[360px] md:w-[255px] w-[270px] 2xl:h-[335px] h-[300px] xl:h-[335px] lg:h-[335px] md:h-[310px] bg-[#f4f4f4] rounded-md">
               <div className="text-center text-base text-[#706464] capitalize font-bold">
                 {filteredImages && filteredImages.length > 0 ? (
                   <div key={filteredImages[currentIndex]?.POId}>
-                    {filteredImages[newIndex]?.PMMedia.media((item, index) => {
+                    {/* {filteredImages[newIndex]?.PMMedia.media((item, index) => {
                       <div key={index}>
-                        {/* {filteredImages[newIndex]?.PMMedia.media.type === "video" ? } */}
+                        {filteredImages[newIndex]?.PMMedia.media.type === "video" ? }
                       </div>;
-                    })}
+                    })} */}
                     {filteredImages[currentIndex]?.PMMedia[0]?.type ===
                     "video" ? (
-                      <HLSVideoPlayer
-                        videoUrl={
-                          filteredImages[currentIndex]?.PMMedia[0]?.media
-                        }
-                        width={390}
-                        height={382}
-                        posterUrl={filteredImages[currentIndex].posterImage}
+                      <ReactPlayer
+                        url={filteredImages[currentIndex]?.PMMedia[0]?.media}
+                        config={{
+                          file: { forceHLS: true },
+                        }}
+                        autoPlay={false}
+                        controls={true}
+                        width={370}
+                        height={335}
+                        style={{ width: "380px", height: "335px" }}
+                        className="2xl:w-[390px] xl:w-[380px] lg:w-[360px] md:w-[255px] w-[250px] 2xl:h-[382px] xl:h-[335px] lg:h-[335px] h-[300px] md:h-[310px]"
                       />
                     ) : (
                       <LazyLoadImage
@@ -413,13 +241,16 @@ export const UncategorizedPost = ({
                   // Display images if filteredImages is empty
                   <div key={images[currentIndex].POId}>
                     {images[currentIndex].PMMedia[0]?.type === "video" ? (
-                      <HLSVideoPlayer
-                        videoUrl={
-                          filteredImages[currentIndex]?.PMMedia[0]?.media
-                        }
-                        posterUrl={images[currentIndex].posterImage}
-                        width={390}
-                        height={382}
+                      <ReactPlayer
+                        url={images[currentIndex]?.PMMedia[0]?.media}
+                        config={{
+                          file: { forceHLS: true },
+                        }}
+                        autoPlay={false}
+                        controls={true}
+                        width={380}
+                        height={335}
+                        className="2xl:w-[390px] xl:w-[380px] lg:w-[360px] md:w-[255px] w-[250px] 2xl:h-[382px] xl:h-[335px] lg:h-[335px] h-[300px] md:h-[310px]"
                       />
                     ) : (
                       <LazyLoadImage
@@ -492,24 +323,6 @@ export const UncategorizedPost = ({
                       ))}
                     </ul>
                   </div>
-                  {/* {categorizedData[currentIndex]?.OPCCategory?.map(
-                  (item, index) => {
-                    console.log(item);
-                    return (
-                      <div
-                        key={index}
-                        className="bg-white 2xl:w-[240px] xl:w-[240px] lg:w-[240px] md:w-[190px] w-[200px] rounded-md h-12 p-3 pl-3 flex justify-between"
-                      >
-                        <p className="text-[#706464]">{item}</p>
-                        <GrFormClose
-                          size={20}
-                          className="cursor-pointer"
-                          onClick={() =>  categoryDelete(categorizedData[currentIndex]?.POId)}
-                        />
-                      </div>
-                    );
-                  }
-                )} */}
                 </div>
               </div>
             )}
@@ -524,7 +337,7 @@ export const UncategorizedPost = ({
         onDelete={handleDelete}
       />
       {showIcon && (
-        <div className="relative  text-white">
+        <div className={`relative  text-white ${Carousel}`}>
           <div>
             <MdOutlineKeyboardArrowLeft
               // size={18}
@@ -546,14 +359,14 @@ export const UncategorizedPost = ({
         <div>
           <MdOutlineArrowBackIosNew
             // size={25}
-            className="rounded-xl bg-[#8135F9] p-1 cursor-pointer text-xl sm:text-2xl"
+            className="rounded-xl bg-[#8135F9] p-1 cursor-pointer lg:text-xl md:text-base xl:text-2xl"
             onClick={prevSlide}
           />
         </div>
         <div>
           <MdArrowForwardIos
             // size={25}
-            className="rounded-xl bg-[#8135F9] p-1 cursor-pointer text-xl sm:text-2xl"
+            className="rounded-xl bg-[#8135F9] p-1 cursor-pointer lg:text-xl md:text-base xl:text-2xl"
             onClick={nextSlide}
           />
         </div>
