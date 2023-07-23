@@ -18,9 +18,15 @@ import Hls from "hls.js";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-
-
-export const UncategorizedPost = ({ images, filteredImages,selectedCategories, handleCategorySelection }) => {
+export const UncategorizedPost = ({
+  currentPostId,
+  updateCurrentPost,
+  images,
+  filteredImages,
+  selectedCategories,
+  handleCategorySelection,
+}) => {
+  console.log(selectedCategories);
   const [openModal, setOpenModal] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [deletedIndex, setDeletedIndex] = useState(null);
@@ -55,12 +61,12 @@ export const UncategorizedPost = ({ images, filteredImages,selectedCategories, h
       const HLSVideoPlayer = ({ videoUrl, posterUrl, width, height }) => {
         const videoRef = useRef(null);
         const playerRef = useRef(null);
-      
+
         useEffect(() => {
           const videoElement = videoRef.current;
-      
+
           if (!videoElement) return;
-      
+
           const playerOptions = {
             sources: [{ src: videoUrl, type: "application/x-mpegURL" }],
             controls: true,
@@ -70,12 +76,12 @@ export const UncategorizedPost = ({ images, filteredImages,selectedCategories, h
             width: width,
             height: height,
           };
-      
+
           console.log("videoUrl:", videoUrl); // Check videoUrl value
-      
+
           const hls = new Hls();
           const player = videojs(videoElement, playerOptions);
-      
+
           if (typeof videoUrl === "string" && videoUrl.trim() !== "") {
             if (Hls.isSupported()) {
               hls.loadSource(videoUrl);
@@ -83,7 +89,9 @@ export const UncategorizedPost = ({ images, filteredImages,selectedCategories, h
               hls.on(Hls.Events.MANIFEST_PARSED, () => {
                 videoElement.play();
               });
-            } else if (videoElement.canPlayType("application/vnd.apple.mpegurl")) {
+            } else if (
+              videoElement.canPlayType("application/vnd.apple.mpegurl")
+            ) {
               videoElement.src = videoUrl;
               videoElement.addEventListener("loadedmetadata", () => {
                 videoElement.play();
@@ -93,11 +101,11 @@ export const UncategorizedPost = ({ images, filteredImages,selectedCategories, h
             // console.error("Invalid videoUrl:", videoUrl);
           }
 
-    //       const currentPost = data?.data[currentIndex]?.PMMedia;
-    // console.log(currentPost);
-      
+          //       const currentPost = data?.data[currentIndex]?.PMMedia;
+          // console.log(currentPost);
+
           playerRef.current = player;
-      
+
           return () => {
             if (hls) {
               hls.destroy();
@@ -107,7 +115,7 @@ export const UncategorizedPost = ({ images, filteredImages,selectedCategories, h
             }
           };
         }, [videoUrl, posterUrl, width, height]);
-      
+
         return (
           <div data-vjs-player>
             <video
@@ -124,7 +132,6 @@ export const UncategorizedPost = ({ images, filteredImages,selectedCategories, h
           </div>
         );
       };
-      
 
       playerRef.current = player;
 
@@ -154,48 +161,13 @@ export const UncategorizedPost = ({ images, filteredImages,selectedCategories, h
       </div>
     );
   };
-  
 
-  const handleCategoryChange = (category) => {
-    handleCategorySelection((prevSelectedCategories) => {
-      const updatedCategories = { ...prevSelectedCategories };
-      if (updatedCategories.hasOwnProperty(currentIndex)) {
-        updatedCategories[currentIndex] = updatedCategories[currentIndex].filter(
-          (cat) => cat.OCId !== category.OCId
-        );
-        if (updatedCategories[currentIndex].length === 0) {
-          delete updatedCategories[currentIndex];
-        }
-      }
-  
-      return updatedCategories;
-    });
-  };
-  
-
-
-
-
-useEffect(() => {
-    const storedCategories = localStorage.getItem("selectedCategories");
-    if (storedCategories) {
-      handleCategorySelection(JSON.parse(storedCategories));
-    }
-
-    const storedIndexes = localStorage.getItem("selectedCategoryIndexes");
-    if (storedIndexes) {
-      setSelectedCategoryIndexes(JSON.parse(storedIndexes));
-    }
-  }, []);
+  const handleCategoryChange = (category) => {};
 
   useEffect(() => {
-    localStorage.setItem("selectedCategories", JSON.stringify(selectedCategories));
-    localStorage.setItem("selectedCategoryIndexes", JSON.stringify(selectedCategoryIndexes));
-  }, [selectedCategories, selectedCategoryIndexes])
-
-
-
-
+    // update the current image
+    updateCurrentPost(images[currentIndex].POId);
+  }, [currentIndex]);
 
   const API_BASE_URL = "https://vigoplace.com/server/";
 
@@ -290,13 +262,13 @@ useEffect(() => {
       console.log("Calling categoryDelete with postId:", postId);
       await mutation.mutateAsync(postId);
       setSelectedCategories((prevSelectedCategories) =>
-      prevSelectedCategories.filter((category) => category.OCId !== postId)
-    );
+        prevSelectedCategories.filter((category) => category.OCId !== postId)
+      );
       setCategorizedData((prevData) =>
-      prevData.map((post) =>
-        post.POId === postId ? { ...post, OPCCategory: [] } : post
-      )
-    )
+        prevData.map((post) =>
+          post.POId === postId ? { ...post, OPCCategory: [] } : post
+        )
+      );
     } catch (error) {
       console.error("Error deleting post:", error);
       toast.error("Error deleting the category!");
@@ -304,6 +276,7 @@ useEffect(() => {
   };
 
   const prevSlide = () => {
+    updateCurrentPost();
     const isFirstSlide = currentIndex === 0;
     const newIndex = isFirstSlide ? data.data.length - 1 : currentIndex - 1;
     setCurrentIndex(newIndex);
@@ -312,8 +285,27 @@ useEffect(() => {
   const nextSlide = () => {
     const isLastSlide = currentIndex === data.data.length - 1;
     const newIndex = isLastSlide ? 0 : currentIndex + 1;
+    handleCategorySelection((prevSelectedCategories) => {
+      const updatedCategories = { ...prevSelectedCategories };
+
+      // If there are no selected categories for the new post, initialize an empty array
+      if (!updatedCategories.hasOwnProperty(newIndex)) {
+        updatedCategories[newIndex] = [];
+      }
+
+      return updatedCategories;
+    });
+
+    setSelectedCategoryIndexes((prevSelectedIndexes) => {
+      const updatedIndexes = { ...prevSelectedIndexes };
+
+      // Set the currentIndex as the selected index for the current post
+      updatedIndexes[currentIndex] = newIndex;
+
+      return updatedIndexes;
+    });
+
     setCurrentIndex(newIndex);
-    console.log(data.data[currentIndex])
   };
 
   // const prevSlide1 = () => {
@@ -357,11 +349,10 @@ useEffect(() => {
   // };
 
   const Carousel = () => {
-  if (hasMedia) {
-    setShowIcon(true);
-
-  }
-  }
+    if (hasMedia) {
+      setShowIcon(true);
+    }
+  };
 
   const leftSlide = () => {
     if (hasMedia && newIndex > 0) {
@@ -397,12 +388,14 @@ useEffect(() => {
                     {filteredImages[newIndex]?.PMMedia.media((item, index) => {
                       <div key={index}>
                         {/* {filteredImages[newIndex]?.PMMedia.media.type === "video" ? } */}
-                      </div>
+                      </div>;
                     })}
                     {filteredImages[currentIndex]?.PMMedia[0]?.type ===
                     "video" ? (
                       <HLSVideoPlayer
-                        videoUrl={filteredImages[currentIndex]?.PMMedia[0]?.media}
+                        videoUrl={
+                          filteredImages[currentIndex]?.PMMedia[0]?.media
+                        }
                         width={390}
                         height={382}
                         posterUrl={filteredImages[currentIndex].posterImage}
@@ -421,7 +414,9 @@ useEffect(() => {
                   <div key={images[currentIndex].POId}>
                     {images[currentIndex].PMMedia[0]?.type === "video" ? (
                       <HLSVideoPlayer
-                        videoUrl={filteredImages[currentIndex]?.PMMedia[0]?.media}
+                        videoUrl={
+                          filteredImages[currentIndex]?.PMMedia[0]?.media
+                        }
                         posterUrl={images[currentIndex].posterImage}
                         width={390}
                         height={382}
@@ -474,25 +469,30 @@ useEffect(() => {
             <p className="text-start p-2 pl-10 font-bold text-[#706464] text-lg">
               Post category
             </p>
-            
-      {selectedCategories[currentIndex]?.length > 0 && (
-               <div className="flex flex-col items-center justify-center">
-              <div className="space-y-3 py-3 rounded-xl flex flex-col items-center">
-              <div className="2xl:w-[240px] xl:w-[240px] lg:w-[240px] md:w-[190px] w-[200px] rounded-md">
-        <ul className="space-y-5">
-          {selectedCategories[currentIndex]?.map((category) => (
-            <li key={category.OCId} className="bg-white flex justify-between p-3 pl-3 rounded-md">
-              <span>{category.OCName}</span>
-              <GrFormClose
-                size={20}
-                className="cursor-pointer"
-                onClick={() => handleCategoryChange(category)}
-              />
-            </li>
-          ))}
-        </ul>
-      </div>
-              {/* {categorizedData[currentIndex]?.OPCCategory?.map(
+
+            {selectedCategories[currentPostId]?.length > 0 && (
+              <div className="flex flex-col items-center justify-center">
+                <div className="space-y-3 py-3 rounded-xl flex flex-col items-center">
+                  <div className="2xl:w-[240px] xl:w-[240px] lg:w-[240px] md:w-[190px] w-[200px] rounded-md">
+                    <ul className="space-y-5">
+                      {selectedCategories[currentPostId]?.map((category) => (
+                        <li
+                          key={category.OCId}
+                          className="bg-white flex justify-between p-3 pl-3 rounded-md"
+                        >
+                          <span>{category.OCName}</span>
+                          <GrFormClose
+                            size={20}
+                            className="cursor-pointer"
+                            onClick={() =>
+                              handleCategoryChange(category, currentIndex)
+                            }
+                          />
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  {/* {categorizedData[currentIndex]?.OPCCategory?.map(
                   (item, index) => {
                     console.log(item);
                     return (
@@ -510,10 +510,9 @@ useEffect(() => {
                     );
                   }
                 )} */}
+                </div>
               </div>
-            </div>
             )}
-           
           </div>
         </div>
       </div>
@@ -524,29 +523,25 @@ useEffect(() => {
         postId={data.data[currentIndex].POId}
         onDelete={handleDelete}
       />
-       {showIcon && (
-      <div className="relative  text-white">
-        <div>
-          <MdOutlineKeyboardArrowLeft
-            // size={18}
-            className={`rounded-xl bg-[#8135F9] sm:text-sm text-[15px] p-1 cursor-pointer absolute sm:-top-[430px] -top-[720px] left-3`}
-            onClick={leftSlide}
-          />
-        </div>
+      {showIcon && (
+        <div className="relative  text-white">
+          <div>
+            <MdOutlineKeyboardArrowLeft
+              // size={18}
+              className={`rounded-xl bg-[#8135F9] sm:text-sm text-[15px] p-1 cursor-pointer absolute sm:-top-[430px] -top-[720px] left-3`}
+              onClick={leftSlide}
+            />
+          </div>
 
-        <div>
-          
-          <MdOutlineKeyboardArrowRight
-            // size={18}
-            className={`rounded-xl bg-[#8135F9] sm:text-sm text-[15px] p-1 cursor-pointer absolute sm:-top-[430px] -top-[720px] lg:right-[300px] xl:right-[310px] 2xl:right[310px] md:right-[240px] right-[15px]`}
-            onClick={rightSlide}
-           
-          />
-          
+          <div>
+            <MdOutlineKeyboardArrowRight
+              // size={18}
+              className={`rounded-xl bg-[#8135F9] sm:text-sm text-[15px] p-1 cursor-pointer absolute sm:-top-[430px] -top-[720px] lg:right-[300px] xl:right-[310px] 2xl:right[310px] md:right-[240px] right-[15px]`}
+              onClick={rightSlide}
+            />
+          </div>
         </div>
-    
-      </div>
-       )}
+      )}
       <div className="flex justify-between items-center sm:-mt-80 -mt-[570px] sm:p-3 p-1 text-white">
         <div>
           <MdOutlineArrowBackIosNew

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 // import { MdOutlineArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
 import { AiOutlineSearch } from "react-icons/ai";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -19,49 +19,57 @@ export function Postcategorization1({ data, categorizedData }) {
   const [searchInput, setSearchInput] = useState("");
   const [categoryResults, setCategoryResults] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
-  // const [selectedCategoryIndexes, setSelectedCategoryIndexes] = useState({});
-  const [currentPostId, setCurrentPostId] = useState(null);
-  const updateCurrentPost = (postId) => setCurrentPostId(postId);
-  const [rerender, setRerender] = useState(true);
+  const [selectedCategoryIndexes, setSelectedCategoryIndexes] = useState({});
 
-  const localCategory = useRef(false);
-  useEffect(() => {
-    console.log("rendered");
-    if (!localCategory.current) {
-      const category = localStorage.getItem("categoryData");
-      if (category) {
-        setSelectedCategories(JSON.parse(category));
-      }
-      localCategory.current = true;
+  const handleCategoryChange = (category, postIndex) => {
+    // option1
+
+    const alreadyAdded = selectedCategory.findIndex(
+      (c) => c.id === category.id
+    );
+
+    if (alreadyAdded !== -1) {
+      setSelectedCategories((prev) => [...prev, category]);
     }
 
-    if (localCategory.current) {
-      localStorage.setItem("categoryData", JSON.stringify(selectedCategories));
-    }
-  }, [rerender]);
-
-  const handleCategoryChange = (category) => {
-    const alreadyAdded = selectedCategories[currentPostId];
-
-    if (alreadyAdded) {
-      const categoryExist = alreadyAdded.findIndex(
-        (c) => c.OCId === category.OCId
-      );
-      if (categoryExist >= 0) return;
-      setSelectedCategories((prev) => ({
-        ...prev,
-        [currentPostId]: [...prev[currentPostId], category],
-      }));
-    } else {
-      setSelectedCategories((prev) => ({
-        ...prev,
-        [currentPostId]: [category],
-      }));
-    }
-    setRerender((prev) => !prev);
+    // setSelectedCategories((prevSelectedCategories) => {
+    //   const updatedCategories = { ...prevSelectedCategories };
+    //   if (updatedCategories.hasOwnProperty(currentIndex)) {
+    //     const prevSelected = updatedCategories[currentIndex];
+    //     if (Array.isArray(prevSelected)) {
+    //       const isAlreadySelected = prevSelected.some(
+    //         (cat) => cat.OCId === category.OCId
+    //       );
+    //       if (isAlreadySelected) {
+    //         updatedCategories[currentIndex] = prevSelected.filter(
+    //           (cat) => cat.OCId !== category.OCId
+    //         );
+    //       } else {
+    //         updatedCategories[currentIndex] = [...prevSelected, category];
+    //       }
+    //     } else {
+    //       // If prevSelected is not an array, handle it accordingly (initialize or handle other cases)
+    //       updatedCategories[currentIndex] = [category];
+    //     }
+    //   } else {
+    //     updatedCategories[currentIndex] = [category];
+    //   }
+    //   return updatedCategories;
+    // });
+    console.log(selectedCategories);
   };
 
   const handleCategorySelection = (selectedCategories) => {
+    setSelectedCategories(selectedCategories);
+
+    // setSelectedCategories(selectedCategories);
+    // setSelectedCategories((prevSelectedCategories) => ({
+    //   ...prevSelectedCategories,
+    //   [currentIndex]: categories,
+    // }));
+  };
+
+  const handleCategories = (category) => {
     setSelectedCategories(selectedCategories);
   };
 
@@ -258,8 +266,6 @@ export function Postcategorization1({ data, categorizedData }) {
             {tab === 0 && (
               <>
                 <UncategorizedPost
-                  currentPostId={currentPostId}
-                  updateCurrentPost={updateCurrentPost}
                   category={selectedCategory}
                   images={data.data}
                   filteredImages={filteredResults}
@@ -321,6 +327,9 @@ export function Postcategorization1({ data, categorizedData }) {
                     <div
                       key={category.OCId}
                       className="bg-white 2xl:w-[180px] xl:w-[170px] lg:w-[170px] md:w-[150px] w-[160px] rounded-md h-10 p-2 cursor-pointer"
+                      // onClick={() => {
+                      //   handlePostClick(item.OCName);
+                      // }}
                       onClick={() => {
                         handleCategoryChange(category);
                       }}
