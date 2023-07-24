@@ -40,7 +40,7 @@ export function Postcategorization1({ data, categorizedData }) {
       localStorage.setItem("categoryData", JSON.stringify(selectedCategories));
       console.log("updated category");
     }
-  }, [rerender]);
+  }, [selectedCategories]);
 
   const handleCategoryChange = (category) => {
     const alreadyAdded = selectedCategories[currentPostId];
@@ -267,6 +267,7 @@ export function Postcategorization1({ data, categorizedData }) {
                   filteredImages={filteredResults}
                   selectedCategories={selectedCategories}
                   handleCategorySelection={handleCategorySelection}
+                  handlePostClick={handlePostClick}
                 />
               </>
             )}

@@ -14,84 +14,80 @@ import {
   MdOutlineKeyboardArrowRight,
   MdOutlineKeyboardArrowLeft,
 } from "react-icons/md";
-import videojs from "video.js";
 import "video.js/dist/video-js.css";
-import Hls from "hls.js";
+import ReactPlayer from "react-player";
 
-
-
-
-export const CategorizedPost = ({ images, categoryResults }) => {
+export const CategorizedPost = ({
+  images,
+  categoryResults,
+  handleCategorizePost,
+}) => {
   const [openModal, setOpenModal] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [categorizedData, setCategorizedData] = useState([]);
 
+  // const HLSVideoPlayer = ({ videoUrl, posterUrl, width, height }) => {
+  //   const videoRef = useRef(null);
+  //   const playerRef = useRef(null);
 
+  //   useEffect(() => {
+  //     const videoElement = videoRef.current;
 
-  const HLSVideoPlayer = ({ videoUrl, posterUrl, width, height }) => {
-    const videoRef = useRef(null);
-    const playerRef = useRef(null);
+  //     if (!videoElement) return;
+  //     const playerOptions = {
+  //       sources: [{ src: videoUrl, type: "application/x-mpegURL" }],
+  //       controls: true,
+  //       autoplay: true,
+  //       preload: "auto",
+  //       poster: posterUrl,
+  //       width: width,
+  //       height: height,
+  //     };
 
-    useEffect(() => {
-      const videoElement = videoRef.current;
+  //     const hls = new Hls();
+  //     const player = videojs(videoElement, playerOptions);
 
-      if (!videoElement) return;
-      const playerOptions = {
-        sources: [{ src: videoUrl, type: "application/x-mpegURL" }],
-        controls: true,
-        autoplay: true,
-        preload: "auto",
-        poster: posterUrl,
-        width: width,
-        height: height,
-      };
+  //     if (Hls.isSupported()) {
+  //       hls.loadSource(videoUrl);
+  //       hls.attachMedia(videoElement);
+  //       hls.on(Hls.Events.MANIFEST_PARSED, () => {
+  //         videoElement.play();
+  //       });
+  //     } else if (videoElement.canPlayType("application/vnd.apple.mpegurl")) {
+  //       videoElement.src = videoUrl;
+  //       videoElement.addEventListener("loadedmetadata", () => {
+  //         videoElement.play();
+  //       });
+  //     }
 
-      const hls = new Hls();
-      const player = videojs(videoElement, playerOptions);
+  //     playerRef.current = player;
 
-      if (Hls.isSupported()) {
-        hls.loadSource(videoUrl);
-        hls.attachMedia(videoElement);
-        hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          videoElement.play();
-        });
-      } else if (videoElement.canPlayType("application/vnd.apple.mpegurl")) {
-        videoElement.src = videoUrl;
-        videoElement.addEventListener("loadedmetadata", () => {
-          videoElement.play();
-        });
-      }
+  //     return () => {
+  //       if (hls) {
+  //         hls.destroy();
+  //       }
+  //       if (player) {
+  //         player.dispose();
+  //       }
+  //     };
+  //   }, [videoUrl, posterUrl, width, height]);
 
-      playerRef.current = player;
-
-      return () => {
-        if (hls) {
-          hls.destroy();
-        }
-        if (player) {
-          player.dispose();
-        }
-      };
-    }, [videoUrl, posterUrl, width, height]);
-
-    return (
-      <div data-vjs-player>
-        <video
-          ref={videoRef}
-          className="video-js vjs-big-play-centered"
-          controls
-          poster={posterUrl} // Add the poster image URL if you have one
-        >
-          <LazyLoadComponent>
-            <source src={videoUrl} type="application/x-mpegURL" />
-          </LazyLoadComponent>
-          Your browser does not support the video tag.
-        </video>
-      </div>
-    );
-  };
-
-
+  //   return (
+  //     <div data-vjs-player>
+  //       <video
+  //         ref={videoRef}
+  //         className="video-js vjs-big-play-centered"
+  //         controls
+  //         poster={posterUrl} // Add the poster image URL if you have one
+  //       >
+  //         <LazyLoadComponent>
+  //           <source src={videoUrl} type="application/x-mpegURL" />
+  //         </LazyLoadComponent>
+  //         Your browser does not support the video tag.
+  //       </video>
+  //     </div>
+  //   );
+  // };
 
   const API_BASE_URL = "https://vigoplace.com/server/";
   if (categoryResults.length > 1) {
@@ -127,6 +123,7 @@ export const CategorizedPost = ({ images, categoryResults }) => {
       console.log("postId:", postId);
 
       // queryClient.invalidateQueries("categorizedPost");
+      queryClient.invalidateQueries("categorizedPost");
       setCategorizedData((prevData) =>
         prevData.filter((post) => post.OPCPostId !== postId)
       );
@@ -143,22 +140,21 @@ export const CategorizedPost = ({ images, categoryResults }) => {
       console.log("Calling categoryDelete with postId:", postId);
       await mutation.mutateAsync(postId);
       setCategorizedData((prevData) =>
-      prevData.map((post) =>
-        post.POId === postId ? { ...post, OPCCategory: [] } : post
-      )
-    )
+        prevData.map((post) =>
+          post.POId === postId ? { ...post, OPCCategory: [] } : post
+        )
+      );
     } catch (error) {
       console.error("Error deleting post:", error);
       toast.error("Error deleting the category!");
     }
   };
-  
 
-  const isAtBeginning = currentIndex === 0;
-  // Check if carousel is at the end (last image)
-  const isAtEnd =
-    (categoryResults && currentIndex === categoryResults.length - 1) ||
-    (images && currentIndex === images.length - 1);
+  // const isAtBeginning = currentIndex === 0;
+  // // Check if carousel is at the end (last image)
+  // const isAtEnd =
+  //   (categoryResults && currentIndex === categoryResults.length - 1) ||
+  //   (images && currentIndex === images.length - 1);
 
   // const categoryDelete = async (postId) => {
   //   try {
@@ -173,6 +169,7 @@ export const CategorizedPost = ({ images, categoryResults }) => {
   const fetchCategory = async () => {
     const response = await fetch(`${API_BASE_URL}/api/admin/categorized`);
     const data = await response.json();
+    // console.log(data);
     return data;
   };
 
@@ -225,67 +222,29 @@ export const CategorizedPost = ({ images, categoryResults }) => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % categorizedData?.length);
   };
 
-  const prevSlide1 = () => {
-    let newIndex = currentIndex - 1;
-
-    while (newIndex !== currentIndex) {
-      if (newIndex < 0) {
-        newIndex = categorizedData.length - 1;
-      }
-
-      if (
-        (categoryResults && hasMultipleImages(categoryResults[newIndex])) ||
-        (images && hasMultipleImages(images[newIndex]))
-      ) {
-        setCurrentIndex(newIndex);
-        break;
-      }
-
-      newIndex = newIndex - 1;
-    }
-  };
-
-  const nextSlide1 = () => {
-    let newIndex = currentIndex + 1;
-
-    while (newIndex !== currentIndex) {
-      if (newIndex >= categorizedData.length) {
-        newIndex = 0;
-      }
-
-      if (
-        (categoryResults && hasMultipleImages(categoryResults[newIndex])) ||
-        (images && hasMultipleImages(images[newIndex]))
-      ) {
-        setCurrentIndex(newIndex);
-        break;
-      }
-
-      newIndex = newIndex + 1;
-    }
-  };
-
-  const hasMultipleImages = (post) => {
-    return post?.PMMedia?.length > 1;
-  };
-
   return (
     //
     <div>
-            <div className="sm:flex-row sm:justify-evenly flex-col flex justify-center items-center">
-            <div className={`2xl:pl-7 xl:pl-7 lg:pl-7 md:pl-3 Styles.fade-In`}>
+      <div className="sm:flex-row sm:justify-evenly flex-col flex justify-center items-center">
+        <div className={`2xl:pl-7 xl:pl-7 lg:pl-7 md:pl-3 Styles.fade-In`}>
           <div className="pt-10">
-          <div className="2xl:w-[390px] xl:w-[380px] lg:w-[360px] md:w-[255px] w-[270px] 2xl:h-[335px] h-[300px] xl:h-[335px] lg:h-[335px] md:h-[310px] bg-[#f4f4f4] rounded-md">
+            <div className="2xl:w-[390px] xl:w-[380px] lg:w-[360px] md:w-[255px] w-[270px] 2xl:h-[335px] h-[300px] xl:h-[335px] lg:h-[335px] md:h-[310px] bg-[#f4f4f4] rounded-md">
               <div className="text-center text-base text-[#706464] capitalize font-bold">
                 {categoryResults && categoryResults.length > 0 ? (
                   <div key={categoryResults[currentIndex].POId}>
                     {categoryResults[currentIndex]?.PMMedia[0]?.type ===
                     "video" ? (
-                      <HLSVideoPlayer
-                        videoUrl={categoryResults[currentIndex].PMMedia[0].media}
-                        width={390}
-                        height={382}
-                        posterUrl={categoryResults[currentIndex].posterImage}
+                      <ReactPlayer
+                        url={categoryResults[currentIndex]?.PMMedia[0]?.media}
+                        config={{
+                          file: { forceHLS: true },
+                        }}
+                        autoPlay={false}
+                        controls={true}
+                        width={370}
+                        height={335}
+                        style={{ width: "380px", height: "335px" }}
+                        className="2xl:w-[390px] xl:w-[380px] lg:w-[360px] md:w-[255px] w-[250px] 2xl:h-[382px] xl:h-[335px] lg:h-[335px] h-[300px] md:h-[310px]"
                       />
                     ) : (
                       <LazyLoadImage
@@ -300,11 +259,17 @@ export const CategorizedPost = ({ images, categoryResults }) => {
                   // Display images if categoryResults is empty
                   <div key={images[currentIndex].POId}>
                     {images[currentIndex]?.PMMedia[0].type === "video" ? (
-                      <HLSVideoPlayer
-                        videoUrl={categoryResults[currentIndex].PMMedia[0].media}
-                        posterUrl={images[currentIndex].posterImage}
-                        width={390}
-                        height={382}
+                      <ReactPlayer
+                        url={images[currentIndex]?.PMMedia[0]?.media}
+                        config={{
+                          file: { forceHLS: true },
+                        }}
+                        autoPlay={false}
+                        controls={true}
+                        width={370}
+                        height={335}
+                        style={{ width: "380px", height: "335px" }}
+                        className="2xl:w-[390px] xl:w-[380px] lg:w-[360px] md:w-[255px] w-[250px] 2xl:h-[382px] xl:h-[335px] lg:h-[335px] h-[300px] md:h-[310px]"
                       />
                     ) : (
                       <LazyLoadImage
@@ -317,7 +282,7 @@ export const CategorizedPost = ({ images, categoryResults }) => {
                   </div>
                 ) : (
                   // Handle the case when images or categoryResults are not available
-                  <div>Not Found</div>
+                  <div className="pt-80"></div>
                 )}
               </div>
 
@@ -331,17 +296,17 @@ export const CategorizedPost = ({ images, categoryResults }) => {
               </div>
             </div>
             <div>
-            <h2 className="text-[#706464] 2xl:pt-7 xl:pt-7 lg:pt-7 text-start text-base md:pt-8 pt-7">
+              <h2 className="text-[#706464] 2xl:pt-7 xl:pt-7 lg:pt-7 text-start text-base md:pt-8 pt-7">
                 Post Type: {categorizedData[currentIndex]?.postType}
               </h2>
             </div>
           </div>
           <div>
-          <h2 className="text-[#706464] pt-7 text-start text-xl sm:pb-5 pb-5">
+            <h2 className="text-[#706464] pt-7 text-start text-xl sm:pb-5 pb-5">
               Description
             </h2>
             <div>
-            <div className="2xl:w-[380px] xl:w-[380px] lg:w-[360px] md:w-[245px] w-[270px] h-[100px] 2xl:h-[150px] xl:h-[150px] lg:h-[150px] md:h-[177px] bg-[#f4f4f4] rounded-md overflow-auto">
+              <div className="2xl:w-[380px] xl:w-[380px] lg:w-[360px] md:w-[245px] w-[270px] h-[100px] 2xl:h-[150px] xl:h-[150px] lg:h-[150px] md:h-[177px] bg-[#f4f4f4] rounded-md overflow-auto">
                 <div className="text-center text-sm text-[#706464] mt-2 p-3">
                   {categorizedData[currentIndex]?.description}
                 </div>
@@ -351,7 +316,7 @@ export const CategorizedPost = ({ images, categoryResults }) => {
         </div>
 
         <div className="flex justify-center pt-14">
-        <div className="2xl:w-[290px] xl:w-[290px] lg:w-[290px] md:w-[230px] w-[270px] sm:h-[620px] h-[300px] bg-[#f4f4f4]  rounded-xl overflow-auto">
+          <div className="2xl:w-[290px] xl:w-[290px] lg:w-[290px] md:w-[230px] w-[270px] sm:h-[620px] h-[300px] bg-[#f4f4f4]  rounded-xl overflow-auto">
             <p className="text-start p-2 pl-10 font-bold text-[#706464] text-lg">
               Post category
             </p>
@@ -359,18 +324,19 @@ export const CategorizedPost = ({ images, categoryResults }) => {
               <div className="space-y-3">
                 {categorizedData[currentIndex]?.OPCCategory?.map(
                   (item, index) => {
-                    console.log(item);
+                    // console.log(item);
                     return (
                       <div
                         key={index}
                         className="bg-white 2xl:w-[240px] xl:w-[240px] lg:w-[240px] md:w-[190px] w-[200px] rounded-md h-12 p-3 pl-3 flex justify-between"
-
                       >
                         <p className="text-[#706464]">{item}</p>
                         <GrFormClose
                           size={20}
                           className="cursor-pointer"
-                          onClick={() =>  categoryDelete(categorizedData[currentIndex]?.POId)}
+                          onClick={() =>
+                            categoryDelete(categorizedData[currentIndex]?.POId)
+                          }
                         />
                       </div>
                     );
@@ -391,48 +357,14 @@ export const CategorizedPost = ({ images, categoryResults }) => {
       <div className="relative text-white">
         <MdOutlineKeyboardArrowLeft
           size={18}
-          className={`rounded-xl bg-[#8135F9] p-1 cursor-pointer absolute sm:-top-[430px] -top-[720px] left-3 ${
-            (!hasMultipleImages(categoryResults[currentIndex]) &&
-              !hasMultipleImages(images[currentIndex])) ||
-            isAtBeginning
-              ? "opacity-50 cursor-not-allowed"
-              : ""
-          }`}
-          onClick={
-            (!hasMultipleImages(categoryResults[currentIndex]) &&
-              !hasMultipleImages(images[currentIndex])) ||
-            isAtBeginning
-              ? null
-              : prevSlide1
-          }
-          disabled={
-            (!hasMultipleImages(categoryResults[currentIndex]) &&
-              !hasMultipleImages(images[currentIndex])) ||
-            isAtBeginning
-          }
+          className={`rounded-xl bg-[#8135F9] p-1 cursor-pointer absolute sm:-top-[430px] -top-[720px] left-3`}
+          // onClick={ }
         />
 
         <MdOutlineKeyboardArrowRight
           size={18}
-          className={`rounded-xl bg-[#8135F9] p-1 cursor-pointer absolute sm:-top-[430px] -top-[720px] lg:right-[300px] xl:right-[310px] 2xl:right[310px] md:right-[240px] right-[15px] ${
-            (!hasMultipleImages(categoryResults[currentIndex]) &&
-              !hasMultipleImages(images[currentIndex])) ||
-            isAtEnd
-              ? "opacity-50 cursor-not-allowed"
-              : ""
-          }`}
-          onClick={
-            (!hasMultipleImages(categoryResults[currentIndex]) &&
-              !hasMultipleImages(images[currentIndex])) ||
-            isAtEnd
-              ? null
-              : nextSlide1
-          }
-          disabled={
-            (!hasMultipleImages(categoryResults[currentIndex]) &&
-              !hasMultipleImages(images[currentIndex])) ||
-            isAtEnd
-          }
+          className={`rounded-xl bg-[#8135F9] p-1 cursor-pointer absolute sm:-top-[430px] -top-[720px] lg:right-[300px] xl:right-[310px] 2xl:right[310px] md:right-[240px] right-[15px]`}
+          // onClick={}
         />
       </div>
 

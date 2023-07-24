@@ -73,6 +73,24 @@ export function Postcategorization1({ data, categorizedData }) {
     setSelectedCategories(selectedCategories);
   };
 
+  const localCategory = useRef(false);
+  useEffect(() => {
+    if (!localCategory.current) {
+      const category = localStorage.getItem("categoryData");
+      if (category) {
+        setSelectedCategories(JSON.parse(category));
+        console.log("fetched category");
+
+        localCategory.current = true;
+      }
+    }
+
+    if (localCategory.current && Object.keys(selectedCategories).length > 0) {
+      localStorage.setItem("categoryData", JSON.stringify(selectedCategories));
+      console.log("updated category");
+    }
+  }, [selectedCategories]);
+
   const API_BASE_URL = "https://vigoplace.com/server/";
 
   const fetchData = async () => {
