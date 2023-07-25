@@ -213,7 +213,7 @@ export const UncategorizedPost = ({
                         {images[nextIndex].PMMedia?.map((media) => {
                           if (media.type === "video") {
                             return (
-                              <div className="2xl:w-[390px] xl:w-[380px] lg:w-[360px] md:w-[255px] w-[250px] 2xl:h-[382px] xl:h-[335px] lg:h-[335px] h-[300px] md:h-[310px]">
+                              <div className="react_player">
                                 <ReactPlayer
                                   url={images[nextIndex]?.PMMedia?.media}
                                   config={{
@@ -221,9 +221,9 @@ export const UncategorizedPost = ({
                                   }}
                                   autoPlay={false}
                                   controls={true}
-                                  width={380}
-                                  height={335}
-                                  // className="2xl:w-[390px] xl:w-[380px] lg:w-[360px] md:w-[255px] w-[250px] 2xl:h-[382px] xl:h-[335px] lg:h-[335px] h-[300px] md:h-[310px]"
+                                  // width={380}
+                                  // height={335}
+                                  className="react_player"
                                 />
                               </div>
                             );
@@ -240,6 +240,7 @@ export const UncategorizedPost = ({
                         })}
                       </div>
                     ) : null}
+
                     {filteredResults[currentIndex]?.PMMedia[0]?.type ===
                     "video" ? (
                       <ReactPlayer
@@ -249,10 +250,10 @@ export const UncategorizedPost = ({
                         }}
                         autoPlay={false}
                         controls={true}
-                        width={370}
-                        height={335}
-                        style={{ width: "380px", height: "335px" }}
-                        className="2xl:w-[390px] xl:w-[370px] lg:w-[360px] md:w-[255px] w-[250px] 2xl:h-[382px] xl:h-[335px] lg:h-[335px] h-[300px] md:h-[310px]"
+                        // width={370}
+                        // height={335}
+                        // style={{ width: "380px", height: "335px" }}
+                        className="react_player"
                       />
                     ) : (
                       <LazyLoadImage
@@ -274,9 +275,9 @@ export const UncategorizedPost = ({
                         }}
                         autoPlay={false}
                         controls={true}
-                        width={380}
-                        height={335}
-                        className="2xl:w-[390px] xl:w-[370px] lg:w-[360px] md:w-[255px] w-[250px] 2xl:h-[382px] xl:h-[335px] lg:h-[335px] h-[300px] md:h-[310px]"
+                        // width={380}
+                        // height={335}
+                        className="react_player"
                       />
                     ) : (
                       <LazyLoadImage
