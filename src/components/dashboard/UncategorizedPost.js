@@ -20,8 +20,9 @@ import ReactPlayer from "react-player";
 export const UncategorizedPost = ({
   currentPostId,
   updateCurrentPost,
+  // category,
   images,
-  filteredImages,
+  filteredResults,
   selectedCategories,
   handleCategorySelection,
   handlePostClick,
@@ -33,8 +34,8 @@ export const UncategorizedPost = ({
   const [categorizedData, setCategorizedData] = useState([]);
   const [showIcon, setShowIcon] = useState(false);
   const [nextIndex, setNextIndex] = useState(0);
-  const hasMedia = filteredImages[currentIndex]?.PMMedia.length > 0;
-  const maxIndex = filteredImages[nextIndex]?.PMMedia.length - 1;
+  const hasMedia = filteredResults[currentIndex]?.PMMedia.length > 0;
+  const maxIndex = filteredResults[nextIndex]?.PMMedia.length - 1;
 
   const handleCategoryChange = (category) => {
     handleCategorySelection((prevSelectedCategories) => {
@@ -165,9 +166,9 @@ export const UncategorizedPost = ({
   //     toast.error("Error deleting the category!");
   //   }
   // };
-  const currentImage = data.data[currentIndex];
+  // const currentImage = data.data[currentIndex];
 
-  const category = currentImage.category;
+  // const category = currentImage.category;
   const prevSlide = () => {
     updateCurrentPost();
     const isFirstSlide = currentIndex === 0;
@@ -183,11 +184,13 @@ export const UncategorizedPost = ({
     console.log(data.data[currentIndex]);
     // const currentImage = data.data[currentIndex];
     // const category = currentImage.category;
-    // handlePostClick(selectedCategories);
+    handlePostClick(
+      selectedCategories[currentPostId]?.map((category) => category.OCName)
+    );
   };
 
   const Carousel = () => {
-    if (filteredImages && filteredImages.length > 1) {
+    if (filteredResults && filteredResults.length > 1) {
       setShowIcon(true);
     } else {
       setShowIcon(false);
@@ -212,6 +215,7 @@ export const UncategorizedPost = ({
   };
 
   console.log("media" + images[currentIndex]?.PMMedia[0]?.media);
+  console.log(currentPostId);
 
   return (
     <div>
@@ -220,15 +224,15 @@ export const UncategorizedPost = ({
           <div className=" pt-10">
             <div className="2xl:w-[390px] xl:w-[380px] lg:w-[360px] md:w-[255px] w-[270px] 2xl:h-[335px] h-[300px] xl:h-[335px] lg:h-[335px] md:h-[310px] bg-[#f4f4f4] rounded-md">
               <div className="text-center text-base text-[#706464] capitalize font-bold">
-                {filteredImages && filteredImages.length > 0 ? (
-                  <div key={filteredImages[currentIndex]?.POId}>
-                    {/* {filteredImages[currentIndex]?.PMMedia?.length > 1 ? (
+                {filteredResults && filteredResults.length > 0 ? (
+                  <div key={filteredResults[currentIndex]?.POId}>
+                    {/* {filteredResults[currentIndex]?.PMMedia?.length > 1 ? (
                       
                     )} */}
-                    {filteredImages[currentIndex]?.PMMedia[0]?.type ===
+                    {filteredResults[currentIndex]?.PMMedia[0]?.type ===
                     "video" ? (
                       <ReactPlayer
-                        url={filteredImages[currentIndex]?.PMMedia[0]?.media}
+                        url={filteredResults[currentIndex]?.PMMedia[0]?.media}
                         config={{
                           file: { forceHLS: true },
                         }}
@@ -241,7 +245,7 @@ export const UncategorizedPost = ({
                       />
                     ) : (
                       <LazyLoadImage
-                        src={filteredImages[currentIndex]?.PMMedia[0]?.media}
+                        src={filteredResults[currentIndex]?.PMMedia[0]?.media}
                         alt=""
                         className="2xl:w-[390px] xl:w-[380px] lg:w-[360px] md:w-[255px] w-[250px] 2xl:h-[382px] xl:h-[335px] lg:h-[335px] h-[300px] md:h-[310px]"
                         effect="blur"
@@ -249,7 +253,7 @@ export const UncategorizedPost = ({
                     )}
                   </div>
                 ) : images && images.length > 0 ? (
-                  // Display images if filteredImages is empty
+                  // Display images if filteredResults is empty
                   <div key={images[currentIndex]?.POId}>
                     {images[currentIndex]?.PMMedia[0]?.type === "video" ? (
                       <ReactPlayer
@@ -273,24 +277,24 @@ export const UncategorizedPost = ({
                     )}
                   </div>
                 ) : (
-                  // Handle the case when images or filteredImages are not available
+                  // Handle the case when images or filteredResults are not available
                   <div className="text-center">Not Found</div>
                 )}
               </div>
-              {/* {filteredImages[newIndex]?.PMMedia.media((item, index) => {
+              {/* {filteredResults[newIndex]?.PMMedia.media((item, index) => {
                       <div key={index}>
-                        {filteredImages[newIndex]?.PMMedia.media.type === "video" ? (
+                        {filteredResults[newIndex]?.PMMedia.media.type === "video" ? (
                           
                         )}
                       </div>;
                     })} */}
 
-              {/* {filteredImages && filteredImages.length > 0 ? (    
-                  <div key={filteredImages[currentIndex]?.POId}>
-                    {filteredImages[currentIndex]?.PMMedia[0]?.type ===
+              {/* {filteredResults && filteredResults.length > 0 ? (    
+                  <div key={filteredResults[currentIndex]?.POId}>
+                    {filteredResults[currentIndex]?.PMMedia[0]?.type ===
                     "video" ? (   
                     <LazyLoadImage
-                    src={filteredImages[currentIndex]?.PMMedia[0]?.media}
+                    src={filteredResults[currentIndex]?.PMMedia[0]?.media}
                     alt=""
                     className="2xl:w-[390px] xl:w-[380px] lg:w-[360px] md:w-[255px] w-[250px] 2xl:h-[382px] xl:h-[335px] lg:h-[335px] h-[300px] md:h-[310px]"
                     effect="blur"
@@ -333,31 +337,35 @@ export const UncategorizedPost = ({
               Post category
             </p>
 
-            {selectedCategories[currentPostId]?.length > 0 && (
-              <div className="flex flex-col items-center justify-center">
-                <div className="space-y-3 py-3 rounded-xl flex flex-col items-center">
-                  <div className="2xl:w-[240px] xl:w-[240px] lg:w-[240px] md:w-[190px] w-[200px] rounded-md">
-                    <ul className="space-y-5">
-                      {selectedCategories[currentPostId]?.map((category) => (
-                        <li
-                          key={category.OCId}
-                          className="bg-white flex justify-between p-3 pl-3 rounded-md"
-                        >
-                          <span>{category.OCName}</span>
-                          <GrFormClose
-                            size={20}
-                            className="cursor-pointer"
-                            onClick={() =>
-                              handleCategoryChange(category, currentIndex)
-                            }
-                          />
-                        </li>
-                      ))}
-                    </ul>
+            {selectedCategories[currentPostId]?.length > 0 &&
+              selectedCategories[currentPostId][0] !== null && (
+                <div className="flex flex-col items-center justify-center">
+                  <div className="space-y-3 py-3 rounded-xl flex flex-col items-center">
+                    <div className="2xl:w-[240px] xl:w-[240px] lg:w-[240px] md:w-[190px] w-[200px] rounded-md">
+                      <ul className="space-y-5">
+                        {selectedCategories[currentPostId]?.map((category) => {
+                          console.log(category);
+                          return (
+                            <li
+                              key={category.OCId}
+                              className="bg-white flex justify-between p-3 pl-3 rounded-md"
+                            >
+                              <span>{category.OCName}</span>
+                              <GrFormClose
+                                size={20}
+                                className="cursor-pointer"
+                                onClick={() =>
+                                  handleCategoryChange(category, currentIndex)
+                                }
+                              />
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
           </div>
         </div>
       </div>
@@ -393,9 +401,7 @@ export const UncategorizedPost = ({
           <MdArrowForwardIos
             // size={25}
             className="rounded-xl bg-[#8135F9] p-1 cursor-pointer lg:text-xl md:text-base xl:text-2xl"
-            onClick={() => {
-              handlePostClick(category);
-            }}
+            onClick={nextSlide}
           />
         </div>
       </div>

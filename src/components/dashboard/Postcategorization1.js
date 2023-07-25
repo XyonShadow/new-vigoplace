@@ -139,13 +139,35 @@ export function Postcategorization1({ data, categorizedData }) {
     handleCategorizedSearch(value);
   };
 
+  // const handleUncategorizedSearch = (searchInput) => {
+  //   const filtered = data.data.filter((value) => {
+  //     const { POId } = value;
+  //     // console.log(value, POId);
+  //     console.log(searchInput);
+  //     // const media = image.PMMedia[0]?.media;
+  //     return searchInput === POId;
+  //   });
+  //   setFilteredResults(filtered);
+  // };
   const handleUncategorizedSearch = (searchInput) => {
-    const filtered = data.data.filter((image) => {
-      const media = image.PMMedia[0]?.media;
-      return media && media.toLowerCase().includes(searchInput.toLowerCase());
-    });
-    setFilteredResults(filtered);
+    const filteredPosts = uncategorizedData.data.filter(
+      (post) => post.POId === Number(searchInput)
+    );
+    setFilteredResults(filteredPosts);
   };
+  // const handleUncategorizedSearch = (searchInput) => {
+  //   const filtered = data.data.filter((image) => {
+  //     const media = image.PMMedia[0]?.media;
+  //     const imageCategories = selectedCategories[image.POId] || [];
+  //     return (
+  //       (media && media.toLowerCase().includes(searchInput.toLowerCase())) ||
+  //       imageCategories.some((category) =>
+  //         category.OCContent?.toLowerCase().includes(searchInput.toLowerCase())
+  //       )
+  //     );
+  //   });
+  //   setFilteredResults(filtered);
+  // };
 
   const handleCategorizedSearch = (searchInput) => {
     const categorizedFiltered = categorizedData.filter((item) => {
@@ -182,16 +204,43 @@ export function Postcategorization1({ data, categorizedData }) {
   };
 
   const handlePostClick = (category) => {
+    console.log(category);
     const postId = uncategorizedData?.data[currentIndex]?.POId;
     setSelectedCategory(category);
 
+    // const currentImage = data[currentIndex];
+    // if (currentImage.category) {
+    //   toast.info("This image is already associated with a category!");
+    //   return;
+    // }
+
+    // {selectedCategories[currentPostId]?.map((category) => {
+    //   const sentCategory = category.OCname
+    //   console.log(category);
+    //   return (
+    //     <li
+    //       key={category.OCId}
+    //       className="bg-white flex justify-between p-3 pl-3 rounded-md"
+    //     >
+    //       <span>{category.OCName}</span>
+    //       <GrFormClose
+    //         size={20}
+    //         className="cursor-pointer"
+    //         onClick={() =>
+    //           handleCategoryChange(category, currentIndex)
+    //         }
+    //       />
+    //     </li>
+    //   );
+    // })}
     fetch("https://vigoplace.com/server/api/admin/categorization", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
+
       body: JSON.stringify({
-        category: [category],
+        category: category,
         postId: postId,
       }),
     })
@@ -203,6 +252,14 @@ export function Postcategorization1({ data, categorizedData }) {
       })
       .then((data) => {
         console.log(data);
+        // setData((prevData) => {
+        //   const updatedData = [...prevData];
+        //   updatedData[currentIndex] = {
+        //     ...updatedData[currentIndex],
+        //     category: category,
+        //   };
+        //   return updatedData;
+        // });
         toast.success("Sucessfully categorized this post!");
         queryClient.refetchQueries(["uncategorizedData"]);
         console.log(category);
@@ -262,9 +319,9 @@ export function Postcategorization1({ data, categorizedData }) {
                 <UncategorizedPost
                   currentPostId={currentPostId}
                   updateCurrentPost={updateCurrentPost}
-                  category={selectedCategory}
-                  images={data.data}
-                  filteredImages={filteredResults}
+                  // category={category}
+                  images={data?.data}
+                  filteredResults={filteredResults}
                   selectedCategories={selectedCategories}
                   handleCategorySelection={handleCategorySelection}
                   handlePostClick={handlePostClick}
@@ -275,6 +332,8 @@ export function Postcategorization1({ data, categorizedData }) {
             {tab === 1 && (
               <>
                 <CategorizedPost
+                  selectedCategories={selectedCategories}
+                  handlePostClick={handlePostClick}
                   images={categorizedData}
                   categoryResults={categoryResults}
                 />
