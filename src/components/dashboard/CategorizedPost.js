@@ -273,7 +273,7 @@ export const CategorizedPost = ({
                       />
                     ) : (
                       <LazyLoadImage
-                        src={images[currentIndex].PMMedia[0].media}
+                        src={images[currentIndex]?.PMMedia[0].media}
                         alt=""
                         className="2xl:w-[390px] xl:w-[380px] lg:w-[360px] md:w-[255px] w-[270px] h-[300px] 2xl:h-[382px] xl:h-[335px] lg:h-[335px] md:h-[310px]"
                         effect="blur"

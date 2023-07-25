@@ -13,6 +13,7 @@ module.exports = {
       screens: {
         mini: "268px",
         large: "2560px",
+        mac: "1440px",
       },
     },
   },

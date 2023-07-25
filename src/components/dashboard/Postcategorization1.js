@@ -155,25 +155,11 @@ export function Postcategorization1({ data, categorizedData }) {
     );
     setFilteredResults(filteredPosts);
   };
-  // const handleUncategorizedSearch = (searchInput) => {
-  //   const filtered = data.data.filter((image) => {
-  //     const media = image.PMMedia[0]?.media;
-  //     const imageCategories = selectedCategories[image.POId] || [];
-  //     return (
-  //       (media && media.toLowerCase().includes(searchInput.toLowerCase())) ||
-  //       imageCategories.some((category) =>
-  //         category.OCContent?.toLowerCase().includes(searchInput.toLowerCase())
-  //       )
-  //     );
-  //   });
-  //   setFilteredResults(filtered);
-  // };
 
   const handleCategorizedSearch = (searchInput) => {
-    const categorizedFiltered = categorizedData.filter((item) => {
-      const media = item.PMMedia[0]?.media;
-      return media && media.toLowerCase().includes(searchInput.toLowerCase());
-    });
+    const categorizedFiltered = categorizedData.filter(
+      (post) => post.POId === Number(searchInput)
+    );
     setCategoryResults(categorizedFiltered);
   };
 
@@ -288,14 +274,14 @@ export function Postcategorization1({ data, categorizedData }) {
           </div>
 
           <article className="mt-3">
-            <div className="font-bold border-[#f4f4f4] flex 2xl:pl-10 xl:pl-10 lg:pl-10 md:pl-6 pl-6 large:pl-20">
+            <div className="font-bold border-[#f4f4f4] flex 2xl:pl-10 xl:pl-9 mac:pl-10 lg:pl-10 md:pl-6 pl-6 large:pl-20">
               <div>
                 <button
-                  className={`border-b-2 2xl:px-[102px] xl:px-[110.6px] px-[20px] large:px-[130px] py-4 border-2 ${
+                  className={`border-b-2 2xl:px-[110.6px] xl:px-[98.9px] mac:px-[110.6px] px-[20px] large:px-[130px] py-4 border-2 ${
                     tab === 0
                       ? "border-b-[#8135F9] hover:bg-[#8135F9]  hover:text-white transition-all duration-300 "
                       : ""
-                  } pb-2 cursor-pointer 2xl:text-lg xl:text-base md:text-sm text-xs lg:px-[99.4px] md:px-[66.2px] focus:outline-none`}
+                  } pb-2 cursor-pointer 2xl:text-lg xl:text-base md:text-sm text-xs lg:px-[108.7px] md:px-[68.2px] focus:outline-none`}
                   onClick={() => handleTabChange(0)}
                 >
                   Uncategorized Post
@@ -303,7 +289,7 @@ export function Postcategorization1({ data, categorizedData }) {
               </div>
               <div>
                 <button
-                  className={`cursor-pointer 2xl:text-lg xl:text-base 2xl:px-[101.6px] px-[20px] large:px-[130px] text-xs md:text-sm xl:px-[110.6px] lg:px-[99.4px] md:px-[66.2px] py-3 border-2 ${
+                  className={`cursor-pointer 2xl:text-lg xl:text-base 2xl:px-[110.6px] px-[20px] large:px-[130px] text-xs md:text-sm xl:px-[98.9px] mac:px-[110.6px] lg:px-[108.7px] md:px-[68.2px] py-3 border-2 ${
                     tab === 1
                       ? "border-b-2  border-b-[#8135F9] pb-2 hover:bg-[#8135F9] py-4 hover:text-white transition-all duration-300"
                       : ""
@@ -341,17 +327,17 @@ export function Postcategorization1({ data, categorizedData }) {
             )}
           </article>
         </div>
-        <div className="2xl:w-[283px] xl:w-[283px] lg:w-[283px] md:w-[250px] sm:h-[850px] w-[270px] bg-[#DFDCDC] sm:mt-0 mt-[620px] h-[600px] overflow-auto large:w-[350px]">
+        <div className="2xl:w-[283px] xl:w-[283px] lg:w-[283px] md:w-[230px] sm:h-[850px] w-[270px] bg-[#DFDCDC] sm:mt-0 mt-[620px] h-[600px] overflow-auto large:w-[350px]">
           <p className="text-lg sm:pt-12 pt-5 pl-7 text-[#706464]">
             Search categories
           </p>
           <div className="pl-7 sm:pt-10 pt-5 relative">
-            <div className="absolute right-10 sm:top-14 top-[35px]">
+            <div className="absolute right-10 lg:right-10 2xl:right-10 mac:right-10 large:right-10 xl:right-10 md:right-8 sm:top-14 top-[35px]">
               <AiOutlineSearch size={20} onClick={handleSearch} />
             </div>
             <input
               type="text"
-              className="2xl:w-[235px] xl:w-[220px] lg:w-[220px] md:w-[200px] h-[50px] pl-5 rounded-md focus:outline-blue-500"
+              className="2xl:w-[235px] xl:w-[220px] lg:w-[220px] md:w-[180px] h-[50px] pl-5 rounded-md focus:outline-blue-500"
               placeholder="Search category..."
               value={searchTerm}
               onChange={handleSearch}
@@ -359,14 +345,14 @@ export function Postcategorization1({ data, categorizedData }) {
           </div>
 
           <div className="mt-10 justify-center flex flex-col items-center">
-            <div className="bg-[#F4F4F4] 2xl:w-[238px] xl:w-[220px] lg:w-[210px] md:w-[190px] w-[220px] h-[400px] py-3 rounded-xl overflow-auto">
+            <div className="bg-[#F4F4F4] 2xl:w-[238px] xl:w-[220px] lg:w-[210px] md:w-[180px] w-[220px] h-[400px] py-3 rounded-xl overflow-auto">
               <div className="space-y-5 py-3 overflow-auto flex flex-col items-center">
                 {searchTerm !== "" ? (
                   filteredCategoryResults.length > 0 ? (
                     filteredCategoryResults.map((item) => (
                       <div
                         key={item.OCId}
-                        className="bg-white 2xl:w-[170px] xl:w-[170px] md:w-[150px] rounded-md h-10 p-2"
+                        className="bg-white 2xl:w-[170px] xl:w-[170px] md:w-[140px] rounded-md h-10 p-2"
                       >
                         <p className="text-center text-base text-[#706464] capitalize">
                           {item.OCName}
@@ -382,7 +368,7 @@ export function Postcategorization1({ data, categorizedData }) {
                   categoryList?.data.map((category) => (
                     <div
                       key={category.OCId}
-                      className="bg-white 2xl:w-[180px] xl:w-[170px] lg:w-[170px] md:w-[150px] w-[160px] rounded-md h-10 p-2 cursor-pointer"
+                      className="bg-white 2xl:w-[180px] xl:w-[170px] lg:w-[170px] md:w-[140px] w-[160px] rounded-md h-10 p-2 cursor-pointer"
                       onClick={() => {
                         handleCategoryChange(category);
                       }}
@@ -399,7 +385,7 @@ export function Postcategorization1({ data, categorizedData }) {
           <p className="pl-7 2xl:pt-24 xl:pt-24 lg:pt-24 pt-14 md:pt-14 text-[#706464]">
             Create a new categories
           </p>
-          <div className="mt-5 pl-5 flex 2xl:flex-row xl:flex-row lg:flex-row lg:gap-0 2xl:gap-0 xl:gap-0 md:flex-col md:gap-4 pb-5">
+          <div className="mt-5 pl-5 lg:pl-5 xl:pl-5 large:pl-5 2xl:pl-5 md:pl-7 flex 2xl:flex-row xl:flex-row lg:flex-row lg:gap-0 2xl:gap-0 xl:gap-0 md:flex-col md:gap-4 pb-5">
             <input
               type="text"
               className="2xl:w-[180px] xl:w-[160px] lg:w-[160px] md:w-[170px] w-[150px] h-[50px] pl-5 rounded-l-md focus:outline-blue-500"
