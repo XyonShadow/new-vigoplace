@@ -63,6 +63,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { toast } from "react-toast";
 
 const emails = ["username@gmail.com", "user02@gmail.com"];
 
@@ -251,6 +252,11 @@ const Users = () => {
         },
       }
     );
+    
+    if (notification.status === 200) {
+      toast.success(notification.data.message)
+    }
+
     return notification;
   };
 
@@ -259,7 +265,7 @@ const Users = () => {
     mutationFn: notifyUser,
     onSuccess: () => {
       setNotificationText("");
-      handleClose();
+      handleClose()
     },
     onError: async (error) => {
       // setOpenToast(true);

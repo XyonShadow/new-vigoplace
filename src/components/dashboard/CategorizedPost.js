@@ -16,6 +16,8 @@ import {
 } from "react-icons/md";
 import "video.js/dist/video-js.css";
 import ReactPlayer from "react-player";
+import CarouselMini from "./Carousel";
+import Image from "next/image";
 
 export const CategorizedPost = ({
   data,
@@ -150,62 +152,41 @@ export const CategorizedPost = ({
         <div className={`2xl:pl-7 xl:pl-7 lg:pl-7 md:pl-3 Styles.fade-In`}>
           <div className="pt-10">
             <div className="2xl:w-[390px] xl:w-[380px] lg:w-[360px] md:w-[255px] w-[270px] 2xl:h-[335px] h-[300px] xl:h-[335px] lg:h-[335px] md:h-[310px] bg-[#f4f4f4] rounded-md">
-              <div className="text-center text-base text-[#706464] capitalize font-bold">
-                {categoryResults && categoryResults.length > 0 ? (
-                  <div key={categoryResults[categorizedIndex].POId}>
-                    {categoryResults[categorizedIndex]?.PMMedia[0]?.type ===
-                    "video" ? (
-                      <ReactPlayer
-                        url={
-                          categoryResults[categorizedIndex]?.PMMedia[0]?.media
-                        }
-                        config={{
-                          file: { forceHLS: true },
-                        }}
-                        autoPlay={false}
-                        controls={true}
-                        width={370}
-                        height={335}
-                        style={{ width: "380px", height: "335px" }}
-                        className="2xl:w-[390px] xl:w-[380px] lg:w-[360px] md:w-[255px] w-[250px] 2xl:h-[382px] xl:h-[335px] lg:h-[335px] h-[300px] md:h-[310px]"
-                      />
-                    ) : (
-                      <LazyLoadImage
-                        src={categoryResults[categorizedIndex].PMMedia[0].media}
-                        alt=""
-                        className="2xl:w-[390px] xl:w-[380px] lg:w-[360px] md:w-[255px] w-[250px] 2xl:h-[382px] xl:h-[335px] lg:h-[335px] h-[300px] md:h-[310px]"
-                        effect="blur"
-                      />
-                    )}
-                  </div>
-                ) : images && images.length > 0 ? (
+              <div className="text-center text-base text-[rgb(112,100,100)] capitalize font-bold">
+                {images && images.length > 0 ? (
                   // Display images if categoryResults is empty
                   <div key={images[categorizedIndex].POId}>
-                    {images[categorizedIndex]?.PMMedia[0].type === "video" ? (
-                      <ReactPlayer
-                        url={images[categorizedIndex]?.PMMedia[0]?.media}
-                        config={{
-                          file: { forceHLS: true },
-                        }}
-                        autoPlay={false}
-                        controls={true}
-                        width={370}
-                        height={335}
-                        style={{ width: "380px", height: "335px" }}
-                        className="2xl:w-[390px] xl:w-[380px] lg:w-[360px] md:w-[255px] w-[250px] 2xl:h-[382px] xl:h-[335px] lg:h-[335px] h-[300px] md:h-[310px]"
-                      />
-                    ) : (
-                      <LazyLoadImage
-                        src={images[categorizedIndex]?.PMMedia[0].media}
-                        alt=""
-                        className="2xl:w-[390px] xl:w-[380px] lg:w-[360px] md:w-[255px] w-[270px] h-[300px] 2xl:h-[382px] xl:h-[335px] lg:h-[335px] md:h-[310px]"
-                        effect="blur"
-                      />
-                    )}
+                    <CarouselMini autoSlide={false} autoSlideInterval={3000}>
+                      {images[categorizedIndex]?.PMMedia?.map((media) => {
+                        if (media.type === "video")
+                          return (
+                            <ReactPlayer
+                              url={media.media}
+                              muted={true}
+                              playsinline
+                              autoPlay={false}
+                              controls
+                              key={media.media}
+                            />
+                          );
+                        else
+                          return (
+                            <Image
+                              src={media.media}
+                              key={media.media}
+                              width={320}
+                              height={300}
+                              alt=""
+                              className=" w-full h-auto max-h-[80%]"
+                              effect="blur"
+                            />
+                          );
+                      })}
+                    </CarouselMini>
                   </div>
                 ) : (
                   // Handle the case when images or categoryResults are not available
-                  <div className="pt-80"></div>
+                  <div className="pt-80">No Categorized Post Found</div>
                 )}
               </div>
 
@@ -275,7 +256,7 @@ export const CategorizedPost = ({
         onDelete={handleDelete}
       />
 
-      <div className="relative text-white">
+      {/* <div className="relative text-white">
         <MdOutlineKeyboardArrowLeft
           size={18}
           className={`rounded-xl bg-[#8135F9] p-1 cursor-pointer absolute sm:-top-[430px] -top-[720px] left-3`}
@@ -287,7 +268,7 @@ export const CategorizedPost = ({
           className={`rounded-xl bg-[#8135F9] p-1 cursor-pointer absolute sm:-top-[430px] -top-[720px] lg:right-[300px] xl:right-[310px] 2xl:right[310px] md:right-[240px] right-[15px]`}
           // onClick={}
         />
-      </div>
+      </div> */}
 
       <div className="flex justify-between items-center sm:-mt-80 -mt-[590px] p-3 text-white">
         <MdOutlineArrowBackIosNew

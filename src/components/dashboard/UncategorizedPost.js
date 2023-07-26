@@ -17,6 +17,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ReactPlayer from "react-player";
 import { Height } from "@mui/icons-material";
+import CarouselMini from "./Carousel";
 
 export const UncategorizedPost = ({
   currentPostId,
@@ -62,6 +63,7 @@ export const UncategorizedPost = ({
     //fix rerendering issue
     if (categorizedPost[0].POId === images[currentIndex]?.POId) {
       setCurrentIndex(currentIndex + 1);
+      console.log(images[nextIndex]?.PMMedia);
     }
 
     // update the current image
@@ -196,7 +198,9 @@ export const UncategorizedPost = ({
 
   const leftSlide = () => {
     const isPrevSlide = nextIndex === 0;
-    const newIndex = isPrevSlide ? images.length - 1 : nextIndex - 1;
+    const newIndex = isPrevSlide
+      ? data.data[currentIndex]?.PMMedia?.length - 1
+      : nextIndex - 1;
     setNextIndex(newIndex);
     console.log(images[nextIndex]?.PMMedia);
   };
@@ -206,10 +210,26 @@ export const UncategorizedPost = ({
   }, [currentIndex]);
 
   const rightSlide = () => {
-    const isNextSlide = nextIndex === images.length - 1;
+    const isNextSlide =
+      nextIndex === data.data[currentIndex]?.PMMedia?.length - 1;
     const newIndex = isNextSlide ? 0 : nextIndex + 1;
     setNextIndex(newIndex);
     console.log(images[nextIndex]?.PMMedia);
+
+    //     const isLastSlide = currentIndex === images.length - 1;
+
+    // const newIndex = isLastSlide ? 0 : currentIndex + 1;
+    // // const currentImage = data.data[currentIndex];
+    // // const category = currentImage.category;
+    // const data = await selectedCategories[currentPostId]?.map(
+    //   (category) => category.OCName
+    // );
+
+    // await handlePostClick(data);
+
+    // setCurrentIndex(newIndex);
+    // const newPostId = images[newIndex]?.POId;
+    // updateCurrentPost(newPostId);
   };
 
   return (
@@ -219,87 +239,36 @@ export const UncategorizedPost = ({
           <div className="pt-10 ">
             <div className="2xl:w-[390px] xl:w-[370px] lg:w-[360px] md:w-[255px] w-[270px] 2xl:h-[335px] h-[300px] xl:h-[335px] lg:h-[335px] md:h-[310px] bg-[#f4f4f4] rounded-md">
               <div className="text-center text-base text-[#706464] capitalize font-bold">
-                {filteredResults && filteredResults.length > 0 ? (
-                  <div key={filteredResults[currentIndex]?.POId}>
-                    {images[nextIndex]?.PMMedia.length > 1 ? (
-                      <div>
-                        {images[nextIndex].PMMedia?.map((media) => {
-                          if (media.type === "video") {
-                            return (
-                              <div>
-                                <ReactPlayer
-                                  url={images[nextIndex]?.PMMedia?.media}
-                                  config={{
-                                    file: { forceHLS: true },
-                                  }}
-                                  autoPlay={false}
-                                  controls={true}
-                                  width=""
-                                  height=""
-                                  className="block"
-                                />
-                              </div>
-                            );
-                          } else {
-                            return (
-                              <LazyLoadImage
-                                src={images[nextIndex]?.PMMedia?.media}
-                                alt=""
-                                className="2xl:w-[390px] xl:w-[370px] lg:w-[360px] md:w-[240px] w-[270px] h-[300px] 2xl:h-[382px] xl:h-[335px] lg:h-[335px] md:h-[300px]"
-                                effect="blur"
-                              />
-                            );
-                          }
-                        })}
-                      </div>
-                    ) : null}
-
-                    {filteredResults[currentIndex]?.PMMedia[0]?.type ===
-                    "video" ? (
-                      <ReactPlayer
-                        url={filteredResults[currentIndex]?.PMMedia[0]?.media}
-                        config={{
-                          file: { forceHLS: true },
-                        }}
-                        autoPlay={false}
-                        controls={true}
-                        // width={370}
-                        // height={335}
-                        // style={{ width: "380px", height: "335px" }}
-                        className="react_player"
-                      />
-                    ) : (
-                      <LazyLoadImage
-                        src={filteredResults[currentIndex]?.PMMedia[0]?.media}
-                        alt=""
-                        className="2xl:w-[390px] xl:w-[370px] lg:w-[360px] md:w-[255px] w-[250px] 2xl:h-[382px] xl:h-[335px] lg:h-[335px] h-[300px] md:h-[310px]"
-                        effect="blur"
-                      />
-                    )}
-                  </div>
-                ) : data.data && data.data.length > 0 ? (
+                {data.data && data.data.length > 0 ? (
                   // Display images if filteredResults is empty
-                  <div key={data.data[currentIndex]?.POId}>
-                    {data.data[currentIndex]?.PMMedia[0]?.type === "video" ? (
-                      <ReactPlayer
-                        url={data.data[currentIndex]?.PMMedia[0]?.media}
-                        config={{
-                          file: { forceHLS: true },
-                        }}
-                        autoPlay={false}
-                        controls={true}
-                        width=""
-                        height=""
-                        className="block w-full h-full"
-                      />
-                    ) : (
-                      <LazyLoadImage
-                        src={data.data[currentIndex]?.PMMedia[0]?.media}
-                        alt=""
-                        className="2xl:w-[390px] xl:w-[370px] lg:w-[360px] md:w-[255px] w-[270px] h-[300px] 2xl:h-[382px] xl:h-[335px] lg:h-[335px] md:h-[310px]"
-                        effect="blur"
-                      />
-                    )}
+                  <div>
+                    <CarouselMini autoSlide={false} autoSlideInterval={3000}>
+                      {data.data[currentIndex]?.PMMedia?.map((media) => {
+                        console.log(media);
+                        console.log(data.data[currentIndex]);
+                        if (media.type === "video")
+                          return (
+                            <ReactPlayer
+                              url={media.media}
+                              muted={true}
+                              playsinline
+                              autoPlay={false}
+                              controls
+                              key={media.media}
+                            />
+                          );
+                        else
+                          return (
+                            <img
+                              src={media.media}
+                              key={media.media}
+                              alt=""
+                              className=""
+                              effect="blur"
+                            />
+                          );
+                      })}
+                    </CarouselMini>
                   </div>
                 ) : (
                   // Handle the case when images or filteredResults are not available
@@ -400,20 +369,6 @@ export const UncategorizedPost = ({
         postId={data.data[currentIndex]?.POId}
         onDelete={handleDelete}
       />
-      {/* {showIcon && ( */}
-      <div className="relative text-white ">
-        <MdOutlineKeyboardArrowLeft
-          className="rounded-xl bg-[#8135F9] p-1 cursor-pointer absolute sm:-top-[440px] -top-[720px] left-4 large:left-7"
-          onClick={leftSlide}
-        />
-
-        <MdOutlineKeyboardArrowRight
-          className="rounded-xl bg-[#8135F9] p-1 cursor-pointer absolute sm:-top-[440px] -top-[720px] lg:right-[300px] xl:right-[295px] 2xl:right[310px] mac:right-[325px] md:right-[250px] right-[15px] large:right-[410px]"
-          onClick={rightSlide}
-        />
-        {/* justify-between items-center sm:-mt-80 mt-[180px] */}
-      </div>
-      {/* )} */}
 
       <div className="flex sm:p-3 justify-between items-center sm:-mt-80 -mt-[590px] p-1 text-white z-20">
         <div>
