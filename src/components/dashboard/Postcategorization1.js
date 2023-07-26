@@ -20,45 +20,88 @@ export function Postcategorization1({ data, categorizedData }) {
   const [categoryResults, setCategoryResults] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   // const [selectedCategoryIndexes, setSelectedCategoryIndexes] = useState({});
-  const [currentPostId, setCurrentPostId] = useState(null);
+  const [currentPostId, setCurrentPostId] = useState(data?.data[0]?.POId);
   const updateCurrentPost = (postId) => setCurrentPostId(postId);
   const [rerender, setRerender] = useState(true);
+  const [categorizedPost, setCategorizedPost] = useState([]);
+  const [categorizedIndex, setCategorizedIndex] = useState(0);
+  const updateCategorizedIndex = (index) => setCategorizedIndex(index);
+  const updateCategorizedPost = (post) => setCategorizedPost(post);
+  const API_BASE_URL = "https://vigoplace.com/server/";
+
+  const fetchCategory = async () => {
+    const response = await fetch(`${API_BASE_URL}/api/admin/categorized`);
+    const data = await response.json();
+    // console.log(data);
+    return data;
+  };
+
+  const {
+    data: categorizedItem,
+    isLoading,
+    isError,
+  } = useQuery(["categorizedPost"], fetchCategory, {
+    onSuccess: (data) => {
+      setCategorizedPost(data?.data || []);
+      queryClient.invalidateQueries("categorizedPost");
+    },
+  });
 
   const localCategory = useRef(false);
   useEffect(() => {
+    if (data && !currentPostId) {
+      setCurrentPostId(data?.data[0]?.POId);
+    }
     if (!localCategory.current) {
       const category = localStorage.getItem("categoryData");
       if (category) {
         setSelectedCategories(JSON.parse(category));
-        console.log("fetched category");
-
         localCategory.current = true;
       }
     }
 
     if (localCategory.current && Object.keys(selectedCategories).length > 0) {
       localStorage.setItem("categoryData", JSON.stringify(selectedCategories));
-      console.log("updated category");
     }
-  }, [selectedCategories]);
+  }, [selectedCategories, data]);
 
   const handleCategoryChange = (category) => {
-    const alreadyAdded = selectedCategories[currentPostId];
+    if (tab === 0) {
+      const alreadyAdded = selectedCategories[currentPostId];
 
-    if (alreadyAdded) {
-      const categoryExist = alreadyAdded.findIndex(
-        (c) => c.OCId === category.OCId
+      if (alreadyAdded) {
+        const categoryExist = alreadyAdded.findIndex(
+          (c) => c.OCId === category.OCId
+        );
+        if (categoryExist >= 0) return;
+
+        setSelectedCategories((prev) => ({
+          ...prev,
+          [currentPostId]: [...prev[currentPostId], category],
+        }));
+      } else {
+        setSelectedCategories((prev) => ({
+          ...prev,
+          [currentPostId]: [category],
+        }));
+      }
+    } else {
+      const findPost = categorizedPost[categorizedIndex];
+      const categoryExist = findPost.OPCCategory.findIndex(
+        (c) => c === category.OCName
       );
       if (categoryExist >= 0) return;
-      setSelectedCategories((prev) => ({
-        ...prev,
-        [currentPostId]: [...prev[currentPostId], category],
-      }));
-    } else {
-      setSelectedCategories((prev) => ({
-        ...prev,
-        [currentPostId]: [category],
-      }));
+
+      const newPost = [...categorizedPost];
+      newPost.splice(categorizedIndex, 1, {
+        ...findPost,
+        OPCCategory: [...findPost.OPCCategory, category.OCName],
+      });
+      handlePostClick(
+        [...findPost.OPCCategory, category.OCName],
+        findPost.POId
+      );
+      setCategorizedPost(newPost);
     }
     setRerender((prev) => !prev);
   };
@@ -66,8 +109,6 @@ export function Postcategorization1({ data, categorizedData }) {
   const handleCategorySelection = (selectedCategories) => {
     setSelectedCategories(selectedCategories);
   };
-
-  const API_BASE_URL = "https://vigoplace.com/server/";
 
   const fetchData = async () => {
     const response = await fetch(`${API_BASE_URL}/api/admin/categories`);
@@ -164,7 +205,6 @@ export function Postcategorization1({ data, categorizedData }) {
   };
 
   const handleClick = () => {
-    console.log(newCategories);
     fetch("https://vigoplace.com/server/api/admin/categories", {
       method: "POST",
       headers: {
@@ -181,16 +221,16 @@ export function Postcategorization1({ data, categorizedData }) {
         return response.json();
       })
       .then((data) => {
-        console.log(data);
         setNewCategories("");
+        return true;
       })
       .catch((error) => {
         console.error("Error creating category:", error);
+        return false;
       });
   };
 
-  const handlePostClick = (category) => {
-    console.log(category);
+  const handlePostClick = (category, id) => {
     const postId = uncategorizedData?.data[currentIndex]?.POId;
     setSelectedCategory(category);
 
@@ -206,7 +246,7 @@ export function Postcategorization1({ data, categorizedData }) {
     //   return (
     //     <li
     //       key={category.OCId}
-    //       className="bg-white flex justify-between p-3 pl-3 rounded-md"
+    //       className="flex justify-between p-3 pl-3 bg-white rounded-md"
     //     >
     //       <span>{category.OCName}</span>
     //       <GrFormClose
@@ -226,8 +266,8 @@ export function Postcategorization1({ data, categorizedData }) {
       },
 
       body: JSON.stringify({
-        category: category,
-        postId: postId,
+        category,
+        postId: id ? id : postId,
       }),
     })
       .then((response) => {
@@ -237,7 +277,6 @@ export function Postcategorization1({ data, categorizedData }) {
         return response.json();
       })
       .then((data) => {
-        console.log(data);
         // setData((prevData) => {
         //   const updatedData = [...prevData];
         //   updatedData[currentIndex] = {
@@ -247,8 +286,6 @@ export function Postcategorization1({ data, categorizedData }) {
         //   return updatedData;
         // });
         toast.success("Sucessfully categorized this post!");
-        queryClient.refetchQueries(["uncategorizedData"]);
-        console.log(category);
       })
       .catch((error) => {
         console.error("Error creating category:", error);
@@ -303,8 +340,10 @@ export function Postcategorization1({ data, categorizedData }) {
             {tab === 0 && (
               <>
                 <UncategorizedPost
+                  categorizedPost={categorizedPost}
                   currentPostId={currentPostId}
                   updateCurrentPost={updateCurrentPost}
+                  setSelectedCategories={setSelectedCategories}
                   // category={category}
                   images={data?.data}
                   filteredResults={filteredResults}
@@ -318,6 +357,12 @@ export function Postcategorization1({ data, categorizedData }) {
             {tab === 1 && (
               <>
                 <CategorizedPost
+                  categorizedIndex={categorizedIndex}
+                  updateCategorizedIndex={updateCategorizedIndex}
+                  updateCategorizedPost={updateCategorizedPost}
+                  isLoading={isLoading}
+                  isError={isError}
+                  data={categorizedPost}
                   selectedCategories={selectedCategories}
                   handlePostClick={handlePostClick}
                   images={categorizedData}
@@ -331,7 +376,7 @@ export function Postcategorization1({ data, categorizedData }) {
           <p className="text-lg sm:pt-12 pt-5 pl-7 text-[#706464]">
             Search categories
           </p>
-          <div className="pl-7 sm:pt-10 pt-5 relative">
+          <div className="relative pt-5 pl-7 sm:pt-10">
             <div className="absolute right-10 lg:right-10 2xl:right-10 mac:right-10 large:right-10 xl:right-10 md:right-8 sm:top-14 top-[35px]">
               <AiOutlineSearch size={20} onClick={handleSearch} />
             </div>
@@ -344,9 +389,12 @@ export function Postcategorization1({ data, categorizedData }) {
             />
           </div>
 
-          <div className="mt-10 justify-center flex flex-col items-center">
+          <div className="flex flex-col items-center justify-center mt-10">
             <div className="bg-[#F4F4F4] 2xl:w-[238px] xl:w-[220px] lg:w-[210px] md:w-[180px] w-[220px] h-[400px] py-3 rounded-xl overflow-auto">
-              <div className="space-y-5 py-3 overflow-auto flex flex-col items-center">
+              <div
+                key={Date.now()}
+                className="flex flex-col items-center py-3 space-y-5 overflow-auto"
+              >
                 {searchTerm !== "" ? (
                   filteredCategoryResults.length > 0 ? (
                     filteredCategoryResults.map((item) => (
@@ -385,7 +433,7 @@ export function Postcategorization1({ data, categorizedData }) {
           <p className="pl-7 2xl:pt-24 xl:pt-24 lg:pt-24 pt-14 md:pt-14 text-[#706464]">
             Create a new categories
           </p>
-          <div className="mt-5 pl-5 lg:pl-5 xl:pl-5 large:pl-5 2xl:pl-5 md:pl-7 flex 2xl:flex-row xl:flex-row lg:flex-row lg:gap-0 2xl:gap-0 xl:gap-0 md:flex-col md:gap-4 pb-5">
+          <div className="flex pb-5 pl-5 mt-5 lg:pl-5 xl:pl-5 large:pl-5 2xl:pl-5 md:pl-7 2xl:flex-row xl:flex-row lg:flex-row lg:gap-0 2xl:gap-0 xl:gap-0 md:flex-col md:gap-4">
             <input
               type="text"
               className="2xl:w-[180px] xl:w-[160px] lg:w-[160px] md:w-[170px] w-[150px] h-[50px] pl-5 rounded-l-md focus:outline-blue-500"

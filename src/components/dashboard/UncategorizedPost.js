@@ -16,10 +16,13 @@ import "video.js/dist/video-js.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ReactPlayer from "react-player";
+import { Height } from "@mui/icons-material";
 
 export const UncategorizedPost = ({
   currentPostId,
   updateCurrentPost,
+  setSelectedCategories,
+  categorizedPost,
   // category,
   images,
   filteredResults,
@@ -27,7 +30,6 @@ export const UncategorizedPost = ({
   handleCategorySelection,
   handlePostClick,
 }) => {
-  console.log(selectedCategories);
   const [openModal, setOpenModal] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [deletedIndex, setDeletedIndex] = useState(null);
@@ -57,9 +59,19 @@ export const UncategorizedPost = ({
   };
 
   useEffect(() => {
+    //fix rerendering issue
+    if (categorizedPost[0].POId === images[currentIndex]?.POId) {
+      setCurrentIndex(currentIndex + 1);
+    }
+
     // update the current image
-    updateCurrentPost(images[currentIndex]?.POId);
-  }, [currentIndex]);
+    const alreadyAdded = selectedCategories[currentPostId];
+    if (alreadyAdded) return;
+    setSelectedCategories((prev) => ({
+      ...prev,
+      [currentPostId]: [],
+    }));
+  }, [currentPostId]);
 
   const API_BASE_URL = "https://vigoplace.com/server/";
 
@@ -150,23 +162,28 @@ export const UncategorizedPost = ({
   });
 
   const prevSlide = () => {
-    updateCurrentPost();
     const isFirstSlide = currentIndex === 0;
     const newIndex = isFirstSlide ? images.length - 1 : currentIndex - 1;
     setCurrentIndex(newIndex);
-    console.log(data.data[currentIndex]);
+    const newPostId = images[newIndex]?.POId;
+    updateCurrentPost(newPostId);
   };
 
-  const nextSlide = () => {
+  const nextSlide = async () => {
     const isLastSlide = currentIndex === images.length - 1;
+
     const newIndex = isLastSlide ? 0 : currentIndex + 1;
-    setCurrentIndex(newIndex);
-    console.log(data.data[currentIndex]);
     // const currentImage = data.data[currentIndex];
     // const category = currentImage.category;
-    handlePostClick(
-      selectedCategories[currentPostId]?.map((category) => category.OCName)
+    const data = await selectedCategories[currentPostId]?.map(
+      (category) => category.OCName
     );
+
+    await handlePostClick(data);
+
+    setCurrentIndex(newIndex);
+    const newPostId = images[newIndex]?.POId;
+    updateCurrentPost(newPostId);
   };
 
   const Carousel = () => {
@@ -181,11 +198,10 @@ export const UncategorizedPost = ({
     const isPrevSlide = nextIndex === 0;
     const newIndex = isPrevSlide ? images.length - 1 : nextIndex - 1;
     setNextIndex(newIndex);
-    console.log(data.data[nextIndex]);
+    console.log(images[nextIndex]?.PMMedia);
   };
 
   useEffect(() => {
-    updateCurrentPost(images[currentIndex]?.POId);
     Carousel();
   }, [currentIndex]);
 
@@ -193,17 +209,14 @@ export const UncategorizedPost = ({
     const isNextSlide = nextIndex === images.length - 1;
     const newIndex = isNextSlide ? 0 : nextIndex + 1;
     setNextIndex(newIndex);
-    console.log(data.data[nextIndex]);
+    console.log(images[nextIndex]?.PMMedia);
   };
-
-  console.log("media" + images[currentIndex]?.PMMedia[0]?.media);
-  console.log(currentPostId);
 
   return (
     <div>
-      <div className="sm:flex-row sm:justify-evenly large:justify-around flex-col flex justify-center items-center">
+      <div className="flex flex-col items-center justify-center sm:flex-row sm:justify-evenly large:justify-around">
         <div className={`2xl:pl-7 xl:pl-7 lg:pl-7 md:pl-3 Styles.fade-In`}>
-          <div className=" pt-10">
+          <div className="pt-10 ">
             <div className="2xl:w-[390px] xl:w-[370px] lg:w-[360px] md:w-[255px] w-[270px] 2xl:h-[335px] h-[300px] xl:h-[335px] lg:h-[335px] md:h-[310px] bg-[#f4f4f4] rounded-md">
               <div className="text-center text-base text-[#706464] capitalize font-bold">
                 {filteredResults && filteredResults.length > 0 ? (
@@ -213,7 +226,7 @@ export const UncategorizedPost = ({
                         {images[nextIndex].PMMedia?.map((media) => {
                           if (media.type === "video") {
                             return (
-                              <div className="react_player">
+                              <div>
                                 <ReactPlayer
                                   url={images[nextIndex]?.PMMedia?.media}
                                   config={{
@@ -221,9 +234,9 @@ export const UncategorizedPost = ({
                                   }}
                                   autoPlay={false}
                                   controls={true}
-                                  // width={380}
-                                  // height={335}
-                                  className="react_player"
+                                  width=""
+                                  height=""
+                                  className="block"
                                 />
                               </div>
                             );
@@ -264,24 +277,24 @@ export const UncategorizedPost = ({
                       />
                     )}
                   </div>
-                ) : images && images.length > 0 ? (
+                ) : data.data && data.data.length > 0 ? (
                   // Display images if filteredResults is empty
-                  <div key={images[currentIndex]?.POId}>
-                    {images[currentIndex]?.PMMedia[0]?.type === "video" ? (
+                  <div key={data.data[currentIndex]?.POId}>
+                    {data.data[currentIndex]?.PMMedia[0]?.type === "video" ? (
                       <ReactPlayer
-                        url={images[currentIndex]?.PMMedia[0]?.media}
+                        url={data.data[currentIndex]?.PMMedia[0]?.media}
                         config={{
                           file: { forceHLS: true },
                         }}
                         autoPlay={false}
                         controls={true}
-                        // width={380}
-                        // height={335}
-                        className="react_player"
+                        width=""
+                        height=""
+                        className="block w-full h-full"
                       />
                     ) : (
                       <LazyLoadImage
-                        src={images[currentIndex]?.PMMedia[0]?.media}
+                        src={data.data[currentIndex]?.PMMedia[0]?.media}
                         alt=""
                         className="2xl:w-[390px] xl:w-[370px] lg:w-[360px] md:w-[255px] w-[270px] h-[300px] 2xl:h-[382px] xl:h-[335px] lg:h-[335px] md:h-[310px]"
                         effect="blur"
@@ -352,15 +365,14 @@ export const UncategorizedPost = ({
             {selectedCategories[currentPostId]?.length > 0 &&
               selectedCategories[currentPostId][0] !== null && (
                 <div className="flex flex-col items-center justify-center">
-                  <div className="space-y-3 py-3 rounded-xl flex flex-col items-center">
+                  <div className="flex flex-col items-center py-3 space-y-3 rounded-xl">
                     <div className="2xl:w-[240px] xl:w-[240px] lg:w-[240px] md:w-[190px] w-[200px] rounded-md">
                       <ul className="space-y-5">
                         {selectedCategories[currentPostId]?.map((category) => {
-                          console.log(category);
                           return (
                             <li
                               key={category.OCId}
-                              className="bg-white flex justify-between p-3 pl-3 rounded-md"
+                              className="flex justify-between p-3 pl-3 bg-white rounded-md"
                             >
                               <span>{category.OCName}</span>
                               <GrFormClose
