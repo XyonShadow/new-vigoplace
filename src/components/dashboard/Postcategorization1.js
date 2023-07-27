@@ -233,6 +233,10 @@ export function Postcategorization1({ data, categorizedData }) {
   const handlePostClick = (category, id) => {
     const postId = uncategorizedData?.data[currentIndex]?.POId;
     setSelectedCategory(category);
+    if (category.length === 0) {
+      toast.warning("No category added to post");
+      return;
+    }
 
     // const currentImage = data[currentIndex];
     // if (currentImage.category) {
@@ -285,171 +289,163 @@ export function Postcategorization1({ data, categorizedData }) {
         //   };
         //   return updatedData;
         // });
-        toast.success("Sucessfully categorized this post!");
+        toast.success("Post successfully categorized!");
       })
       .catch((error) => {
         console.error("Error creating category:", error);
-        toast.error("Error categorizing this post!");
+        toast.error("Error categorizing post!");
       });
   };
 
   return (
-    <section className="">
-      <div className="sm:flex-row justify-center flex flex-col items-center h-full bg-white sm:bg-transparent w-full  2xl:w-[900px] pt-3 sm:pt-0 large:w-[1220px]">
-        <div className="pt-2 2xl:w-[770px] xl:w-[770px] lg:w-[770px] md:w-[550px] w-[350px] sm:h-[850px] large:w-[1100px]  bg-white rounded-l-3xl">
-          <div className="p-5 2xl:pl-10 xl:pl-10 lg:pl-10 md:pl-6 border-[#f4f4f4] relative large:pl-20">
-            <div className="absolute sm:left-12 left-10 top-9 large:left-24">
-              <AiOutlineSearch size={20} />
-            </div>
+    <section className="flex items-center justify-center">
+      <div className="w-[60vw] bg-white h-screen">
+        <div className=" px-[4vw] py-4">
+          <div className="bg-[#F4F4F4] gap-2.5 rounded-lg w-[50%] py-3 flex px-6">
+            <AiOutlineSearch size={20} />
+
             <input
               type="text"
               placeholder="Post id:"
-              className="2xl:pl-10 xl:pl-10 lg:pl-10 md:pl-12 pl-12 large:pl-14 focus:outline-blue-400 sm:w-[350px] w-[300px] h-[50px] rounded-md bg-[#F4F4F4]"
+              className="bg-[#F4F4F4] w-full"
               value={searchInput}
               onChange={handleSearchChange}
             />
           </div>
-
-          <article className="mt-3">
-            <div className="font-bold border-[#f4f4f4] flex 2xl:pl-10 xl:pl-9 mac:pl-10 lg:pl-10 md:pl-6 pl-6 large:pl-20">
-              <div>
-                <button
-                  className={`border-b-2 2xl:px-[110.6px] xl:px-[98.9px] mac:px-[110.6px] px-[20px] large:px-[130px] py-4 border-2 ${
-                    tab === 0
-                      ? "border-b-[#8135F9] hover:bg-[#8135F9]  hover:text-white transition-all duration-300 "
-                      : ""
-                  } pb-2 cursor-pointer 2xl:text-lg xl:text-base md:text-sm text-xs lg:px-[108.7px] md:px-[68.2px] focus:outline-none`}
-                  onClick={() => handleTabChange(0)}
-                >
-                  Uncategorized Post
-                </button>
-              </div>
-              <div>
-                <button
-                  className={`cursor-pointer 2xl:text-lg xl:text-base 2xl:px-[110.6px] px-[20px] large:px-[130px] text-xs md:text-sm xl:px-[98.9px] mac:px-[110.6px] lg:px-[108.7px] md:px-[68.2px] py-3 border-2 ${
-                    tab === 1
-                      ? "border-b-2  border-b-[#8135F9] pb-2 hover:bg-[#8135F9] py-4 hover:text-white transition-all duration-300"
-                      : ""
-                  } focus:outline-none`}
-                  onClick={() => handleTabChange(1)}
-                >
-                  Categorized Post
-                </button>
-              </div>
-            </div>
-            {tab === 0 && (
-              <>
-                <UncategorizedPost
-                  categorizedPost={categorizedPost}
-                  currentPostId={currentPostId}
-                  updateCurrentPost={updateCurrentPost}
-                  setSelectedCategories={setSelectedCategories}
-                  // category={category}
-                  images={data?.data}
-                  filteredResults={filteredResults}
-                  selectedCategories={selectedCategories}
-                  handleCategorySelection={handleCategorySelection}
-                  handlePostClick={handlePostClick}
-                />
-              </>
-            )}
-
-            {tab === 1 && (
-              <>
-                <CategorizedPost
-                  categorizedIndex={categorizedIndex}
-                  updateCategorizedIndex={updateCategorizedIndex}
-                  updateCategorizedPost={updateCategorizedPost}
-                  isLoading={isLoading}
-                  isError={isError}
-                  data={categorizedPost}
-                  selectedCategories={selectedCategories}
-                  handlePostClick={handlePostClick}
-                  images={categorizedData}
-                  categoryResults={categoryResults}
-                />
-              </>
-            )}
-          </article>
         </div>
-        <div className="2xl:w-[283px] xl:w-[283px] lg:w-[283px] md:w-[230px] sm:h-[850px] w-[270px] bg-[#DFDCDC] sm:mt-0 mt-[620px] h-[600px] overflow-auto large:w-[350px]">
-          <p className="text-lg sm:pt-12 pt-5 pl-7 text-[#706464]">
-            Search categories
-          </p>
-          <div className="relative pt-5 pl-7 sm:pt-10">
-            <div className="absolute right-10 lg:right-10 2xl:right-10 mac:right-10 large:right-10 xl:right-10 md:right-8 sm:top-14 top-[35px]">
-              <AiOutlineSearch size={20} onClick={handleSearch} />
-            </div>
-            <input
-              type="text"
-              className="2xl:w-[235px] xl:w-[220px] lg:w-[220px] md:w-[180px] h-[50px] pl-5 rounded-md focus:outline-blue-500"
-              placeholder="Search category..."
-              value={searchTerm}
-              onChange={handleSearch}
-            />
+        <div className="font-bold px-[4vw] border-y flex justify-between border-[#f4f4f4] pt-3">
+          <div className="py-3 px-5">
+            <button
+              className={` py-3 px-5 ${
+                tab === 0
+                  ? "border-b-[#8135F9] border-b transition-all duration-300 "
+                  : ""
+              } pb-2 cursor-pointer 2xl:text-lg xl:text-base md:text-sm text-xs focus:outline-none`}
+              onClick={() => handleTabChange(0)}
+            >
+              Uncategorized Post
+            </button>
           </div>
+          <div className="py-3 px-5">
+            <button
+              className={` py-3 px-5 ${
+                tab === 1
+                  ? "border-b-[#8135F9] border-b transition-all duration-300 "
+                  : ""
+              } pb-2 cursor-pointer 2xl:text-lg xl:text-base md:text-sm text-xs focus:outline-none`}
+              onClick={() => handleTabChange(1)}
+            >
+              Categorized Post
+            </button>
+          </div>
+        </div>
+        {tab === 0 && (
+          <UncategorizedPost
+            categorizedPost={categorizedPost}
+            currentPostId={currentPostId}
+            updateCurrentPost={updateCurrentPost}
+            setSelectedCategories={setSelectedCategories}
+            // category={category}
+            images={data?.data}
+            filteredResults={filteredResults}
+            selectedCategories={selectedCategories}
+            handleCategorySelection={handleCategorySelection}
+            handlePostClick={handlePostClick}
+          />
+        )}
 
-          <div className="flex flex-col items-center justify-center mt-10">
-            <div className="bg-[#F4F4F4] 2xl:w-[238px] xl:w-[220px] lg:w-[210px] md:w-[180px] w-[220px] h-[400px] py-3 rounded-xl overflow-auto">
-              <div
-                key={Date.now()}
-                className="flex flex-col items-center py-3 space-y-5 overflow-auto"
-              >
-                {searchTerm !== "" ? (
-                  filteredCategoryResults.length > 0 ? (
-                    filteredCategoryResults.map((item) => (
-                      <div
-                        key={item.OCId}
-                        className="bg-white 2xl:w-[170px] xl:w-[170px] md:w-[140px] rounded-md h-10 p-2"
-                      >
-                        <p className="text-center text-base text-[#706464] capitalize">
-                          {item.OCName}
-                        </p>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-center text-base text-[#706464]">
-                      Not found
-                    </p>
-                  )
-                ) : (
-                  categoryList?.data.map((category) => (
+        {tab === 1 && (
+          <CategorizedPost
+            categorizedIndex={categorizedIndex}
+            updateCategorizedIndex={updateCategorizedIndex}
+            updateCategorizedPost={updateCategorizedPost}
+            isLoading={isLoading}
+            isError={isError}
+            data={categorizedPost}
+            selectedCategories={selectedCategories}
+            handlePostClick={handlePostClick}
+            images={categorizedData}
+            categoryResults={categoryResults}
+          />
+        )}
+      </div>
+      <div className="w-[30vw] h-screen bg-[#DFDCDC]">
+        <p className="text-lg sm:pt-12 pt-5 pl-7 text-[#706464]">
+          Search categories
+        </p>
+        <div className="relative pt-5 pl-7 sm:pt-10">
+          <div className="absolute right-10 lg:right-10 2xl:right-10 mac:right-10 large:right-10 xl:right-10 md:right-8 sm:top-14 top-[35px]">
+            <AiOutlineSearch size={20} onClick={handleSearch} />
+          </div>
+          <input
+            type="text"
+            className="2xl:w-[235px] xl:w-[220px] lg:w-[220px] md:w-[180px] h-[50px] pl-5 rounded-md focus:outline-blue-500"
+            placeholder="Search category..."
+            value={searchTerm}
+            onChange={handleSearch}
+          />
+        </div>
+
+        <div className="flex flex-col items-center justify-center mt-10">
+          <div className="bg-[#F4F4F4] 2xl:w-[238px] xl:w-[220px] lg:w-[210px] md:w-[180px] w-[220px] h-[400px] py-3 rounded-xl overflow-auto">
+            <div
+              key={Date.now()}
+              className="flex flex-col items-center py-3 space-y-5 overflow-auto"
+            >
+              {searchTerm !== "" ? (
+                filteredCategoryResults.length > 0 ? (
+                  filteredCategoryResults.map((item) => (
                     <div
-                      key={category.OCId}
-                      className="bg-white 2xl:w-[180px] xl:w-[170px] lg:w-[170px] md:w-[140px] w-[160px] rounded-md h-10 p-2 cursor-pointer"
-                      onClick={() => {
-                        handleCategoryChange(category);
-                      }}
+                      key={item.OCId}
+                      className="bg-white 2xl:w-[170px] xl:w-[170px] md:w-[140px] rounded-md h-10 p-2"
                     >
-                      <p className="text-center 2xl:text-base xl:text-base lg:text-base md:text-sm text-[#706464] capitalize">
-                        {category.OCName}
+                      <p className="text-center text-base text-[#706464] capitalize">
+                        {item.OCName}
                       </p>
                     </div>
                   ))
-                )}
-              </div>
+                ) : (
+                  <p className="text-center text-base text-[#706464]">
+                    Not found
+                  </p>
+                )
+              ) : (
+                categoryList?.data.map((category) => (
+                  <div
+                    key={category.OCId}
+                    className="bg-white 2xl:w-[180px] xl:w-[170px] lg:w-[170px] md:w-[140px] w-[160px] rounded-md h-10 p-2 cursor-pointer"
+                    onClick={() => {
+                      handleCategoryChange(category);
+                    }}
+                  >
+                    <p className="text-center 2xl:text-base xl:text-base lg:text-base md:text-sm text-[#706464] capitalize">
+                      {category.OCName}
+                    </p>
+                  </div>
+                ))
+              )}
             </div>
           </div>
-          <p className="pl-7 2xl:pt-24 xl:pt-24 lg:pt-24 pt-14 md:pt-14 text-[#706464]">
-            Create a new categories
-          </p>
-          <div className="flex pb-5 pl-5 mt-5 lg:pl-5 xl:pl-5 large:pl-5 2xl:pl-5 md:pl-7 2xl:flex-row xl:flex-row lg:flex-row lg:gap-0 2xl:gap-0 xl:gap-0 md:flex-col md:gap-4">
-            <input
-              type="text"
-              className="2xl:w-[180px] xl:w-[160px] lg:w-[160px] md:w-[170px] w-[150px] h-[50px] pl-5 rounded-l-md focus:outline-blue-500"
-              placeholder="New category..."
-              value={newCategories}
-              onChange={(e) => {
-                setNewCategories(e.target.value);
-              }}
-            />
-            <button
-              className="md:w-[167px] 2xl:w-[60px] xl:w-[60px] lg:w-[60px]  p-3 md:h-12 xl:h-[50px] 2xl:h-[50px] lg:h-[50px] rounded-r-lg bg-[#8135F9] text-white"
-              onClick={handleClick}
-            >
-              Save
-            </button>
-          </div>
+        </div>
+        <p className="pl-7 2xl:pt-24 xl:pt-24 lg:pt-24 pt-14 md:pt-14 text-[#706464]">
+          Create a new categories
+        </p>
+        <div className="flex pb-5 pl-5 mt-5 lg:pl-5 xl:pl-5 large:pl-5 2xl:pl-5 md:pl-7 2xl:flex-row xl:flex-row lg:flex-row lg:gap-0 2xl:gap-0 xl:gap-0 md:flex-col md:gap-4">
+          <input
+            type="text"
+            className="2xl:w-[180px] xl:w-[160px] lg:w-[160px] md:w-[170px] w-[150px] h-[50px] pl-5 rounded-l-md focus:outline-blue-500"
+            placeholder="New category..."
+            value={newCategories}
+            onChange={(e) => {
+              setNewCategories(e.target.value);
+            }}
+          />
+          <button
+            className="md:w-[167px] 2xl:w-[60px] xl:w-[60px] lg:w-[60px]  p-3 md:h-12 xl:h-[50px] 2xl:h-[50px] lg:h-[50px] rounded-r-lg bg-[#8135F9] text-white"
+            onClick={handleClick}
+          >
+            Save
+          </button>
         </div>
       </div>
     </section>

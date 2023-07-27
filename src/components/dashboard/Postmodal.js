@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
 
 export function Postmodal({ open, onClose, postId, onDelete}) {
 
@@ -7,14 +8,17 @@ export function Postmodal({ open, onClose, postId, onDelete}) {
   const API_BASE_URL = 'https://vigoplace.com/server';
 
   const deletePost = async (postId) => {
-    const response = await fetch(`${API_BASE_URL}/api/admin/categorization/${postId}`, {
+    console.log(postId)
+    const response = await fetch(`${API_BASE_URL}/api/admin/categorization/${postId}/post`, {
       method: 'DELETE',
     });
     const data = await response.json();
+    console.log(data)
     if (!response.ok) {
       throw new Error(data.error); 
+      return
     }
-    console.log(data)
+  toast.success("Post successfully deleted")
     return data;
   };
 

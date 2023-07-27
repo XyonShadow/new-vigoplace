@@ -18,6 +18,7 @@ import "react-toastify/dist/ReactToastify.css";
 import ReactPlayer from "react-player";
 import { Height } from "@mui/icons-material";
 import CarouselMini from "./Carousel";
+import Image from "next/image";
 
 export const UncategorizedPost = ({
   currentPostId,
@@ -151,7 +152,7 @@ export const UncategorizedPost = ({
       console.log("Data:", data);
       console.log("postId:", postId);
 
-      queryClient.invalidateQueries("categorizedPost");
+      queryClient.invalidateQueries("uncategorizedData");
       setCategorizedData((prevData) =>
         prevData.filter((post) => post.OPCPostId !== postId)
       );
@@ -234,11 +235,11 @@ export const UncategorizedPost = ({
 
   return (
     <div>
-      <div className="flex flex-col items-center justify-center sm:flex-row sm:justify-evenly large:justify-around">
-        <div className={`2xl:pl-7 xl:pl-7 lg:pl-7 md:pl-3 Styles.fade-In`}>
-          <div className="pt-10 ">
-            <div className="2xl:w-[390px] xl:w-[370px] lg:w-[360px] md:w-[255px] w-[270px] 2xl:h-[335px] h-[300px] xl:h-[335px] lg:h-[335px] md:h-[310px] bg-[#f4f4f4] rounded-md">
-              <div className="text-center text-base text-[#706464] capitalize font-bold">
+      <div className="flex flex-col mt-10 items-center justify-center px-[4vw] sm:flex-row sm:gap-8">
+        <div>
+          <div className="">
+            <div className="">
+              <div className="">
                 {data.data && data.data.length > 0 ? (
                   // Display images if filteredResults is empty
                   <div>
@@ -259,12 +260,14 @@ export const UncategorizedPost = ({
                           );
                         else
                           return (
-                            <img
+                            <Image
+                            width={360}
+                            height={360}
                               src={media.media}
                               key={media.media}
                               alt=""
-                              className=""
-                              effect="blur"
+                              className="w-full h-auto mx-auto rounded-xl"
+                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                             />
                           );
                       })}
@@ -275,26 +278,6 @@ export const UncategorizedPost = ({
                   <div className="text-center">Not Found</div>
                 )}
               </div>
-              {/* {filteredResults[newIndex]?.PMMedia.media((item, index) => {
-                      <div key={index}>
-                        {filteredResults[newIndex]?.PMMedia.media.type === "video" ? (
-                          
-                        )}
-                      </div>;
-                    })} */}
-
-              {/* {filteredResults && filteredResults.length > 0 ? (    
-                  <div key={filteredResults[currentIndex]?.POId}>
-                    {filteredResults[currentIndex]?.PMMedia[0]?.type ===
-                    "video" ? (   
-                    <LazyLoadImage
-                    src={filteredResults[currentIndex]?.PMMedia[0]?.media}
-                    alt=""
-                    className="2xl:w-[390px] xl:w-[380px] lg:w-[360px] md:w-[255px] w-[250px] 2xl:h-[382px] xl:h-[335px] lg:h-[335px] h-[300px] md:h-[310px]"
-                    effect="blur"
-                  />
-</div>
-)} */}
 
               <div className="relative">
                 <button
@@ -325,7 +308,7 @@ export const UncategorizedPost = ({
           </div>
         </div>
 
-        <div className="flex justify-center pt-12">
+        <div className="">
           <div className="2xl:w-[290px] xl:w-[290px] lg:w-[290px] md:w-[230px] w-[270px] sm:h-[620px] h-[300px] bg-[#f4f4f4]  rounded-xl overflow-auto">
             <p className="text-start p-2 pl-10 font-bold text-[#706464] text-lg">
               Post category

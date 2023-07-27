@@ -38,9 +38,10 @@ export const CategorizedPost = ({
   }
 
   const deletePost = async (postId) => {
+    console.log(postId)
     try {
       const response = await fetch(
-        `${API_BASE_URL}/api/admin/categorization/${postId}`,
+        `${API_BASE_URL}/api/admin/categorization/${postId}/post`,
         {
           method: "DELETE",
         }
@@ -57,7 +58,36 @@ export const CategorizedPost = ({
     }
   };
 
+
+  const deletePostCategory = async (postId, category) => {
+    toast.success("Removing category from post")
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/admin/uncategorize/${postId}/${category}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (!response.ok) {
+        toast.error("Fails to remove category")
+        throw new Error(data.error);
+       
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      throw new Error(`Error deleting post: ${error.message}`);
+    }
+  };
+
   const queryClient = useQueryClient();
+
+  const mutateDelete = useMutation(deletePostCategory, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("categorizedPost")
+    }
+  })
 
   const mutation = useMutation(deletePost, {
     onSuccess: (data, postId) => {
@@ -70,7 +100,7 @@ export const CategorizedPost = ({
       updateCategorizedPost((prevData) =>
         prevData.filter((post) => post.OPCPostId !== postId)
       );
-      toast.success("Successfully deleted the category!");
+      toast.success("Successfully deleted the post!");
     },
     onError: (error) => {
       console.error("Error deleting post:", error);
@@ -80,8 +110,8 @@ export const CategorizedPost = ({
 
   const categoryDelete = async (postId) => {
     try {
-      console.log("Calling categoryDelete with postId:", postId);
-      await mutation.mutateAsync(postId);
+      console.log("Calling categoryDelete with postId:", postId );
+      await mutate(postId);
       updateCategorizedPost((prevData) =>
         prevData.map((post) =>
           post.POId === postId ? { ...post, OPCCategory: [] } : post
@@ -172,13 +202,13 @@ export const CategorizedPost = ({
                         else
                           return (
                             <Image
+                            width={360}
+                            height={360}
                               src={media.media}
                               key={media.media}
-                              width={320}
-                              height={300}
                               alt=""
-                              className=" w-full h-auto max-h-[80%]"
-                              effect="blur"
+                              className="w-full h-auto mx-auto rounded-xl"
+                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                             />
                           );
                       })}
@@ -238,7 +268,7 @@ export const CategorizedPost = ({
                         size={20}
                         className="cursor-pointer"
                         onClick={() =>
-                          categoryDelete(data[categorizedIndex]?.POId)
+                          deletePostCategory(data[categorizedIndex]?.POId, item)
                         }
                       />
                     </div>
@@ -252,7 +282,7 @@ export const CategorizedPost = ({
       <Postmodal
         open={openModal}
         onClose={() => setOpenModal(false)}
-        postId={categoryResults[categorizedIndex]?.POId}
+        postId={data[categorizedIndex]?.POId}
         onDelete={handleDelete}
       />
 
