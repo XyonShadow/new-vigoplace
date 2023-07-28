@@ -234,15 +234,15 @@ export const UncategorizedPost = ({
   };
 
   return (
-    <div>
-      <div className="flex flex-col mt-10 items-center justify-center px-[4vw] sm:flex-row sm:gap-8">
-        <div>
-          <div className="">
+    <>
+      <div className="flex flex-col gap-5 mt-10 items-center text-sm lg-text-base lg:items-start justify-center px-[4vw] lg:flex-row lg:gap-8">
+        <div className="w-full">
+          <>
             <div className="">
               <div className="">
                 {data.data && data.data.length > 0 ? (
                   // Display images if filteredResults is empty
-                  <div>
+                  <div className="relative">
                     <CarouselMini autoSlide={false} autoSlideInterval={3000}>
                       {data.data[currentIndex]?.PMMedia?.map((media) => {
                         console.log(media);
@@ -260,89 +260,87 @@ export const UncategorizedPost = ({
                           );
                         else
                           return (
+                            // <div
+                            //   key={media.media}
+                            //   className="lg:w-[30vw] w-full h-[50vh] lg:h-[35vh] object-contain relative"
+                            // >
+                            //   {" "}
                             <Image
-                            width={360}
-                            height={360}
+                              width={400}
+                              height={400}
                               src={media.media}
-                              key={media.media}
+                              // key={media.media}
                               alt=""
-                              className="w-full h-auto mx-auto rounded-xl"
-                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                              priority
+                              className="w-full h-auto rounded-xl"
+                              // sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                             />
+                            // </div>
                           );
                       })}
                     </CarouselMini>
+                    <button
+                      className="bg-[#F93636] py-3 px-5 rounded-md text-white text-sm absolute bottom-4 right-5 z-20"
+                      onClick={() => setOpenModal(true)}
+                    >
+                      Delete Post
+                    </button>
                   </div>
                 ) : (
                   // Handle the case when images or filteredResults are not available
                   <div className="text-center">Not Found</div>
                 )}
               </div>
-
-              <div className="relative">
-                <button
-                  className="bg-[#F93636] py-3 px-5 rounded-md text-white text-sm absolute right-5 -top-16 z-20"
-                  onClick={() => setOpenModal(true)}
-                >
-                  Delete Post
-                </button>
-              </div>
             </div>
             <div>
-              <h2 className="text-[#706464] 2xl:pt-7 xl:pt-7 lg:pt-7 text-start text-base md:pt-8 pt-7">
+              <h2 className="text-[#706464] text-start text-base mt-8">
                 Post Type: {data.data[currentIndex]?.postType}
               </h2>
             </div>
-          </div>
+          </>
           <div>
-            <h2 className="text-[#706464] pt-7 text-start text-xl sm:pb-5 pb-5">
-              Description
-            </h2>
-            <div className={`${data.data[currentIndex]}`}>
-              <div className="2xl:w-[380px] xl:w-[380px] lg:w-[360px] md:w-[245px] w-[270px] h-[100px] 2xl:h-[150px] xl:h-[150px] lg:h-[150px] md:h-[177px] bg-[#f4f4f4] rounded-md overflow-auto">
-                <div className="text-center text-sm text-[#706464] mt-2 p-3">
-                  <p>{data.data[currentIndex]?.description}</p>
-                </div>
-              </div>
+            <h2 className="text-[#706464] text-start mt-3.5">Description</h2>
+            <div
+              className={`${data.data[currentIndex]} mt-[18px] py-4 text-sm px-3 bg-[#F1F0F0] rounded-lg overflow-y-auto h-28`}
+            >
+              <p>{data.data[currentIndex]?.description}</p>
             </div>
           </div>
         </div>
 
-        <div className="">
-          <div className="2xl:w-[290px] xl:w-[290px] lg:w-[290px] md:w-[230px] w-[270px] sm:h-[620px] h-[300px] bg-[#f4f4f4]  rounded-xl overflow-auto">
-            <p className="text-start p-2 pl-10 font-bold text-[#706464] text-lg">
-              Post category
-            </p>
+        <div className="h-[65vh] w-full bg-[#F1F0F0] px-6 py-4 rounded-xl overflow-auto">
+          <p className="text-start p-2 font-bold text-[#706464]">
+            Post category
+          </p>
 
-            {selectedCategories[currentPostId]?.length > 0 &&
-              selectedCategories[currentPostId][0] !== null && (
-                <div className="flex flex-col items-center justify-center">
-                  <div className="flex flex-col items-center py-3 space-y-3 rounded-xl">
-                    <div className="2xl:w-[240px] xl:w-[240px] lg:w-[240px] md:w-[190px] w-[200px] rounded-md">
-                      <ul className="space-y-5">
-                        {selectedCategories[currentPostId]?.map((category) => {
-                          return (
-                            <li
-                              key={category.OCId}
-                              className="flex justify-between p-3 pl-3 bg-white rounded-md"
-                            >
-                              <span>{category.OCName}</span>
-                              <GrFormClose
-                                size={20}
-                                className="cursor-pointer"
-                                onClick={() =>
-                                  handleCategoryChange(category, currentIndex)
-                                }
-                              />
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              )}
-          </div>
+          {selectedCategories[currentPostId]?.length > 0 &&
+            selectedCategories[currentPostId][0] !== null && (
+              <ul className="flex flex-col items-center justify-center gap-4">
+                {selectedCategories[currentPostId]?.map((category) => {
+                  return (
+                    <li
+                      key={category.OCId}
+                      className="flex justify-between py-2 px-6  w-full bg-white rounded-lg"
+                    >
+                      <span>{category.OCName}</span>
+                      <GrFormClose
+                        size={20}
+                        className="cursor-pointer"
+                        onClick={() =>
+                          handleCategoryChange(category, currentIndex)
+                        }
+                      />
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+
+          {selectedCategories[currentPostId]?.length === 0 && (
+            <div className="h-[80%] text-[#887E7E] rounded-lg bg-white flex items-center justify-center">
+              <p>Add a post category</p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -353,7 +351,7 @@ export const UncategorizedPost = ({
         onDelete={handleDelete}
       />
 
-      <div className="flex sm:p-3 justify-between items-center sm:-mt-80 -mt-[590px] p-1 text-white z-20">
+      <div className="flex justify-between items-center -mt-[120vh] lg:-mt-[40vh] px-[1vw] text-white z-20">
         <div>
           <MdOutlineArrowBackIosNew
             // size={25}
@@ -369,6 +367,6 @@ export const UncategorizedPost = ({
           />
         </div>
       </div>
-    </div>
+    </>
   );
 };

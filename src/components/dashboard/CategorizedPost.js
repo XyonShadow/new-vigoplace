@@ -38,7 +38,7 @@ export const CategorizedPost = ({
   }
 
   const deletePost = async (postId) => {
-    console.log(postId)
+    console.log(postId);
     try {
       const response = await fetch(
         `${API_BASE_URL}/api/admin/categorization/${postId}/post`,
@@ -58,9 +58,8 @@ export const CategorizedPost = ({
     }
   };
 
-
   const deletePostCategory = async (postId, category) => {
-    toast.success("Removing category from post")
+    toast.success("Removing category from post");
     try {
       const response = await fetch(
         `${API_BASE_URL}/api/admin/uncategorize/${postId}/${category}`,
@@ -70,9 +69,8 @@ export const CategorizedPost = ({
       );
 
       if (!response.ok) {
-        toast.error("Fails to remove category")
+        toast.error("Fails to remove category");
         throw new Error(data.error);
-       
       }
       const data = await response.json();
       return data;
@@ -85,9 +83,9 @@ export const CategorizedPost = ({
 
   const mutateDelete = useMutation(deletePostCategory, {
     onSuccess: () => {
-      queryClient.invalidateQueries("categorizedPost")
-    }
-  })
+      queryClient.invalidateQueries("categorizedPost");
+    },
+  });
 
   const mutation = useMutation(deletePost, {
     onSuccess: (data, postId) => {
@@ -110,7 +108,7 @@ export const CategorizedPost = ({
 
   const categoryDelete = async (postId) => {
     try {
-      console.log("Calling categoryDelete with postId:", postId );
+      console.log("Calling categoryDelete with postId:", postId);
       await mutate(postId);
       updateCategorizedPost((prevData) =>
         prevData.map((post) =>
@@ -177,15 +175,15 @@ export const CategorizedPost = ({
   };
 
   return (
-    <div>
-      <div className="flex flex-col items-center justify-center sm:flex-row sm:justify-evenly">
-        <div className={`2xl:pl-7 xl:pl-7 lg:pl-7 md:pl-3 Styles.fade-In`}>
-          <div className="pt-10">
-            <div className="2xl:w-[390px] xl:w-[380px] lg:w-[360px] md:w-[255px] w-[270px] 2xl:h-[335px] h-[300px] xl:h-[335px] lg:h-[335px] md:h-[310px] bg-[#f4f4f4] rounded-md">
-              <div className="text-center text-base text-[rgb(112,100,100)] capitalize font-bold">
+    <>
+      <div className="flex flex-col gap-5 mt-10 items-center text-sm lg-text-base lg:items-start justify-center px-[4vw] lg:flex-row lg:gap-8">
+        <div className={`w-full`}>
+          <div className="">
+            <div className="">
+              <div className="">
                 {images && images.length > 0 ? (
                   // Display images if categoryResults is empty
-                  <div key={images[categorizedIndex].POId}>
+                  <div className="relative">
                     <CarouselMini autoSlide={false} autoSlideInterval={3000}>
                       {images[categorizedIndex]?.PMMedia?.map((media) => {
                         if (media.type === "video")
@@ -201,81 +199,76 @@ export const CategorizedPost = ({
                           );
                         else
                           return (
+                            // <div
+                            //   key={media.media}
+                            //   className="lg:w-[30vw] w-full h-[50vh] lg:h-[35vh] object-contain relative"
+                            // >
+                            //   {" "}
                             <Image
-                            width={360}
-                            height={360}
+                              width={400}
+                              height={400}
                               src={media.media}
-                              key={media.media}
+                              // key={media.media}
                               alt=""
-                              className="w-full h-auto mx-auto rounded-xl"
-                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                              priority
+                              className="w-full h-auto rounded-xl"
+                              // sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                             />
+                            // </div>
                           );
                       })}
                     </CarouselMini>
+                    <button
+                      className="bg-[#F93636] py-3 px-5 rounded-md text-white text-sm absolute bottom-4 right-5 z-20"
+                      onClick={() => setOpenModal(true)}
+                    >
+                      Delete Post
+                    </button>
                   </div>
                 ) : (
                   // Handle the case when images or categoryResults are not available
-                  <div className="pt-80">No Categorized Post Found</div>
+                  <div className="text-center">No Categorized Post Found</div>
                 )}
-              </div>
-
-              <div className="relative">
-                <button
-                  className="bg-[#F93636] py-3 px-5 rounded-md text-white text-sm absolute right-3 -top-16 z-20"
-                  onClick={() => setOpenModal(true)}
-                >
-                  Delete Post
-                </button>
               </div>
             </div>
             <div>
-              <h2 className="text-[#706464] 2xl:pt-7 xl:pt-7 lg:pt-7 text-start text-base md:pt-8 pt-7">
+              <h2 className="text-[#706464] text-start text-base mt-87">
                 Post Type: {data[categorizedIndex]?.postType}
               </h2>
             </div>
           </div>
           <div>
-            <h2 className="text-[#706464] pt-7 text-start text-xl sm:pb-5 pb-5">
-              Description
-            </h2>
-            <div>
-              <div className="2xl:w-[380px] xl:w-[380px] lg:w-[360px] md:w-[245px] w-[270px] h-[100px] 2xl:h-[150px] xl:h-[150px] lg:h-[150px] md:h-[177px] bg-[#f4f4f4] rounded-md overflow-auto">
-                <div className="text-center text-sm text-[#706464] mt-2 p-3">
-                  {data[categorizedIndex]?.description}
-                </div>
-              </div>
+            <h2 className="text-[#706464] text-start mt-3.5">Description</h2>
+
+            <div className="mt-[18px] py-4 text-sm px-3 bg-[#F1F0F0] rounded-lg overflow-y-auto h-28">
+              <p>{data[categorizedIndex]?.description}</p>
             </div>
           </div>
         </div>
 
-        <div className="flex justify-center pt-14">
-          <div className="2xl:w-[290px] xl:w-[290px] lg:w-[290px] md:w-[230px] w-[270px] sm:h-[620px] h-[300px] bg-[#f4f4f4]  rounded-xl overflow-auto">
-            <p className="text-start p-2 pl-10 font-bold text-[#706464] text-lg">
-              Post category
-            </p>
-            <div className="flex flex-col items-center justify-center">
-              <div className="space-y-3">
-                {data[categorizedIndex]?.OPCCategory?.map((item, index) => {
-                  // console.log(item);
-                  return (
-                    <div
-                      key={index}
-                      className="bg-white 2xl:w-[240px] xl:w-[240px] lg:w-[240px] md:w-[190px] w-[200px] rounded-md h-12 p-3 pl-3 flex justify-between"
-                    >
-                      <p className="text-[#706464]">{item}</p>
-                      <GrFormClose
-                        size={20}
-                        className="cursor-pointer"
-                        onClick={() =>
-                          deletePostCategory(data[categorizedIndex]?.POId, item)
-                        }
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+        <div className="h-[65vh] w-full bg-[#F1F0F0] px-6 py-4 rounded-xl overflow-auto">
+          <p className="text-start p-2 font-bold text-[#706464]">
+            Post category
+          </p>
+          <div className="flex flex-col items-center justify-center gap-4">
+            {data[categorizedIndex]?.OPCCategory?.map((item, index) => {
+              // console.log(item);
+              return (
+                <div
+                  key={index}
+                  className="flex justify-between py-2 px-6  w-full bg-white rounded-lg"
+                >
+                  <p>{item}</p>
+                  <GrFormClose
+                    size={20}
+                    className="cursor-pointer"
+                    onClick={() =>
+                      deletePostCategory(data[categorizedIndex]?.POId, item)
+                    }
+                  />
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -300,18 +293,22 @@ export const CategorizedPost = ({
         />
       </div> */}
 
-      <div className="flex justify-between items-center sm:-mt-80 -mt-[590px] p-3 text-white">
-        <MdOutlineArrowBackIosNew
-          // size={25}
-          className="rounded-xl bg-[#8135F9] p-1 cursor-pointer text-xl sm:text-2xl"
-          onClick={prevSlide}
-        />
-        <MdArrowForwardIos
-          size={25}
-          className="rounded-xl bg-[#8135F9] p-1 cursor-pointer text-xl sm:text-2xl"
-          onClick={nextSlide}
-        />
+      <div className="flex justify-between items-center -mt-[120vh] lg:-mt-[40vh] px-[1vw] text-white z-20">
+        <div>
+          <MdOutlineArrowBackIosNew
+            // size={25}
+            className="rounded-xl bg-[#8135F9] p-1 cursor-pointer lg:text-xl md:text-base xl:text-2xl"
+            onClick={prevSlide}
+          />
+        </div>
+        <div>
+          <MdArrowForwardIos
+            // size={25}
+            className="rounded-xl bg-[#8135F9] p-1 cursor-pointer lg:text-xl md:text-base xl:text-2xl"
+            onClick={nextSlide}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 };

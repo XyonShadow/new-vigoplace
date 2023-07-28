@@ -4,12 +4,9 @@ import "react-toastify/dist/ReactToastify.css";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
-
-
 const PostCategorization = () => {
   const [categorizedData, setCategorizedData] = useState([]);
 
-  
   const API_BASE_URL = "https://vigoplace.com/server/";
 
   const fetchData = async () => {
@@ -17,7 +14,6 @@ const PostCategorization = () => {
     const data = await response.json();
     console.log(data);
     return data;
-    
   };
 
   const fetchCategory = async () => {
@@ -26,27 +22,25 @@ const PostCategorization = () => {
     return data;
   };
 
-  const { data: categorizedItem, isLoading, isError } = useQuery(
-    ["categorizedPost"],
-    fetchCategory,
-    {
-      onSuccess: (data) => {
-        setCategorizedData(data?.data || []);
-      },
-    }
-  );
+  const {
+    data: categorizedItem,
+    isLoading,
+    isError,
+  } = useQuery(["categorizedPost"], fetchCategory, {
+    onSuccess: (data) => {
+      setCategorizedData(data?.data || []);
+    },
+  });
 
-  const { data,  error } = useQuery(["uncategorizedData"], fetchData);
+  const { data, error } = useQuery(["uncategorizedData"], fetchData);
 
   return (
-    
     <div>
       <ToastContainer position="top-center" />
-   <Postcategorization1 data={data} categorizedData={categorizedData}/>
+      <Postcategorization1 data={data} categorizedData={categorizedData} />
     </div>
-    
-  )
-}
+  );
+};
 
 PostCategorization.auth = true;
 export default PostCategorization;
