@@ -25,6 +25,7 @@ export const CategorizedPost = ({
   isError,
   images,
   categoryResults,
+  setCategoryResults,
   categorizedIndex,
   updateCategorizedIndex,
   updateCategorizedPost,
@@ -33,7 +34,7 @@ export const CategorizedPost = ({
   const [openModal, setOpenModal] = useState(false);
 
   const API_BASE_URL = "https://vigoplace.com/server/";
-  if (categoryResults.length > 1) {
+  if (categoryResults.length > 0) {
     console.log(categoryResults);
   }
 
@@ -165,12 +166,14 @@ export const CategorizedPost = ({
   };
 
   const prevSlide = () => {
+    setCategoryResults([])
     updateCategorizedIndex(
       (prevIndex) => (prevIndex - 1 + data?.length) % data?.length
     );
   };
 
   const nextSlide = () => {
+    setCategoryResults([])
     updateCategorizedIndex((prevIndex) => (prevIndex + 1) % data?.length);
   };
 
@@ -185,7 +188,7 @@ export const CategorizedPost = ({
                   // Display images if categoryResults is empty
                   <div className="relative">
                     <CarouselMini autoSlide={false} autoSlideInterval={3000}>
-                      {images[categorizedIndex]?.PMMedia?.map((media) => {
+                      {( categoryResults.length > 0 ? categoryResults[0] : images[categorizedIndex])?.PMMedia?.map((media) => {
                         if (media.type === "video")
                           return (
                             <ReactPlayer
@@ -233,7 +236,7 @@ export const CategorizedPost = ({
             </div>
             <div>
               <h2 className="text-[#706464] text-start text-base mt-87">
-                Post Type: {data[categorizedIndex]?.postType}
+                Post Type: {(categoryResults.length > 0 ? categoryResults[0] : data[categorizedIndex])?.postType}
               </h2>
             </div>
           </div>
@@ -241,7 +244,7 @@ export const CategorizedPost = ({
             <h2 className="text-[#706464] text-start mt-3.5">Description</h2>
 
             <div className="mt-[18px] py-4 text-sm px-3 bg-[#F1F0F0] rounded-lg overflow-y-auto h-28">
-              <p>{data[categorizedIndex]?.description}</p>
+              <p>{(categoryResults.length > 0 ? categoryResults[0] : data[categorizedIndex])?.description}</p>
             </div>
           </div>
         </div>
@@ -251,7 +254,7 @@ export const CategorizedPost = ({
             Post category
           </p>
           <div className="flex flex-col items-center justify-center gap-4">
-            {data[categorizedIndex]?.OPCCategory?.map((item, index) => {
+            {(categoryResults.length > 0 ? categoryResults[0] : data[categorizedIndex])?.OPCCategory?.map((item, index) => {
               // console.log(item);
               return (
                 <div
@@ -263,7 +266,7 @@ export const CategorizedPost = ({
                     size={20}
                     className="cursor-pointer"
                     onClick={() =>
-                      deletePostCategory(data[categorizedIndex]?.POId, item)
+                      deletePostCategory((categoryResults.length > 0 ? categoryResults[0] : data[categorizedIndex])?.POId, item)
                     }
                   />
                 </div>
@@ -275,7 +278,7 @@ export const CategorizedPost = ({
       <Postmodal
         open={openModal}
         onClose={() => setOpenModal(false)}
-        postId={data[categorizedIndex]?.POId}
+        postId={(categoryResults.length > 0 ? categoryResults[0] : data[categorizedIndex])?.POId}
         onDelete={handleDelete}
       />
 

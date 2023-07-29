@@ -30,10 +30,13 @@ export const UncategorizedPost = ({
   filteredResults,
   selectedCategories,
   handleCategorySelection,
+  currentIndex,
+  setCurrentIndex,
   handlePostClick,
+  filteredPost,
+  setFilteredPost,
 }) => {
   const [openModal, setOpenModal] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [deletedIndex, setDeletedIndex] = useState(null);
   const [categorizedData, setCategorizedData] = useState([]);
   const [showIcon, setShowIcon] = useState(false);
@@ -165,6 +168,7 @@ export const UncategorizedPost = ({
   });
 
   const prevSlide = () => {
+    setFilteredPost([]);
     const isFirstSlide = currentIndex === 0;
     const newIndex = isFirstSlide ? images.length - 1 : currentIndex - 1;
     setCurrentIndex(newIndex);
@@ -173,6 +177,7 @@ export const UncategorizedPost = ({
   };
 
   const nextSlide = async () => {
+    setFilteredPost([]);
     const isLastSlide = currentIndex === images.length - 1;
 
     const newIndex = isLastSlide ? 0 : currentIndex + 1;
@@ -243,42 +248,83 @@ export const UncategorizedPost = ({
                 {data.data && data.data.length > 0 ? (
                   // Display images if filteredResults is empty
                   <div className="relative">
-                    <CarouselMini autoSlide={false} autoSlideInterval={3000}>
-                      {data.data[currentIndex]?.PMMedia?.map((media) => {
-                        console.log(media);
-                        console.log(data.data[currentIndex]);
-                        if (media.type === "video")
-                          return (
-                            <ReactPlayer
-                              url={media.media}
-                              muted={true}
-                              playsinline
-                              autoPlay={false}
-                              controls
-                              key={media.media}
-                            />
-                          );
-                        else
-                          return (
-                            // <div
-                            //   key={media.media}
-                            //   className="lg:w-[30vw] w-full h-[50vh] lg:h-[35vh] object-contain relative"
-                            // >
-                            //   {" "}
-                            <Image
-                              width={400}
-                              height={400}
-                              src={media.media}
-                              // key={media.media}
-                              alt=""
-                              priority
-                              className="w-full h-auto rounded-xl"
-                              // sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            />
-                            // </div>
-                          );
-                      })}
-                    </CarouselMini>
+                    {filteredPost.length > 0 ? (
+                      <CarouselMini autoSlide={false} autoSlideInterval={3000}>
+                        {filteredPost[0]?.PMMedia?.map((media) => {
+                          console.log(media);
+                          // console.log(data.data[currentIndex]);
+                          if (media.type === "video")
+                            return (
+                              <ReactPlayer
+                                url={media.media}
+                                muted={true}
+                                playsinline
+                                autoPlay={false}
+                                controls
+                                key={media.media}
+                              />
+                            );
+                          else
+                            return (
+                              // <div
+                              //   key={media.media}
+                              //   className="lg:w-[30vw] w-full h-[50vh] lg:h-[35vh] object-contain relative"
+                              // >
+                              //   {" "}
+                              <Image
+                                width={400}
+                                height={400}
+                                src={media.media}
+                                // key={media.media}
+                                objectFit="contain"
+                                alt=""
+                                priority
+                                className="w-full h-auto rounded-xl object-contain"
+                                // sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                              />
+                              // </div>
+                            );
+                        })}
+                      </CarouselMini>
+                    ) : (
+                      <CarouselMini autoSlide={false} autoSlideInterval={3000}>
+                        {data.data[currentIndex]?.PMMedia?.map((media) => {
+                          console.log(media);
+                          console.log(data.data[currentIndex]);
+                          if (media.type === "video")
+                            return (
+                              <ReactPlayer
+                                url={media.media}
+                                muted={true}
+                                playsinline
+                                autoPlay={false}
+                                controls
+                                key={media.media}
+                              />
+                            );
+                          else
+                            return (
+                              // <div
+                              //   key={media.media}
+                              //   className="lg:w-[30vw] w-full h-[50vh] lg:h-[35vh] object-contain relative"
+                              // >
+                              //   {" "}
+                              <Image
+                                width={400}
+                                height={400}
+                                src={media.media}
+                                // key={media.media}
+                                alt=""
+                                priority
+                                className="w-full h-auto rounded-xl"
+                                // sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                              />
+                              // </div>
+                            );
+                        })}
+                      </CarouselMini>
+                    )}
+
                     <button
                       className="bg-[#F93636] py-3 px-5 rounded-md text-white text-sm absolute bottom-4 right-5 z-20"
                       onClick={() => setOpenModal(true)}
@@ -294,16 +340,25 @@ export const UncategorizedPost = ({
             </div>
             <div>
               <h2 className="text-[#706464] text-start text-base mt-8">
-                Post Type: {data.data[currentIndex]?.postType}
+                Post Type:{" "}
+                {filteredPost.length
+                  ? filteredPost[0].postType
+                  : data.data[currentIndex]?.postType}
               </h2>
             </div>
           </>
           <div>
             <h2 className="text-[#706464] text-start mt-3.5">Description</h2>
             <div
-              className={`${data.data[currentIndex]} mt-[18px] py-4 text-sm px-3 bg-[#F1F0F0] rounded-lg overflow-y-auto h-28`}
+              className={`${
+                filteredPost.length ? filteredPost[0] : data.data[currentIndex]
+              } mt-[18px] py-4 text-sm px-3 bg-[#F1F0F0] rounded-lg overflow-y-auto h-28`}
             >
-              <p>{data.data[currentIndex]?.description}</p>
+              <p>
+                {filteredPost.length
+                  ? filteredPost[0].description
+                  : data.data[currentIndex]?.description}
+              </p>
             </div>
           </div>
         </div>
@@ -347,7 +402,11 @@ export const UncategorizedPost = ({
       <Postmodal
         open={openModal}
         onClose={() => setOpenModal(false)}
-        postId={data.data[currentIndex]?.POId}
+        postId={
+          filteredPost.length
+            ? filteredPost[0].POId
+            : data.data[currentIndex]?.POId
+        }
         onDelete={handleDelete}
       />
 

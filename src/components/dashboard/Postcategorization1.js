@@ -13,6 +13,8 @@ export function Postcategorization1({ data, categorizedData }) {
   const [filteredResults, setFilteredResults] = useState([]);
   const [newCategories, setNewCategories] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentPost, setCurrentPost] = useState(0);
+  const [filteredPost, setFilteredPost] = useState([])
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [filteredCategoryResults, setFilteredCategoryResults] = useState([]);
   // const [FilteredImages, setFilteredImages] = useState([])
@@ -199,16 +201,28 @@ export function Postcategorization1({ data, categorizedData }) {
   //   setFilteredResults(filtered);
   // };
   const handleUncategorizedSearch = (searchInput) => {
+    console.log(searchInput)
     const filteredPosts = uncategorizedData.data.filter(
-      (post) => post.POId === searchInput
+      (post) => post.POId ===  Number(searchInput)
     );
-    updateCurrentPost(filteredPosts);
+   if (filteredPosts.length === 0 && tab === 0) {
+    toast.error("Post not found")
+    return
+   }
+    // setCurrentPost(filteredPosts[0]?.POId)
+    setFilteredPost(filteredPosts)
+    // updateCurrentPost(filteredPosts[0]?.POId);
+   
   };
 
   const handleCategorizedSearch = (searchInput) => {
     const categorizedFiltered = categorizedData.filter(
       (post) => post.POId === Number(searchInput)
     );
+    if (categorizedFiltered.length === 0 && tab === 1) {
+      toast.error("Post not found")
+      return
+     }
     setCategoryResults(categorizedFiltered);
   };
 
@@ -242,7 +256,6 @@ export function Postcategorization1({ data, categorizedData }) {
     const postId = uncategorizedData?.data[currentIndex]?.POId;
     setSelectedCategory(category);
     if (category.length === 0) {
-      toast.warning("No category added to post");
       return;
     }
 
@@ -359,6 +372,10 @@ export function Postcategorization1({ data, categorizedData }) {
             selectedCategories={selectedCategories}
             handleCategorySelection={handleCategorySelection}
             handlePostClick={handlePostClick}
+            currentIndex={currentPost}
+            setCurrentIndex={setCurrentPost}
+            filteredPost={filteredPost}
+            setFilteredPost={setFilteredPost}
           />
         )}
 
@@ -374,6 +391,7 @@ export function Postcategorization1({ data, categorizedData }) {
             handlePostClick={handlePostClick}
             images={categorizedData}
             categoryResults={categoryResults}
+            setCategoryResults={setCategoryResults}
           />
         )}
       </div>
@@ -404,7 +422,8 @@ export function Postcategorization1({ data, categorizedData }) {
               <p className="text-center text-[#706464]">Not found</p>
             )
           ) : (
-            categoryList?.data.map((category) => (
+            categoryList?.data.map((category) => { if (category.OCName === "") return;
+            return (  
               <div
                 key={category.OCId}
                 className="bg-white py-2.5 text-[#706464] cursor-pointer px-4 rounded-md"
@@ -414,7 +433,7 @@ export function Postcategorization1({ data, categorizedData }) {
               >
                 <p>{category.OCName}</p>
               </div>
-            ))
+            )})
           )}
         </div>
         <div className="flex flex-col mt-20 gap-4">
