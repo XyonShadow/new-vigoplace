@@ -240,60 +240,61 @@ export const UncategorizedPost = ({
 
   return (
     <>
-      <div className="flex flex-col gap-5 mt-10 items-center text-sm lg-text-base lg:items-start justify-center px-[4vw] lg:flex-row lg:gap-8">
-        <div className="w-full">
+      <div className="flex flex-col gap-5 mt-5 items-center text-sm lg-text-base lg:items-start justify-center px-[4vw] lg:flex-row lg:gap-5">
+        <div className="w-full max-w-[60%]">
           <>
             <div className="">
               <div className="">
                 {data.data && data.data.length > 0 ? (
                   // Display images if filteredResults is empty
-                  <div className="relative">
+                  <div className="relative object-contain">
                     {filteredPost.length > 0 ? (
                       <CarouselMini autoSlide={false} autoSlideInterval={3000}>
                         {filteredPost[0]?.PMMedia?.map((media) => {
                           console.log(media);
                           // console.log(data.data[currentIndex]);
                           if (media.type === "video")
-                            return (
-                              <ReactPlayer
-                                url={media.media}
-                                muted={true}
-                                playsinline
-                                autoPlay={false}
-                                controls
-                                key={media.media}
-                              />
-                            );
-                          else
-                            return (
-                              // <div
-                              //   key={media.media}
-                              //   className="lg:w-[30vw] w-full h-[50vh] lg:h-[35vh] object-contain relative"
-                              // >
-                              //   {" "}
-                              <Image
-                                width={400}
-                                height={400}
-                                src={media.media}
-                                // key={media.media}
-                                objectFit="contain"
-                                alt=""
-                                priority
-                                className="w-full h-auto rounded-xl object-contain"
-                                // sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                              />
-                              // </div>
-                            );
+                          return (
+                            <ReactPlayer
+                            width={300}
+                            height={300}
+                              url={media.media}
+                              muted={true}
+                              playsinline
+                              autoPlay={false}
+                              controls
+                              key={media.media}
+                            />
+                          );
+                        else
+                          return (
+                            // <div
+                            //   key={media.media}
+                            //   className="lg:w-[30vw] w-full h-[50vh] lg:h-[35vh] object-contain relative"
+                            // >
+                            //   {" "}
+                            <Image
+                              width={400}
+                              height={400}
+                              src={media.media}
+                              // key={media.media}
+                              alt=""
+                              priority
+                              className={`${filteredPost[0]?.PMMedia?.length === 1 ? "max-h-[35vh]" : ""} w-full h-auto rounded-xl`}
+                              // sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            />
+                            // </div>
+                          );
                         })}
                       </CarouselMini>
                     ) : (
                       <CarouselMini autoSlide={false} autoSlideInterval={3000}>
                         {data.data[currentIndex]?.PMMedia?.map((media) => {
-                          console.log(media);
-                          console.log(data.data[currentIndex]);
                           if (media.type === "video")
                             return (
                               <ReactPlayer
+                              width={300}
+                              height={300}
                                 url={media.media}
                                 muted={true}
                                 playsinline
@@ -316,7 +317,7 @@ export const UncategorizedPost = ({
                                 // key={media.media}
                                 alt=""
                                 priority
-                                className="w-full h-auto rounded-xl"
+                                className={`${data.data[currentIndex]?.PMMedia.length === 1 ? "max-h-[35vh]" : ""} w-full h-auto rounded-xl`}
                                 // sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                               />
                               // </div>
@@ -338,12 +339,24 @@ export const UncategorizedPost = ({
                 )}
               </div>
             </div>
-            <div>
-              <h2 className="text-[#706464] text-start text-base mt-8">
-                Post Type:{" "}
+            <div className="flex text-[#706464] text-start text-base mt-8 gap-3">
+              <h2 className="">
+                <span className=" font-semibold">
+                Post Type:
+                </span>
+                {" "}
                 {filteredPost.length
                   ? filteredPost[0].postType
                   : data.data[currentIndex]?.postType}
+              </h2>
+              <h2 className="">
+              <span className=" font-semibold">
+                Post Id:
+                </span>
+                {" "}
+                {filteredPost.length
+                  ? filteredPost[0].POId
+                  : data.data[currentIndex]?.POId}
               </h2>
             </div>
           </>
@@ -410,7 +423,7 @@ export const UncategorizedPost = ({
         onDelete={handleDelete}
       />
 
-      <div className="flex justify-between items-center -mt-[120vh] lg:-mt-[40vh] px-[1vw] text-white z-20">
+      <div className="flex justify-between items-center -mt-[120vh] lg:-mt-[40vh] px-[1.7vw] text-white z-20">
         <div>
           <MdOutlineArrowBackIosNew
             // size={25}

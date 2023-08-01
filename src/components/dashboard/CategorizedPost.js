@@ -180,7 +180,7 @@ export const CategorizedPost = ({
   return (
     <>
       <div className="flex flex-col gap-5 mt-10 items-center text-sm lg-text-base lg:items-start justify-center px-[4vw] lg:flex-row lg:gap-8">
-        <div className={`w-full`}>
+        <div className={`w-full max-w-[60%]`}>
           <div className="">
             <div className="">
               <div className="">
@@ -214,7 +214,7 @@ export const CategorizedPost = ({
                               // key={media.media}
                               alt=""
                               priority
-                              className="w-full h-auto rounded-xl"
+                              className={`${( categoryResults.length > 0 ? categoryResults[0] : images[categorizedIndex])?.PMMedia.length === 1 ? "max-h-[35vh]" : ""} w-full h-auto rounded-xl`}
                               // sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                             />
                             // </div>
@@ -234,9 +234,20 @@ export const CategorizedPost = ({
                 )}
               </div>
             </div>
-            <div>
-              <h2 className="text-[#706464] text-start text-base mt-87">
-                Post Type: {(categoryResults.length > 0 ? categoryResults[0] : data[categorizedIndex])?.postType}
+            <div className="text-[#706464] flex gap-3 text-start text-base mt-8">
+              <h2 className="">
+              <span className=" font-semibold">
+                Post Type:
+                </span>
+                {" "}
+                {(categoryResults.length > 0 ? categoryResults[0] : data[categorizedIndex])?.postType}
+              </h2>
+              <h2 className="">
+              <span className=" font-semibold">
+                Post Id:
+                </span>
+                {" "}
+                {(categoryResults.length > 0 ? categoryResults[0] : data[categorizedIndex])?.POId}
               </h2>
             </div>
           </div>

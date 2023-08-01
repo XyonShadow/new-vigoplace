@@ -319,9 +319,10 @@ export function Postcategorization1({ data, categorizedData }) {
   };
 
   return (
-    <section className="flex items-center text-sm lg:text-base flex-col lg:flex-row justify-center">
-      <div className="lg:w-[60vw] w-full bg-white h-[200vh] lg:h-screen">
-        <div className=" px-[4vw] py-4">
+    <section className=" text-sm lg:text-base overflow-auto flex flex-col lg:flex-row w-full justify-center ">
+      
+      <div className="lg:w-[65vw] w-full bg-white min-h-[200vh] lg:min-h-screen h-full">
+        <div className=" px-[4vw] py-2">
           <div className="bg-[#F4F4F4] gap-2.5 rounded-lg w-[50%] py-3 flex px-6">
             <AiOutlineSearch onClick={handleSearchChange} size={20} />
 
@@ -334,10 +335,10 @@ export function Postcategorization1({ data, categorizedData }) {
             />
           </div>
         </div>
-        <div className="font-bold px-[4vw] border-y flex justify-between border-[#f4f4f4] pt-3">
-          <div className="py-3 px-5">
+        <div className="font-bold px-[4vw] border-y flex justify-between border-[#f4f4f4] pt-1">
+          <div className="py-1 px-5">
             <button
-              className={` py-3 px-5 ${
+              className={` py-1 px-5 ${
                 tab === 0
                   ? "border-b-[#8135F9] border-b transition-all duration-300 "
                   : ""
@@ -347,9 +348,9 @@ export function Postcategorization1({ data, categorizedData }) {
               Uncategorized Post
             </button>
           </div>
-          <div className="py-3 px-5">
+          <div className="py-1 px-5">
             <button
-              className={` py-3 px-5 ${
+              className={` py-1 px-5 ${
                 tab === 1
                   ? "border-b-[#8135F9] border-b transition-all duration-300 "
                   : ""
@@ -395,7 +396,7 @@ export function Postcategorization1({ data, categorizedData }) {
           />
         )}
       </div>
-      <div className="lg:w-[30vw] w-full flex flex-col pl-9 pr-16 h-screen py-[13vh] bg-[#DFDCDC]">
+      <div className="lg:w-[25vw] w-full flex flex-col pl-9 pr-16 h-screen py-[13vh] bg-[#DFDCDC]">
         <input
           type="text"
           className="p-1 rounded-lg focus:outline-blue-500 w-full"
@@ -454,6 +455,8 @@ export function Postcategorization1({ data, categorizedData }) {
           </div>
         </div>
       </div>
+     
+      
     </section>
   );
 }
