@@ -14,7 +14,7 @@ export function Postcategorization1({ data, categorizedData }) {
   const [newCategories, setNewCategories] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentPost, setCurrentPost] = useState(0);
-  const [filteredPost, setFilteredPost] = useState([])
+  const [filteredPost, setFilteredPost] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [filteredCategoryResults, setFilteredCategoryResults] = useState([]);
   // const [FilteredImages, setFilteredImages] = useState([])
@@ -27,11 +27,12 @@ export function Postcategorization1({ data, categorizedData }) {
   const [rerender, setRerender] = useState(true);
   const [categorizedPost, setCategorizedPost] = useState([]);
   const [categorizedIndex, setCategorizedIndex] = useState(0);
+
+  const queryClient = useQueryClient();
   const updateCategorizedIndex = (index) => setCategorizedIndex(index);
   const updateCategorizedPost = (post) => setCategorizedPost(post);
 
   const updateCurrentPost = (postId) => setCurrentPostId(postId);
-
 
   const API_BASE_URL = "https://vigoplace.com/server/";
 
@@ -144,14 +145,13 @@ export function Postcategorization1({ data, categorizedData }) {
     error: uncategorizedDataError,
   } = useQuery(["uncategorizedData"], fetchUncategorizedData);
 
-  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    if (uncategorizedData) {
-      // Update currentIndex based on the uncategorized data length
-      setCurrentIndex(0);
-    }
-  }, [uncategorizedData, categoryList, fetchData]);
+  // useEffect(() => {
+  //   if (uncategorizedData) {
+  //     // Update currentIndex based on the uncategorized data length
+  //     setCurrentIndex(0);
+  //   }
+  // }, [uncategorizedData, categoryList, fetchData]);
 
   if (categoryListLoading || uncategorizedDataLoading) {
     return <div>Loading...</div>;
@@ -171,7 +171,7 @@ export function Postcategorization1({ data, categorizedData }) {
 
   const handleSearch = (event) => {
     const value = event.target.value;
-    if(value === "") {
+    if (value === "") {
       setFilteredCategoryResults(categoryList.data);
     }
     setSearchTerm(value);
@@ -184,7 +184,7 @@ export function Postcategorization1({ data, categorizedData }) {
 
   const handleSearchChange = () => {
     if (searchInput === "") {
-      return
+      return;
     }
     handleUncategorizedSearch(searchInput);
     handleCategorizedSearch(searchInput);
@@ -201,18 +201,27 @@ export function Postcategorization1({ data, categorizedData }) {
   //   setFilteredResults(filtered);
   // };
   const handleUncategorizedSearch = (searchInput) => {
-    console.log(searchInput)
+    console.log(searchInput);
     const filteredPosts = uncategorizedData.data.filter(
-      (post) => post.POId ===  Number(searchInput)
+      (post) => post.POId === Number(searchInput)
     );
-   if (filteredPosts.length === 0 && tab === 0) {
-    toast.error("Post not found")
-    return
-   }
+    if (filteredPosts.length === 0 && tab === 0) {
+      toast.error("Post not found");
+      return;
+    }
+
+    const indexOfFilteredData = uncategorizedData.data.indexOf(
+      filteredPosts[0]
+    );
+    console.log(indexOfFilteredData);
+    setCurrentIndex(indexOfFilteredData);
+    const newPostId = uncategorizedData.data[indexOfFilteredData]?.POId;
+    updateCurrentPost(newPostId);
+
     // setCurrentPost(filteredPosts[0]?.POId)
-    setFilteredPost(filteredPosts)
+    setFilteredPost(filteredPosts);
+
     // updateCurrentPost(filteredPosts[0]?.POId);
-   
   };
 
   const handleCategorizedSearch = (searchInput) => {
@@ -220,13 +229,23 @@ export function Postcategorization1({ data, categorizedData }) {
       (post) => post.POId === Number(searchInput)
     );
     if (categorizedFiltered.length === 0 && tab === 1) {
-      toast.error("Post not found")
-      return
-     }
+      toast.error("Post not found");
+      return;
+    }
+
+    const indexOfFilteredData = categorizedData.indexOf(categorizedFiltered[0]);
+    updateCategorizedIndex(indexOfFilteredData);
+    //  const newPostId = categorizedData[indexOfFilteredData]?.POId;
+    //  updateCurrentPost(newPostId);
+
     setCategoryResults(categorizedFiltered);
   };
 
   const handleClick = () => {
+    if (categoryList.data.some((category) => category.OCName === newCategories)) {
+      toast.error("Category already exists in the category list")
+      return
+    }
     fetch("https://vigoplace.com/server/api/admin/categories", {
       method: "POST",
       headers: {
@@ -240,7 +259,8 @@ export function Postcategorization1({ data, categorizedData }) {
         if (!response.ok) {
           throw new Error("Failed to create category");
         }
-        return response.json();
+        console.log(response.json())
+        // return response.json();
       })
       .then((data) => {
         setNewCategories("");
@@ -250,6 +270,13 @@ export function Postcategorization1({ data, categorizedData }) {
         console.error("Error creating category:", error);
         return false;
       });
+  };
+
+  const handleKeypress = (e) => {
+    //it triggers by pressing the enter key
+    if (e.keyCode === 13) {
+      handleClick();
+    }
   };
 
   const handlePostClick = (category, id) => {
@@ -310,6 +337,7 @@ export function Postcategorization1({ data, categorizedData }) {
         //   };
         //   return updatedData;
         // });
+        queryClient.invalidateQueries("uncategorizedData");
         toast.success("Post successfully categorized!");
       })
       .catch((error) => {
@@ -320,7 +348,6 @@ export function Postcategorization1({ data, categorizedData }) {
 
   return (
     <section className=" text-sm lg:text-base overflow-auto flex flex-col lg:flex-row w-full justify-center ">
-      
       <div className="lg:w-[65vw] w-full bg-white min-h-[200vh] lg:min-h-screen h-full">
         <div className=" px-[4vw] py-2">
           <div className="bg-[#F4F4F4] gap-2.5 rounded-lg w-[50%] py-3 flex px-6">
@@ -373,8 +400,8 @@ export function Postcategorization1({ data, categorizedData }) {
             selectedCategories={selectedCategories}
             handleCategorySelection={handleCategorySelection}
             handlePostClick={handlePostClick}
-            currentIndex={currentPost}
-            setCurrentIndex={setCurrentPost}
+            currentIndex={currentIndex}
+            setCurrentIndex={setCurrentIndex}
             filteredPost={filteredPost}
             setFilteredPost={setFilteredPost}
           />
@@ -405,7 +432,7 @@ export function Postcategorization1({ data, categorizedData }) {
           onChange={handleSearch}
         />
 
-        <div className="flex flex-col h-[40%] overflow-y-auto rounded-lg gap-2.5 mt-4 p-2 bg-[#F1F0F0]">
+        <div className="flex flex-col h-screen overflow-y-auto rounded-lg gap-2.5 mt-4 p-2 bg-[#F1F0F0]">
           {searchTerm !== "" ? (
             filteredCategoryResults.length > 0 ? (
               filteredCategoryResults.map((item) => (
@@ -423,21 +450,23 @@ export function Postcategorization1({ data, categorizedData }) {
               <p className="text-center text-[#706464]">Not found</p>
             )
           ) : (
-            categoryList?.data.map((category) => { if (category.OCName === "") return;
-            return (  
-              <div
-                key={category.OCId}
-                className="bg-white py-2.5 text-[#706464] cursor-pointer px-4 rounded-md"
-                onClick={() => {
-                  handleCategoryChange(category);
-                }}
-              >
-                <p>{category.OCName}</p>
-              </div>
-            )})
+            categoryList?.data.map((category) => {
+              if (category.OCName === "") return;
+              return (
+                <div
+                  key={category.OCId}
+                  className="bg-white py-2.5 text-[#706464] cursor-pointer px-4 rounded-md"
+                  onClick={() => {
+                    handleCategoryChange(category);
+                  }}
+                >
+                  <p>{category.OCName}</p>
+                </div>
+              );
+            })
           )}
         </div>
-        <div className="flex flex-col mt-20 gap-4">
+        <div className="flex flex-col mt-10 gap-4">
           <p className="text-[#706464] font-bold">Create a new category</p>
           <div className="flex ">
             <input
@@ -445,18 +474,20 @@ export function Postcategorization1({ data, categorizedData }) {
               className="p-1 px-3 rounded-l-lg outline-none max-w-[65%]"
               placeholder="New category..."
               value={newCategories}
+              onKeyDown={handleKeypress}
               onChange={(e) => {
                 setNewCategories(e.target.value);
               }}
             />
-            <button className="bg-[#8135F9] py-3 px-6 text-white rounded-r-lg" onClick={handleClick}>
+            <button
+              className="bg-[#8135F9] py-3 px-6 text-white rounded-r-lg"
+              onClick={handleClick}
+            >
               Save
             </button>
           </div>
         </div>
       </div>
-     
-      
     </section>
   );
 }

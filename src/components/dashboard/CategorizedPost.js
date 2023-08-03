@@ -267,6 +267,7 @@ export const CategorizedPost = ({
           <div className="flex flex-col items-center justify-center gap-4">
             {(categoryResults.length > 0 ? categoryResults[0] : data[categorizedIndex])?.OPCCategory?.map((item, index) => {
               // console.log(item);
+              if (item === "") return;
               return (
                 <div
                   key={index}

@@ -32,7 +32,9 @@ const PostCategorization = () => {
     },
   });
 
-  const { data, error } = useQuery(["uncategorizedData"], fetchData);
+  const { data, error } = useQuery(["uncategorizedData"], fetchData, {
+    refetchInterval: 5000,
+  });
 
   return (
     <div>

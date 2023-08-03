@@ -84,11 +84,14 @@ export const UncategorizedPost = ({
   const fetchData = async () => {
     const response = await fetch(`${API_BASE_URL}/api/admin/uncategorized`);
     const data = await response.json();
-    // console.log(data);
+    console.log(data.data.length, "Yh I dey");
     return data;
   };
 
-  const { data, isLoading, error } = useQuery(["uncategorizedData"], fetchData);
+  const { data, isLoading, error } = useQuery(["uncategorizedData"], fetchData, {
+    cacheTime: 0,
+    refetchInterval: 5000,
+  });
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -178,6 +181,7 @@ export const UncategorizedPost = ({
 
   const nextSlide = async () => {
     setFilteredPost([]);
+    console.log(currentIndex)
     const isLastSlide = currentIndex === images.length - 1;
 
     const newIndex = isLastSlide ? 0 : currentIndex + 1;
@@ -251,6 +255,7 @@ export const UncategorizedPost = ({
                     {filteredPost.length > 0 ? (
                       <CarouselMini autoSlide={false} autoSlideInterval={3000}>
                         {filteredPost[0]?.PMMedia?.map((media) => {
+                          console.log(currentIndex)
                           console.log(media);
                           // console.log(data.data[currentIndex]);
                           if (media.type === "video")
@@ -290,6 +295,8 @@ export const UncategorizedPost = ({
                     ) : (
                       <CarouselMini autoSlide={false} autoSlideInterval={3000}>
                         {data.data[currentIndex]?.PMMedia?.map((media) => {
+                           console.log(currentIndex)
+                          //  console.log(data.data)
                           if (media.type === "video")
                             return (
                               <ReactPlayer
