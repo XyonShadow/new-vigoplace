@@ -19,7 +19,6 @@ const PostCategorization = () => {
   const fetchCategory = async () => {
     const response = await fetch(`${API_BASE_URL}/api/admin/categorized`);
     const data = await response.json();
-    console.log(data?.data)
     return data;
   };
 
@@ -28,7 +27,6 @@ const PostCategorization = () => {
     isLoading,
     isError,
   } = useQuery(["categorizedPost"], fetchCategory, {
-    staleTime: 2000,
     onSuccess: (data) => {
       setCategorizedData(data?.data || []);
     },

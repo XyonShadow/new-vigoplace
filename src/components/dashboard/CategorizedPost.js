@@ -117,7 +117,6 @@ export const CategorizedPost = ({
           post.POId === postId ? { ...post, OPCCategory: [] } : post
         )
       );
-      console.log("Na me dey work")
     } catch (error) {
       console.error("Error deleting post:", error);
       toast.error("Error deleting the category!");

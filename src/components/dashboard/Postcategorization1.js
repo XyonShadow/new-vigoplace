@@ -55,11 +55,6 @@ export function Postcategorization1({ categorizedData }) {
     isLoading: uncategorizedDataLoading,
     error: uncategorizedDataError,
   } = useQuery(["uncategorizedData"], fetchUncategorizedData, {
-    // onSuccess: () => {
-    //   queryClient.invalidateQueries("uncategorizedData");
-    // },
-    staleTime: 2000,
-    cacheTime: 0
   });
 
 
@@ -154,8 +149,7 @@ export function Postcategorization1({ categorizedData }) {
     data: categoryList,
     isLoading: categoryListLoading,
     error: categoryListError,
-    refetch: refetchcategoryList,
-  } = useQuery(["categorizedData"], fetchData);
+  } = useQuery(["categoryList"], fetchData);
 
 
 
@@ -281,6 +275,7 @@ export function Postcategorization1({ categorizedData }) {
       })
       .then((data) => {
         setNewCategories("");
+        queryClient.invalidateQueries("categoryList")
         return true;
       })
       .catch((error) => {
