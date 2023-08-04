@@ -20,8 +20,6 @@ export default function CarouselMini({
     return () => clearInterval(slideInterval);
   });
 
-  console.log(slides)
-
   return (
     <div className="relative overflow-hidden">
       <div

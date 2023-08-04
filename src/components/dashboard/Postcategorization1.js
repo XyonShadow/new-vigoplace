@@ -7,7 +7,9 @@ import { CategorizedPost } from "./CategorizedPost";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export function Postcategorization1({ data, categorizedData }) {
+
+
+export function Postcategorization1({ categorizedData }) {
   const [tab, setTab] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredResults, setFilteredResults] = useState([]);
@@ -22,24 +24,50 @@ export function Postcategorization1({ data, categorizedData }) {
   const [categoryResults, setCategoryResults] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   // const [selectedCategoryIndexes, setSelectedCategoryIndexes] = useState({});
-  const [currentPostId, setCurrentPostId] = useState(data?.data[0]?.POId);
-
-  const [rerender, setRerender] = useState(true);
+  const [currentPostId, setCurrentPostId] = useState(0);
   const [categorizedPost, setCategorizedPost] = useState([]);
   const [categorizedIndex, setCategorizedIndex] = useState(0);
 
+  // useEffect(() => {
+  //   if (uncategorizedData?.length > 0) {
+  //     setCurrentPostId(unCategorizedData[0]?.POId)
+  //   }
+  // }, [])
   const queryClient = useQueryClient();
+
+
   const updateCategorizedIndex = (index) => setCategorizedIndex(index);
   const updateCategorizedPost = (post) => setCategorizedPost(post);
 
   const updateCurrentPost = (postId) => setCurrentPostId(postId);
 
-  const API_BASE_URL = "https://vigoplace.com/server/";
+  const API_BASE_URL = "https://vigoplace.com/server";
+
+
+  const fetchUncategorizedData = async () => {
+    const response = await fetch(`${API_BASE_URL}/api/admin/uncategorized`);
+    const data = await response.json();
+    return data.data;
+  };
+
+  const {
+    data: unCategorizedData,
+    isLoading: uncategorizedDataLoading,
+    error: uncategorizedDataError,
+  } = useQuery(["uncategorizedData"], fetchUncategorizedData, {
+    // onSuccess: () => {
+    //   queryClient.invalidateQueries("uncategorizedData");
+    // },
+    staleTime: 2000,
+    cacheTime: 0
+  });
+
+
+
 
   const fetchCategory = async () => {
     const response = await fetch(`${API_BASE_URL}/api/admin/categorized`);
     const data = await response.json();
-    // console.log(data);
     return data;
   };
 
@@ -50,27 +78,27 @@ export function Postcategorization1({ data, categorizedData }) {
   } = useQuery(["categorizedPost"], fetchCategory, {
     onSuccess: (data) => {
       setCategorizedPost(data?.data || []);
-      queryClient.invalidateQueries("categorizedPost");
+      // queryClient.invalidateQueries("categorizedPost");
     },
   });
 
-  const localCategory = useRef(false);
-  useEffect(() => {
-    if (data && !currentPostId) {
-      setCurrentPostId(data?.data[0]?.POId);
-    }
-    if (!localCategory.current) {
-      const category = localStorage.getItem("categoryData");
-      if (category) {
-        setSelectedCategories(JSON.parse(category));
-        localCategory.current = true;
-      }
-    }
+  // const localCategory = useRef(false);
+  // useEffect(() => {
+  //   if (unCategorizedData && !currentPostId) {
+  //     setCurrentPostId(unCategorizedData[0]?.POId);
+  //   }
+  //   if (!localCategory.current) {
+  //     const category = localStorage.getItem("categoryData");
+  //     if (category) {
+  //       setSelectedCategories(JSON.parse(category));
+  //       localCategory.current = true;
+  //     }
+  //   }
 
-    if (localCategory.current && Object.keys(selectedCategories).length > 0) {
-      localStorage.setItem("categoryData", JSON.stringify(selectedCategories));
-    }
-  }, [selectedCategories, data]);
+  //   if (localCategory.current && Object.keys(selectedCategories).length > 0) {
+  //     localStorage.setItem("categoryData", JSON.stringify(selectedCategories));
+  //   }
+  // }, [selectedCategories, unCategorizedData]);
 
   const handleCategoryChange = (category) => {
     if (tab === 0) {
@@ -110,7 +138,6 @@ export function Postcategorization1({ data, categorizedData }) {
       );
       setCategorizedPost(newPost);
     }
-    setRerender((prev) => !prev);
   };
 
   const handleCategorySelection = (selectedCategories) => {
@@ -128,22 +155,11 @@ export function Postcategorization1({ data, categorizedData }) {
     isLoading: categoryListLoading,
     error: categoryListError,
     refetch: refetchcategoryList,
-  } = useQuery(["categorizedData"], fetchData, {
-    staleTime: 0,
-    refetchInterval: 10000,
-  });
+  } = useQuery(["categorizedData"], fetchData);
 
-  const fetchUncategorizedData = async () => {
-    const response = await fetch(`${API_BASE_URL}/api/admin/uncategorized`);
-    const data = await response.json();
-    return data;
-  };
 
-  const {
-    data: uncategorizedData,
-    isLoading: uncategorizedDataLoading,
-    error: uncategorizedDataError,
-  } = useQuery(["uncategorizedData"], fetchUncategorizedData);
+
+
 
 
   // useEffect(() => {
@@ -202,7 +218,8 @@ export function Postcategorization1({ data, categorizedData }) {
   // };
   const handleUncategorizedSearch = (searchInput) => {
     console.log(searchInput);
-    const filteredPosts = uncategorizedData.data.filter(
+    console.log(unCategorizedData)
+    const filteredPosts = unCategorizedData.filter(
       (post) => post.POId === Number(searchInput)
     );
     if (filteredPosts.length === 0 && tab === 0) {
@@ -210,12 +227,12 @@ export function Postcategorization1({ data, categorizedData }) {
       return;
     }
 
-    const indexOfFilteredData = uncategorizedData.data.indexOf(
+    const indexOfFilteredData = unCategorizedData.indexOf(
       filteredPosts[0]
     );
     console.log(indexOfFilteredData);
     setCurrentIndex(indexOfFilteredData);
-    const newPostId = uncategorizedData.data[indexOfFilteredData]?.POId;
+    const newPostId = unCategorizedData[indexOfFilteredData]?.POId;
     updateCurrentPost(newPostId);
 
     // setCurrentPost(filteredPosts[0]?.POId)
@@ -280,7 +297,7 @@ export function Postcategorization1({ data, categorizedData }) {
   };
 
   const handlePostClick = (category, id) => {
-    const postId = uncategorizedData?.data[currentIndex]?.POId;
+    const postId = unCategorizedData[currentIndex]?.POId;
     setSelectedCategory(category);
     if (category.length === 0) {
       return;
@@ -339,6 +356,7 @@ export function Postcategorization1({ data, categorizedData }) {
         // });
         queryClient.invalidateQueries("uncategorizedData");
         toast.success("Post successfully categorized!");
+        setSelectedCategories([])
       })
       .catch((error) => {
         console.error("Error creating category:", error);
@@ -358,6 +376,10 @@ export function Postcategorization1({ data, categorizedData }) {
               placeholder="Post id:"
               className="bg-[#F4F4F4] w-full outline-none"
               value={searchInput}
+              onKeyDown={(e) => {
+                if (e.keyCode === 13) {
+                  handleSearchChange();
+                }}}
               onChange={(e) => setSearchInput(e.target.value)}
             />
           </div>
@@ -395,7 +417,7 @@ export function Postcategorization1({ data, categorizedData }) {
             updateCurrentPost={updateCurrentPost}
             setSelectedCategories={setSelectedCategories}
             // category={category}
-            images={data?.data}
+            images={unCategorizedData}
             filteredResults={filteredResults}
             selectedCategories={selectedCategories}
             handleCategorySelection={handleCategorySelection}

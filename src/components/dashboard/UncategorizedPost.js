@@ -37,12 +37,6 @@ export const UncategorizedPost = ({
   setFilteredPost,
 }) => {
   const [openModal, setOpenModal] = useState(false);
-  const [deletedIndex, setDeletedIndex] = useState(null);
-  const [categorizedData, setCategorizedData] = useState([]);
-  const [showIcon, setShowIcon] = useState(false);
-  const [nextIndex, setNextIndex] = useState(0);
-  const hasMedia = filteredResults[currentIndex]?.PMMedia.length > 0;
-  const maxIndex = filteredResults[nextIndex]?.PMMedia.length - 1;
 
   const handleCategoryChange = (category) => {
     handleCategorySelection((prevSelectedCategories) => {
@@ -63,43 +57,40 @@ export const UncategorizedPost = ({
     });
   };
 
-  useEffect(() => {
-    //fix rerendering issue
-    if (categorizedPost[0].POId === images[currentIndex]?.POId) {
-      setCurrentIndex(currentIndex + 1);
-      console.log(images[nextIndex]?.PMMedia);
-    }
+  // useEffect(() => {
+  //   //fix rerendering issue
+  //   if (categorizedPost[0].POId === images[currentIndex]?.POId) {
+  //     setCurrentIndex(currentIndex + 1);
+  //     console.log(images[nextIndex]?.PMMedia);
+  //   }
 
-    // update the current image
-    const alreadyAdded = selectedCategories[currentPostId];
-    if (alreadyAdded) return;
-    setSelectedCategories((prev) => ({
-      ...prev,
-      [currentPostId]: [],
-    }));
-  }, [currentPostId]);
+  //   // update the current image
+  //   const alreadyAdded = selectedCategories[currentPostId];
+  //   if (alreadyAdded) return;
+  //   setSelectedCategories((prev) => ({
+  //     ...prev,
+  //     [currentPostId]: [],
+  //   }));
+  // }, [currentPostId]);
 
   const API_BASE_URL = "https://vigoplace.com/server/";
 
-  const fetchData = async () => {
-    const response = await fetch(`${API_BASE_URL}/api/admin/uncategorized`);
-    const data = await response.json();
-    console.log(data.data.length, "Yh I dey");
-    return data;
-  };
+  // const fetchData = async () => {
+  //   const response = await fetch(`${API_BASE_URL}/api/admin/uncategorized`);
+  //   const data = await response.json();
+  //   console.log(data.data.length, "Yh I dey");
+  //   return data;
+  // };
 
-  const { data, isLoading, error } = useQuery(["uncategorizedData"], fetchData, {
-    cacheTime: 0,
-    refetchInterval: 5000,
-  });
+  // const { data, isLoading, error } = useQuery(["uncategorizedData"], fetchData);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  // if (isLoading) {
+  //   return <div>Loading...</div>;
+  // }
 
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
+  // if (error) {
+  //   return <div>Error: {error.message}</div>;
+  // }
 
   // const fetchCategory = async () => {
   //   const response = await fetch(`${API_BASE_URL}/api/admin/categorized`);
@@ -126,7 +117,7 @@ export const UncategorizedPost = ({
   // }
 
   const handleDelete = () => {
-    setDeletedIndex(currentIndex);
+    // setDeletedIndex(currentIndex);
     setOpenModal(false);
   };
 
@@ -150,15 +141,13 @@ export const UncategorizedPost = ({
     }
   };
 
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
 
   const mutation = useMutation(deletePost, {
     onSuccess: (data, postId) => {
       console.log("Mutation onSuccess called");
       console.log("Data:", data);
       console.log("postId:", postId);
-
-      queryClient.invalidateQueries("uncategorizedData");
       setCategorizedData((prevData) =>
         prevData.filter((post) => post.OPCPostId !== postId)
       );
@@ -174,9 +163,15 @@ export const UncategorizedPost = ({
     setFilteredPost([]);
     const isFirstSlide = currentIndex === 0;
     const newIndex = isFirstSlide ? images.length - 1 : currentIndex - 1;
-    setCurrentIndex(newIndex);
+    setCurrentIndex((prevIndex) => (prevIndex - 1 + images?.length) % images?.length);
     const newPostId = images[newIndex]?.POId;
     updateCurrentPost(newPostId);
+
+
+    // setCategoryResults([])
+    // updateCategorizedIndex(
+    //   (prevIndex) => (prevIndex - 1 + data?.length) % data?.length
+    // );
   };
 
   const nextSlide = async () => {
@@ -187,60 +182,55 @@ export const UncategorizedPost = ({
     const newIndex = isLastSlide ? 0 : currentIndex + 1;
     // const currentImage = data.data[currentIndex];
     // const category = currentImage.category;
-    const data = await selectedCategories[currentPostId]?.map(
-      (category) => category.OCName
-    );
-
-    await handlePostClick(data);
-
-    setCurrentIndex(newIndex);
-    const newPostId = images[newIndex]?.POId;
-    updateCurrentPost(newPostId);
-  };
-
-  const Carousel = () => {
-    if (filteredResults && filteredResults.length > 1) {
-      setShowIcon(true);
+    if (selectedCategories[currentPostId]?.length > 0) {
+      const data = await selectedCategories[currentPostId]?.map(
+        (category) => category.OCName
+      );
+  
+      await handlePostClick(data);
+      // setCurrentIndex((prevIndex) => (prevIndex + 1) % images?.length);
+      // const newPostId = images[newIndex]?.POId;
+      // updateCurrentPost(newPostId)
     } else {
-      setShowIcon(false);
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % images?.length);
+      const newPostId = images[newIndex]?.POId;
+      updateCurrentPost(newPostId)
     }
+
+
+    // setCategoryResults([])
+    // updateCategorizedIndex((prevIndex) => (prevIndex + 1) % data?.length);
+
   };
 
-  const leftSlide = () => {
-    const isPrevSlide = nextIndex === 0;
-    const newIndex = isPrevSlide
-      ? data.data[currentIndex]?.PMMedia?.length - 1
-      : nextIndex - 1;
-    setNextIndex(newIndex);
-    console.log(images[nextIndex]?.PMMedia);
-  };
+  // const Carousel = () => {
+  //   if (filteredResults && filteredResults.length > 1) {
+  //     setShowIcon(true);
+  //   } else {
+  //     setShowIcon(false);
+  //   }
+  // };
 
-  useEffect(() => {
-    Carousel();
-  }, [currentIndex]);
+  // const leftSlide = () => {
+  //   const isPrevSlide = nextIndex === 0;
+  //   const newIndex = isPrevSlide
+  //     ? data.data[currentIndex]?.PMMedia?.length - 1
+  //     : nextIndex - 1;
 
-  const rightSlide = () => {
-    const isNextSlide =
-      nextIndex === data.data[currentIndex]?.PMMedia?.length - 1;
-    const newIndex = isNextSlide ? 0 : nextIndex + 1;
-    setNextIndex(newIndex);
-    console.log(images[nextIndex]?.PMMedia);
+  //   setNextIndex(newIndex);
+  //   console.log(images[nextIndex]?.PMMedia);
+  // };
+  // useEffect(() => {
+  //   Carousel();
+  // }, [currentIndex]);
 
-    //     const isLastSlide = currentIndex === images.length - 1;
-
-    // const newIndex = isLastSlide ? 0 : currentIndex + 1;
-    // // const currentImage = data.data[currentIndex];
-    // // const category = currentImage.category;
-    // const data = await selectedCategories[currentPostId]?.map(
-    //   (category) => category.OCName
-    // );
-
-    // await handlePostClick(data);
-
-    // setCurrentIndex(newIndex);
-    // const newPostId = images[newIndex]?.POId;
-    // updateCurrentPost(newPostId);
-  };
+  // const rightSlide = () => {
+  //   const isNextSlide =
+  //     nextIndex === data.data[currentIndex]?.PMMedia?.length - 1;
+  //   const newIndex = isNextSlide ? 0 : nextIndex + 1;
+  //   setNextIndex(newIndex);
+  //   console.log(images[nextIndex]?.PMMedia);
+  // };
 
   return (
     <>
@@ -249,7 +239,7 @@ export const UncategorizedPost = ({
           <>
             <div className="">
               <div className="">
-                {data.data && data.data.length > 0 ? (
+                {images && images.length > 0 ? (
                   // Display images if filteredResults is empty
                   <div className="relative object-contain">
                     {filteredPost.length > 0 ? (
@@ -282,7 +272,7 @@ export const UncategorizedPost = ({
                               width={400}
                               height={400}
                               src={media.media}
-                              // key={media.media}
+                              key={media.media}
                               alt=""
                               priority
                               className={`${filteredPost[0]?.PMMedia?.length === 1 ? "max-h-[35vh]" : ""} w-full h-auto rounded-xl`}
@@ -294,8 +284,9 @@ export const UncategorizedPost = ({
                       </CarouselMini>
                     ) : (
                       <CarouselMini autoSlide={false} autoSlideInterval={3000}>
-                        {data.data[currentIndex]?.PMMedia?.map((media) => {
+                        {images[currentIndex]?.PMMedia?.map((media) => {
                            console.log(currentIndex)
+                           console.log(images.length)
                           //  console.log(data.data)
                           if (media.type === "video")
                             return (
@@ -321,10 +312,10 @@ export const UncategorizedPost = ({
                                 width={400}
                                 height={400}
                                 src={media.media}
-                                // key={media.media}
+                                key={media.media}
                                 alt=""
                                 priority
-                                className={`${data.data[currentIndex]?.PMMedia.length === 1 ? "max-h-[35vh]" : ""} w-full h-auto rounded-xl`}
+                                className={`${images[currentIndex]?.PMMedia.length === 1 ? "max-h-[35vh]" : ""} w-full h-auto rounded-xl`}
                                 // sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                               />
                               // </div>
@@ -354,7 +345,7 @@ export const UncategorizedPost = ({
                 {" "}
                 {filteredPost.length
                   ? filteredPost[0].postType
-                  : data.data[currentIndex]?.postType}
+                  : images[currentIndex]?.postType}
               </h2>
               <h2 className="">
               <span className=" font-semibold">
@@ -363,7 +354,7 @@ export const UncategorizedPost = ({
                 {" "}
                 {filteredPost.length
                   ? filteredPost[0].POId
-                  : data.data[currentIndex]?.POId}
+                  : images[currentIndex]?.POId}
               </h2>
             </div>
           </>
@@ -371,13 +362,13 @@ export const UncategorizedPost = ({
             <h2 className="text-[#706464] text-start mt-3.5">Description</h2>
             <div
               className={`${
-                filteredPost.length ? filteredPost[0] : data.data[currentIndex]
+                filteredPost.length ? filteredPost[0] : images[currentIndex]
               } mt-[18px] py-4 text-sm px-3 bg-[#F1F0F0] rounded-lg overflow-y-auto h-28`}
             >
               <p>
                 {filteredPost.length
                   ? filteredPost[0].description
-                  : data.data[currentIndex]?.description}
+                  : images[currentIndex]?.description}
               </p>
             </div>
           </div>
@@ -425,7 +416,7 @@ export const UncategorizedPost = ({
         postId={
           filteredPost.length
             ? filteredPost[0].POId
-            : data.data[currentIndex]?.POId
+            : images[currentIndex]?.POId
         }
         onDelete={handleDelete}
       />

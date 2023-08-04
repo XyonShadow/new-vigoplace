@@ -74,6 +74,7 @@ export const CategorizedPost = ({
         throw new Error(data.error);
       }
       const data = await response.json();
+      queryClient.invalidateQueries("categorizedPost")
       return data;
     } catch (error) {
       throw new Error(`Error deleting post: ${error.message}`);
@@ -116,6 +117,7 @@ export const CategorizedPost = ({
           post.POId === postId ? { ...post, OPCCategory: [] } : post
         )
       );
+      console.log("Na me dey work")
     } catch (error) {
       console.error("Error deleting post:", error);
       toast.error("Error deleting the category!");
@@ -189,6 +191,7 @@ export const CategorizedPost = ({
                   <div className="relative">
                     <CarouselMini autoSlide={false} autoSlideInterval={3000}>
                       {( categoryResults.length > 0 ? categoryResults[0] : images[categorizedIndex])?.PMMedia?.map((media) => {
+                        console.log(categorizedIndex)
                         if (media.type === "video")
                           return (
                             <ReactPlayer
@@ -211,7 +214,7 @@ export const CategorizedPost = ({
                               width={400}
                               height={400}
                               src={media.media}
-                              // key={media.media}
+                              key={media.media}
                               alt=""
                               priority
                               className={`${( categoryResults.length > 0 ? categoryResults[0] : images[categorizedIndex])?.PMMedia.length === 1 ? "max-h-[35vh]" : ""} w-full h-auto rounded-xl`}
@@ -240,14 +243,14 @@ export const CategorizedPost = ({
                 Post Type:
                 </span>
                 {" "}
-                {(categoryResults.length > 0 ? categoryResults[0] : data[categorizedIndex])?.postType}
+                {(categoryResults.length > 0 ? categoryResults[0] : images[categorizedIndex])?.postType}
               </h2>
               <h2 className="">
               <span className=" font-semibold">
                 Post Id:
                 </span>
                 {" "}
-                {(categoryResults.length > 0 ? categoryResults[0] : data[categorizedIndex])?.POId}
+                {(categoryResults.length > 0 ? categoryResults[0] : images[categorizedIndex])?.POId}
               </h2>
             </div>
           </div>
@@ -255,7 +258,7 @@ export const CategorizedPost = ({
             <h2 className="text-[#706464] text-start mt-3.5">Description</h2>
 
             <div className="mt-[18px] py-4 text-sm px-3 bg-[#F1F0F0] rounded-lg overflow-y-auto h-28">
-              <p>{(categoryResults.length > 0 ? categoryResults[0] : data[categorizedIndex])?.description}</p>
+              <p>{(categoryResults.length > 0 ? categoryResults[0] : images[categorizedIndex])?.description}</p>
             </div>
           </div>
         </div>
@@ -265,7 +268,7 @@ export const CategorizedPost = ({
             Post category
           </p>
           <div className="flex flex-col items-center justify-center gap-4">
-            {(categoryResults.length > 0 ? categoryResults[0] : data[categorizedIndex])?.OPCCategory?.map((item, index) => {
+            {(categoryResults.length > 0 ? categoryResults[0] : images[categorizedIndex])?.OPCCategory?.map((item, index) => {
               // console.log(item);
               if (item === "") return;
               return (
@@ -278,7 +281,7 @@ export const CategorizedPost = ({
                     size={20}
                     className="cursor-pointer"
                     onClick={() =>
-                      deletePostCategory((categoryResults.length > 0 ? categoryResults[0] : data[categorizedIndex])?.POId, item)
+                      deletePostCategory((categoryResults.length > 0 ? categoryResults[0] : images[categorizedIndex])?.POId, item)
                     }
                   />
                 </div>
@@ -290,7 +293,7 @@ export const CategorizedPost = ({
       <Postmodal
         open={openModal}
         onClose={() => setOpenModal(false)}
-        postId={(categoryResults.length > 0 ? categoryResults[0] : data[categorizedIndex])?.POId}
+        postId={(categoryResults.length > 0 ? categoryResults[0] : images[categorizedIndex])?.POId}
         onDelete={handleDelete}
       />
 

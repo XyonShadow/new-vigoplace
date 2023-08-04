@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 
 export function Postmodal({ open, onClose, postId, onDelete}) {
 
 
   const API_BASE_URL = 'https://vigoplace.com/server';
+  const queryClient = useQueryClient()
 
   const deletePost = async (postId) => {
     console.log(postId)
@@ -19,6 +20,8 @@ export function Postmodal({ open, onClose, postId, onDelete}) {
       return
     }
   toast.success("Post successfully deleted")
+  queryClient.invalidateQueries("uncategorizedData")
+  queryClient.invalidateQueries("categorizedPost")
     return data;
   };
 

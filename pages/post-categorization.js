@@ -2,23 +2,24 @@ import { Postcategorization1 } from "../src/components/dashboard/Postcategorizat
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const PostCategorization = () => {
   const [categorizedData, setCategorizedData] = useState([]);
+  const [unCategorizedData, setUncategorizedData] = useState([]);
 
-  const API_BASE_URL = "https://vigoplace.com/server/";
+  const API_BASE_URL = "https://vigoplace.com/server";
 
   const fetchData = async () => {
-    const response = await fetch(`${API_BASE_URL}/api/admin/uncategorized`);
+  
     const data = await response.json();
-    console.log(data);
     return data;
   };
 
   const fetchCategory = async () => {
     const response = await fetch(`${API_BASE_URL}/api/admin/categorized`);
     const data = await response.json();
+    console.log(data?.data)
     return data;
   };
 
@@ -27,19 +28,29 @@ const PostCategorization = () => {
     isLoading,
     isError,
   } = useQuery(["categorizedPost"], fetchCategory, {
+    staleTime: 2000,
     onSuccess: (data) => {
       setCategorizedData(data?.data || []);
     },
   });
 
-  const { data, error } = useQuery(["uncategorizedData"], fetchData, {
-    refetchInterval: 5000,
-  });
+  // const unCategorizedPostsQuery = useQuery({ queryKey: ["uncategorizedData"], queryFn: fetchData, 
+  //   refetchInterval: 10000,
+  //   refetchOnMount: 'always'
+  // });
+  
+  // useEffect(() =>  {
+  //   if (unCategorizedPostsQuery.data) {
+  //     setUncategorizedData(unCategorizedPostsQuery.data)
+  //     console.log("This one na for ujseefect")
+  //   }
+  // }, [unCategorizedPostsQuery.data])
+
 
   return (
     <div>
       <ToastContainer position="top-center" />
-      <Postcategorization1 data={data} categorizedData={categorizedData} />
+      <Postcategorization1 categorizedData={categorizedData} />
     </div>
   );
 };
