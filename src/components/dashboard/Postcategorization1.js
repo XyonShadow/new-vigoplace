@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 // import { MdOutlineArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
+import { GrFormClose } from "react-icons/gr";
 import { AiOutlineSearch } from "react-icons/ai";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { UncategorizedPost } from "./UncategorizedPost";
@@ -116,13 +117,13 @@ export function Postcategorization1({ categorizedData }) {
         }));
       }
     } else {
-      const findPost = categorizedPost[categorizedIndex];
+      const findPost = categorizedData[categorizedIndex];
       const categoryExist = findPost.OPCCategory.findIndex(
         (c) => c === category.OCName
       );
       if (categoryExist >= 0) return;
 
-      const newPost = [...categorizedPost];
+      const newPost = [...categorizedData];
       newPost.splice(categorizedIndex, 1, {
         ...findPost,
         OPCCategory: [...findPost.OPCCategory, category.OCName],
@@ -359,6 +360,31 @@ export function Postcategorization1({ categorizedData }) {
       });
   };
 
+  const removeCategory = async (id) => {
+    toast.success("Removing category from list");
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/admin/category/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (!response.ok) {
+        toast.error("Fails to remove category");
+        throw new Error();
+      }
+      const data = await response.json();
+      queryClient.invalidateQueries("categoryList")
+      return data;
+    } catch (error) {
+      throw new Error(`Error deleting post: ${error.message}`);
+    }
+  };
+
+
+  
+
   return (
     <section className=" text-sm lg:text-base overflow-auto flex flex-col lg:flex-row w-full justify-center ">
       <div className="lg:w-[65vw] w-full bg-white min-h-[200vh] lg:min-h-screen h-full">
@@ -450,6 +476,27 @@ export function Postcategorization1({ categorizedData }) {
         />
 
         <div className="flex flex-col h-screen overflow-y-auto rounded-lg gap-2.5 mt-4 p-2 bg-[#F1F0F0]">
+
+        <ul className="flex flex-col items-center justify-center gap-4">
+                {selectedCategories[currentPostId]?.map((category) => {
+                  return (
+                    <li
+                      key={category.OCId}
+                      className="flex justify-between py-2 px-6  w-full bg-white rounded-lg"
+                    >
+                      <span>{category.OCName}</span>
+                      <GrFormClose
+                        size={20}
+                        className="cursor-pointer"
+                        onClick={() =>
+                          handleCategoryChange(category, currentIndex)
+                        }
+                      />
+                    </li>
+                  );
+                })}
+              </ul>
+
           {searchTerm !== "" ? (
             filteredCategoryResults.length > 0 ? (
               filteredCategoryResults.map((item) => (
@@ -468,16 +515,27 @@ export function Postcategorization1({ categorizedData }) {
             )
           ) : (
             categoryList?.data.map((category) => {
+              console.log(category)
               if (category.OCName === "") return;
               return (
                 <div
                   key={category.OCId}
-                  className="bg-white py-2.5 text-[#706464] cursor-pointer px-4 rounded-md"
-                  onClick={() => {
-                    handleCategoryChange(category);
-                  }}
+                  className="flex justify-between bg-white py-2.5 text-[#706464] cursor-pointer px-4 rounded-md"
+                  // onClick={() => {
+                  //   handleCategoryChange(category);
+                  // }}
                 >
-                  <p>{category.OCName}</p>
+                   <span onClick={() => {
+                    handleCategoryChange(category);
+                  }}>{category.OCName}</span>
+                      <GrFormClose
+                        size={20}
+                        className="cursor-pointer"
+                        onClick={() =>
+                         removeCategory(category.OCId)
+                        }
+                      />
+                  {/* <p>{category.OCName}</p> */}
                 </div>
               );
             })
