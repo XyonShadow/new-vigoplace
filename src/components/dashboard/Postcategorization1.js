@@ -375,6 +375,7 @@ export function Postcategorization1({ categorizedData }) {
         throw new Error();
       }
       const data = await response.json();
+      handleSearch()
       queryClient.invalidateQueries("categoryList")
       return data;
     } catch (error) {
@@ -476,38 +477,27 @@ export function Postcategorization1({ categorizedData }) {
         />
 
         <div className="flex flex-col h-screen overflow-y-auto rounded-lg gap-2.5 mt-4 p-2 bg-[#F1F0F0]">
-
-        <ul className="flex flex-col items-center justify-center gap-4">
-                {selectedCategories[currentPostId]?.map((category) => {
-                  return (
-                    <li
-                      key={category.OCId}
-                      className="flex justify-between py-2 px-6  w-full bg-white rounded-lg"
-                    >
-                      <span>{category.OCName}</span>
-                      <GrFormClose
-                        size={20}
-                        className="cursor-pointer"
-                        onClick={() =>
-                          handleCategoryChange(category, currentIndex)
-                        }
-                      />
-                    </li>
-                  );
-                })}
-              </ul>
-
           {searchTerm !== "" ? (
             filteredCategoryResults.length > 0 ? (
               filteredCategoryResults.map((item) => (
                 <div
                   key={item.OCId}
-                  className="bg-white py-2.5 text-[#706464] cursor-pointer px-4 rounded-md"
-                  onClick={() => {
-                    handleCategoryChange(item);
-                  }}
+                  className="flex justify-between bg-white py-2.5 text-[#706464] cursor-pointer px-4 rounded-md"
+                  // onClick={() => {
+                  //   handleCategoryChange(category);
+                  // }}
                 >
-                  <p>{item.OCName}</p>
+                   <span onClick={() => {
+                    handleCategoryChange(category);
+                  }}>{item.OCName}</span>
+                      <GrFormClose
+                        size={20}
+                        className="cursor-pointer"
+                        onClick={() =>
+                         removeCategory(item.OCId)
+                        }
+                      />
+                  {/* <p>{category.OCName}</p> */}
                 </div>
               ))
             ) : (
