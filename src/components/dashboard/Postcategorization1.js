@@ -489,7 +489,7 @@ export function Postcategorization1({ categorizedData }) {
                   // }}
                 >
                    <span onClick={() => {
-                    handleCategoryChange(category);
+                    handleCategoryChange(item);
                   }}>{item.OCName}</span>
                       <GrFormClose
                         size={20}
