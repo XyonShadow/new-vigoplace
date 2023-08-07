@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { dehydrate, QueryClient } from '@tanstack/react-query'
 import { Box, Container, Grid } from '@mui/material';
 import BlogCard from "../src/components/dashboard/BlogCard";
@@ -25,6 +25,11 @@ export default function Index() {
   const queryClient = useQueryClient();
   const getUser = useSession();
   const user = getUser?.data?.user;
+
+  // console.log(user)
+
+
+
 
   const { data: users } = useQuery(['fetchUsersCount'],
     async () => {
@@ -140,6 +145,14 @@ export default function Index() {
     },
     { keepPreviousData: true }
   );
+
+  if (user?.adminType === "sub-admin") {
+    return (
+      <section className="flex items-center justify-center">
+        <p className="font-bold text-black">Sorry, you do not have permission to view this page</p>
+      </section>
+    )
+  }
 
   return (
     <>

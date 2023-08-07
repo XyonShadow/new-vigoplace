@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { dehydrate, QueryClient } from '@tanstack/react-query'
+import { useSession } from "next-auth/react";
 
 import { Grid, Container } from '@mui/material';
 import RecentOrders from '../src/components/RecentOrders';
@@ -15,6 +16,25 @@ function Payouts() {
   })
   const { data, isLoading, isFetching } = usePayoutRequests(fetchParams.limit, fetchParams.offset, fetchParams.status)
   // if (isLoading || isLoading) return <div>Loading...........</div>
+
+  const getUser = useSession();
+  const user = getUser?.data?.user;
+
+  // console.log(user)
+
+  useEffect(() => {
+    if (user) {
+      console.log(user)
+    }
+  }, [user])
+
+  if (user?.adminType === "sub-admin") {
+    return (
+      <section className="flex items-center justify-center">
+        <p className="font-bold text-black">Sorry, you do not have permission to view this page</p>
+      </section>
+    )
+  }
 
 
   return (

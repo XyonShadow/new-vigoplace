@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types';
+import { useSession } from "next-auth/react";
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
@@ -47,6 +48,25 @@ export default function Settings() {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const getUser = useSession();
+  const user = getUser?.data?.user;
+
+  // console.log(user)
+
+  useEffect(() => {
+    if (user) {
+      console.log(user)
+    }
+  }, [user])
+
+  if (user?.adminType === "sub-admin") {
+    return (
+      <section className="flex items-center justify-center">
+        <p className="font-bold text-black">Sorry, you do not have permission to view this page</p>
+      </section>
+    )
+  }
 
   return (
     <Box sx={{ width: '100%' }}>

@@ -136,6 +136,17 @@ function ActivityLogs() {
   );
 
 
+
+
+  if (user?.adminType === "sub-admin") {
+    return (
+      <section className="flex items-center justify-center">
+        <p className="font-bold text-black">Sorry, you do not have permission to view this page</p>
+      </section>
+    )
+  }
+
+
   return (
     <>
   {/* <Grid container spacing={0}>
