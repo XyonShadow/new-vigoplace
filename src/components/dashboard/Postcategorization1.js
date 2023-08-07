@@ -375,8 +375,9 @@ export function Postcategorization1({ categorizedData }) {
         throw new Error();
       }
       const data = await response.json();
-      handleSearch()
+
       queryClient.invalidateQueries("categoryList")
+      // handleSearch(searchTerm)
       return data;
     } catch (error) {
       throw new Error(`Error deleting post: ${error.message}`);
