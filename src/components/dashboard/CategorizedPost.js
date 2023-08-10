@@ -224,7 +224,7 @@ export const CategorizedPost = ({
                       })}
                     </CarouselMini>
                     <button
-                      className="bg-[#F93636] py-3 px-5 rounded-md text-white text-sm absolute bottom-4 right-5 z-20"
+                      className="bg-[#F93636] py-3 px-5 rounded-md text-white text-sm mt-5 z-20"
                       onClick={() => setOpenModal(true)}
                     >
                       Delete Post

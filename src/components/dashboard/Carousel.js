@@ -30,7 +30,7 @@ export default function CarouselMini({
       </div>
       <div
         className={`${
-          slides.length > 1 ? "flex" : "hidden"
+          slides?.length > 1 ? "flex" : "hidden"
         } absolute inset-0 h-[80%] items-center justify-between p-4`}
       >
         <button
