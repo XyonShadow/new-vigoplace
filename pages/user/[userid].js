@@ -265,7 +265,7 @@ const Users = () => {
           },
         }
       );
-
+        console.log(data)
       return data;
     },
     {
@@ -514,6 +514,13 @@ const Users = () => {
         accessorFn: (row) => row.transactionNetTotal.toLocaleString("en-US"),
         enableClickToCopy: false,
         header: "Amount",
+      },
+      {
+        // accessorKey: "transactionTotal",
+        id: "transactionFee",
+        accessorKey: "transactionFee",
+        enableClickToCopy: false,
+        header: "Transaction Fee",
       },
       {
         // accessorKey: "transactionDate",
@@ -797,7 +804,7 @@ const Users = () => {
                     {unblockMutation.isLoading ? (
                       <CircularProgress size={23} color="inherit" />
                     ) : (
-                      "Ublock"
+                      "Unblock"
                     )}
                   </Button>
                 ) : (

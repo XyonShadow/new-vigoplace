@@ -19,12 +19,20 @@ import {
   useMutation,
 } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
+import { useRouter } from 'next/router';
 
 
 export default function Index() {
   const queryClient = useQueryClient();
   const getUser = useSession();
   const user = getUser?.data?.user;
+  const router = useRouter()
+
+  useEffect(() => {
+    if (user?.adminType === "sub-admin") {
+      router.push('/tickets')
+    }
+  }, [user])
 
   // console.log(user)
 

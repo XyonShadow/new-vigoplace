@@ -21,6 +21,7 @@ import LogoIcon from "../logo/LogoIcon";
 import Menuitems from "./MenuItems";
 import Buynow from "./Buynow";
 import { useRouter } from "next/router";
+
 import { useRouteRoles } from "../../../hooks/useRouteRoles";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import FlashOnIcon from "@mui/icons-material/FlashOn";
@@ -170,19 +171,37 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
     { keepPreviousData: true }
   );
 
+  const subAdminRoutes = [
+    {
+      title: "Tickets",
+      icon: "headphones",
+      href: "/tickets",
+      roles: ["admin", "root"]
+    },
+    {
+      title: "Post categorization",
+      icon: "paper",
+      href: "/post-categorization",
+      roles: ["admin", "root"]
+    }
+  ]
+
   const sidebarMenu = fetchedRoles
-    ? fetchedRoles?.map((menu) => {
+    ? (userInfo?.user?.adminType === "sub-admin" ? subAdminRoutes : fetchedRoles)?.map((menu) => {
         // console.log(typeof menu.roles, 'menu.roles')
         // console.log( JSON.parse(menu.roles), 'menu.roles parsed')
+        // if (userInfo.adminType === "sub-admin")
         return {
           title: menu.title,
           icon: menu.icon,
-          href: menu.href,
+          href:  menu.href,
           roles: menu.roles,
           // roles: JSON.parse(menu?.roles)
         };
       })
     : [];
+
+    console.log(sidebarMenu)
 
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
 
@@ -257,6 +276,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
                       </ListItemIcon>
 
                       <ListItemText onClick={onSidebarClose}>
+                        {/* {userInfo.user.adminType === "sub-admin" && (item.title === "Tickets" || item.title === "Post categorization") && item.title} */}
                         {item.title}
                       </ListItemText>
                     </ListItem>
