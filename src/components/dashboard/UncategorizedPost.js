@@ -271,7 +271,7 @@ export const UncategorizedPost = ({
                             <Image
                               width={400}
                               height={400}
-                              src={media.media}
+                              src={media?.media}
                               key={media.media}
                               alt=""
                               priority
@@ -285,8 +285,9 @@ export const UncategorizedPost = ({
                     ) : (
                       <CarouselMini autoSlide={false} autoSlideInterval={3000}>
                         {images[currentIndex]?.PMMedia?.map((media) => {
-                           console.log(currentIndex)
-                           console.log(images.length)
+                          //  console.log(currentIndex)
+                          //  console.log(images)
+                          //  console.log(media)
                           //  console.log(data.data)
                           if (media.type === "video")
                             return (
@@ -311,7 +312,7 @@ export const UncategorizedPost = ({
                               <Image
                                 width={400}
                                 height={400}
-                                src={media.media}
+                                src={media?.media}
                                 key={media.media}
                                 alt=""
                                 priority
