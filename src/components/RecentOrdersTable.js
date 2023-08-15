@@ -255,6 +255,8 @@ export default function RecentOrdersTable() {
         }
       );
 
+      console.log(data)
+
       return data;
     },
     {
@@ -889,6 +891,9 @@ function Row({ payout, isPayoutSelected }) {
                     <TableCell sx={{ fontWeight: "bold" }} align="center">
                       accountNumber
                     </TableCell>
+                    <TableCell sx={{ fontWeight: "bold" }} align="center">
+                      routingNumber
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -968,6 +973,14 @@ function Row({ payout, isPayoutSelected }) {
                             "payoutRequest",
                             payout.payoutRequestId,
                           ])?.data?.accountNumber
+                        }
+                      </TableCell>
+                      <TableCell align="center">
+                        {
+                          queryClient.getQueryData([
+                            "payoutRequest",
+                            payout.payoutRequestId,
+                          ])?.data?.accountRoutingNumber
                         }
                       </TableCell>
 

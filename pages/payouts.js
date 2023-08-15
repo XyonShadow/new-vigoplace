@@ -19,6 +19,7 @@ function Payouts() {
 
   const getUser = useSession();
   const user = getUser?.data?.user;
+  console.log(data)
 
   // console.log(user)
 

@@ -23,6 +23,7 @@ try {
             'Authorization': token
         },
       }).json()
+      console.log(parsed)
       return parsed
   } catch (error) {
     console.log(error, 'parsed error')
