@@ -1,9 +1,5 @@
 import React, { useState } from "react";
-import {
-  useQueryClient,
-  useQuery,
-  useMutation,
-} from "@tanstack/react-query";
+import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { getSession, useSession } from "next-auth/react";
 import Snackbar from "@mui/material/Snackbar";
 import axios from "axios";
@@ -62,6 +58,7 @@ import {
   fetchSinglePayoutRequest,
   useSinglePayoutRequest,
 } from "../../hooks/useSinglePayoutRequest";
+import { toast } from "react-toast";
 // import BulkActions from './BulkActions';
 
 // const CryptoOrderStatus = {completed' | 'pending' | 'failed}
@@ -198,7 +195,7 @@ export default function RecentOrdersTable() {
     setPagination({
       pageIndex: 0,
       pageSize: 10,
-    })
+    });
   };
 
   const handleSelectAllCryptoOrders = (event) => {
@@ -224,15 +221,21 @@ export default function RecentOrdersTable() {
 
   const handlePageChange = (event, newPage) => {
     // setPage(newPage);
-    setPagination({...pagination, pageIndex: newPage})
+    setPagination({ ...pagination, pageIndex: newPage });
   };
 
   const handleLimitChange = (event) => {
     // setLimit(parseInt(event.target.value));
-    setPagination({...pagination, pageSize: event.target.value})
+    setPagination({ ...pagination, pageSize: event.target.value });
   };
 
-  const { data: payouts, isError, isFetching, isLoading, refetch } = useQuery(
+  const {
+    data: payouts,
+    isError,
+    isFetching,
+    isLoading,
+    refetch,
+  } = useQuery(
     [
       "payoutRequests",
       // columnFilters, //refetch when columnFilters changes
@@ -242,11 +245,15 @@ export default function RecentOrdersTable() {
       // sorting, //refetch when sorting changes
       status,
       page,
-      limit
+      limit,
     ],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/payouts?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${status !== undefined && status !== null ? `&status=${status}` : '' }`,
+        `https://vigoplace.com/server/api/admin/console/payouts?limit=${
+          pagination.pageSize
+        }&offset=${pagination.pageIndex * pagination.pageSize}${
+          status !== undefined && status !== null ? `&status=${status}` : ""
+        }`,
         // `http://localhost:3001/api/admin/console/payouts?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${status !== undefined && status !== null ? `&status=${status}` : '' }`,
         {
           headers: {
@@ -255,7 +262,7 @@ export default function RecentOrdersTable() {
         }
       );
 
-      console.log(data)
+      console.log(data);
 
       return data;
     },
@@ -268,16 +275,15 @@ export default function RecentOrdersTable() {
     { keepPreviousData: true }
   );
 
-
-
-
-  const filteredCryptoOrders = applyFilters(payouts?.data?.payoutRequests, filters);
+  const filteredCryptoOrders = applyFilters(
+    payouts?.data?.payoutRequests,
+    filters
+  );
   const paginatedCryptoOrders = applyPagination(
     filteredCryptoOrders,
     pagination.pageIndex,
-    pagination.pageSize,
+    pagination.pageSize
   );
-
 
   const selectedSomeCryptoOrders =
     selectedCryptoOrders.length > 0 &&
@@ -382,20 +388,17 @@ export default function RecentOrdersTable() {
 }
 
 function Row({ payout, isPayoutSelected }) {
-  const theme = useTheme();
-    const router = useRouter();
+  const router = useRouter();
   const [open, setOpen] = React.useState(false);
   const queryClient = useQueryClient();
   const [payoutRId, setPayoutRId] = React.useState(null);
   const { isLoading } = useSinglePayoutRequest(payoutRId);
   const [openToast, setOpenToast] = React.useState(false);
-  const [progress, setProgress] = React.useState(0);
-  const [buffer, setBuffer] = React.useState(10);
   const [openModal, setOpenModal] = React.useState(false);
   const [declineModal, setDeclineModal] = React.useState(false);
   const [pin, setPin] = React.useState(null);
+  const [deliveryETA, setDeliveryETA] = React.useState("");
   const [reason, setReason] = React.useState("");
-
 
   const handlePin = (e) => {
     setPin(e.target.value);
@@ -417,7 +420,7 @@ function Row({ payout, isPayoutSelected }) {
     const token = await getToken();
     const parsed = await axios.post(
       // "http://localhost:3001/api/admin/console/approvepayout",
-      'https://vigoplace.com/server/api/admin/console/approvepayout',
+      "https://vigoplace.com/server/api/admin/console/approvepayout",
       { payoutRequestId: id, approvalPin: pin },
       {
         headers: {
@@ -441,11 +444,43 @@ function Row({ payout, isPayoutSelected }) {
     },
   });
 
+  const approveUSDPayOut = async ({ id, pin, deliveryETA }) => {
+    if (deliveryETA === "") {
+      toast.error("Please pick a date")
+      return
+    }
+    const token = await getToken();
+    const parsed = await axios.post(
+      // "http://localhost:3001/api/admin/console/approvepayout",
+      "https://vigoplace.com/server/api/admin/console/approvepayout",
+      { payoutRequestId: id, approvalPin: pin, deliveryETA },
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+    return parsed;
+  };
+
+  const approveUSDPayOutMutation = useMutation({
+    mutationKey: ["approveUSDPayOut"],
+    mutationFn: approveUSDPayOut,
+    onSuccess: () => {
+      queryClient.invalidateQueries("payoutRequests");
+      setPin(null);
+    },
+    onError: async (error) => {
+      setOpenToast(true);
+      setPin(null);
+    },
+  });
+
   const declinePayOut = async ({ id, pin, reason }) => {
     const token = await getToken();
     const parsed = await axios.post(
       // "http://localhost:3001/api/admin/console/declinepayout",
-      'https://vigoplace.com/server/api/admin/console/declinepayout',
+      "https://vigoplace.com/server/api/admin/console/declinepayout",
       { payoutRequestId: id, approvalPin: pin, reason },
       {
         headers: {
@@ -462,7 +497,7 @@ function Row({ payout, isPayoutSelected }) {
     onSuccess: (data) => {
       queryClient.invalidateQueries("payoutRequests");
       setPin(null);
-      setReason("")
+      setReason("");
     },
     onError: async (error) => {
       setOpenToast(true);
@@ -479,7 +514,8 @@ function Row({ payout, isPayoutSelected }) {
         onClose={handleClose}
       >
         <Alert onClose={handleClose} severity="warning" sx={{ width: "100%" }}>
-          {approvePayOutMutation.error?.response?.data?.message || declinePayOutMutation.error?.response?.data?.message}
+          {approvePayOutMutation.error?.response?.data?.message ||
+            declinePayOutMutation.error?.response?.data?.message ||approveUSDPayOutMutation.error?.response?.data?.message}
         </Alert>
       </Snackbar>
       <TableRow hover selected={isPayoutSelected}>
@@ -597,11 +633,9 @@ function Row({ payout, isPayoutSelected }) {
                 size="small"
                 variant="contained"
                 color="success"
-                onClick={
-                  () => {
-                    setOpenModal(true);
-                  }
-                }
+                onClick={() => {
+                  setOpenModal(true);
+                }}
               >
                 {approvePayOutMutation.isLoading ? (
                   <CircularProgress size={23} color="inherit" />
@@ -611,28 +645,33 @@ function Row({ payout, isPayoutSelected }) {
                   "Approve"
                 )}
               </Button>
-              <Button size="small" variant="contained" color="error" onClick={
-                  () => {
-                    setDeclineModal(true);
-                  }
-                }>
-                  {
-                    declinePayOutMutation.isLoading ? (<CircularProgress size={23} color="inherit" />) :  approvePayOutMutation.isSuccess ? (<CheckIcon />) : ("Decline")
-                  }
+              <Button
+                size="small"
+                variant="contained"
+                color="error"
+                onClick={() => {
+                  setDeclineModal(true);
+                }}
+              >
+                {declinePayOutMutation.isLoading ? (
+                  <CircularProgress size={23} color="inherit" />
+                ) : approvePayOutMutation.isSuccess ? (
+                  <CheckIcon />
+                ) : (
+                  "Decline"
+                )}
               </Button>
               <Button
-                sx={{ margin: 1, bgcolor: green['A700'] }}
+                sx={{ margin: 1, bgcolor: green["A700"] }}
                 size="small"
                 variant="contained"
                 color="success"
-                onClick={
-                  () => {
-                    // setOpenModal(true);
-                    router.push(`/user/${payout.payoutRequestUId}`)
-                  }
-                }
+                onClick={() => {
+                  // setOpenModal(true);
+                  router.push(`/user/${payout.payoutRequestUId}`);
+                }}
               >
-               Profile
+                Profile
               </Button>
 
               <Dialog
@@ -645,8 +684,13 @@ function Row({ payout, isPayoutSelected }) {
                 <DialogTitle>Approve Payout</DialogTitle>
                 <DialogContent>
                   <DialogContentText>
-                    Please enter your admin approval pin to approve this
-                    request, if you dont have one yet, head to{" "}
+                    Please enter{" "}
+                    {queryClient.getQueryData([
+                            "payoutRequest",
+                            payout.payoutRequestId,
+                          ])?.data?.currency === "US Dollar" && <span>the date and</span>}{" "}
+                    your admin approval pin to approve this request, if you dont
+                    have one yet, head to{" "}
                     {
                       <Link style={{ color: "blue" }} href="/settings">
                         Settings
@@ -654,17 +698,29 @@ function Row({ payout, isPayoutSelected }) {
                     }{" "}
                     to create one now
                   </DialogContentText>
-                  <TextField
-                    autoFocus
-                    margin="dense"
-                    id="name"
-                    label="Approval Pin"
-                    type="number"
-                    fullWidth
-                    value={pin}
-                    variant="standard"
-                    onChange={handlePin}
-                  />
+                  {queryClient.getQueryData([
+                            "payoutRequest",
+                            payout.payoutRequestId,
+                          ])?.data?.currency === "US Dollar"  && <input
+                      type="date"
+                      className="my-5"
+                      value={deliveryETA}
+                      onChange={(e) => setDeliveryETA(e.target.value)}
+                    />}
+                  
+                    <TextField
+                      autoFocus
+                      margin="dense"
+                      id="name"
+                      label="Approval Pin"
+                      type="number"
+                      fullWidth
+                      value={pin}
+                      variant="standard"
+                      onChange={handlePin}
+                    />
+                   
+                  
                 </DialogContent>
                 <DialogActions>
                   <Button
@@ -677,14 +733,32 @@ function Row({ payout, isPayoutSelected }) {
                   </Button>
                   <LoadingButton
                     variant="contained"
-                    loading={approvePayOutMutation.isLoading}
-                    disabled={pin === null || pin?.length <= 5}
+                    loading={approvePayOutMutation.isLoading ||  approveUSDPayOutMutation.isLoading}
+                    disabled={pin === null || pin?.length <= 5 || (queryClient.getQueryData([
+                      "payoutRequest",
+                      payout.payoutRequestId,
+                    ])?.data?.currency !== "Naira" && deliveryETA === "") }
                     onClick={() => {
-                      approvePayOutMutation.mutate({
-                        id: payout.payoutRequestId,
-                        pin,
-                      });
+                      ((queryClient.getQueryData([
+                        "payoutRequest",
+                        payout.payoutRequestId,
+                      ])?.data?.currency === "Naira") ? approvePayOutMutation : approveUSDPayOutMutation).mutate(
+                        queryClient.getQueryData([
+                          "payoutRequest",
+                          payout.payoutRequestId,
+                        ])?.data?.currency === "Naira"
+                          ? {
+                              id: payout.payoutRequestId,
+                              pin,
+                            }
+                          : {
+                              id: payout.payoutRequestId,
+                              pin,
+                              deliveryETA,
+                            }
+                      );
                       setPin(null);
+                      setDeliveryETA("");
                     }}
                   >
                     Approve
@@ -740,7 +814,6 @@ function Row({ payout, isPayoutSelected }) {
                       setDeclineModal(false);
                       setPin(null);
                       // setReason("")
-
                     }}
                   >
                     Cancel
@@ -753,7 +826,7 @@ function Row({ payout, isPayoutSelected }) {
                       declinePayOutMutation.mutate({
                         id: payout.payoutRequestId,
                         pin,
-                        reason
+                        reason,
                       });
                       setPin(null);
                     }}
@@ -781,14 +854,12 @@ function Row({ payout, isPayoutSelected }) {
                 size="small"
                 variant="contained"
                 color="success"
-                onClick={
-                  () => {
-                    // setOpenModal(true);
-                    router.push(`/user/${payout.payoutRequestUId}`)
-                  }
-                }
+                onClick={() => {
+                  // setOpenModal(true);
+                  router.push(`/user/${payout.payoutRequestUId}`);
+                }}
               >
-               Profile
+                Profile
               </Button>
             </>
           ) : payout.payoutRequestStatus === "declined" ? (
@@ -803,18 +874,16 @@ function Row({ payout, isPayoutSelected }) {
                 Declined <CancelIcon />
               </Button>
               <Button
-                sx={{ margin: 1, bgcolor: green['A700'] }}
+                sx={{ margin: 1, bgcolor: green["A700"] }}
                 size="small"
                 variant="contained"
                 color="success"
-                onClick={
-                  () => {
-                    // setOpenModal(true);
-                    router.push(`/user/${payout.payoutRequestUId}`)
-                  }
-                }
+                onClick={() => {
+                  // setOpenModal(true);
+                  router.push(`/user/${payout.payoutRequestUId}`);
+                }}
               >
-               Profile
+                Profile
               </Button>
             </>
           ) : (
@@ -828,18 +897,16 @@ function Row({ payout, isPayoutSelected }) {
                 Approved <CheckIcon />
               </Button>
               <Button
-                sx={{ margin: 1, bgcolor: green['A700'] }}
+                sx={{ margin: 1, bgcolor: green["A700"] }}
                 size="small"
                 variant="contained"
                 color="success"
-                onClick={
-                  () => {
-                    // setOpenModal(true);
-                    router.push(`/user/${payout.payoutRequestUId}`)
-                  }
-                }
+                onClick={() => {
+                  // setOpenModal(true);
+                  router.push(`/user/${payout.payoutRequestUId}`);
+                }}
               >
-               Profile
+                Profile
               </Button>
             </>
           )}
