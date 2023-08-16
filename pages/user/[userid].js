@@ -287,7 +287,7 @@ const Users = () => {
     ["fetchSingleUserActivities"],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/users/activities?userId=${userid}&limit=${
+        `https://vigoplace.com/server/api/admin/activityLog/${userid}&limit=${
           pagination.pageSize
         }&offset=${pagination.pageIndex * pagination.pageSize}`,
         // `http://localhost:3001/api/admin/console/users/activities?userId=${userid}&limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}`,
@@ -297,6 +297,7 @@ const Users = () => {
           },
         }
       );
+      console.log(data)
 
       return data;
     },
@@ -1214,7 +1215,7 @@ const Users = () => {
                       <MaterialTable
                         columns={activitiesColumns}
                         data={userActivities?.data ?? []}
-                        rowCount={userActivities?.count?.total ?? 0}
+                        rowCount={userActivities?.data?.length ?? 0}
                         isLoading={loadingActivities}
                         isError={fetchActivitiesError}
                         isFetching={fetchingActivities}
