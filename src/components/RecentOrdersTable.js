@@ -437,6 +437,7 @@ function Row({ payout, isPayoutSelected }) {
     onSuccess: () => {
       queryClient.invalidateQueries("payoutRequests");
       setPin(null);
+      setOpenModal(false)
     },
     onError: async (error) => {
       setOpenToast(true);
@@ -446,8 +447,8 @@ function Row({ payout, isPayoutSelected }) {
 
   const approveUSDPayOut = async ({ id, pin, deliveryETA }) => {
     if (deliveryETA === "") {
-      toast.error("Please pick a date")
-      return
+      toast.error("Please pick a date");
+      return;
     }
     const token = await getToken();
     const parsed = await axios.post(
@@ -469,6 +470,7 @@ function Row({ payout, isPayoutSelected }) {
     onSuccess: () => {
       queryClient.invalidateQueries("payoutRequests");
       setPin(null);
+      setOpenModal(false)
     },
     onError: async (error) => {
       setOpenToast(true);
@@ -498,6 +500,7 @@ function Row({ payout, isPayoutSelected }) {
       queryClient.invalidateQueries("payoutRequests");
       setPin(null);
       setReason("");
+      setOpenModal(false)
     },
     onError: async (error) => {
       setOpenToast(true);
@@ -515,7 +518,8 @@ function Row({ payout, isPayoutSelected }) {
       >
         <Alert onClose={handleClose} severity="warning" sx={{ width: "100%" }}>
           {approvePayOutMutation.error?.response?.data?.message ||
-            declinePayOutMutation.error?.response?.data?.message ||approveUSDPayOutMutation.error?.response?.data?.message}
+            declinePayOutMutation.error?.response?.data?.message ||
+            approveUSDPayOutMutation.error?.response?.data?.message}
         </Alert>
       </Snackbar>
       <TableRow hover selected={isPayoutSelected}>
@@ -686,9 +690,11 @@ function Row({ payout, isPayoutSelected }) {
                   <DialogContentText>
                     Please enter{" "}
                     {queryClient.getQueryData([
-                            "payoutRequest",
-                            payout.payoutRequestId,
-                          ])?.data?.currency === "US Dollar" && <span>the date and</span>}{" "}
+                      "payoutRequest",
+                      payout.payoutRequestId,
+                    ])?.data?.currency === "US Dollar" && (
+                      <span>the date and</span>
+                    )}{" "}
                     your admin approval pin to approve this request, if you dont
                     have one yet, head to{" "}
                     {
@@ -699,28 +705,31 @@ function Row({ payout, isPayoutSelected }) {
                     to create one now
                   </DialogContentText>
                   {queryClient.getQueryData([
-                            "payoutRequest",
-                            payout.payoutRequestId,
-                          ])?.data?.currency === "US Dollar"  && <input
+                    "payoutRequest",
+                    payout.payoutRequestId,
+                  ])?.data?.currency === "US Dollar" && (
+                    <div className="flex gap-5">
+                      <h3>Expected Delivery Date:</h3>
+                    <input
                       type="date"
                       className="my-5"
                       value={deliveryETA}
                       onChange={(e) => setDeliveryETA(e.target.value)}
-                    />}
-                  
-                    <TextField
-                      autoFocus
-                      margin="dense"
-                      id="name"
-                      label="Approval Pin"
-                      type="number"
-                      fullWidth
-                      value={pin}
-                      variant="standard"
-                      onChange={handlePin}
                     />
-                   
-                  
+                    </div>
+                  )}
+
+                  <TextField
+                    autoFocus
+                    margin="dense"
+                    id="name"
+                    label="Approval Pin"
+                    type="number"
+                    fullWidth
+                    value={pin}
+                    variant="standard"
+                    onChange={handlePin}
+                  />
                 </DialogContent>
                 <DialogActions>
                   <Button
@@ -733,16 +742,27 @@ function Row({ payout, isPayoutSelected }) {
                   </Button>
                   <LoadingButton
                     variant="contained"
-                    loading={approvePayOutMutation.isLoading ||  approveUSDPayOutMutation.isLoading}
-                    disabled={pin === null || pin?.length <= 5 || (queryClient.getQueryData([
-                      "payoutRequest",
-                      payout.payoutRequestId,
-                    ])?.data?.currency !== "Naira" && deliveryETA === "") }
-                    onClick={() => {
-                      ((queryClient.getQueryData([
+                    loading={
+                      approvePayOutMutation.isLoading ||
+                      approveUSDPayOutMutation.isLoading
+                    }
+                    disabled={
+                      pin === null ||
+                      pin?.length <= 5 ||
+                      (queryClient.getQueryData([
                         "payoutRequest",
                         payout.payoutRequestId,
-                      ])?.data?.currency === "Naira") ? approvePayOutMutation : approveUSDPayOutMutation).mutate(
+                      ])?.data?.currency !== "Naira" &&
+                        deliveryETA === "")
+                    }
+                    onClick={() => {
+                      (queryClient.getQueryData([
+                        "payoutRequest",
+                        payout.payoutRequestId,
+                      ])?.data?.currency === "Naira"
+                        ? approvePayOutMutation
+                        : approveUSDPayOutMutation
+                      ).mutate(
                         queryClient.getQueryData([
                           "payoutRequest",
                           payout.payoutRequestId,
