@@ -297,7 +297,6 @@ const Users = () => {
           },
         }
       );
-      console.log(data)
 
       return data;
     },

@@ -708,7 +708,7 @@ function Row({ payout, isPayoutSelected }) {
                     "payoutRequest",
                     payout.payoutRequestId,
                   ])?.data?.currency === "US Dollar" && (
-                    <div className="flex gap-5">
+                    <div className="flex items-center gap-5">
                       <h3>Expected Delivery Date:</h3>
                     <input
                       type="date"
