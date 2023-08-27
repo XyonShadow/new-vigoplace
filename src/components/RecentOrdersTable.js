@@ -554,7 +554,7 @@ function Row({ payout, isPayoutSelected }) {
             gutterBottom
             noWrap
           >
-            {payout.payoutRequestId}
+            {payout.payoutRequestId}  {payout.etaType !=="regular" && <span className="text-red-500 font-bold">EXP</span>}
           </Typography>
           <Typography variant="body2" color="text.secondary" noWrap>
             {/* {format(payouts.payoutRequestDate, 'MMMM dd yyyy')} */}
