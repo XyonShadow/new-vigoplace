@@ -158,7 +158,7 @@ const Users = () => {
           },
         }
       );
-      console.log(data)
+      console.log(data);
 
       return data;
     },
@@ -213,7 +213,12 @@ const Users = () => {
     () => [
       {
         // accessorKey: "charges.data[0]?.billing_details.name ?? customer",
-        accessorFn: (row) => (Object.keys(row.metadata).length > 0 ? row.metadata.name : (row.charges?.data?.length > 0 ? row.charges.data[0].billing_details.name : row.customer)),
+        accessorFn: (row) =>
+          Object.keys(row.metadata).length > 0
+            ? row.metadata.name
+            : row.charges?.data?.length > 0
+            ? row.charges.data[0].billing_details.name
+            : row.customer,
         id: "customer",
         enableClickToCopy: false,
         header: "Name",
@@ -326,9 +331,11 @@ const Users = () => {
   if (user?.adminType === "sub-admin") {
     return (
       <section className="flex items-center justify-center">
-        <p className="font-bold text-black">Sorry, you do not have permission to view this page</p>
+        <p className="font-bold text-black">
+          Sorry, you do not have permission to view this page
+        </p>
       </section>
-    )
+    );
   }
 
   return (
@@ -356,8 +363,8 @@ const Users = () => {
                 scrollButtons="auto"
                 aria-label=""
               >
-                <Tab label="Transfers/Payouts" {...a11yProps(0)} />
-                <Tab label="Transactions" {...a11yProps(1)} />
+                <Tab label="Transactions" {...a11yProps(0)} />
+                {/* <Tab label="Transactions" {...a11yProps(1)} /> */}
               </Tabs>
             </Box>
 
@@ -445,7 +452,7 @@ const Users = () => {
               </Box>
             </TabPanel>
 
-            <TabPanel value={tabValue} index={1}>
+            {/* <TabPanel value={tabValue} index={1}>
               <Box sx={{ pt: 3 }}>
                 <MaterialReactTable
                   // enableColumnFilterModes
@@ -514,26 +521,6 @@ const Users = () => {
                             <MenuItem value={"declined"}>Declined</MenuItem>
                           </Select>
                         </FormControl>
-
-                        {/* <FormControl sx={{ m: 1, width: '25ch' }} variant="standard">
-   <InputLabel htmlFor="standard-adornment-password">Email</InputLabel>
-   <Input
-     id="standard-adornment-password"
-     type={'text'}
-     endAdornment={
-       <InputAdornment position="end">
-         <IconButton
-
-           aria-label="search"
-           // onClick={handleClickShowPassword}
-           // onMouseDown={handleMouseDownPassword}
-         >
-          <SearchIcon />
-         </IconButton>
-       </InputAdornment>
-     }
-   />
-   </FormControl> */}
                       </div>
                     );
                   }}
@@ -546,7 +533,7 @@ const Users = () => {
                   muiTableContainerProps={{ sx: { height: "75vh" } }}
                 />
               </Box>
-            </TabPanel>
+            </TabPanel> */}
           </Box>
         </Grid>
       </Grid>
@@ -569,16 +556,10 @@ const Users = () => {
 //   const [sorting, setSorting] = useState([]);
 //   const [status, setStatus] = React.useState("");
 
-
-
-
-
 //   const [pagination, setPagination] = useState({
 //     pageIndex: 1,
 //     pageSize: 10,
 //   });
-
-
 
 //   const {
 //     data,
