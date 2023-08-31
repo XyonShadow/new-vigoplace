@@ -212,7 +212,9 @@ const Users = () => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: "recipient.name",
+        // accessorKey: "charges.data[0]?.billing_details.name ?? customer",
+        accessorFn: (row) => (Object.keys(row.metadata).length > 0 ? row.metadata.name : (row.charges?.data?.length > 0 ? row.charges.data[0].billing_details.name : row.customer)),
+        id: "customer",
         enableClickToCopy: false,
         header: "Name",
       },
@@ -228,24 +230,24 @@ const Users = () => {
         id: "amount",
         header: "Amount",
       },
-      {
-        accessorKey: "recipient.details.bank_name",
-        enableClickToCopy: false,
-        header: "Bank Name",
-      },
+      // {
+      //   accessorKey: "recipient.details.bank_name",
+      //   enableClickToCopy: false,
+      //   header: "Bank Name",
+      // },
       {
         accessorKey: "status",
         enableClickToCopy: false,
         header: "Status",
       },
-      {
-        accessorKey: "transfer_code",
-        enableClickToCopy: true,
-        header: "transfer_code",
-      },
+      // {
+      //   accessorKey: "transfer_code",
+      //   enableClickToCopy: true,
+      //   header: "transfer_code",
+      // },
       {
         // accessorKey: "transactionDate",
-        accessorFn: (row) => format(new Date(row.createdAt), "Pp"),
+        accessorFn: (row) => format(new Date(row.created), "Pp"),
         id: "createdAt",
         enableClickToCopy: false,
         header: "Date",
@@ -370,14 +372,14 @@ const Users = () => {
                   // enableRowSelection
 
                   columns={columns}
-                  data={data?.data ?? []}
+                  data={data?.data?.paymentIntents ?? []}
                   enableStickyHeader
                   enableStickyFooter
                   enablePagination
                   manualPagination
                   onPaginationChange={setPagination}
                   // onPaginationChange={(e, f)=> console.log({e, f}, "oginidixx")}
-                  rowCount={data?.meta?.total ?? 0}
+                  rowCount={data?.data?.paymentIntents.length ?? 0}
                   onGlobalFilterChange={setGlobalFilter}
                   initialState={{ showColumnFilters: false }}
                   positionToolbarAlertBanner="bottom"
@@ -429,26 +431,6 @@ const Users = () => {
                             <MenuItem value={"declined"}>Declined</MenuItem>
                           </Select>
                         </FormControl>
-
-                        {/* <FormControl sx={{ m: 1, width: '25ch' }} variant="standard">
-   <InputLabel htmlFor="standard-adornment-password">Email</InputLabel>
-   <Input
-     id="standard-adornment-password"
-     type={'text'}
-     endAdornment={
-       <InputAdornment position="end">
-         <IconButton
-
-           aria-label="search"
-           // onClick={handleClickShowPassword}
-           // onMouseDown={handleMouseDownPassword}
-         >
-          <SearchIcon />
-         </IconButton>
-       </InputAdornment>
-     }
-   />
-   </FormControl> */}
                       </div>
                     );
                   }}

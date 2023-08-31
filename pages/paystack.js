@@ -159,6 +159,8 @@ const Users = () => {
         }
       );
 
+      console.log(data)
+
       return data;
     },
     {
@@ -196,6 +198,8 @@ const Users = () => {
           },
         }
       );
+
+      console.log(data)
 
       return data;
     },
@@ -368,7 +372,7 @@ const Users = () => {
                   // enableRowActions
                   // enableRowSelection
 
-                  columns={columns}
+                  columns={columns}                 
                   data={data?.data ?? []}
                   enableStickyHeader
                   enableStickyFooter
@@ -461,8 +465,10 @@ const Users = () => {
                 />
               </Box>
             </TabPanel>
+            <h1>Na here be data for up</h1>
 
             <TabPanel value={tabValue} index={1}>
+              <h1>Where am I</h1>
               <Box sx={{ pt: 3 }}>
                 <MaterialReactTable
                   // enableColumnFilterModes
@@ -563,6 +569,7 @@ const Users = () => {
                   muiTableContainerProps={{ sx: { height: "75vh" } }}
                 />
               </Box>
+              <h1>Na transaction here for up</h1>
             </TabPanel>
           </Box>
         </Grid>
@@ -580,200 +587,5 @@ const Users = () => {
   );
 };
 
-// function DisplayMaterialTable({ userid, user }) {
-//   const [globalFilter, setGlobalFilter] = useState("");
-//   const [columnFilters, setColumnFilters] = useState([]);
-//   const [sorting, setSorting] = useState([]);
-//   const [status, setStatus] = React.useState("");
-
-
-
-
-
-//   const [pagination, setPagination] = useState({
-//     pageIndex: 1,
-//     pageSize: 10,
-//   });
-
-
-
-//   const {
-//     data,
-//     isError,
-//     isFetching,
-//     isLoading,
-//     refetch,
-//   } = useQuery(
-//     [
-//       "fetchpaystackTransactions",
-//       columnFilters, //refetch when columnFilters changes
-//       globalFilter, //refetch when globalFilter changes
-//       pagination.pageIndex, //refetch when pagination.pageIndex changes
-//       pagination.pageSize, //refetch when pagination.pageSize changes
-//       sorting, //refetch when sorting changes
-//       status,
-//     ],
-//     async () => {
-//       const { data } = await axios.get(
-//         `https://vigoplace.com/server/api/admin/console/transactions/paystack?perPage=${pagination.pageSize}&page=${pagination.pageIndex}`,
-//         // `http://localhost:3001/api/admin/console/transactions/paystack?perPage=${pagination.pageSize}&page=${pagination.pageIndex}`,
-//         {
-//           headers: {
-//             Authorization: user?.token,
-//           },
-//         }
-//       );
-
-//       return data;
-//     },
-//     {
-//       onError: (err) => {
-//         console.log(err, "err fetching users");
-//       },
-//       enabled: !!user?.token,
-//     },
-//     { keepPreviousData: true }
-//   );
-
-//   const transactionColumns = useMemo(
-//     () => [
-//       {
-//         accessorFn: (row) =>
-//           `${row.customer.first_name} ${row.customer.last_name}`,
-//         enableClickToCopy: false,
-//         header: "Name",
-//       },
-//       {
-//         accessorKey: "currency",
-//         enableClickToCopy: false,
-//         header: "Currency",
-//       },
-//       {
-//         accessorFn: (row) => (row.amount / 100).toLocaleString("en-US"),
-//         // accessorKey: "amount",
-//         enableClickToCopy: false,
-//         header: "Amount",
-//       },
-//       {
-//         accessorKey: "authorization.bank",
-//         enableClickToCopy: false,
-//         header: "Bank Name",
-//       },
-//       {
-//         accessorKey: "status",
-//         enableClickToCopy: false,
-//         header: "Status",
-//       },
-//       {
-//         // accessorKey: "transactionDate",
-//         accessorFn: (row) => format(new Date(row.createdAt), "Pp"),
-//         enableClickToCopy: false,
-//         header: "Date",
-//       },
-//     ],
-//     []
-//   );
-
-//   return (
-//     <>
-//       <MaterialReactTable
-//         // enableColumnFilterModes
-//         // enableColumnOrdering
-//         // enableGrouping
-//         // enablePinning
-//         // enableRowActions
-//         // enableRowSelection
-
-//         columns={transactionColumns}
-//         data={transactionData?.data ?? []}
-//         enableStickyHeader
-//         enableStickyFooter
-//         enablePagination
-//         manualPagination
-//         // onPaginationChange={setTransactionPagination}
-//         onPaginationChange={setPagination}
-//         rowCount={transactionData?.meta?.total ?? 0}
-//         onGlobalFilterChange={setGlobalFilter}
-//         initialState={{ showColumnFilters: false }}
-//         positionToolbarAlertBanner="bottom"
-//         enableGlobalFilter={false}
-//         muiToolbarAlertBannerProps={
-//           isError
-//             ? {
-//                 color: "error",
-//                 children:
-//                   "Error loading data, Please use the refresh button on the table to retry",
-//               }
-//             : undefined
-//         }
-//         // getPaginationRowModel={(props)=> console.log(props, "propppp")}
-//         // manualPagination
-//         // onPaginationChange={}
-//         // muiTablePaginationProps={}
-
-//         renderTopToolbarCustomActions={({ table }) => {
-//           return (
-//             <div style={{ display: "flex", gap: "0.5rem" }}>
-//               <Tooltip arrow title="Refresh Data">
-//                 <IconButton onClick={() => refetch()}>
-//                   <RefreshIcon />
-//                 </IconButton>
-//               </Tooltip>
-
-//               <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-//                 <InputLabel id="demo-simple-select-standard-label">
-//                   Status
-//                 </InputLabel>
-//                 <Select
-//                   labelId="demo-simple-select-standard-label"
-//                   id="demo-simple-select-standard"
-//                   value={status}
-//                   defaultValue="None"
-//                   //  onChange={handleStatus}
-//                   label="Gender"
-//                 >
-//                   <MenuItem value="">
-//                     <em>None</em>
-//                   </MenuItem>
-//                   <MenuItem value={"completed"}>Completed</MenuItem>
-//                   <MenuItem value={"pending"}>Pending</MenuItem>
-//                   <MenuItem value={"processing"}>Processing</MenuItem>
-//                   <MenuItem value={"declined"}>Declined</MenuItem>
-//                 </Select>
-//               </FormControl>
-
-//               {/* <FormControl sx={{ m: 1, width: '25ch' }} variant="standard">
-//    <InputLabel htmlFor="standard-adornment-password">Email</InputLabel>
-//    <Input
-//      id="standard-adornment-password"
-//      type={'text'}
-//      endAdornment={
-//        <InputAdornment position="end">
-//          <IconButton
-
-//            aria-label="search"
-//            // onClick={handleClickShowPassword}
-//            // onMouseDown={handleMouseDownPassword}
-//          >
-//           <SearchIcon />
-//          </IconButton>
-//        </InputAdornment>
-//      }
-//    />
-//    </FormControl> */}
-//             </div>
-//           );
-//         }}
-//         state={{
-//           isLoading,
-//           showAlertBanner,
-//           showProgressBars,
-//           pagination,
-//         }}
-//         muiTableContainerProps={{ sx: { height: "75vh" } }}
-//       />
-//     </>
-//   );
-// }
 Users.auth = true;
 export default Users;
