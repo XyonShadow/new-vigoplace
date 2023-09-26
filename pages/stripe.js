@@ -118,6 +118,7 @@ const Users = () => {
   const [creditErrorToast, setCreditErrorToast] = React.useState(false);
   const [debitSuccessToast, setDebitSuccessToast] = React.useState(false);
   const [debitErrorToast, setDebitErrorToast] = React.useState(false);
+  const [lastId, setLastId] = useState(0)
 
   const [status, setStatus] = React.useState("");
   const [isVerified, setIsverified] = React.useState("");
@@ -147,10 +148,11 @@ const Users = () => {
       pagination.pageSize, //refetch when pagination.pageSize changes
       sorting, //refetch when sorting changes
       status,
+      lastId,
     ],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/stripe/payment_intents?perPage=${pagination.pageSize}&page=${pagination.pageIndex}`,
+        `https://vigoplace.com/server/api/stripe/payment_intents?limit=${pagination.pageSize}&page=${pagination.pageIndex}`,
         // `http://localhost:3001/api/admin/console/transfers/paystack?perPage=${pagination.pageSize}&page=${pagination.pageIndex}`,
         {
           headers: {
@@ -159,7 +161,7 @@ const Users = () => {
         }
       );
       console.log(data);
-
+      // console.log((data?.data?.paymentIntents[9].id))
       return data;
     },
     {
@@ -211,48 +213,95 @@ const Users = () => {
 
   const columns = useMemo(
     () => [
+// reference
+// : 
+// "pi_3NtYj5AjxNSbQzCq04ACzU1Z"
+// sender
+// : 
+// "George Parson"
+// userEmail
+// : 
+// "parsonapp@outlook.com"
+// userId
+// : 
+// 6127
+// userPhone
+// : 
+// "+18109419118"
+// walletId
+// : 
+// 1466
       {
-        // accessorKey: "charges.data[0]?.billing_details.name ?? customer",
-        accessorFn: (row) =>
-          Object.keys(row.metadata).length > 0
-            ? row.metadata.name
-            : row.charges?.data?.length > 0
-            ? row.charges.data[0].billing_details.name
-            : row.customer,
-        id: "customer",
+        accessorKey: "fullName",
         enableClickToCopy: false,
         header: "Name",
       },
       {
-        accessorKey: "currency",
+        accessorKey: "description",
         enableClickToCopy: false,
-        header: "Currency",
-      },
-      {
-        // accessorKey: "amount",
-        accessorFn: (row) => (row.amount / 100).toLocaleString("en-US"),
-        enableClickToCopy: false,
-        id: "amount",
-        header: "Amount",
+        header: "Description",
       },
       // {
-      //   accessorKey: "recipient.details.bank_name",
+      //   accessorKey: "currency",
       //   enableClickToCopy: false,
-      //   header: "Bank Name",
+      //   header: "Currency",
       // },
+      {
+        accessorKey: "paymentMethod",
+        enableClickToCopy: false,
+        header: "Payment Method",
+      },
+      {
+        accessorFn: (row) => (row.totalAmount/ 100).toLocaleString("en-US"),
+        enableClickToCopy: false,
+        id: "totalAmount",
+        header: "Total Amount",
+      },
+      {
+        accessorFn: (row) => (row.fees/ 100).toLocaleString("en-US"),
+        enableClickToCopy: false,
+        id: "fees",
+        header: "Fee",
+      },
+      {
+        accessorFn: (row) => (row.net/ 100).toLocaleString("en-US"),
+        enableClickToCopy: false,
+        id: "net",
+        header: "Net Amount",
+      },
+      {
+        accessorKey: "receiver",
+        enableClickToCopy: false,
+        header: "Receiver",
+      },
+      // // {
+      // //   accessorKey: "recipient.details.bank_name",
+      // //   enableClickToCopy: false,
+      // //   header: "Bank Name",
+      // // },
       {
         accessorKey: "status",
         enableClickToCopy: false,
         header: "Status",
       },
-      // {
-      //   accessorKey: "transfer_code",
-      //   enableClickToCopy: true,
-      //   header: "transfer_code",
-      // },
+      {
+        accessorKey: "userId",
+        enableClickToCopy: false,
+        header: "User Id",
+      },
+      {
+        accessorKey: "reference",
+        enableClickToCopy: false,
+        header: "Reference",
+      },
+      // // {
+      // //   accessorKey: "transfer_code",
+      // //   enableClickToCopy: true,
+      // //   header: "transfer_code",
+      // // },
       {
         // accessorKey: "transactionDate",
-        accessorFn: (row) => format(new Date(row.created), "Pp"),
+        accessorFn: (row) => format(new Date(row.createdAt), "Pp"),
         id: "createdAt",
         enableClickToCopy: false,
         header: "Date",
@@ -303,7 +352,7 @@ const Users = () => {
         header: "Currency",
       },
       {
-        accessorFn: (row) => (row.amount / 100).toLocaleString("en-US"),
+        accessorFn: (row) => (row.totalAmount / 100).toLocaleString("en-US"),
         // accessorKey: "amount",
         enableClickToCopy: false,
         header: "Amount",
@@ -379,14 +428,16 @@ const Users = () => {
                   // enableRowSelection
 
                   columns={columns}
-                  data={data?.data?.paymentIntents ?? []}
+                  data={data?.data?.transactions ?? []}
                   enableStickyHeader
                   enableStickyFooter
                   enablePagination
                   manualPagination
-                  onPaginationChange={setPagination}
+                  // onPaginationChange={setPagination}
+                  onPaginationChange={setLastId}
                   // onPaginationChange={(e, f)=> console.log({e, f}, "oginidixx")}
-                  rowCount={data?.data?.paymentIntents.length ?? 0}
+                  // rowCount={data?.data?.paymentIntents.length ?? 0}
+                  rowCount={100}
                   onGlobalFilterChange={setGlobalFilter}
                   initialState={{ showColumnFilters: false }}
                   positionToolbarAlertBanner="bottom"
