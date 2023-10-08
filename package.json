@@ -19,6 +19,7 @@
     "chart.js": "3.9.1",
     "clsx": "1.1.1",
     "date-fns": "^2.29.3",
+    "dotenv": "^16.3.1",
     "feather-icons-react": "^0.5.0",
     "hls.js": "^1.4.10",
     "ky": "^0.33.0",
@@ -52,6 +53,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start -H 127.0.0.1 -p 5000",
+    "start:prod": "pm2 startOrReload ecosystem.config.js",
     "post-update": "echo \"codesandbox preview only, need an update\" && yarn upgrade --latest"
   },
   "devDependencies": {

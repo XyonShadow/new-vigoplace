@@ -41,4 +41,4 @@ jobs:
                 git pull
                 npm i
                 npm run build
-                pm2 start AdminConsole
+                npm run start:prod
