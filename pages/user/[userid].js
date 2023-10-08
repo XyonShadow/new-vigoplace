@@ -511,7 +511,7 @@ const Users = () => {
       {
         // accessorKey: "transactionTotal",
         id: "transactionTotal",
-        accessorFn: (row) => row.transactionNetTotal.toLocaleString("en-US"),
+        accessorFn: (row) => row.transactionNetTotal?.toLocaleString("en-US"),
         enableClickToCopy: false,
         header: "Amount",
       },
@@ -523,11 +523,17 @@ const Users = () => {
         header: "Transaction Fee",
       },
       {
-        // accessorKey: "transactionDate",
-        accessorFn: (row) => format(new Date(row.transactionDate), "Pp"),
+        accessorFn: (row) => {
+          if (row?.transactionDate) {
+            return format(new Date(row.transactionDate), "Pp");
+          } else {
+            return ""; 
+          }
+        },
         enableClickToCopy: false,
         header: "Date",
-      },
+      }
+      
 
       // {
       //   accessorFn: (row) => new Date(row.startDate), //convert to Date for sorting and filtering
