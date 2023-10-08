@@ -154,7 +154,7 @@ const Users = () => {
     ],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/stripe/payment_intents`,
+        `https://vigoplace.com/server/api/stripe/payment_intents?page=${pagination.pageIndex + 1}`,
         // `http://localhost:3001/api/admin/console/transfers/paystack?perPage=${pagination.pageSize}&page=${pagination.pageIndex}`,
         {
           headers: {
@@ -180,24 +180,6 @@ const Users = () => {
 
   const columns = useMemo(
     () => [
-// reference
-// : 
-// "pi_3NtYj5AjxNSbQzCq04ACzU1Z"
-// sender
-// : 
-// "George Parson"
-// userEmail
-// : 
-// "parsonapp@outlook.com"
-// userId
-// : 
-// 6127
-// userPhone
-// : 
-// "+18109419118"
-// walletId
-// : 
-// 1466
       {
         accessorKey: "fullName",
         enableClickToCopy: false,
@@ -212,11 +194,6 @@ const Users = () => {
         accessorKey: "currency",
         enableClickToCopy: false,
         header: "Currency",
-      },
-      {
-        accessorKey: "paymentMethod",
-        enableClickToCopy: false,
-        header: "Payment Method",
       },
       {
         accessorFn: (row) => (row.totalAmount).toLocaleString("en-US"),
@@ -241,16 +218,6 @@ const Users = () => {
         enableClickToCopy: false,
         header: "Receiver",
       },
-      // // {
-      // //   accessorKey: "recipient.details.bank_name",
-      // //   enableClickToCopy: false,
-      // //   header: "Bank Name",
-      // // },
-      {
-        accessorKey: "status",
-        enableClickToCopy: false,
-        header: "Status",
-      },
       {
         accessorKey: "userId",
         enableClickToCopy: false,
@@ -261,11 +228,6 @@ const Users = () => {
         enableClickToCopy: false,
         header: "Reference",
       },
-      // // {
-      // //   accessorKey: "transfer_code",
-      // //   enableClickToCopy: true,
-      // //   header: "transfer_code",
-      // // },
       {
         // accessorKey: "transactionDate",
         accessorFn: (row) => format(new Date(row.createdAt), "Pp"),
@@ -371,9 +333,12 @@ const Users = () => {
                   enableStickyHeader
                   enableStickyFooter
                   enablePagination
-                  // onPaginationChange={setPagination}
+                  manualPagination
+                  onPaginationChange={setPagination}
+                  rowCount={82}
                   // rowCount={data?.data?.transactions?.length}
-                  // onGlobalFilterChange={setGlobalFilter}
+                  onGlobalFilterChange={setGlobalFilter}
+                  initialState={{ showColumnFilters: false }}
                   positionToolbarAlertBanner="bottom"
                   enableGlobalFilter={false}
                   muiToolbarAlertBannerProps={
@@ -426,7 +391,7 @@ const Users = () => {
                     isLoading,
                     showAlertBanner: isError,
                     showProgressBars: isFetching,
-                    // pagination,
+                    pagination,
                   }}
                   muiTableContainerProps={{ sx: { height: "75vh" } }}
                 />
