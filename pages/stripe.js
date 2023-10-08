@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import MaterialReactTable from "material-react-table";
 import Table from "material-react-table";
 import { useRouter } from "next/router";
+import { Link } from "next/link";
 import { format } from "date-fns";
 import {
   Avatar,
@@ -36,6 +37,7 @@ import Tabs from "@mui/material/Tabs";
 import MuiAlert from "@mui/material/Alert";
 import Slide from "@mui/material/Slide";
 import Snackbar from "@mui/material/Snackbar";
+import { MRT_TableBodyCellValue } from "material-react-table";
 
 import {
   QueryClient,
@@ -119,13 +121,13 @@ const Users = () => {
   const [creditErrorToast, setCreditErrorToast] = React.useState(false);
   const [debitSuccessToast, setDebitSuccessToast] = React.useState(false);
   const [debitErrorToast, setDebitErrorToast] = React.useState(false);
-  const [lastId, setLastId] = useState(0)
+  const [lastId, setLastId] = useState(0);
 
   const [status, setStatus] = React.useState("");
   const [isVerified, setIsverified] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [tabValue, setTabValue] = React.useState(0);
-  const [result, setResult] = useState([])
+  const [result, setResult] = useState([]);
   const [creditDetails, setCreditDetails] = useState({
     amount: "",
     approvalPin: "",
@@ -154,7 +156,9 @@ const Users = () => {
     ],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/stripe/payment_intents?page=${pagination.pageIndex + 1}`,
+        `https://vigoplace.com/server/api/stripe/payment_intents?page=${
+          pagination.pageIndex + 1
+        }`,
         // `http://localhost:3001/api/admin/console/transfers/paystack?perPage=${pagination.pageSize}&page=${pagination.pageIndex}`,
         {
           headers: {
@@ -162,9 +166,9 @@ const Users = () => {
           },
         }
       );
-      console.log(data);
-      setResult(data.data.transactions)
-      // console.log((data?.data?.paymentIntents[9].id))
+      //console.log(data);
+      setResult(data.data.transactions);
+      //console.log((data?.data?.paymentIntents[9].id))
       return data;
     },
     {
@@ -176,14 +180,29 @@ const Users = () => {
     { keepPreviousData: true }
   );
 
-
-
   const columns = useMemo(
     () => [
       {
         accessorKey: "fullName",
-        enableClickToCopy: false,
         header: "Name",
+        muiTableBodyCellProps: ({ cell }) => ({
+          style: {
+            cursor: "pointer",
+          },
+          onClick: () => {
+            console.log(cell.getValue());
+            const userId = cell.row.original.userId;
+            router.push(`/user/${userId}`);
+          },
+          onMouseEnter: (e) => {
+            e.target.style.textDecoration = "underline";
+          },
+          onMouseLeave: (e) => {
+            e.target.style.textDecoration = "none";
+          },
+        }),
+        enableClickToCopy: false,
+        id: "fullName",
       },
       {
         accessorKey: "description",
@@ -196,19 +215,19 @@ const Users = () => {
         header: "Currency",
       },
       {
-        accessorFn: (row) => (row.totalAmount).toLocaleString("en-US"),
+        accessorFn: (row) => row.totalAmount?.toLocaleString("en-US"),
         enableClickToCopy: false,
         id: "totalAmount",
         header: "Total Amount",
       },
       {
-        accessorFn: (row) => (row.fees/ 100).toLocaleString("en-US"),
+        accessorFn: (row) => (row.fees / 100)?.toLocaleString("en-US"),
         enableClickToCopy: false,
         id: "fees",
         header: "Fee",
       },
       {
-        accessorFn: (row) => (row.net/ 100).toLocaleString("en-US"),
+        accessorFn: (row) => (row.net / 100)?.toLocaleString("en-US"),
         enableClickToCopy: false,
         id: "net",
         header: "Net Amount",
@@ -229,48 +248,13 @@ const Users = () => {
         header: "Reference",
       },
       {
-        // accessorKey: "transactionDate",
-        accessorFn: (row) => format(new Date(row.createdAt), "Pp"),
-        id: "createdAt",
-        enableClickToCopy: false,
-        header: "Date",
-      },
-    ],
-    []
-  );
-
-  const transactionColumns = useMemo(
-    () => [
-      {
-        accessorFn: (row) =>
-          `${row.customer.first_name} ${row.customer.last_name}`,
-        enableClickToCopy: false,
-        header: "Name",
-      },
-      {
-        accessorKey: "currency",
-        enableClickToCopy: false,
-        header: "Currency",
-      },
-      {
-        accessorFn: (row) => (row.totalAmount / 100).toLocaleString("en-US"),
-        // accessorKey: "amount",
-        enableClickToCopy: false,
-        header: "Amount",
-      },
-      {
-        accessorKey: "authorization.bank",
-        enableClickToCopy: false,
-        header: "Bank Name",
-      },
-      {
-        accessorKey: "status",
-        enableClickToCopy: false,
-        header: "Status",
-      },
-      {
-        // accessorKey: "transactionDate",
-        accessorFn: (row) => format(new Date(row.createdAt), "Pp"),
+        accessorFn: (row) => {
+          if (row?.createdAt) {
+            return format(new Date(row.createdAt), "Pp");
+          } else {
+            return "";
+          }
+        },
         enableClickToCopy: false,
         header: "Date",
       },
@@ -336,11 +320,18 @@ const Users = () => {
                   manualPagination
                   onPaginationChange={setPagination}
                   rowCount={82}
-                  // rowCount={data?.data?.transactions?.length}
                   onGlobalFilterChange={setGlobalFilter}
                   initialState={{ showColumnFilters: false }}
                   positionToolbarAlertBanner="bottom"
                   enableGlobalFilter={false}
+                  // onCellClick={(row, column) => {
+                  //   if (column.accessorKey === "fullName") {
+                  //     handleNameClick(row.userId);
+                  //   }
+                  // }}
+                  // onCellClick={() => {
+                  //   console.log("user");
+                  // }}
                   muiToolbarAlertBannerProps={
                     isError
                       ? {
@@ -350,12 +341,11 @@ const Users = () => {
                         }
                       : undefined
                   }
-
                   renderTopToolbarCustomActions={({ table }) => {
                     return (
                       <div style={{ display: "flex", gap: "0.5rem" }}>
                         <Tooltip arrow title="Refresh Data">
-                          <IconButton >
+                          <IconButton>
                             <RefreshIcon />
                           </IconButton>
                         </Tooltip>
