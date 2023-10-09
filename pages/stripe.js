@@ -64,6 +64,7 @@ import { UserBio } from "../src/components/dashboard/userBio";
 import { LoadingButton, TabContext, TabList } from "@mui/lab";
 import BaseCard from "../src/components/baseCard/BaseCard";
 
+// "start": "next start -H 127.0.0.1 -p 5000",
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
