@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import MaterialReactTable from "material-react-table";
+import { MaterialReactTable } from "material-react-table";
 import {
   CircularProgress,
   IconButton,
@@ -92,7 +92,7 @@ const Users = () => {
   const [rowSelection, setRowSelection] = useState({});
   const [contactUsers, setContactUsers] = useState([]);
   const [notificationText, setNotificationText] = useState("");
-  const [datalenght, setDatalenght] = useState(0)
+  const [datalenght, setDatalenght] = useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -252,9 +252,9 @@ const Users = () => {
         },
       }
     );
-    
+
     if (notification.status === 200) {
-      toast.success(notification.data.message)
+      toast.success(notification.data.message);
     }
 
     return notification;
@@ -265,7 +265,7 @@ const Users = () => {
     mutationFn: notifyUser,
     onSuccess: () => {
       setNotificationText("");
-      handleClose()
+      handleClose();
     },
     onError: async (error) => {
       // setOpenToast(true);
@@ -339,9 +339,7 @@ const Users = () => {
     // },
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/users?limit=${
-          10000000000
-        }&walletCurrencyId=${wallet}${
+        `https://vigoplace.com/server/api/admin/console/users?limit=${10000000000}&walletCurrencyId=${wallet}${
           gender !== "" ? `&gender=${gender}` : ""
         }${status !== "" ? `&status=${status}` : ""}${
           flagged !== "" ? `&flagged=${flagged}` : ""
@@ -358,11 +356,11 @@ const Users = () => {
         }
       );
 
-      setDatalenght(data?.count?.total)
+      setDatalenght(data?.count?.total);
 
       const sortedData = data?.data?.sort(
         (a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)
-      )
+      );
       const paginatedData = sortedData.slice(
         pagination.pageIndex * pagination.pageSize,
         (pagination.pageIndex + 1) * pagination.pageSize
@@ -456,7 +454,13 @@ const Users = () => {
       },
       {
         // accessorKey: "createdAt",
-        accessorFn: (row) => format(new Date(row.createdAt), "Pp"),
+        accessorFn: (row) => {
+          if (row?.createdAt) {
+            return format(new Date(row.createdAt), "Pp");
+          } else {
+            return "";
+          }
+        },
         enableClickToCopy: false,
         header: "Joined",
         enableColumnFilter: false,
@@ -565,9 +569,11 @@ const Users = () => {
   if (user?.adminType === "sub-admin") {
     return (
       <section className="flex items-center justify-center">
-        <p className="font-bold text-black">Sorry, you do not have permission to view this page</p>
+        <p className="font-bold text-black">
+          Sorry, you do not have permission to view this page
+        </p>
       </section>
-    )
+    );
   }
 
   return (

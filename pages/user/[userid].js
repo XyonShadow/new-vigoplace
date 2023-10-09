@@ -688,8 +688,6 @@ const Users = () => {
       <Grid
         container
         spacing={0}
-        xs={12}
-        lg={12}
         sx={{
           display: "flex",
           background: "",
@@ -767,9 +765,9 @@ const Users = () => {
               </Typography>
 
               {userWallet
-                ? userWallet?.data.map((wallet) => (
+                ? userWallet?.data.map((wallet, id) => (
                     <>
-                      <Stack direction="row" spacing={2} marginBottom={2}>
+                      <Stack key={id} direction="row" spacing={2} marginBottom={2}>
                         <Chip
                           label={wallet.SCCurrency}
                           size="small"
@@ -1157,8 +1155,6 @@ const Users = () => {
       <Grid
         container
         spacing={0}
-        xs={12}
-        lg={12}
         sx={{
           display: "flex",
           background: "",

@@ -201,7 +201,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
       })
     : [];
 
-    console.log(sidebarMenu)
+    //console.log(sidebarMenu)
 
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
 
@@ -217,7 +217,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
   const SidebarContent = (
     <Box
       p={2}
-      height="100%"
+      //height="100%"
       sx={{
         backgroundColor: "rgb(28,34,47)",
         display: "flex",

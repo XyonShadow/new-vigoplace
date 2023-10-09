@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import MaterialReactTable from "material-react-table";
+import { MaterialReactTable } from 'material-react-table';
 import { useRouter } from "next/router";
 import { format } from "date-fns";
 import {
@@ -60,7 +60,6 @@ import { UserBalanceCard } from "../src/components/dashboard/userBalanceCard";
 import { UserBio } from "../src/components/dashboard/userBio";
 import { LoadingButton, TabContext, TabList } from "@mui/lab";
 import BaseCard from "../src/components/baseCard/BaseCard";
-
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -216,8 +215,25 @@ const Users = () => {
     () => [
       {
         accessorKey: "recipient.name",
-        enableClickToCopy: false,
         header: "Name",
+        // muiTableBodyCellProps: ({ cell }) => ({
+        //   style: {
+        //     cursor: "pointer",
+        //   },
+        //   onClick: () => {
+        //     console.log(cell.getValue());
+        //     console.log(cell.row);
+        //     const userId = cell.row.original.userId;
+        //     router.push(`/user/${userId}`);
+        //   },
+        //   onMouseEnter: (e) => {
+        //     e.target.style.textDecoration = "underline";
+        //   },
+        //   onMouseLeave: (e) => {
+        //     e.target.style.textDecoration = "none";
+        //   },
+        // }),
+        enableClickToCopy: false,
       },
       {
         accessorKey: "currency",
@@ -226,7 +242,7 @@ const Users = () => {
       },
       {
         // accessorKey: "amount",
-        accessorFn: (row) => (row.amount / 100).toLocaleString("en-US"),
+        accessorFn: (row) => (row.amount / 100)?.toLocaleString("en-US"),
         enableClickToCopy: false,
         id: "amount",
         header: "Amount",
@@ -248,7 +264,13 @@ const Users = () => {
       },
       {
         // accessorKey: "transactionDate",
-        accessorFn: (row) => format(new Date(row.createdAt), "Pp"),
+        accessorFn: (row) => {
+          if (row?.createdAt) {
+            return format(new Date(row.createdAt), "Pp");
+          } else {
+            return "";
+          }
+        },
         id: "createdAt",
         enableClickToCopy: false,
         header: "Date",
@@ -337,8 +359,8 @@ const Users = () => {
       <Grid
         container
         spacing={0}
-        xs={12}
-        lg={12}
+        // xs={12}
+        // lg={12}
         sx={{
           display: "flex",
           background: "",

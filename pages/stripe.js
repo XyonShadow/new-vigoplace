@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import MaterialReactTable from "material-react-table";
+import { MaterialReactTable } from 'material-react-table';
 import Table from "material-react-table";
 import { useRouter } from "next/router";
 import { Link } from "next/link";
@@ -166,7 +166,7 @@ const Users = () => {
           },
         }
       );
-      //console.log(data);
+      console.log(data);
       setResult(data.data.transactions);
       //console.log((data?.data?.paymentIntents[9].id))
       return data;
@@ -190,10 +190,21 @@ const Users = () => {
             cursor: "pointer",
           },
           onClick: () => {
-            console.log(cell.getValue());
+            //console.log(cell.getValue());
             const userId = cell.row.original.userId;
             router.push(`/user/${userId}`);
+            //router.back();
           },
+          // onClick: () => {
+          //   const userId = cell.row.original.userId;
+          //   console.log(cell.row.original);
+          //   // Use the Link component to navigate to the user's route
+          //   return (
+          //     <Link href={`/user/${userId}`} passHref>
+          //       <a>{cell.row.original.fullName}</a>
+          //     </Link>
+          //   );
+          // },
           onMouseEnter: (e) => {
             e.target.style.textDecoration = "underline";
           },
@@ -279,8 +290,6 @@ const Users = () => {
       <Grid
         container
         spacing={0}
-        xs={12}
-        lg={12}
         sx={{
           display: "flex",
           background: "",
@@ -321,7 +330,7 @@ const Users = () => {
                   enablePagination
                   manualPagination
                   onPaginationChange={setPagination}
-                  rowCount={82}
+                  rowCount={data?.data?.totalTransactions}
                   onGlobalFilterChange={setGlobalFilter}
                   initialState={{ showColumnFilters: false }}
                   positionToolbarAlertBanner="bottom"

@@ -1,14 +1,14 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
 import Link from "next/link";
+
 const Footer = () => {
+  const currentYear = new Date().getFullYear();
+
   return (
     <Box sx={{ p: 3, textAlign: "center" }}>
       <Typography>
-        © 2022 {" "}
-        <Link href="https://vigoplace.com">
-        Vigoplace
-        </Link>{" "}
+        © {currentYear} <Link href="https://vigoplace.com">Vigoplace</Link>{" "}
       </Typography>
     </Box>
   );
