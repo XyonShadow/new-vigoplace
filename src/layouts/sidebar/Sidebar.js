@@ -36,6 +36,9 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
   const [quickStat, setQuickStat] = React.useState({
     right: false,
   });
+  const getUser = useSession();
+  const user = getUser?.data?.user;
+  //console.log(user);
 
   const toggleDrawer = (anchor, open) => (event) => {
     console.log({ anchor, open });
@@ -51,7 +54,8 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
 
   const queryClient = useQueryClient();
   const { data: fetchedRoles, isLoading, isFetching } = useRouteRoles();
-  // const dataFromAbove = queryClient.getQueryData(['routeRoles'])
+  console.log(fetchedRoles);
+  const dataFromAbove = queryClient.getQueryData(["routeRoles"]);
 
   const { data: paystackBalance, isError } = useQuery(
     ["paystackBalance"],
@@ -176,37 +180,45 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
       title: "Tickets",
       icon: "headphones",
       href: "/tickets",
-      roles: ["admin", "root"]
+      roles: ["admin", "root"],
     },
     {
       title: "Post categorization",
       icon: "paper",
       href: "/post-categorization",
-      roles: ["admin", "root"]
-    }
-  ]
+      roles: ["admin", "root"],
+    },
+  ];
 
   const sidebarMenu = fetchedRoles
-    ? (userInfo?.user?.adminType === "sub-admin" ? subAdminRoutes : fetchedRoles)?.map((menu) => {
+    //? (userInfo?.user?.adminType === "sub-admin"
+    ? (userInfo?.user?.adminType === "superAdmin"
+        ? subAdminRoutes
+        : fetchedRoles
+      )?.map((menu) => {
+        console.log(menu.roles);
         // console.log(typeof menu.roles, 'menu.roles')
         // console.log( JSON.parse(menu.roles), 'menu.roles parsed')
         // if (userInfo.adminType === "sub-admin")
         return {
           title: menu.title,
           icon: menu.icon,
-          href:  menu.href,
+          href: menu.href,
           roles: menu.roles,
           // roles: JSON.parse(menu?.roles)
         };
       })
     : [];
 
-    //console.log(sidebarMenu)
+  //console.log(sidebarMenu);
 
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
+  //console.log(lgUp);
 
   const handleClick = (index) => {
+    //console.log(index);
     if (open === index) {
+      console.log(open);
       setOpen((prevopen) => !prevopen);
     } else {
       setOpen(index);
@@ -214,6 +226,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
   };
   let curl = useRouter();
   const location = curl.pathname;
+
   const SidebarContent = (
     <Box
       p={2}
@@ -291,6 +304,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
         <Button
           variant="outlined"
           onClick={toggleDrawer("right", true)}
+
           // onClick={() => toggleDrawer("right", true)}
           // onClick={()=> {
           //   console.log("why wont you click")
@@ -409,14 +423,107 @@ Sidebar.propTypes = {
   isSidebarOpen: PropTypes.bool,
 };
 
-// export async function getServerSideProps() {
-//   // Fetch data from external API
-//   console.log("*****************************************************");
-//   const res = await fetch(`localhost:3000/api/admin/console/routeroles`)
-//   const roles = await res.json()
+// // export async function getServerSideProps() {
+// //   // Fetch data from external API
+// //   console.log("*****************************************************");
+// //   const res = await fetch(`localhost:3000/api/admin/console/routeroles`)
+// //   const roles = await res.json()
 
-//   // Pass data to the page via props
-//   return { props: { roles, a: "ok" } }
-// }
-
+// //   // Pass data to the page via props
+// //   return { props: { roles, a: "ok" } }
+// // }
 export default Sidebar;
+
+// import * as React from 'react';
+// import Box from '@mui/material/Box';
+// import Drawer from '@mui/material/Drawer';
+// import CssBaseline from '@mui/material/CssBaseline';
+// import AppBar from '@mui/material/AppBar';
+// import Toolbar from '@mui/material/Toolbar';
+// import List from '@mui/material/List';
+// import Typography from '@mui/material/Typography';
+// import Divider from '@mui/material/Divider';
+// import ListItem from '@mui/material/ListItem';
+// import ListItemButton from '@mui/material/ListItemButton';
+// import ListItemIcon from '@mui/material/ListItemIcon';
+// import ListItemText from '@mui/material/ListItemText';
+// import InboxIcon from '@mui/icons-material/MoveToInbox';
+// import MailIcon from '@mui/icons-material/Mail';
+
+// const drawerWidth = 240;
+
+// export default function Sidebar() {
+//   return (
+//     <Box sx={{ display: 'flex' }}>
+//       <CssBaseline />
+//       <AppBar
+//         position="fixed"
+//         sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px` }}
+//       >
+//         <Toolbar>
+//           <Typography variant="h6" noWrap component="div">
+//             Permanent drawer
+//           </Typography>
+//         </Toolbar>
+//       </AppBar>
+//       <Drawer
+//         sx={{
+//           width: drawerWidth,
+//           flexShrink: 0,
+//           '& .MuiDrawer-paper': {
+//             width: drawerWidth,
+//             boxSizing: 'border-box',
+//           },
+//         }}
+//         variant="permanent"
+//         anchor="left"
+//       >
+//         <Toolbar />
+//         <Divider />
+//         <List>
+//           {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+//             <ListItem key={text} disablePadding>
+//               <ListItemButton>
+//                 <ListItemIcon>
+//                   {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+//                 </ListItemIcon>
+//                 <ListItemText primary={text} />
+//               </ListItemButton>
+//             </ListItem>
+//           ))}
+//         </List>
+//         <Divider />
+//         <List>
+//           {['All mail', 'Trash', 'Spam'].map((text, index) => (
+//             <ListItem key={text} disablePadding>
+//               <ListItemButton>
+//                 <ListItemIcon>
+//                   {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+//                 </ListItemIcon>
+//                 <ListItemText primary={text} />
+//               </ListItemButton>
+//             </ListItem>
+//           ))}
+//         </List>
+//       </Drawer>
+//       <Box
+//         component="main"
+//         sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
+//       >
+//         <Toolbar />
+//         <Typography paragraph>
+//           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+//           tempor incididunt ut labore et dolore magna aliqua. Rhoncus dolor purus non
+//           enim praesent elementum facilisis leo vel. Risus at ultrices mi tempus
+//           imperdiet.
+//         </Typography>
+//         <Typography paragraph>
+//           Consequat mauris nunc congue nisi vitae suscipit. Fringilla est ullamcorper
+//           eget nulla facilisi etiam dignissim diam. Pulvinar elementum integer enim
+//           neque volutpat ac tincidunt. Ornare suspendisse sed nisi lacus sed viverra
+//           tellus
+//         </Typography>
+//       </Box>
+//     </Box>
+//   );
+// }
