@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: "AdminConsole",
-      script: "npm run start",
+      script: "npm run dev",
       watch: false,
       port: 5000,
       ignore_watch: ["node_modules"],
