@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from "react";
+'use client'
+import React, { useMemo, useState, useEffect } from "react";
 import { MaterialReactTable } from "material-react-table";
 import {
   CircularProgress,
@@ -45,11 +46,10 @@ import {
 
 //Icons Imports
 import { AccountCircle, Send } from "@mui/icons-material";
-import { UserBalanceCard } from "./dashboard/userBalanceCard";
-import { UserBio } from "./dashboard/userBio";
+import { UserBalanceCard } from "../src/components/dashboard/userBalanceCard";
+import { UserBio } from "../src/components/dashboard/userBio";
 import { TabContext, TabList } from "@mui/lab";
 import TabPanel from "@mui/lab/TabPanel";
-import { useEffect } from "react";
 
 import Avatar from "@mui/material/Avatar";
 import List from "@mui/material/List";
@@ -72,8 +72,8 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Slide from "@mui/material/Slide";
-import { NewUsersComponet } from "./promo/newSignedUpUsers";
-import { ReferralsComponet } from "./promo/referrals";
+import { NewUsersComponet } from "../src/components/promo/newSignedUpUsers";
+import { ReferralsComponet } from "../src/components/promo/referrals";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -532,7 +532,7 @@ const Promo = () => {
         <List sx={{ pt: 0 }}>
           {email.map((email) => (
             <ListItem disableGutters>
-              <ListItemButton
+              <ListItemButton 
                 onClick={() => handleListItemClick(email)}
                 key={email}
               >

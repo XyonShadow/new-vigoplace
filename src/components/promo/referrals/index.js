@@ -1,3 +1,4 @@
+'use client'
 import React, { useMemo, useState } from "react";
 import MaterialReactTable from "material-react-table";
 import { IconButton, Tooltip, Typography,   CircularProgress,

@@ -118,7 +118,7 @@ export function Postcategorization1({ categorizedData }) {
       }
     } else {
       const findPost = categorizedData[categorizedIndex];
-      const categoryExist = findPost.OPCCategory.findIndex(
+      const categoryExist = findPost?.OPCCategory.findIndex(
         (c) => c === category.OCName
       );
       if (categoryExist >= 0) return;

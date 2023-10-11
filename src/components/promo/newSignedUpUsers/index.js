@@ -1,6 +1,11 @@
+'use client'
 import React, { useMemo, useState } from "react";
-import MaterialReactTable from "material-react-table";
-import { IconButton, Tooltip, Typography,   CircularProgress,
+import { MaterialReactTable } from "material-react-table";
+import {
+  IconButton,
+  Tooltip,
+  Typography,
+  CircularProgress,
 } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import axios from "axios";
@@ -8,7 +13,7 @@ import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { format } from "date-fns";
-import Snackbar from '@mui/material/Snackbar';
+import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -22,7 +27,6 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
-
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -104,7 +108,6 @@ export const NewUsersComponet = ({ user }) => {
 
   const descriptionElementRef = React.useRef(null);
 
-
   useEffect(() => {
     setPagination({ ...pagination, pageIndex: 0 });
   }, [columnFilters]);
@@ -138,7 +141,13 @@ export const NewUsersComponet = ({ user }) => {
       },
       {
         // accessorKey: "createdAt",
-        accessorFn: (row) => format(new Date(row.createdAt), "Pp"),
+        accessorFn: (row) => {
+          if (row?.createdAt) {
+            return format(new Date(row.createdAt), "MM/dd/yyyy hh:mm a");
+          } else {
+            return "";
+          }
+        },
         enableClickToCopy: false,
         header: "Date",
         enableColumnFilter: false,
@@ -167,7 +176,7 @@ export const NewUsersComponet = ({ user }) => {
     async () => {
       const { data } = await axios.get(
         // `http://localhost:3001/api/admin/console/users/new-signups?limit=${
-          `https://vigoplace.com/server/api/admin/console/users/new-signups?limit=${
+        `https://vigoplace.com/server/api/admin/console/users/new-signups?limit=${
           pagination.pageSize
         }&offset=${
           pagination.pageIndex * pagination.pageSize
@@ -208,8 +217,16 @@ export const NewUsersComponet = ({ user }) => {
         </Alert>
       </Snackbar>
 
-      <Snackbar open={successAlert} autoHideDuration={6000} onClose={()=>setSuccessAlert(false)}>
-        <Alert onClose={()=>setSuccessAlert(false)} severity="success" sx={{ width: '100%' }}>
+      <Snackbar
+        open={successAlert}
+        autoHideDuration={6000}
+        onClose={() => setSuccessAlert(false)}
+      >
+        <Alert
+          onClose={() => setSuccessAlert(false)}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
           "Airtime recharge Successful"
         </Alert>
       </Snackbar>
@@ -233,7 +250,7 @@ export const NewUsersComponet = ({ user }) => {
         enableGlobalFilter={false}
         renderRowActions={({ row, table }) => (
           <Box sx={{ display: "flex", flexWrap: "nowrap", gap: "8px" }}>
-            <Tooltip title="Recharge User">
+            {/* <Tooltip title="Recharge User">
               <IconButton
                 color="primary"
               >
@@ -243,7 +260,23 @@ export const NewUsersComponet = ({ user }) => {
                 onClick={() => handleConfirmNewSignUpModalOpen(row.original)}
                 >Recharge</Button>
               </IconButton>
-            </Tooltip>
+            </Tooltip> */}
+            <IconButton
+              color="primary"
+              onClick={() => handleConfirmNewSignUpModalOpen(row.original)}
+            >
+              <Tooltip title="Recharge User">
+                <Button
+                  disabled={
+                    row.original.status === "completed" ||
+                    row.original.status === "processing"
+                  }
+                  variant="outlined"
+                >
+                  Recharge
+                </Button>
+              </Tooltip>
+            </IconButton>
           </Box>
         )}
         muiToolbarAlertBannerProps={
@@ -316,18 +349,28 @@ export const NewUsersComponet = ({ user }) => {
             ref={descriptionElementRef}
             tabIndex={-1}
           >
-
-          <Typography variant="h3">Confirm Recharge</Typography>
-         
+            <Typography variant="h3">Confirm Recharge</Typography>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button variant="contained" onClick={handleConfirmNewSignUpModalClose}>Cancel</Button>
-          <Button variant="contained" onClick={()=> rechargeNewSignupMutation.mutate(newUser)}>{
-            rechargeNewSignupMutation.isLoading ? ( <CircularProgress size={23} color="inherit" />): ('Recharge')
-          }</Button>
+          <Button
+            variant="contained"
+            onClick={handleConfirmNewSignUpModalClose}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => rechargeNewSignupMutation.mutate(newUser)}
+          >
+            {rechargeNewSignupMutation.isLoading ? (
+              <CircularProgress size={23} color="inherit" />
+            ) : (
+              "Recharge"
+            )}
+          </Button>
         </DialogActions>
-      </Dialog>  
+      </Dialog>
     </>
   );
 };
