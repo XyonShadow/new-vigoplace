@@ -64,7 +64,7 @@ const KPI = (props) => {
           Authorization: user?.token,
         },
       });
-      console.log(data)
+      //console.log(data)
       return data;
     },
     {

@@ -456,7 +456,7 @@ const Users = () => {
         // accessorKey: "createdAt",
         accessorFn: (row) => {
           if (row?.createdAt) {
-            return format(new Date(row.createdAt), "Pp");
+            return format(new Date(row.createdAt), 'MM/dd/yyyy hh:mm a');
           } else {
             return "";
           }

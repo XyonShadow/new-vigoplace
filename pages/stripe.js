@@ -166,7 +166,7 @@ const Users = () => {
           },
         }
       );
-      console.log(data);
+      //console.log(data);
       setResult(data.data.transactions);
       //console.log((data?.data?.paymentIntents[9].id))
       return data;
@@ -195,16 +195,6 @@ const Users = () => {
             router.push(`/user/${userId}`);
             //router.back();
           },
-          // onClick: () => {
-          //   const userId = cell.row.original.userId;
-          //   console.log(cell.row.original);
-          //   // Use the Link component to navigate to the user's route
-          //   return (
-          //     <Link href={`/user/${userId}`} passHref>
-          //       <a>{cell.row.original.fullName}</a>
-          //     </Link>
-          //   );
-          // },
           onMouseEnter: (e) => {
             e.target.style.textDecoration = "underline";
           },
@@ -261,7 +251,7 @@ const Users = () => {
       {
         accessorFn: (row) => {
           if (row?.createdAt) {
-            return format(new Date(row.createdAt), "Pp");
+            return format(new Date(row.createdAt), 'MM/dd/yyyy hh:mm a');
           } else {
             return "";
           }

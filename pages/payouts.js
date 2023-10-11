@@ -19,13 +19,13 @@ function Payouts() {
 
   const getUser = useSession();
   const user = getUser?.data?.user;
-  console.log(data)
+  //console.log(data)
 
   // console.log(user)
 
   useEffect(() => {
     if (user) {
-      console.log(user)
+      //console.log(user)
     }
   }, [user])
 

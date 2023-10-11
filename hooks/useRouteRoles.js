@@ -26,7 +26,8 @@ const fetchRouteRoles = async () => {
         },
       }
     ).json();
-    console.log(parsed);
+    localStorage.setItem('parsed', JSON.stringify(parsed));
+    //console.log(parsed);
 
     return parsed;
   } catch (error) {

@@ -36,6 +36,18 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
   const [quickStat, setQuickStat] = React.useState({
     right: false,
   });
+  const [storedRoutes, setStoredRoutes] = React.useState([]);
+  useEffect(() => {
+    // Load storedRoutes from localStorage
+    const storedRoutesData = JSON.parse(localStorage.getItem("parsed"));
+
+    if (storedRoutesData) {
+      setStoredRoutes(storedRoutesData);
+    } else {
+      // Fallback to fetchedRoles if storedRoutes is not in localStorage
+      setStoredRoutes(fetchedRoles);
+    }
+  }, []);
   const getUser = useSession();
   const user = getUser?.data?.user;
   //console.log(user);
@@ -54,7 +66,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
 
   const queryClient = useQueryClient();
   const { data: fetchedRoles, isLoading, isFetching } = useRouteRoles();
-  console.log(fetchedRoles);
+  //console.log(fetchedRoles);
   const dataFromAbove = queryClient.getQueryData(["routeRoles"]);
 
   const { data: paystackBalance, isError } = useQuery(
@@ -189,14 +201,15 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
       roles: ["admin", "root"],
     },
   ];
-
-  const sidebarMenu = fetchedRoles
-    //? (userInfo?.user?.adminType === "sub-admin"
-    ? (userInfo?.user?.adminType === "superAdmin"
+ 
+  //const sidebarMenu = fetchedRoles
+  const sidebarMenu = storedRoutes
+    ? //? (userInfo?.user?.adminType === "sub-admin"
+      (userInfo?.user?.adminType === "superAdmin"
         ? subAdminRoutes
         : fetchedRoles
       )?.map((menu) => {
-        console.log(menu.roles);
+        //console.log(menu.roles);
         // console.log(typeof menu.roles, 'menu.roles')
         // console.log( JSON.parse(menu.roles), 'menu.roles parsed')
         // if (userInfo.adminType === "sub-admin")

@@ -506,7 +506,7 @@ export function Postcategorization1({ categorizedData }) {
             )
           ) : (
             categoryList?.data.map((category) => {
-              console.log(category)
+              //console.log(category)
               if (category.OCName === "") return;
               return (
                 <div

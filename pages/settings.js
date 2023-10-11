@@ -56,7 +56,7 @@ export default function Settings() {
 
   useEffect(() => {
     if (user) {
-      console.log(user)
+      //console.log(user)
     }
   }, [user])
 

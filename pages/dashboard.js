@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { dehydrate, QueryClient } from "@tanstack/react-query";
 import { Box, Container, Grid } from "@mui/material";
 import BlogCard from "../src/components/dashboard/BlogCard";
@@ -52,11 +52,12 @@ export default function Index() {
       enabled: !!user?.token,
     }
   );
+  
   const { data: activeUsers } = useQuery(
     ["fetchActiveUsersCount"],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/users/count?status=active`,
+        `https://vigoplace.com/server/api/admin/console/users/active/count`,
         // `http://localhost:3001/api/admin/console/users/count?status=active`,
         {
           headers: {

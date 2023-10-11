@@ -60,7 +60,7 @@ function Tickets() {
   const [rowSelection, setRowSelection] = React.useState({});
   const [datalenght, setDatalenght] = useState(0)
 
-  console.log({ rowSelection });
+  //console.log({ rowSelection });
   useEffect(() => {
     setPagination({ ...pagination, pageIndex: 0 });
   }, [columnFilters]);
