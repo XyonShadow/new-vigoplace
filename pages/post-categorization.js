@@ -28,7 +28,9 @@ const PostCategorization = () => {
     isError,
   } = useQuery(["categorizedPost"], fetchCategory, {
     onSuccess: (data) => {
+      console.log(categorizedData.length);
       setCategorizedData(data?.data || []);
+      console.log(categorizedData.length);
     },
   });
 

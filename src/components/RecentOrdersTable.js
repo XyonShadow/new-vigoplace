@@ -275,6 +275,53 @@ export default function RecentOrdersTable() {
     { keepPreviousData: true }
   );
 
+  const {
+    data: payout,
+    //isError,
+    //isFetching,
+    //isLoading,
+    //refetch,
+  } = useQuery(
+    [
+      "payoutRequest",
+      // columnFilters, //refetch when columnFilters changes
+      // globalFilter, //refetch when globalFilter changes
+      pagination.pageIndex, //refetch when pagination.pageIndex changes
+      pagination.pageSize, //refetch when pagination.pageSize changes
+      // sorting, //refetch when sorting changes
+      status,
+      page,
+      limit,
+    ],
+    async () => {
+      const { data } = await axios.get(
+        `https://vigoplace.com/server/api/admin/console/payout?`,
+        // `https://vigoplace.com/server/api/admin/console/payouts?limit=${
+        //   pagination.pageSize
+        // }&offset=${pagination.pageIndex * pagination.pageSize}${
+        //   status !== undefined && status !== null ? `&status=${status}` : ""
+        // }`,
+        // `http://localhost:3001/api/admin/console/payouts?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${status !== undefined && status !== null ? `&status=${status}` : '' }`,
+        {
+          headers: {
+            Authorization: user?.token,
+          },
+        }
+      );
+
+      console.log(data);
+
+      return data;
+    },
+    {
+      onError: (err) => {
+        console.log(err, "err fetching user payout");
+      },
+      enabled: !!user?.token,
+    },
+    { keepPreviousData: true }
+  );
+
   const filteredCryptoOrders = applyFilters(
     payouts?.data?.payoutRequests,
     filters

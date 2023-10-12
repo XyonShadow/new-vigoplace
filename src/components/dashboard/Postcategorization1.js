@@ -64,6 +64,7 @@ export function Postcategorization1({ categorizedData }) {
   const fetchCategory = async () => {
     const response = await fetch(`${API_BASE_URL}/api/admin/categorized`);
     const data = await response.json();
+    //console.log(data);
     return data;
   };
 
@@ -73,7 +74,10 @@ export function Postcategorization1({ categorizedData }) {
     isError,
   } = useQuery(["categorizedPost"], fetchCategory, {
     onSuccess: (data) => {
+      console.log(categorizedPost);
+      console.log(data?.data.length);
       setCategorizedPost(data?.data || []);
+      console.log(categorizedPost);
       // queryClient.invalidateQueries("categorizedPost");
     },
   });

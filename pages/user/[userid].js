@@ -49,6 +49,7 @@ import {
   Box,
   Button,
   ListItemIcon,
+  Container,
   MenuItem,
   Typography,
   TextField,
@@ -61,6 +62,11 @@ import { UserBio } from "../../src/components/dashboard/userBio";
 import { LoadingButton, TabContext, TabList } from "@mui/lab";
 import BaseCard from "../../src/components/baseCard/BaseCard";
 import { MaterialTable } from "../../src/components/table";
+import RecentOrders from "../../src/components/RecentOrders";
+import {
+  usePayoutRequests,
+  fetchPayoutRequests,
+} from "../../hooks/usePayoutRequests";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -132,6 +138,20 @@ const Users = () => {
     reasonType: "",
     reasonDescription: "",
   });
+  const [fetchParams, setFetchParams] = useState({
+    limit: 20,
+    offset: 0,
+    status: undefined,
+  });
+  const {
+    data: userPayout,
+    //isLoading,
+    //isFetching
+  } = usePayoutRequests(
+    fetchParams.limit,
+    fetchParams.offset,
+    fetchParams.status
+  );
 
   /* ******* onchange functions ********** */
 
@@ -265,7 +285,7 @@ const Users = () => {
           },
         }
       );
-        console.log(data)
+      console.log(data);
       return data;
     },
     {
@@ -298,6 +318,7 @@ const Users = () => {
         }
       );
 
+      console.log(data);
       return data;
     },
     {
@@ -527,13 +548,12 @@ const Users = () => {
           if (row?.transactionDate) {
             return format(new Date(row.transactionDate), "Pp");
           } else {
-            return ""; 
+            return "";
           }
         },
         enableClickToCopy: false,
         header: "Date",
-      }
-      
+      },
 
       // {
       //   accessorFn: (row) => new Date(row.startDate), //convert to Date for sorting and filtering
@@ -591,7 +611,13 @@ const Users = () => {
       },
       {
         // accessorKey: "transactionDate",
-        accessorFn: (row) => format(new Date(row.created_at), "Pp"),
+        accessorFn: (row) => {
+          if (row?.createdAt) {
+            return format(new Date(row.createdAt), "MM/dd/yyyy hh:mm a");
+          } else {
+            return "";
+          }
+        },
         enableClickToCopy: false,
         header: "Date",
       },
@@ -767,7 +793,12 @@ const Users = () => {
               {userWallet
                 ? userWallet?.data.map((wallet, id) => (
                     <>
-                      <Stack key={id} direction="row" spacing={2} marginBottom={2}>
+                      <Stack
+                        key={id}
+                        direction="row"
+                        spacing={2}
+                        marginBottom={2}
+                      >
                         <Chip
                           label={wallet.SCCurrency}
                           size="small"
@@ -859,6 +890,13 @@ const Users = () => {
           </Card>
           {/* <Divider orientation="vertical" variant="middle"  /> */}
         </Grid>
+
+
+
+
+
+
+
 
         {user?.role === "root" ? (
           <Grid item sm={12} xs={12} lg={6}>
@@ -1175,6 +1213,7 @@ const Users = () => {
               >
                 <Tab label="Transactions" {...a11yProps(0)} />
                 <Tab label="Activities" {...a11yProps(1)} />
+                <Tab label="Payout" {...a11yProps(2)} />
               </Tabs>
             </Box>
             <TabPanel value={tabValue} index={0}>
@@ -1232,6 +1271,35 @@ const Users = () => {
                     </CardContent>
                   </Card>
                 </form>
+              </Box>
+            </TabPanel>
+
+
+            <TabPanel value={tabValue} index={2}>
+              <Box sx={{ pt: 3 }}>
+                {/* <form> */}
+                  
+                  {/* <Divider /> */}
+                  {/* <CardContent> */}
+                  <Container maxWidth="lg">
+                  {/* <Card>
+                    <CardHeader subheader="" title="User Payout" />
+                  </Card> */}
+                    <Grid
+                      container
+                      direction="row"
+                      justifyContent="center"
+                      alignItems="stretch"
+                      spacing={3}
+                    >
+                      <Grid item xs={12}>
+                        <RecentOrders payouts={userPayout?.data} />
+                      </Grid>
+                    </Grid>
+                  </Container>
+                  {/* </CardContent> */}
+                  {/* </Card> */}
+                {/* </form> */}
               </Box>
             </TabPanel>
           </Box>
