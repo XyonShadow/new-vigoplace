@@ -374,7 +374,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
         >
           <BalanceCard
             balance={paystackBalance?.data}
-            nairaPayoutBalance={payoutsBalance?.data?.NGN.total}
+            nairaPayoutBalance={payoutsBalance?.data?.NGN?.total}
             vigoWalletBalance={vigoWalletBalance?.data?.amount ?? 0}
             paypalBalance={paypalBalance?.data?.amount ?? 0}
           />
@@ -421,7 +421,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
       >
         <BalanceCard
           balance={paystackBalance?.data}
-          nairaPayoutBalance={payoutsBalance?.data?.NGN.total}
+          nairaPayoutBalance={payoutsBalance?.data?.NGN?.total}
           vigoWalletBalance={vigoWalletBalance?.data?.amount ?? 0}
         />
         <UserBalanceCard usersBalance={usersBalance?.data ?? []} />

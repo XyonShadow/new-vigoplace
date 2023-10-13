@@ -30,6 +30,8 @@ export const CategorizedPost = ({
   updateCategorizedIndex,
   updateCategorizedPost,
   handleCategorizePost,
+  handlePrevClick,
+  handleNextClick,
 }) => {
   const [openModal, setOpenModal] = useState(false);
 
@@ -74,7 +76,7 @@ export const CategorizedPost = ({
         throw new Error(data.error);
       }
       const data = await response.json();
-      queryClient.invalidateQueries("categorizedPost")
+      queryClient.invalidateQueries("categorizedPost");
       return data;
     } catch (error) {
       throw new Error(`Error deleting post: ${error.message}`);
@@ -166,16 +168,30 @@ export const CategorizedPost = ({
     }
   };
 
+  {
+    /*SPECIAL POST*/
+  }
+  // const prevSlide = () => {
+  //   setCategoryResults([]);
+  //   updateCategorizedIndex(
+  //     (prevIndex) => (prevIndex - 1 + data?.length) % data?.length
+  //   );
+  // };
+
+  // const nextSlide = () => {
+  //   setCategoryResults([]);
+  //   updateCategorizedIndex((prevIndex) => (prevIndex + 1) % data?.length);
+  // };
   const prevSlide = () => {
-    setCategoryResults([])
-    updateCategorizedIndex(
-      (prevIndex) => (prevIndex - 1 + data?.length) % data?.length
-    );
+    // Use the callback function to update the categorizedIndex
+    updateCategorizedIndex((prevIndex) => (prevIndex - 1 + data?.length) % data?.length);
+    handlePrevClick()
   };
 
   const nextSlide = () => {
-    setCategoryResults([])
+    // Use the callback function to update the categorizedIndex
     updateCategorizedIndex((prevIndex) => (prevIndex + 1) % data?.length);
+    handleNextClick()
   };
 
   return (
@@ -189,8 +205,11 @@ export const CategorizedPost = ({
                   // Display images if categoryResults is empty
                   <div className="relative">
                     <CarouselMini autoSlide={false} autoSlideInterval={3000}>
-                      {( categoryResults.length > 0 ? categoryResults[0] : images[categorizedIndex])?.PMMedia?.map((media) => {
-                        console.log(categorizedIndex)
+                      {(categoryResults.length > 0
+                        ? categoryResults[0]
+                        : images[categorizedIndex]
+                      )?.PMMedia?.map((media) => {
+                        console.log(categorizedIndex);
                         if (media.type === "video")
                           return (
                             <ReactPlayer
@@ -216,7 +235,14 @@ export const CategorizedPost = ({
                               key={media.media}
                               alt=""
                               priority
-                              className={`${( categoryResults.length > 0 ? categoryResults[0] : images[categorizedIndex])?.PMMedia.length === 1 ? "max-h-[35vh]" : ""} w-full h-auto rounded-xl`}
+                              className={`${
+                                (categoryResults.length > 0
+                                  ? categoryResults[0]
+                                  : images[categorizedIndex]
+                                )?.PMMedia.length === 1
+                                  ? "max-h-[35vh]"
+                                  : ""
+                              } w-full h-auto rounded-xl`}
                               // sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                             />
                             // </div>
@@ -238,18 +264,22 @@ export const CategorizedPost = ({
             </div>
             <div className="text-[#706464] flex gap-3 text-start text-base mt-8">
               <h2 className="">
-              <span className=" font-semibold">
-                Post Type:
-                </span>
-                {" "}
-                {(categoryResults.length > 0 ? categoryResults[0] : images[categorizedIndex])?.postType}
+                <span className=" font-semibold">Post Type:</span>{" "}
+                {
+                  (categoryResults.length > 0
+                    ? categoryResults[0]
+                    : images[categorizedIndex]
+                  )?.postType
+                }
               </h2>
               <h2 className="">
-              <span className=" font-semibold">
-                Post Id:
-                </span>
-                {" "}
-                {(categoryResults.length > 0 ? categoryResults[0] : images[categorizedIndex])?.POId}
+                <span className=" font-semibold">Post Id:</span>{" "}
+                {
+                  (categoryResults.length > 0
+                    ? categoryResults[0]
+                    : images[categorizedIndex]
+                  )?.POId
+                }
               </h2>
             </div>
           </div>
@@ -257,7 +287,14 @@ export const CategorizedPost = ({
             <h2 className="text-[#706464] text-start mt-3.5">Description</h2>
 
             <div className="mt-[18px] py-4 text-sm px-3 bg-[#F1F0F0] rounded-lg overflow-y-auto h-28">
-              <p>{(categoryResults.length > 0 ? categoryResults[0] : images[categorizedIndex])?.description}</p>
+              <p>
+                {
+                  (categoryResults.length > 0
+                    ? categoryResults[0]
+                    : images[categorizedIndex]
+                  )?.description
+                }
+              </p>
             </div>
           </div>
         </div>
@@ -267,7 +304,10 @@ export const CategorizedPost = ({
             Post category
           </p>
           <div className="flex flex-col items-center justify-center gap-4">
-            {(categoryResults.length > 0 ? categoryResults[0] : images[categorizedIndex])?.OPCCategory?.map((item, index) => {
+            {(categoryResults.length > 0
+              ? categoryResults[0]
+              : images[categorizedIndex]
+            )?.OPCCategory?.map((item, index) => {
               // console.log(item);
               if (item === "") return;
               return (
@@ -280,7 +320,13 @@ export const CategorizedPost = ({
                     size={20}
                     className="cursor-pointer"
                     onClick={() =>
-                      deletePostCategory((categoryResults.length > 0 ? categoryResults[0] : images[categorizedIndex])?.POId, item)
+                      deletePostCategory(
+                        (categoryResults.length > 0
+                          ? categoryResults[0]
+                          : images[categorizedIndex]
+                        )?.POId,
+                        item
+                      )
                     }
                   />
                 </div>
@@ -292,7 +338,12 @@ export const CategorizedPost = ({
       <Postmodal
         open={openModal}
         onClose={() => setOpenModal(false)}
-        postId={(categoryResults.length > 0 ? categoryResults[0] : images[categorizedIndex])?.POId}
+        postId={
+          (categoryResults.length > 0
+            ? categoryResults[0]
+            : images[categorizedIndex]
+          )?.POId
+        }
         onDelete={handleDelete}
       />
 
@@ -310,6 +361,7 @@ export const CategorizedPost = ({
         />
       </div> */}
 
+      {/*SPECIAL POST*/}
       <div className="flex justify-between items-center -mt-[120vh] lg:-mt-[40vh] px-[1vw] text-white z-20">
         <div>
           <MdOutlineArrowBackIosNew

@@ -27,7 +27,11 @@ export function Postcategorization1({ categorizedData }) {
   // const [selectedCategoryIndexes, setSelectedCategoryIndexes] = useState({});
   const [currentPostId, setCurrentPostId] = useState(0);
   const [categorizedPost, setCategorizedPost] = useState([]);
+  const [prevCategorizedPost, setPrevCategorizedPost] = useState([]);
   const [categorizedIndex, setCategorizedIndex] = useState(0);
+  const [pageSize, setPageSize] = useState(1); // Fetch one item at a time
+  const [currentPage, setCurrentPage] = useState(1);
+
 
   // useEffect(() => {
   //   if (uncategorizedData?.length > 0) {
@@ -39,10 +43,38 @@ export function Postcategorization1({ categorizedData }) {
 
   const updateCategorizedIndex = (index) => setCategorizedIndex(index);
   const updateCategorizedPost = (post) => setCategorizedPost(post);
+  const handlePrevClick = () => {
+    // Update the currentPage state to go to the previous page of categorized data
+    // if (currentPage > 1) {
+    //   setCurrentPage(currentPage - 1);
+    // }
+    if (!isLoading && categorizedItem) {
+      // Increment the page number
+      setCurrentPage(currentPage + 1);
+    }
+  };
+  
+  const handleNextClick = () => {
+    console.log("clicked")
+    // Update the currentPage state to go to the next page of categorized data
+    // setCurrentPage(currentPage + 1);
+    if (currentPage > 1) {
+      // Restore the previous data
+      setCategorizedPost(prevCategorizedPost);
+
+      // Decrement the page number
+      setCurrentPage(currentPage - 1);
+    }
+  };
+  const handleCategorizedIndexChange = (newIndex) => {
+    // Update the categorizedIndex state
+    setCategorizedIndex(newIndex);
+  };
 
   const updateCurrentPost = (postId) => setCurrentPostId(postId);
 
-  const API_BASE_URL = "https://vigoplace.com/server";
+  //const API_BASE_URL = "https://vigoplace.com/server";
+  const API_BASE_URL = "http://localhost:4000";
 
 
   const fetchUncategorizedData = async () => {
@@ -61,26 +93,43 @@ export function Postcategorization1({ categorizedData }) {
 
 
 
-  const fetchCategory = async () => {
-    const response = await fetch(`${API_BASE_URL}/api/admin/categorized`);
+  const fetchCategory = async (currentPage, pageSize) => {
+    const response = await fetch(`${API_BASE_URL}/api/admin/categorized?page=${currentPage}&pageSize=${pageSize}`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch data");
+    }
     const data = await response.json();
     //console.log(data);
     return data;
   };
 
-  const {
-    data: categorizedItem,
-    isLoading,
-    isError,
-  } = useQuery(["categorizedPost"], fetchCategory, {
-    onSuccess: (data) => {
-      console.log(categorizedPost);
-      console.log(data?.data.length);
-      setCategorizedPost(data?.data || []);
-      console.log(categorizedPost);
-      // queryClient.invalidateQueries("categorizedPost");
-    },
-  });
+  const queryKey = ['categorizedPost', currentPage, pageSize];
+
+  const { data: categorizedItem, isLoading, isError, isSuccess } = useQuery(
+    queryKey,
+    () => fetchCategory(currentPage, pageSize),
+    {
+      enabled: !!currentPage && !!pageSize,
+      onSuccess: (data) => {
+        setCategorizedPost(data?.data || []);
+        setPrevCategorizedPost(categorizedData); // Save the previous data
+      },
+    }
+  );
+
+  // const {
+  //   data: categorizedItem,
+  //   isLoading,
+  //   isError,
+  // } = useQuery(["categorizedPost"], fetchCategory, {
+  //   onSuccess: (data) => {
+  //     console.log(categorizedItem);
+  //     console.log(data?.data.length);
+  //     setCategorizedPost(data?.data || []);
+  //     console.log(categorizedPost);
+  //     // queryClient.invalidateQueries("categorizedPost");
+  //   },
+  // });
 
   // const localCategory = useRef(false);
   // useEffect(() => {
@@ -456,6 +505,7 @@ export function Postcategorization1({ categorizedData }) {
           />
         )}
 
+        {/*SPECIAL POST*/}
         {tab === 1 && (
           <CategorizedPost
             categorizedIndex={categorizedIndex}
@@ -469,6 +519,8 @@ export function Postcategorization1({ categorizedData }) {
             images={categorizedData}
             categoryResults={categoryResults}
             setCategoryResults={setCategoryResults}
+            handlePrevClick={handlePrevClick}
+            handleNextClick={handleNextClick}
           />
         )}
       </div>
