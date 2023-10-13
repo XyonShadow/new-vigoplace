@@ -73,8 +73,8 @@ export function Postcategorization1({ categorizedData }) {
 
   const updateCurrentPost = (postId) => setCurrentPostId(postId);
 
-  //const API_BASE_URL = "https://vigoplace.com/server";
-  const API_BASE_URL = "http://localhost:4000";
+  const API_BASE_URL = "https://vigoplace.com/server";
+  //const API_BASE_URL = "http://localhost:4000";
 
 
   const fetchUncategorizedData = async () => {

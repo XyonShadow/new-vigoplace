@@ -11,8 +11,8 @@ const PostCategorization = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [prevCategorizedData, setPrevCategorizedData] = useState([]);
 
-  //const API_BASE_URL = "https://vigoplace.com/server";
-  const API_BASE_URL = "http://localhost:4000";
+  const API_BASE_URL = "https://vigoplace.com/server";
+  //const API_BASE_URL = "http://localhost:4000";
 
   const fetchData = async () => {
     // Make an API call to fetch data based on the page number
