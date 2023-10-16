@@ -66,6 +66,36 @@ const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
+// const getStatusLabel = (cryptoOrderStatus) => {
+//   const map = {
+//     failed: {
+//       text: "Failed",
+//       color: "error",
+//     },
+//     completed: {
+//       text: "Completed",
+//       color: green[500],
+//     },
+//     pending: {
+//       text: "Pending",
+//       color: yellow[800],
+//     },
+//     declined: {
+//       text: "Declined",
+//       color: yellow[800],
+//     },
+//     processing: {
+//       text: "Processing",
+//       color: yellow[700],
+//     },
+//   };
+//   const {text, color} = map[cryptoOrderStatus];
+//   console.log(text, color);
+
+//   return <Label sx={{ color }}>{text}</Label>;
+//   // return <Label sx={{}} color={color}>{text}</Label>;
+// };
+
 const getStatusLabel = (cryptoOrderStatus) => {
   const map = {
     failed: {
@@ -88,12 +118,22 @@ const getStatusLabel = (cryptoOrderStatus) => {
       text: "Processing",
       color: yellow[700],
     },
+    onHold: {
+      text: "On Hold",
+      color: yellow[800],
+    }
   };
-  const { text, color } = map[cryptoOrderStatus];
 
-  return <Label sx={{ color }}>{text}</Label>;
-  // return <Label sx={{}} color={color}>{text}</Label>;
+  if (map[cryptoOrderStatus]) {
+    const { text, color } = map[cryptoOrderStatus];
+    //console.log(text, color);
+    return <Label sx={{ color }}>{text}</Label>;
+  } else {
+    // Handle the case where cryptoOrderStatus is not found in the map.
+    return <Label sx={{ color: "defaultColor" }}>{""}</Label>;
+  }
 };
+
 
 const applyFilters = (cryptoOrders, filters) => {
   return cryptoOrders?.filter((cryptoOrder) => {
