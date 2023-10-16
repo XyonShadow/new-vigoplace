@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { MaterialReactTable } from 'material-react-table';
+import { MaterialReactTable } from "material-react-table";
 import { useRouter } from "next/router";
 import { format } from "date-fns";
 import {
@@ -158,7 +158,7 @@ const Users = () => {
         }
       );
 
-      console.log(data)
+      console.log(data);
 
       return data;
     },
@@ -198,7 +198,7 @@ const Users = () => {
         }
       );
 
-      console.log(data)
+      console.log(data);
 
       return data;
     },
@@ -213,6 +213,11 @@ const Users = () => {
 
   const columns = useMemo(
     () => [
+      {
+        accessorKey: "transfer_code",
+        enableClickToCopy: true,
+        header: "transfer_code",
+      },
       {
         accessorKey: "recipient.name",
         header: "Name",
@@ -256,11 +261,6 @@ const Users = () => {
         accessorKey: "status",
         enableClickToCopy: false,
         header: "Status",
-      },
-      {
-        accessorKey: "transfer_code",
-        enableClickToCopy: true,
-        header: "transfer_code",
       },
       {
         // accessorKey: "transactionDate",
@@ -349,9 +349,11 @@ const Users = () => {
   if (user?.adminType === "sub-admin") {
     return (
       <section className="flex items-center justify-center">
-        <p className="font-bold text-black">Sorry, you do not have permission to view this page</p>
+        <p className="font-bold text-black">
+          Sorry, you do not have permission to view this page
+        </p>
       </section>
-    )
+    );
   }
 
   return (
@@ -394,7 +396,7 @@ const Users = () => {
                   // enableRowActions
                   // enableRowSelection
 
-                  columns={columns}                 
+                  columns={columns}
                   data={data?.data ?? []}
                   enableStickyHeader
                   enableStickyFooter

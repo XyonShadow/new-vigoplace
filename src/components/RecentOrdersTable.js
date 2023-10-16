@@ -484,7 +484,7 @@ function Row({ payout, isPayoutSelected }) {
     onSuccess: () => {
       queryClient.invalidateQueries("payoutRequests");
       setPin(null);
-      setOpenModal(false)
+      setOpenModal(false);
     },
     onError: async (error) => {
       setOpenToast(true);
@@ -517,7 +517,7 @@ function Row({ payout, isPayoutSelected }) {
     onSuccess: () => {
       queryClient.invalidateQueries("payoutRequests");
       setPin(null);
-      setOpenModal(false)
+      setOpenModal(false);
     },
     onError: async (error) => {
       setOpenToast(true);
@@ -547,7 +547,7 @@ function Row({ payout, isPayoutSelected }) {
       queryClient.invalidateQueries("payoutRequests");
       setPin(null);
       setReason("");
-      setOpenModal(false)
+      setOpenModal(false);
     },
     onError: async (error) => {
       setOpenToast(true);
@@ -601,7 +601,10 @@ function Row({ payout, isPayoutSelected }) {
             gutterBottom
             noWrap
           >
-            {payout.payoutRequestId}  {payout.etaType !=="regular" && <span className="text-red-500 font-bold">EXP</span>}
+            {payout.payoutRequestId}{" "}
+            {payout.etaType !== "regular" && (
+              <span className="text-red-500 font-bold">EXP</span>
+            )}
           </Typography>
           <Typography variant="body2" color="text.secondary" noWrap>
             {/* {format(payouts.payoutRequestDate, 'MMMM dd yyyy')} */}
@@ -757,12 +760,12 @@ function Row({ payout, isPayoutSelected }) {
                   ])?.data?.currency === "US Dollar" && (
                     <div className="flex items-center gap-5">
                       <h3>Expected Delivery Date:</h3>
-                    <input
-                      type="date"
-                      className="my-5"
-                      value={deliveryETA}
-                      onChange={(e) => setDeliveryETA(e.target.value)}
-                    />
+                      <input
+                        type="date"
+                        className="my-5"
+                        value={deliveryETA}
+                        onChange={(e) => setDeliveryETA(e.target.value)}
+                      />
                     </div>
                   )}
 

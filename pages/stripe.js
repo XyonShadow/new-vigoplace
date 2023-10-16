@@ -183,6 +183,11 @@ const Users = () => {
   const columns = useMemo(
     () => [
       {
+        accessorKey: "reference",
+        enableClickToCopy: false,
+        header: "Reference",
+      },
+      {
         accessorKey: "fullName",
         header: "Name",
         muiTableBodyCellProps: ({ cell }) => ({
@@ -192,8 +197,11 @@ const Users = () => {
           onClick: () => {
             //console.log(cell.getValue());
             const userId = cell.row.original.userId;
-            router.push(`/user/${userId}`);
-            //router.back();
+            const url = `/user/${userId}`
+            window.open(url, "_blank");
+            
+            //router.push(`/user/${userId}`);
+            //<a href="https://google.com" target="_blank"></a>
           },
           onMouseEnter: (e) => {
             e.target.style.textDecoration = "underline";
@@ -242,11 +250,6 @@ const Users = () => {
         accessorKey: "userId",
         enableClickToCopy: false,
         header: "User Id",
-      },
-      {
-        accessorKey: "reference",
-        enableClickToCopy: false,
-        header: "Reference",
       },
       {
         accessorFn: (row) => {

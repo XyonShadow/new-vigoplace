@@ -42,7 +42,7 @@ const Menuitems = [
   },
   {
     title: "Post Categorization",
-    icon: "post",
+    icon: "paper",
     href: "/logs",
     roles: ['admin', 'administrator']
 

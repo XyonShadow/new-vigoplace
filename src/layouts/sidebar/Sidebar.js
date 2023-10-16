@@ -20,7 +20,7 @@ import FeatherIcon from "feather-icons-react";
 import LogoIcon from "../logo/LogoIcon";
 import Menuitems from "./MenuItems";
 import Buynow from "./Buynow";
-import { useRouter } from "next/router";
+import { useRouter } from "next/router"; 
 
 import { useRouteRoles } from "../../../hooks/useRouteRoles";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
@@ -53,7 +53,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
   //console.log(user);
 
   const toggleDrawer = (anchor, open) => (event) => {
-    console.log({ anchor, open });
+    //console.log({ anchor, open });
     if (
       event.type === "keydown" &&
       (event.key === "Tab" || event.key === "Shift")
@@ -201,7 +201,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
       roles: ["admin", "root"],
     },
   ];
- 
+
   //const sidebarMenu = fetchedRoles
   const sidebarMenu = storedRoutes
     ? //? (userInfo?.user?.adminType === "sub-admin"
@@ -209,7 +209,6 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
         ? subAdminRoutes
         : fetchedRoles
       )?.map((menu) => {
-        //console.log(menu.roles);
         // console.log(typeof menu.roles, 'menu.roles')
         // console.log( JSON.parse(menu.roles), 'menu.roles parsed')
         // if (userInfo.adminType === "sub-admin")

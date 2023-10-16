@@ -61,9 +61,6 @@ const PostCategorization = () => {
   const [loading, setLoading] = useState(true);
   const [isError, setIsError] = useState(null);
 
-  //const [currentPage, setCurrentPage] = useState(1);
-  //const [pageSize, setPageSize] = useState(4); // Fetch 1 item at a time
-  //When fetching the next data, Change the currentPage to 2
 
   // fetch categorized data
   const fetchCatgorizedData = async () => {
@@ -74,7 +71,9 @@ const PostCategorization = () => {
       throw new Error("Failed to fetch data");
     }
     const data = await response.json();
-    setCategorizedData((prev) => [...prev, ...data?.data?.[0]]);
+    //console.log(...data?.data);
+    //setCategorizedData((prev) => [...prev, ...data?.data?.[0]]);
+    setCategorizedData((prev) => [...prev, ...data?.data]);
     setLoading(false);
   };
 

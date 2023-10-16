@@ -56,7 +56,7 @@ export default function CarouselMini({
         <div className="flex justify-center items-center gap-2">
           {slides?.map((_, i) => (
             <div
-              key={i}
+              key={_}
               className={`transition-all w-2 h-2 rounded-full ${
                 curr === i ? "px-3 ml-4 bg-[#9657FA]" : "bg-[#C4BFBF]"
               }`}
