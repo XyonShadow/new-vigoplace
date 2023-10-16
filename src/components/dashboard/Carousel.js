@@ -30,7 +30,7 @@ export default function CarouselMini({
       </div>
       <div
         className={`${
-          slides.length > 1 ? "flex" : "hidden"
+          slides?.length > 1 ? "flex" : "hidden"
         } absolute inset-0 h-[80%] items-center justify-between p-4`}
       >
         <button
@@ -50,13 +50,13 @@ export default function CarouselMini({
       </div>
       <div
         className={`${
-          slides.length > 1 ? "block" : "hidden"
+          slides?.length > 1 ? "block" : "hidden"
         } absolute left-0 right-0 bottom-4`}
       >
         <div className="flex items-center justify-center gap-2">
           {slides?.map((_, i) => (
             <div
-              key={_}
+              key={i}
               className={`transition-all w-2 h-2 rounded-full ${
                 curr === i ? "px-3 bg-[#9657FA]" : "bg-[#C4BFBF]"
               }`}

@@ -7,10 +7,15 @@ import { UncategorizedPost } from "./UncategorizedPost";
 import { CategorizedPost } from "./CategorizedPost";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useCarousel } from "../../../hooks/useCarousel";
 
-
-
-export function Postcategorization1({ categorizedData }) {
+export function Postcategorization1({
+  categorizedData,
+  currentPage,
+  isError,
+  fetchCatgorizedData,
+  isLoading,
+}) {
   const [tab, setTab] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredResults, setFilteredResults] = useState([]);
@@ -27,11 +32,8 @@ export function Postcategorization1({ categorizedData }) {
   // const [selectedCategoryIndexes, setSelectedCategoryIndexes] = useState({});
   const [currentPostId, setCurrentPostId] = useState(0);
   const [categorizedPost, setCategorizedPost] = useState([]);
-  const [prevCategorizedPost, setPrevCategorizedPost] = useState([]);
   const [categorizedIndex, setCategorizedIndex] = useState(0);
-  const [pageSize, setPageSize] = useState(1); // Fetch one item at a time
-  const [currentPage, setCurrentPage] = useState(1);
-
+  //When fetching the next 100, Change the currentPage to 2
 
   // useEffect(() => {
   //   if (uncategorizedData?.length > 0) {
@@ -40,42 +42,8 @@ export function Postcategorization1({ categorizedData }) {
   // }, [])
   const queryClient = useQueryClient();
 
-
-  const updateCategorizedIndex = (index) => setCategorizedIndex(index);
-  const updateCategorizedPost = (post) => setCategorizedPost(post);
-  const handlePrevClick = () => {
-    // Update the currentPage state to go to the previous page of categorized data
-    // if (currentPage > 1) {
-    //   setCurrentPage(currentPage - 1);
-    // }
-    if (!isLoading && categorizedItem) {
-      // Increment the page number
-      setCurrentPage(currentPage + 1);
-    }
-  };
-  
-  const handleNextClick = () => {
-    console.log("clicked")
-    // Update the currentPage state to go to the next page of categorized data
-    // setCurrentPage(currentPage + 1);
-    if (currentPage > 1) {
-      // Restore the previous data
-      setCategorizedPost(prevCategorizedPost);
-
-      // Decrement the page number
-      setCurrentPage(currentPage - 1);
-    }
-  };
-  const handleCategorizedIndexChange = (newIndex) => {
-    // Update the categorizedIndex state
-    setCategorizedIndex(newIndex);
-  };
-
-  const updateCurrentPost = (postId) => setCurrentPostId(postId);
-
   const API_BASE_URL = "https://vigoplace.com/server";
   //const API_BASE_URL = "http://localhost:4000";
-
 
   const fetchUncategorizedData = async () => {
     const response = await fetch(`${API_BASE_URL}/api/admin/uncategorized`);
@@ -87,36 +55,39 @@ export function Postcategorization1({ categorizedData }) {
     data: unCategorizedData,
     isLoading: uncategorizedDataLoading,
     error: uncategorizedDataError,
-  } = useQuery(["uncategorizedData"], fetchUncategorizedData, {
-  });
+  } = useQuery(["uncategorizedData"], fetchUncategorizedData, {});
 
+  // const fetchCategory = async (currentPage, pageSize) => {
+  //   const response = await fetch(
+  //     `${API_BASE_URL}/api/admin/categorized?page=${currentPage}&itemsPerPage=${pageSize}`
+  //   );
+  //   if (!response.ok) {
+  //     throw new Error("Failed to fetch data");
+  //   }
+  //   const data = await response.json();
+  //   //console.log(data);
+  //   return data;
+  // };
 
+  //const queryKey = ["categorizedPost", currentPage, pageSize];
 
+  // const {
+  //   data: categorizedItem,
+  //   isLoading,
+  //   isError,
+  //   isSuccess,
+  // } = useQuery(queryKey, () => fetchCategory(currentPage, pageSize), {
+  //   //enabled: false,
+  //   onSuccess: (data) => {
+  //     const newPost = data?.data || [];
+  //     setCategorizedPost((prevPost) => [...prevPost, ...newPost]);
+  //   },
+  // });
 
-  const fetchCategory = async (currentPage, pageSize) => {
-    const response = await fetch(`${API_BASE_URL}/api/admin/categorized?page=${currentPage}&pageSize=${pageSize}`);
-    if (!response.ok) {
-      throw new Error("Failed to fetch data");
-    }
-    const data = await response.json();
-    //console.log(data);
-    return data;
-  };
-
-  const queryKey = ['categorizedPost', currentPage, pageSize];
-
-  const { data: categorizedItem, isLoading, isError, isSuccess } = useQuery(
-    queryKey,
-    () => fetchCategory(currentPage, pageSize),
-    {
-      enabled: !!currentPage && !!pageSize,
-      onSuccess: (data) => {
-        setCategorizedPost(data?.data || []);
-        setPrevCategorizedPost(categorizedData); // Save the previous data
-      },
-    }
-  );
-
+  // categorizedItem?.map((dat, index) => {
+  //   return <p>{index + 1}</p>;
+  // });
+  //enabled: !!currentPage && !!pageSize,
   // const {
   //   data: categorizedItem,
   //   isLoading,
@@ -148,6 +119,20 @@ export function Postcategorization1({ categorizedData }) {
   //     localStorage.setItem("categoryData", JSON.stringify(selectedCategories));
   //   }
   // }, [selectedCategories, unCategorizedData]);
+
+  const updateCategorizedIndex = (index) => setCategorizedIndex(index);
+  const updateCategorizedPost = (post) => setCategorizedPost(post);
+
+  // const handleNextClick = () => {
+  //   // Increment the currentPage by 1
+  //   setCurrentPage(currentPage + 1);
+  //   console.log(categorizedIndex);
+
+  //   // Use queryClient to invalidate and refetch the query
+  //   queryClient.invalidateQueries("categorizedPost");
+  // };
+
+  const updateCurrentPost = (postId) => setCurrentPostId(postId);
 
   const handleCategoryChange = (category) => {
     if (tab === 0) {
@@ -205,11 +190,6 @@ export function Postcategorization1({ categorizedData }) {
     error: categoryListError,
   } = useQuery(["categoryList"], fetchData);
 
-
-
-
-
-
   // useEffect(() => {
   //   if (uncategorizedData) {
   //     // Update currentIndex based on the uncategorized data length
@@ -265,8 +245,8 @@ export function Postcategorization1({ categorizedData }) {
   //   setFilteredResults(filtered);
   // };
   const handleUncategorizedSearch = (searchInput) => {
-    console.log(searchInput);
-    console.log(unCategorizedData)
+    //console.log(searchInput);
+    //console.log(unCategorizedData);
     const filteredPosts = unCategorizedData.filter(
       (post) => post.POId === Number(searchInput)
     );
@@ -275,9 +255,7 @@ export function Postcategorization1({ categorizedData }) {
       return;
     }
 
-    const indexOfFilteredData = unCategorizedData.indexOf(
-      filteredPosts[0]
-    );
+    const indexOfFilteredData = unCategorizedData.indexOf(filteredPosts[0]);
     console.log(indexOfFilteredData);
     setCurrentIndex(indexOfFilteredData);
     const newPostId = unCategorizedData[indexOfFilteredData]?.POId;
@@ -307,9 +285,11 @@ export function Postcategorization1({ categorizedData }) {
   };
 
   const handleClick = () => {
-    if (categoryList.data.some((category) => category.OCName === newCategories)) {
-      toast.error("Category already exists in the category list")
-      return
+    if (
+      categoryList.data.some((category) => category.OCName === newCategories)
+    ) {
+      toast.error("Category already exists in the category list");
+      return;
     }
     fetch("https://vigoplace.com/server/api/admin/categories", {
       method: "POST",
@@ -324,12 +304,12 @@ export function Postcategorization1({ categorizedData }) {
         if (!response.ok) {
           throw new Error("Failed to create category");
         }
-        console.log(response.json())
+        console.log(response.json());
         // return response.json();
       })
       .then((data) => {
         setNewCategories("");
-        queryClient.invalidateQueries("categoryList")
+        queryClient.invalidateQueries("categoryList");
         return true;
       })
       .catch((error) => {
@@ -405,7 +385,7 @@ export function Postcategorization1({ categorizedData }) {
         // });
         queryClient.invalidateQueries("uncategorizedData");
         toast.success("Post successfully categorized!");
-        setSelectedCategories([])
+        setSelectedCategories([]);
       })
       .catch((error) => {
         console.error("Error creating category:", error);
@@ -416,12 +396,9 @@ export function Postcategorization1({ categorizedData }) {
   const removeCategory = async (id) => {
     toast.success("Removing category from list");
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/api/admin/category/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/api/admin/category/${id}`, {
+        method: "DELETE",
+      });
 
       if (!response.ok) {
         toast.error("Fails to remove category");
@@ -429,16 +406,13 @@ export function Postcategorization1({ categorizedData }) {
       }
       const data = await response.json();
 
-      queryClient.invalidateQueries("categoryList")
+      queryClient.invalidateQueries("categoryList");
       // handleSearch(searchTerm)
       return data;
     } catch (error) {
       throw new Error(`Error deleting post: ${error.message}`);
     }
   };
-
-
-  
 
   return (
     <section className=" text-sm lg:text-base overflow-auto flex flex-col lg:flex-row w-full justify-center ">
@@ -455,7 +429,8 @@ export function Postcategorization1({ categorizedData }) {
               onKeyDown={(e) => {
                 if (e.keyCode === 13) {
                   handleSearchChange();
-                }}}
+                }
+              }}
               onChange={(e) => setSearchInput(e.target.value)}
             />
           </div>
@@ -508,19 +483,19 @@ export function Postcategorization1({ categorizedData }) {
         {/*SPECIAL POST*/}
         {tab === 1 && (
           <CategorizedPost
+            currentPage={currentPage}
+            fetchCatgorizedData={fetchCatgorizedData}
+            images={categorizedData}
             categorizedIndex={categorizedIndex}
             updateCategorizedIndex={updateCategorizedIndex}
             updateCategorizedPost={updateCategorizedPost}
-            isLoading={isLoading}
-            isError={isError}
             data={categorizedPost}
             selectedCategories={selectedCategories}
             handlePostClick={handlePostClick}
-            images={categorizedData}
             categoryResults={categoryResults}
             setCategoryResults={setCategoryResults}
-            handlePrevClick={handlePrevClick}
-            handleNextClick={handleNextClick}
+            isLoading={isLoading}
+            isError={isError}
           />
         )}
       </div>
@@ -544,16 +519,18 @@ export function Postcategorization1({ categorizedData }) {
                   //   handleCategoryChange(category);
                   // }}
                 >
-                   <span onClick={() => {
-                    handleCategoryChange(item);
-                  }}>{item.OCName}</span>
-                      <GrFormClose
-                        size={20}
-                        className="cursor-pointer"
-                        onClick={() =>
-                         removeCategory(item.OCId)
-                        }
-                      />
+                  <span
+                    onClick={() => {
+                      handleCategoryChange(item);
+                    }}
+                  >
+                    {item.OCName}
+                  </span>
+                  <GrFormClose
+                    size={20}
+                    className="cursor-pointer"
+                    onClick={() => removeCategory(item.OCId)}
+                  />
                   {/* <p>{category.OCName}</p> */}
                 </div>
               ))
@@ -572,16 +549,18 @@ export function Postcategorization1({ categorizedData }) {
                   //   handleCategoryChange(category);
                   // }}
                 >
-                   <span onClick={() => {
-                    handleCategoryChange(category);
-                  }}>{category.OCName}</span>
-                      <GrFormClose
-                        size={20}
-                        className="cursor-pointer"
-                        onClick={() =>
-                         removeCategory(category.OCId)
-                        }
-                      />
+                  <span
+                    onClick={() => {
+                      handleCategoryChange(category);
+                    }}
+                  >
+                    {category.OCName}
+                  </span>
+                  <GrFormClose
+                    size={20}
+                    className="cursor-pointer"
+                    onClick={() => removeCategory(category.OCId)}
+                  />
                   {/* <p>{category.OCName}</p> */}
                 </div>
               );

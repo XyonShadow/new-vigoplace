@@ -896,8 +896,6 @@ const Users = () => {
 
 
 
-
-
         {user?.role === "root" ? (
           <Grid item sm={12} xs={12} lg={6}>
             <Box sx={{ width: "100%" }}>
@@ -1274,31 +1272,30 @@ const Users = () => {
               </Box>
             </TabPanel>
 
-
             <TabPanel value={tabValue} index={2}>
               <Box sx={{ pt: 3 }}>
                 {/* <form> */}
-                  
-                  {/* <Divider /> */}
-                  {/* <CardContent> */}
-                  <Container maxWidth="lg">
+
+                {/* <Divider /> */}
+                {/* <CardContent> */}
+                <Container maxWidth="lg">
                   {/* <Card>
                     <CardHeader subheader="" title="User Payout" />
                   </Card> */}
-                    <Grid
-                      container
-                      direction="row"
-                      justifyContent="center"
-                      alignItems="stretch"
-                      spacing={3}
-                    >
-                      <Grid item xs={12}>
-                        <RecentOrders payouts={userPayout?.data} />
-                      </Grid>
+                  <Grid
+                    container
+                    direction="row"
+                    justifyContent="center"
+                    alignItems="stretch"
+                    spacing={3}
+                  >
+                    <Grid item xs={12}>
+                      <RecentOrders payouts={userPayout?.data} />
                     </Grid>
-                  </Container>
-                  {/* </CardContent> */}
-                  {/* </Card> */}
+                  </Grid>
+                </Container>
+                {/* </CardContent> */}
+                {/* </Card> */}
                 {/* </form> */}
               </Box>
             </TabPanel>

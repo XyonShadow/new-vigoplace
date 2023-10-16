@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { MdOutlineArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Postmodal } from "./Postmodal";
@@ -19,26 +19,23 @@ import ReactPlayer from "react-player";
 import CarouselMini from "./Carousel";
 import Image from "next/image";
 
+const API_BASE_URL = "https://vigoplace.com/server";
+
 export const CategorizedPost = ({
   data,
+  images,
   isLoading,
   isError,
-  images,
   categoryResults,
   setCategoryResults,
   categorizedIndex,
   updateCategorizedIndex,
   updateCategorizedPost,
   handleCategorizePost,
-  handlePrevClick,
-  handleNextClick,
+  currentPage,
+  fetchCatgorizedData,
 }) => {
   const [openModal, setOpenModal] = useState(false);
-
-  const API_BASE_URL = "https://vigoplace.com/server/";
-  if (categoryResults.length > 0) {
-    console.log(categoryResults);
-  }
 
   const deletePost = async (postId) => {
     console.log(postId);
@@ -168,30 +165,24 @@ export const CategorizedPost = ({
     }
   };
 
-  {
-    /*SPECIAL POST*/
-  }
-  // const prevSlide = () => {
-  //   setCategoryResults([]);
-  //   updateCategorizedIndex(
-  //     (prevIndex) => (prevIndex - 1 + data?.length) % data?.length
-  //   );
-  // };
-
-  // const nextSlide = () => {
-  //   setCategoryResults([]);
-  //   updateCategorizedIndex((prevIndex) => (prevIndex + 1) % data?.length);
-  // };
   const prevSlide = () => {
-    // Use the callback function to update the categorizedIndex
-    updateCategorizedIndex((prevIndex) => (prevIndex - 1 + data?.length) % data?.length);
-    handlePrevClick()
+    // Calculate the new index for the previous post
+    const newIndex = categorizedIndex < 1 ? 0 : categorizedIndex - 1;
+    setCategoryResults([data[newIndex]]);
+    updateCategorizedIndex(newIndex);
   };
 
   const nextSlide = () => {
-    // Use the callback function to update the categorizedIndex
-    updateCategorizedIndex((prevIndex) => (prevIndex + 1) % data?.length);
-    handleNextClick()
+    if (images?.[categorizedIndex]?.POId === images[images.length - 11]?.POId) {
+      currentPage.current += 1;
+      fetchCatgorizedData();
+    }
+
+    // Increment the index and ensure it wraps around correctly
+    const newIndex =
+      categorizedIndex > images?.length - 1 ? 0 : categorizedIndex + 1;
+    setCategoryResults([data[newIndex]]);
+    updateCategorizedIndex(newIndex);
   };
 
   return (
@@ -205,49 +196,46 @@ export const CategorizedPost = ({
                   // Display images if categoryResults is empty
                   <div className="relative">
                     <CarouselMini autoSlide={false} autoSlideInterval={3000}>
-                      {(categoryResults.length > 0
-                        ? categoryResults[0]
-                        : images[categorizedIndex]
-                      )?.PMMedia?.map((media) => {
-                        console.log(categorizedIndex);
-                        if (media.type === "video")
-                          return (
-                            <ReactPlayer
-                              url={media.media}
-                              muted={true}
-                              playsinline
-                              autoPlay={false}
-                              controls
-                              key={media.media}
-                            />
-                          );
-                        else
-                          return (
-                            // <div
-                            //   key={media.media}
-                            //   className="lg:w-[30vw] w-full h-[50vh] lg:h-[35vh] object-contain relative"
-                            // >
-                            //   {" "}
-                            <Image
-                              width={400}
-                              height={400}
-                              src={media.media}
-                              key={media.media}
-                              alt=""
-                              priority
-                              className={`${
-                                (categoryResults.length > 0
-                                  ? categoryResults[0]
-                                  : images[categorizedIndex]
-                                )?.PMMedia.length === 1
-                                  ? "max-h-[35vh]"
-                                  : ""
-                              } w-full h-auto rounded-xl`}
-                              // sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            />
-                            // </div>
-                          );
-                      })}
+                      {images?.[categorizedIndex]?.PMMedia?.map(
+                        ({ media, type }, index) => {
+                          if (type === "video")
+                            return (
+                              <ReactPlayer
+                                url={media}
+                                muted={true}
+                                playsinline
+                                autoPlay={false}
+                                controls
+                                key={index}
+                              />
+                            );
+                          else
+                            return (
+                              // <div
+                              //   key={media.media}
+                              //   className="lg:w-[30vw] w-full h-[50vh] lg:h-[35vh] object-contain relative"
+                              // >
+                              //   {" "}
+
+                              <Image
+                                width={400}
+                                height={400}
+                                src={media}
+                                key={index}
+                                alt=""
+                                priority
+                                className={`${
+                                  images?.[categorizedIndex]?.PMMedia.length ===
+                                  1
+                                    ? "max-h-[35vh]"
+                                    : ""
+                                } w-full h-auto rounded-xl`}
+                                // sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                              />
+                              // </div>
+                            );
+                        }
+                      )}
                     </CarouselMini>
                     <button
                       className="bg-[#F93636] py-3 px-5 rounded-md text-white text-sm mt-5 z-20"
@@ -265,21 +253,11 @@ export const CategorizedPost = ({
             <div className="text-[#706464] flex gap-3 text-start text-base mt-8">
               <h2 className="">
                 <span className=" font-semibold">Post Type:</span>{" "}
-                {
-                  (categoryResults.length > 0
-                    ? categoryResults[0]
-                    : images[categorizedIndex]
-                  )?.postType
-                }
+                {images?.[categorizedIndex]?.postType}
               </h2>
               <h2 className="">
                 <span className=" font-semibold">Post Id:</span>{" "}
-                {
-                  (categoryResults.length > 0
-                    ? categoryResults[0]
-                    : images[categorizedIndex]
-                  )?.POId
-                }
+                {images?.[categorizedIndex]?.POId}
               </h2>
             </div>
           </div>
@@ -287,14 +265,7 @@ export const CategorizedPost = ({
             <h2 className="text-[#706464] text-start mt-3.5">Description</h2>
 
             <div className="mt-[18px] py-4 text-sm px-3 bg-[#F1F0F0] rounded-lg overflow-y-auto h-28">
-              <p>
-                {
-                  (categoryResults.length > 0
-                    ? categoryResults[0]
-                    : images[categorizedIndex]
-                  )?.description
-                }
-              </p>
+              <p>{images?.[categorizedIndex]?.description}</p>
             </div>
           </div>
         </div>
@@ -304,10 +275,7 @@ export const CategorizedPost = ({
             Post category
           </p>
           <div className="flex flex-col items-center justify-center gap-4">
-            {(categoryResults.length > 0
-              ? categoryResults[0]
-              : images[categorizedIndex]
-            )?.OPCCategory?.map((item, index) => {
+            {images?.[categorizedIndex]?.OPCCategory?.map((item, index) => {
               // console.log(item);
               if (item === "") return;
               return (
@@ -320,13 +288,7 @@ export const CategorizedPost = ({
                     size={20}
                     className="cursor-pointer"
                     onClick={() =>
-                      deletePostCategory(
-                        (categoryResults.length > 0
-                          ? categoryResults[0]
-                          : images[categorizedIndex]
-                        )?.POId,
-                        item
-                      )
+                      deletePostCategory(images?.[categorizedIndex]?.POId, item)
                     }
                   />
                 </div>
@@ -338,12 +300,7 @@ export const CategorizedPost = ({
       <Postmodal
         open={openModal}
         onClose={() => setOpenModal(false)}
-        postId={
-          (categoryResults.length > 0
-            ? categoryResults[0]
-            : images[categorizedIndex]
-          )?.POId
-        }
+        postId={images?.[categorizedIndex]?.POId}
         onDelete={handleDelete}
       />
 
