@@ -415,8 +415,8 @@ export function Postcategorization1({
   };
 
   return (
-    <section className=" text-sm lg:text-base overflow-auto flex flex-col lg:flex-row w-full justify-center ">
-      <div className="lg:w-[65vw] w-full bg-white min-h-[200vh] lg:min-h-screen h-full">
+    <section className=" text-sm lg:text-base overflow-auto flex flex-col lg:flex-row w-full  ">
+      <div className="lg:w-[51vw] w-full bg-white min-h-[200vh] lg:min-h-screen h-full">
         <div className=" px-[4vw] py-2">
           <div className="bg-[#F4F4F4] gap-2.5 rounded-lg w-[50%] py-3 flex px-6">
             <AiOutlineSearch onClick={handleSearchChange} size={20} />
@@ -499,7 +499,7 @@ export function Postcategorization1({
           />
         )}
       </div>
-      <div className="lg:w-[25vw] w-full flex flex-col pl-9 pr-16 h-screen py-[13vh] bg-[#DFDCDC]">
+      <div className="lg:w-[24vw] w-full flex flex-col pl-9 pr-16 h-screen py-[13vh] bg-[#DFDCDC]">
         <input
           type="text"
           className="p-1 rounded-lg focus:outline-blue-500 w-full"

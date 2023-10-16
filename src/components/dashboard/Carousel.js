@@ -51,14 +51,14 @@ export default function CarouselMini({
       <div
         className={`${
           slides?.length > 1 ? "block" : "hidden"
-        } absolute left-0 right-0 bottom-4`}
+        } absolute left-0 right-4 bottom-4`}
       >
-        <div className="flex items-center justify-center gap-2">
+        <div className="flex justify-center items-center gap-2">
           {slides?.map((_, i) => (
             <div
               key={i}
               className={`transition-all w-2 h-2 rounded-full ${
-                curr === i ? "px-3 bg-[#9657FA]" : "bg-[#C4BFBF]"
+                curr === i ? "px-3 ml-4 bg-[#9657FA]" : "bg-[#C4BFBF]"
               }`}
             />
           ))}

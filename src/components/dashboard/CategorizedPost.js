@@ -318,7 +318,6 @@ export const CategorizedPost = ({
         />
       </div> */}
 
-      {/*SPECIAL POST*/}
       <div className="flex justify-between items-center -mt-[120vh] lg:-mt-[40vh] px-[1vw] text-white z-20">
         <div>
           <MdOutlineArrowBackIosNew
