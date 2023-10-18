@@ -222,7 +222,7 @@ const Users = () => {
           throw new Error("Failed to fetch data");
         }
         const data = await response.json();
-        console.log(data?.data?.totalTransactions);
+        //console.log(data?.data?.totalTransactions);
 
         // Check if the search input is empty or there are no results
         if (globalFilter === "" || data?.data?.transactions.length === 0) {
@@ -332,8 +332,6 @@ const Users = () => {
     );
   }
 
-  console.log(tableData);
-  console.log(pagination.pageIndex);
 
   return (
     <>
