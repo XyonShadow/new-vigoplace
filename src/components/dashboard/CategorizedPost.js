@@ -20,6 +20,7 @@ import CarouselMini from "./Carousel";
 import Image from "next/image";
 
 const API_BASE_URL = "https://vigoplace.com/server";
+//const API_BASE_URL = "http://localhost:4000";
 
 export const CategorizedPost = ({
   data,
@@ -195,7 +196,7 @@ export const CategorizedPost = ({
   };
 
   const nextSlide = () => {
-    console.log(images);
+    //console.log(images);
     if (images?.[categorizedIndex]?.POId === images[images.length - 11]?.POId) {
       currentPage.current += 1;
       fetchCatgorizedData();
@@ -204,7 +205,7 @@ export const CategorizedPost = ({
     // Increment the index and ensure it wraps around correctly
     const newIndex =
       categorizedIndex > images?.length - 1 ? 0 : categorizedIndex + 1;
-      console.log(newIndex);
+      //console.log(newIndex);
     setCategoryResults([images[newIndex]]);
     updateCategorizedIndex(newIndex);
   };

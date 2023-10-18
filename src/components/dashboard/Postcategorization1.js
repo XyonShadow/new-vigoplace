@@ -36,11 +36,6 @@ export function Postcategorization1({
   //let categorizedIndex = useRef(0).current;
   //When fetching the next 100, Change the currentPage to 2
 
-  // useEffect(() => {
-  //   if (uncategorizedData?.length > 0) {
-  //     setCurrentPostId(unCategorizedData[0]?.POId)
-  //   }
-  // }, [])
   const queryClient = useQueryClient();
 
   const API_BASE_URL = "https://vigoplace.com/server";
@@ -85,53 +80,8 @@ export function Postcategorization1({
   //   },
   // });
 
-  // categorizedItem?.map((dat, index) => {
-  //   return <p>{index + 1}</p>;
-  // });
-  //enabled: !!currentPage && !!pageSize,
-  // const {
-  //   data: categorizedItem,
-  //   isLoading,
-  //   isError,
-  // } = useQuery(["categorizedPost"], fetchCategory, {
-  //   onSuccess: (data) => {
-  //     console.log(categorizedItem);
-  //     console.log(data?.data.length);
-  //     setCategorizedPost(data?.data || []);
-  //     console.log(categorizedPost);
-  //     // queryClient.invalidateQueries("categorizedPost");
-  //   },
-  // });
-
-  // const localCategory = useRef(false);
-  // useEffect(() => {
-  //   if (unCategorizedData && !currentPostId) {
-  //     setCurrentPostId(unCategorizedData[0]?.POId);
-  //   }
-  //   if (!localCategory.current) {
-  //     const category = localStorage.getItem("categoryData");
-  //     if (category) {
-  //       setSelectedCategories(JSON.parse(category));
-  //       localCategory.current = true;
-  //     }
-  //   }
-
-  //   if (localCategory.current && Object.keys(selectedCategories).length > 0) {
-  //     localStorage.setItem("categoryData", JSON.stringify(selectedCategories));
-  //   }
-  // }, [selectedCategories, unCategorizedData]);
-
   const updateCategorizedIndex = (index) => setCategorizedIndex(index);
   const updateCategorizedPost = (post) => setCategorizedPost(post);
-
-  // const handleNextClick = () => {
-  //   // Increment the currentPage by 1
-  //   setCurrentPage(currentPage + 1);
-  //   console.log(categorizedIndex);
-
-  //   // Use queryClient to invalidate and refetch the query
-  //   queryClient.invalidateQueries("categorizedPost");
-  // };
 
   const updateCurrentPost = (postId) => setCurrentPostId(postId);
 
@@ -161,7 +111,7 @@ export function Postcategorization1({
           ? categorizedPost[categorizedIndex]
           : categorizedData[categorizedIndex];
 
-      console.log(findPost);
+      //console.log(findPost);
       const categoryExist = findPost?.OPCCategory.findIndex(
         (c) => c === category.OCName
       );
@@ -178,7 +128,7 @@ export function Postcategorization1({
         OPCCategory: [category.OCName, ...findPost.OPCCategory],
       });
       setCategorizedPost(newPost);
-      handlePostClick(
+      handleCategorizedPostClick(
         [...findPost.OPCCategory, category.OCName],
         findPost.POId
       );
@@ -247,19 +197,7 @@ export function Postcategorization1({
     handleCategorizedSearch(searchInput);
   };
 
-  // const handleUncategorizedSearch = (searchInput) => {
-  //   const filtered = data.data.filter((value) => {
-  //     const { POId } = value;
-  //     // console.log(value, POId);
-  //     console.log(searchInput);
-  //     // const media = image.PMMedia[0]?.media;
-  //     return searchInput === POId;
-  //   });
-  //   setFilteredResults(filtered);
-  // };
   const handleUncategorizedSearch = (searchInput) => {
-    //console.log(searchInput);
-    //console.log(unCategorizedData);
     const filteredPosts = unCategorizedData.filter(
       (post) => post.POId === Number(searchInput)
     );
@@ -269,7 +207,7 @@ export function Postcategorization1({
     }
 
     const indexOfFilteredData = unCategorizedData.indexOf(filteredPosts[0]);
-    console.log(indexOfFilteredData);
+    //console.log(indexOfFilteredData);
     setCurrentIndex(indexOfFilteredData);
     const newPostId = unCategorizedData[indexOfFilteredData]?.POId;
     updateCurrentPost(newPostId);
@@ -304,7 +242,7 @@ export function Postcategorization1({
       toast.error("Category already exists in the category list");
       return;
     }
-    fetch("https://vigoplace.com/server/api/admin/categories", {
+    fetch(`${API_BASE_URL}/api/admin/categories`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -317,7 +255,7 @@ export function Postcategorization1({
         if (!response.ok) {
           throw new Error("Failed to create category");
         }
-        console.log(response.json());
+        //console.log(response.json());
         // return response.json();
       })
       .then((data) => {
@@ -341,49 +279,24 @@ export function Postcategorization1({
   const handlePostClick = (category, id) => {
     const postId = unCategorizedData[currentIndex]?.POId;
     setSelectedCategory(category);
-    if (category.length === 0) {
+    if (category?.length === 0) {
       return;
     }
 
-    // const currentImage = data[currentIndex];
-    // if (currentImage.category) {
-    //   toast.info("This image is already associated with a category!");
-    //   return;
-    // }
-
-    // {selectedCategories[currentPostId]?.map((category) => {
-    //   const sentCategory = category.OCname
-    //   console.log(category);
-    //   return (
-    //     <li
-    //       key={category.OCId}
-    //       className="flex justify-between p-3 pl-3 bg-white rounded-md"
-    //     >
-    //       <span>{category.OCName}</span>
-    //       <GrFormClose
-    //         size={20}
-    //         className="cursor-pointer"
-    //         onClick={() =>
-    //           handleCategoryChange(category, currentIndex)
-    //         }
-    //       />
-    //     </li>
-    //   );
-    // })}
-    fetch("https://vigoplace.com/server/api/admin/categorization", {
+    fetch(`${API_BASE_URL}/api/admin/categorization`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
 
       body: JSON.stringify({
-        category,
         postId: id ? id : postId,
+        category
       }),
     })
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Failed to create category");
+          throw new Error("Failed to categorize post");
         }
         return response.json();
       })
@@ -397,11 +310,47 @@ export function Postcategorization1({
         //   return updatedData;
         // });
         queryClient.invalidateQueries("uncategorizedData");
+        queryClient.invalidateQueries("categorizedData");
         toast.success("Post successfully categorized!");
         setSelectedCategories([]);
       })
       .catch((error) => {
-        console.error("Error creating category:", error);
+        console.error("Error adding category:", error);
+        toast.error("Error categorizing post!");
+      });
+  };
+
+  const handleCategorizedPostClick = (category, id) => {
+    const postId = categorizedData[currentIndex]?.POId;
+    setSelectedCategory(category);
+    if (category?.length === 0) {
+      return;
+    }
+
+    fetch(`${API_BASE_URL}/api/admin/categorization`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+
+      body: JSON.stringify({
+        postId: id ? id : postId,
+        category
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to categorize post");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        queryClient.invalidateQueries("categorizedData");
+        toast.success("Post successfully categorized!");
+        setSelectedCategories([]);
+      })
+      .catch((error) => {
+        console.error("Error adding category:", error);
         toast.error("Error categorizing post!");
       });
   };

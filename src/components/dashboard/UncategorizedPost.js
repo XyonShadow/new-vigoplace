@@ -166,12 +166,6 @@ export const UncategorizedPost = ({
     setCurrentIndex((prevIndex) => (prevIndex - 1 + images?.length) % images?.length);
     const newPostId = images[newIndex]?.POId;
     updateCurrentPost(newPostId);
-
-
-    // setCategoryResults([])
-    // updateCategorizedIndex(
-    //   (prevIndex) => (prevIndex - 1 + data?.length) % data?.length
-    // );
   };
 
   const nextSlide = async () => {
@@ -188,49 +182,12 @@ export const UncategorizedPost = ({
       );
   
       await handlePostClick(data);
-      // setCurrentIndex((prevIndex) => (prevIndex + 1) % images?.length);
-      // const newPostId = images[newIndex]?.POId;
-      // updateCurrentPost(newPostId)
     } else {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % images?.length);
       const newPostId = images[newIndex]?.POId;
       updateCurrentPost(newPostId)
     }
-
-
-    // setCategoryResults([])
-    // updateCategorizedIndex((prevIndex) => (prevIndex + 1) % data?.length);
-
   };
-
-  // const Carousel = () => {
-  //   if (filteredResults && filteredResults.length > 1) {
-  //     setShowIcon(true);
-  //   } else {
-  //     setShowIcon(false);
-  //   }
-  // };
-
-  // const leftSlide = () => {
-  //   const isPrevSlide = nextIndex === 0;
-  //   const newIndex = isPrevSlide
-  //     ? data.data[currentIndex]?.PMMedia?.length - 1
-  //     : nextIndex - 1;
-
-  //   setNextIndex(newIndex);
-  //   console.log(images[nextIndex]?.PMMedia);
-  // };
-  // useEffect(() => {
-  //   Carousel();
-  // }, [currentIndex]);
-
-  // const rightSlide = () => {
-  //   const isNextSlide =
-  //     nextIndex === data.data[currentIndex]?.PMMedia?.length - 1;
-  //   const newIndex = isNextSlide ? 0 : nextIndex + 1;
-  //   setNextIndex(newIndex);
-  //   console.log(images[nextIndex]?.PMMedia);
-  // };
 
   return (
     <>
