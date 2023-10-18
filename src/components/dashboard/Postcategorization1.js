@@ -33,6 +33,7 @@ export function Postcategorization1({
   const [currentPostId, setCurrentPostId] = useState(0);
   const [categorizedPost, setCategorizedPost] = useState([]);
   const [categorizedIndex, setCategorizedIndex] = useState(0);
+  //let categorizedIndex = useRef(0).current;
   //When fetching the next 100, Change the currentPage to 2
 
   // useEffect(() => {
@@ -155,24 +156,36 @@ export function Postcategorization1({
         }));
       }
     } else {
-      const findPost = categorizedData[categorizedIndex];
+      const findPost =
+        categorizedPost?.length > 0
+          ? categorizedPost[categorizedIndex]
+          : categorizedData[categorizedIndex];
+
+      console.log(findPost);
       const categoryExist = findPost?.OPCCategory.findIndex(
         (c) => c === category.OCName
       );
+      //console.log(categoryExist)
       if (categoryExist >= 0) return;
 
-      const newPost = [...categorizedData];
+      const newPost =
+        categorizedPost?.length > 0
+          ? [...categorizedPost]
+          : [...categorizedData];
+
       newPost.splice(categorizedIndex, 1, {
         ...findPost,
-        OPCCategory: [...findPost.OPCCategory, category.OCName],
+        OPCCategory: [category.OCName, ...findPost.OPCCategory],
       });
+      setCategorizedPost(newPost);
       handlePostClick(
         [...findPost.OPCCategory, category.OCName],
         findPost.POId
       );
-      setCategorizedPost(newPost);
     }
   };
+
+  const updateCategoryPost = (data) => setCategorizedPost(data);
 
   const handleCategorySelection = (selectedCategories) => {
     setSelectedCategories(selectedCategories);
@@ -483,6 +496,7 @@ export function Postcategorization1({
         {/*SPECIAL POST*/}
         {tab === 1 && (
           <CategorizedPost
+            categorizedPost={categorizedPost}
             currentPage={currentPage}
             fetchCatgorizedData={fetchCatgorizedData}
             images={categorizedData}
@@ -496,6 +510,7 @@ export function Postcategorization1({
             setCategoryResults={setCategoryResults}
             isLoading={isLoading}
             isError={isError}
+            updateCategoryPost={updateCategoryPost}
           />
         )}
       </div>

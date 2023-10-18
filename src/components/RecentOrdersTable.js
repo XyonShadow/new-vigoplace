@@ -209,6 +209,10 @@ export default function RecentOrdersTable() {
       id: "declined",
       name: "Declined",
     },
+    {
+      id: "on-hold",
+      name: "On Hold",
+    },
   ];
 
   const handleStatusChange = (e) => {

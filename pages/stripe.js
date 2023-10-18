@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from "react";
-import { MaterialReactTable } from 'material-react-table';
+import React, { useMemo, useState, useEffect } from "react";
+import { MaterialReactTable } from "material-react-table";
 import Table from "material-react-table";
 import { useRouter } from "next/router";
 import { Link } from "next/link";
@@ -97,6 +97,8 @@ const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
+const API_BASE_URL = "https://vigoplace.com/server";
+//const API_BASE_URL = "http://localhost:4000";
 const Users = () => {
   const router = useRouter();
   const { userid } = router.query;
@@ -113,6 +115,10 @@ const Users = () => {
     pageIndex: 0,
     pageSize: 10,
   });
+  const [loading, setLoading] = useState(true);
+  const [searchValue, setSearchValue] = useState("");
+  const [filteredResults, setFilteredResults] = useState([]);
+  const [inputEmpty, setInputEmpty] = useState(true);
   const [transactionPagination, setTransactionPagination] = useState({
     pageIndex: 1,
     pageSize: 10,
@@ -122,12 +128,14 @@ const Users = () => {
   const [debitSuccessToast, setDebitSuccessToast] = React.useState(false);
   const [debitErrorToast, setDebitErrorToast] = React.useState(false);
   const [lastId, setLastId] = useState(0);
-
+  const [totalResult, setTotalResult] = useState(0);
   const [status, setStatus] = React.useState("");
+  const [currency, setCurrency] = React.useState("");
   const [isVerified, setIsverified] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [tabValue, setTabValue] = React.useState(0);
   const [result, setResult] = useState([]);
+  const [tableData, setTableData] = useState(result);
   const [creditDetails, setCreditDetails] = useState({
     amount: "",
     approvalPin: "",
@@ -145,7 +153,7 @@ const Users = () => {
 
   const { data, isError, isFetching, isLoading, refetch } = useQuery(
     [
-      "fetchpaystackTransfers",
+      "fetchStripeTransfers",
       columnFilters, //refetch when columnFilters changes
       globalFilter, //refetch when globalFilter changes
       pagination.pageIndex, //refetch when pagination.pageIndex changes
@@ -153,12 +161,13 @@ const Users = () => {
       sorting, //refetch when sorting changes
       status,
       lastId,
+      currency,
     ],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/stripe/payment_intents?page=${
+        `${API_BASE_URL}/api/stripe/payment_intents?page=${
           pagination.pageIndex + 1
-        }`,
+        }&pageSize=${pagination.pageSize}`,
         // `http://localhost:3001/api/admin/console/transfers/paystack?perPage=${pagination.pageSize}&page=${pagination.pageIndex}`,
         {
           headers: {
@@ -167,9 +176,28 @@ const Users = () => {
         }
       );
       //console.log(data);
-      setResult(data.data.transactions);
+      setResult(data?.data?.transactions ?? []);
+      setTableData(data?.data?.transactions ?? []);
+      setTotalResult(data?.data?.totalTransactions);
       //console.log((data?.data?.paymentIntents[9].id))
       return data;
+      // const { data, isError, isFetching, isLoading, refetch } = useQuery(
+      //   ["fetchStripeTransfers", pagination, filters],
+      //   async () => {
+      //     const { data } = await axios.get(
+      //       `http://localhost:4000/api/stripe/payment_intents`,
+      //       {
+      //         headers: {
+      //           Authorization: user?.token,
+      //         },
+      //         params: {
+      //           ...pagination,
+      //           ...filters,
+      //         },
+      //       }
+      //     );
+      //     setResult(data.data.transactions);
+      //     return data;
     },
     {
       onError: (err) => {
@@ -179,6 +207,37 @@ const Users = () => {
     },
     { keepPreviousData: true }
   );
+
+  useEffect(() => {
+    // Define a function to fetch and filter data based on the searchValue
+    const fetchAndFilterData = async () => {
+      try {
+        // Make a request to your backend with the searchValue
+        const response = await fetch(
+          `${API_BASE_URL}/api/stripe/payment_intentById?search=${globalFilter}&page=${
+            pagination.pageIndex + 1
+          }&pageSize=${pagination.pageSize}`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        const data = await response.json();
+        console.log(data?.data?.totalTransactions);
+
+        // Check if the search input is empty or there are no results
+        if (globalFilter === "" || data?.data?.transactions.length === 0) {
+          setTableData(result);
+        } else {
+          setTableData(data?.data?.transactions ?? []);
+          setTotalResult(data?.data?.totalTransactions);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchAndFilterData();
+  }, [globalFilter, result]);
 
   const columns = useMemo(
     () => [
@@ -197,11 +256,8 @@ const Users = () => {
           onClick: () => {
             //console.log(cell.getValue());
             const userId = cell.row.original.userId;
-            const url = `/user/${userId}`
+            const url = `/user/${userId}`;
             window.open(url, "_blank");
-            
-            //router.push(`/user/${userId}`);
-            //<a href="https://google.com" target="_blank"></a>
           },
           onMouseEnter: (e) => {
             e.target.style.textDecoration = "underline";
@@ -254,7 +310,7 @@ const Users = () => {
       {
         accessorFn: (row) => {
           if (row?.createdAt) {
-            return format(new Date(row.createdAt), 'MM/dd/yyyy hh:mm a');
+            return format(new Date(row.createdAt), "MM/dd/yyyy hh:mm a");
           } else {
             return "";
           }
@@ -266,8 +322,6 @@ const Users = () => {
     []
   );
 
-  
-
   if (user?.adminType === "sub-admin") {
     return (
       <section className="flex items-center justify-center">
@@ -277,6 +331,9 @@ const Users = () => {
       </section>
     );
   }
+
+  console.log(tableData);
+  console.log(pagination.pageIndex);
 
   return (
     <>
@@ -309,33 +366,22 @@ const Users = () => {
             <TabPanel value={tabValue} index={0}>
               <Box sx={{ pt: 3 }}>
                 <MaterialReactTable
-                  // enableColumnFilterModes
-                  // enableColumnOrdering
-                  // enableGrouping
-                  // enablePinning
-                  // enableRowActions
-                  // enableRowSelection
-
+                  enableColumnFilterModes
+                  enableColumnOrdering
+                  enablePinning
                   columns={columns}
-                  data={data?.data?.transactions ?? []}
+                  //data={data?.data?.transactions ?? []}
+                  data={tableData}
                   enableStickyHeader
-                  enableStickyFooter
+                  //enableStickyFooter
                   enablePagination
                   manualPagination
+                  manualFiltering
                   onPaginationChange={setPagination}
-                  rowCount={data?.data?.totalTransactions}
+                  rowCount={totalResult}
                   onGlobalFilterChange={setGlobalFilter}
                   initialState={{ showColumnFilters: false }}
                   positionToolbarAlertBanner="bottom"
-                  enableGlobalFilter={false}
-                  // onCellClick={(row, column) => {
-                  //   if (column.accessorKey === "fullName") {
-                  //     handleNameClick(row.userId);
-                  //   }
-                  // }}
-                  // onCellClick={() => {
-                  //   console.log("user");
-                  // }}
                   muiToolbarAlertBannerProps={
                     isError
                       ? {
@@ -359,23 +405,21 @@ const Users = () => {
                           sx={{ m: 1, minWidth: 120 }}
                         >
                           <InputLabel id="demo-simple-select-standard-label">
-                            Status
+                            Currency
                           </InputLabel>
                           <Select
                             labelId="demo-simple-select-standard-label"
                             id="demo-simple-select-standard"
-                            value={status}
+                            value={currency}
                             defaultValue="None"
-                            //  onChange={handleStatus}
+                            //onChange={setCurrency}
                             label="Gender"
                           >
-                            <MenuItem value="">
+                            <MenuItem value="None">
                               <em>None</em>
                             </MenuItem>
-                            <MenuItem value={"completed"}>Completed</MenuItem>
-                            <MenuItem value={"pending"}>Pending</MenuItem>
-                            <MenuItem value={"processing"}>Processing</MenuItem>
-                            <MenuItem value={"declined"}>Declined</MenuItem>
+                            <MenuItem value={"USD"}>USD</MenuItem>
+                            <MenuItem value={"NGN"}>NGN</MenuItem>
                           </Select>
                         </FormControl>
                       </div>
@@ -386,6 +430,7 @@ const Users = () => {
                     showAlertBanner: isError,
                     showProgressBars: isFetching,
                     pagination,
+                    globalFilter,
                   }}
                   muiTableContainerProps={{ sx: { height: "75vh" } }}
                 />

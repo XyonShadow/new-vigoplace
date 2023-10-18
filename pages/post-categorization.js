@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect, useRef } from "react";
 
 const API_BASE_URL = "https://vigoplace.com/server";
-
+//const API_BASE_URL = "http://localhost:4000";
 const PostCategorization = () => {
   //const [categorizedData, setCategorizedData] = useState([]);
   //const [unCategorizedData, setUncategorizedData] = useState([]);
@@ -14,7 +14,7 @@ const PostCategorization = () => {
   // //When fetching the next data, Change the currentPage to 2
 
   // const API_BASE_URL = "https://vigoplace.com/server";
-  // //const API_BASE_URL = "http://localhost:4000";
+  // 
 
   // const fetchData = async () => {
   //   const response = await fetch(

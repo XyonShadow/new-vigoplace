@@ -34,6 +34,8 @@ export const CategorizedPost = ({
   handleCategorizePost,
   currentPage,
   fetchCatgorizedData,
+  categorizedPost,
+  updateCategoryPost,
 }) => {
   const [openModal, setOpenModal] = useState(false);
 
@@ -69,10 +71,30 @@ export const CategorizedPost = ({
       );
 
       if (!response.ok) {
-        toast.error("Fails to remove category");
+        toast.error("Failed to remove category");
         throw new Error(data.error);
       }
       const data = await response.json();
+
+      // find the active image
+      // remove the current category from the image
+      // update the category state
+      const findPost =
+        categorizedPost?.length > 0
+          ? categorizedPost[categorizedIndex]
+          : images[categorizedIndex];
+
+      const newPost = categorizedPost?.length > 0
+      ? [...categorizedPost]
+      : [...images];
+
+
+      newPost.splice(categorizedIndex, 1, {
+        ...findPost,
+        OPCCategory: findPost.OPCCategory.filter((item) => item !== category),
+      });
+      updateCategoryPost(newPost);
+
       queryClient.invalidateQueries("categorizedPost");
       return data;
     } catch (error) {
@@ -173,6 +195,7 @@ export const CategorizedPost = ({
   };
 
   const nextSlide = () => {
+    console.log(images);
     if (images?.[categorizedIndex]?.POId === images[images.length - 11]?.POId) {
       currentPage.current += 1;
       fetchCatgorizedData();
@@ -181,7 +204,8 @@ export const CategorizedPost = ({
     // Increment the index and ensure it wraps around correctly
     const newIndex =
       categorizedIndex > images?.length - 1 ? 0 : categorizedIndex + 1;
-    setCategoryResults([data[newIndex]]);
+      console.log(newIndex);
+    setCategoryResults([images[newIndex]]);
     updateCategorizedIndex(newIndex);
   };
 
@@ -275,25 +299,53 @@ export const CategorizedPost = ({
             Post category
           </p>
           <div className="flex flex-col items-center justify-center gap-4">
-            {images?.[categorizedIndex]?.OPCCategory?.map((item, index) => {
-              // console.log(item);
-              if (item === "") return;
-              return (
-                <div
-                  key={index}
-                  className="flex justify-between py-2 px-6  w-full bg-white rounded-lg"
-                >
-                  <p>{item}</p>
-                  <GrFormClose
-                    size={20}
-                    className="cursor-pointer"
-                    onClick={() =>
-                      deletePostCategory(images?.[categorizedIndex]?.POId, item)
-                    }
-                  />
-                </div>
-              );
-            })}
+            {categorizedPost?.length > 0
+              ? categorizedPost?.[categorizedIndex]?.OPCCategory?.map(
+                  (item, index) => {
+                    // console.log(item);
+                    if (item === "") return;
+                    return (
+                      <div
+                        key={index}
+                        className="flex justify-between py-2 px-6  w-full bg-white rounded-lg"
+                      >
+                        <p>{item}</p>
+                        <GrFormClose
+                          size={20}
+                          className="cursor-pointer"
+                          onClick={() =>
+                            deletePostCategory(
+                              images?.[categorizedIndex]?.POId,
+                              item
+                            )
+                          }
+                        />
+                      </div>
+                    );
+                  }
+                )
+              : images?.[categorizedIndex]?.OPCCategory?.map((item, index) => {
+                  // console.log(item);
+                  if (item === "") return;
+                  return (
+                    <div
+                      key={index}
+                      className="flex justify-between py-2 px-6  w-full bg-white rounded-lg"
+                    >
+                      <p>{item}</p>
+                      <GrFormClose
+                        size={20}
+                        className="cursor-pointer"
+                        onClick={() =>
+                          deletePostCategory(
+                            images?.[categorizedIndex]?.POId,
+                            item
+                          )
+                        }
+                      />
+                    </div>
+                  );
+                })}
           </div>
         </div>
       </div>
