@@ -113,8 +113,6 @@ const Users = () => {
     pageIndex: 1,
     pageSize: 10,
   });
-  const [transaction, setTransaction] = useState([]);
-  const [transfer, setTransfer] = useState([]);
   const [transactionCount, setTransactionCount] = useState(0);
   const [transferCount, setTransferCount] = useState(0);
   const [creditSuccessToast, setCreditSuccessToast] = React.useState(false);
@@ -163,7 +161,6 @@ const Users = () => {
       );
 
       //console.log(data);
-      setTransfer(data?.data ?? []);
       setTransferCount(data?.meta?.total ?? 0);
       return data;
     },
@@ -203,8 +200,7 @@ const Users = () => {
         }
       );
 
-      //console.log(data);
-      setTransaction(transactionData?.data ?? []);
+      console.log(data);
       setTransactionCount(transactionData?.meta?.total ?? 0);
       return data;
     },
@@ -227,6 +223,23 @@ const Users = () => {
       {
         accessorKey: "recipient.name",
         header: "Name",
+        // muiTableBodyCellProps: ({ cell }) => ({
+        //   style: {
+        //     cursor: "pointer",
+        //   },
+        //   onClick: () => {
+        //     console.log(cell.getValue());
+        //     console.log(cell.row);
+        //     const userId = cell.row.original.userId;
+        //     router.push(`/user/${userId}`);
+        //   },
+        //   onMouseEnter: (e) => {
+        //     e.target.style.textDecoration = "underline";
+        //   },
+        //   onMouseLeave: (e) => {
+        //     e.target.style.textDecoration = "none";
+        //   },
+        // }),
         enableClickToCopy: false,
       },
       {
@@ -242,7 +255,7 @@ const Users = () => {
         header: "Amount",
       },
       {
-        accessorKey: "recipient?.details?.bank_name",
+        accessorKey: "recipient.details.bank_name",
         enableClickToCopy: false,
         header: "Bank Name",
       },
@@ -252,9 +265,10 @@ const Users = () => {
         header: "Status",
       },
       {
+        // accessorKey: "transactionDate",
         accessorFn: (row) => {
           if (row?.createdAt) {
-            return format(new Date(row.createdAt), "MM/dd/yyyy hh:mm a");
+            return format(new Date(row.createdAt), "Pp");
           } else {
             return "";
           }
@@ -296,11 +310,10 @@ const Users = () => {
         enableClickToCopy: false,
         header: "Status",
       },
-      // accessorKey: "transactionDate",
       {
         accessorFn: (row) => {
           if (row?.createdAt) {
-            return format(new Date(row.createdAt), "MM/dd/yyyy hh:mm a");
+            return format(new Date(row.createdAt), "Pp");
           } else {
             return "";
           }
@@ -361,20 +374,24 @@ const Users = () => {
                   // enablePinning
                   // enableRowActions
                   // enableRowSelection
-
+                  enableColumnFilterModes
+                  enableColumnOrdering
+                  enablePinning
                   columns={columns}
-                  data={transfer}
+                  data={data?.data ?? []}
                   enableStickyHeader
                   enableStickyFooter
                   enablePagination
                   manualPagination
+                  manualFiltering
                   onPaginationChange={setPagination}
                   // onPaginationChange={(e, f)=> console.log({e, f}, "oginidixx")}
+                  //rowCount={data?.meta?.total ?? 0}
                   rowCount={transferCount}
                   onGlobalFilterChange={setGlobalFilter}
                   initialState={{ showColumnFilters: false }}
                   positionToolbarAlertBanner="bottom"
-                  enableGlobalFilter={false}
+                  //enableGlobalFilter={false}
                   muiToolbarAlertBannerProps={
                     isError
                       ? {
@@ -450,12 +467,12 @@ const Users = () => {
                     showAlertBanner: isError,
                     showProgressBars: isFetching,
                     pagination,
+                    globalFilter,
                   }}
                   muiTableContainerProps={{ sx: { height: "75vh" } }}
                 />
               </Box>
             </TabPanel>
-
 
             <TabPanel value={tabValue} index={1}>
               <Box sx={{ pt: 3 }}>
@@ -466,20 +483,23 @@ const Users = () => {
                   // enablePinning
                   // enableRowActions
                   // enableRowSelection
-
+                  enableColumnFilterModes
+                  enableColumnOrdering
+                  enablePinning
                   columns={transactionColumns}
-                  //data={transactionData?.data ?? []}
-                  data={transaction}
+                  data={transactionData?.data ?? []}
                   enableStickyHeader
-                  enableStickyFooter
+                  //enableStickyFooter
                   enablePagination
                   manualPagination
+                  manualFiltering
                   onPaginationChange={setTransactionPagination}
+                  //rowCount={transactionData?.meta?.total ?? 0}
                   rowCount={transactionCount}
                   onGlobalFilterChange={setGlobalFilter}
                   initialState={{ showColumnFilters: false }}
                   positionToolbarAlertBanner="bottom"
-                  enableGlobalFilter={false}
+                  //enableGlobalFilter={false}
                   muiToolbarAlertBannerProps={
                     isError
                       ? {
@@ -555,6 +575,7 @@ const Users = () => {
                     showAlertBanner: transactionError,
                     showProgressBars: transactionFetching,
                     pagination: transactionPagination,
+                    globalFilter,
                   }}
                   muiTableContainerProps={{ sx: { height: "75vh" } }}
                 />
