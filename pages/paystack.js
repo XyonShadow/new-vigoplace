@@ -113,6 +113,10 @@ const Users = () => {
     pageIndex: 1,
     pageSize: 10,
   });
+  const [transaction, setTransaction] = useState([]);
+  const [transfer, setTransfer] = useState([]);
+  const [transactionCount, setTransactionCount] = useState(0);
+  const [transferCount, setTransferCount] = useState(0);
   const [creditSuccessToast, setCreditSuccessToast] = React.useState(false);
   const [creditErrorToast, setCreditErrorToast] = React.useState(false);
   const [debitSuccessToast, setDebitSuccessToast] = React.useState(false);
@@ -158,8 +162,9 @@ const Users = () => {
         }
       );
 
-      console.log(data);
-
+      //console.log(data);
+      setTransfer(data?.data ?? []);
+      setTransferCount(data?.meta?.total ?? 0);
       return data;
     },
     {
@@ -198,8 +203,9 @@ const Users = () => {
         }
       );
 
-      console.log(data);
-
+      //console.log(data);
+      setTransaction(transactionData?.data ?? []);
+      setTransactionCount(transactionData?.meta?.total ?? 0);
       return data;
     },
     {
@@ -221,23 +227,6 @@ const Users = () => {
       {
         accessorKey: "recipient.name",
         header: "Name",
-        // muiTableBodyCellProps: ({ cell }) => ({
-        //   style: {
-        //     cursor: "pointer",
-        //   },
-        //   onClick: () => {
-        //     console.log(cell.getValue());
-        //     console.log(cell.row);
-        //     const userId = cell.row.original.userId;
-        //     router.push(`/user/${userId}`);
-        //   },
-        //   onMouseEnter: (e) => {
-        //     e.target.style.textDecoration = "underline";
-        //   },
-        //   onMouseLeave: (e) => {
-        //     e.target.style.textDecoration = "none";
-        //   },
-        // }),
         enableClickToCopy: false,
       },
       {
@@ -253,7 +242,7 @@ const Users = () => {
         header: "Amount",
       },
       {
-        accessorKey: "recipient.details.bank_name",
+        accessorKey: "recipient?.details?.bank_name",
         enableClickToCopy: false,
         header: "Bank Name",
       },
@@ -263,10 +252,9 @@ const Users = () => {
         header: "Status",
       },
       {
-        // accessorKey: "transactionDate",
         accessorFn: (row) => {
           if (row?.createdAt) {
-            return format(new Date(row.createdAt), "Pp");
+            return format(new Date(row.createdAt), "MM/dd/yyyy hh:mm a");
           } else {
             return "";
           }
@@ -275,34 +263,6 @@ const Users = () => {
         enableClickToCopy: false,
         header: "Date",
       },
-      // {
-      //   accessorFn: (row) => new Date(row.startDate), //convert to Date for sorting and filtering
-      //   id: "startDate",
-      //   header: "Start Date",
-      //   filterFn: "lessThanOrEqualTo",
-      //   sortingFn: "datetime",
-      //   Cell: ({ cell }) => cell.getValue()?.toLocaleDateString(), //render Date as a string
-      //   Header: ({ column }) => <em>{column.columnDef.header}</em>, //custom header markup
-      //   //Custom Date Picker Filter from @mui/x-date-pickers
-      //   Filter: ({ column }) => (
-      //     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      //       <DatePicker
-      //         onChange={(newValue) => {
-      //           column.setFilterValue(newValue);
-      //         }}
-      //         renderInput={(params) => (
-      //           <TextField
-      //             {...params}
-      //             helperText={"Filter Mode: Lesss Than"}
-      //             sx={{ minWidth: "120px" }}
-      //             variant="standard"
-      //           />
-      //         )}
-      //         value={column.getFilterValue()}
-      //       />
-      //     </LocalizationProvider>
-      //   )
-      // }
     ],
     []
   );
@@ -311,7 +271,7 @@ const Users = () => {
     () => [
       {
         accessorFn: (row) =>
-          `${row.customer.first_name} ${row.customer.last_name}`,
+          `${row?.customer?.first_name} ${row?.customer?.last_name}`,
         enableClickToCopy: false,
         header: "Name",
       },
@@ -336,9 +296,15 @@ const Users = () => {
         enableClickToCopy: false,
         header: "Status",
       },
+      // accessorKey: "transactionDate",
       {
-        // accessorKey: "transactionDate",
-        accessorFn: (row) => format(new Date(row.createdAt), "Pp"),
+        accessorFn: (row) => {
+          if (row?.createdAt) {
+            return format(new Date(row.createdAt), "MM/dd/yyyy hh:mm a");
+          } else {
+            return "";
+          }
+        },
         enableClickToCopy: false,
         header: "Date",
       },
@@ -397,14 +363,14 @@ const Users = () => {
                   // enableRowSelection
 
                   columns={columns}
-                  data={data?.data ?? []}
+                  data={transfer}
                   enableStickyHeader
                   enableStickyFooter
                   enablePagination
                   manualPagination
                   onPaginationChange={setPagination}
                   // onPaginationChange={(e, f)=> console.log({e, f}, "oginidixx")}
-                  rowCount={data?.meta?.total ?? 0}
+                  rowCount={transferCount}
                   onGlobalFilterChange={setGlobalFilter}
                   initialState={{ showColumnFilters: false }}
                   positionToolbarAlertBanner="bottom"
@@ -489,10 +455,9 @@ const Users = () => {
                 />
               </Box>
             </TabPanel>
-            <h1>Na here be data for up</h1>
+
 
             <TabPanel value={tabValue} index={1}>
-              <h1>Where am I</h1>
               <Box sx={{ pt: 3 }}>
                 <MaterialReactTable
                   // enableColumnFilterModes
@@ -503,13 +468,14 @@ const Users = () => {
                   // enableRowSelection
 
                   columns={transactionColumns}
-                  data={transactionData?.data ?? []}
+                  //data={transactionData?.data ?? []}
+                  data={transaction}
                   enableStickyHeader
                   enableStickyFooter
                   enablePagination
                   manualPagination
                   onPaginationChange={setTransactionPagination}
-                  rowCount={transactionData?.meta?.total ?? 0}
+                  rowCount={transactionCount}
                   onGlobalFilterChange={setGlobalFilter}
                   initialState={{ showColumnFilters: false }}
                   positionToolbarAlertBanner="bottom"
@@ -593,7 +559,6 @@ const Users = () => {
                   muiTableContainerProps={{ sx: { height: "75vh" } }}
                 />
               </Box>
-              <h1>Na transaction here for up</h1>
             </TabPanel>
           </Box>
         </Grid>
