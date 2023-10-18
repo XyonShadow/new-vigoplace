@@ -200,7 +200,7 @@ const Users = () => {
         }
       );
 
-      console.log(data);
+      //console.log(data);
       setTransactionCount(transactionData?.meta?.total ?? 0);
       return data;
     },
