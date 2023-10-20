@@ -20,10 +20,10 @@ try {
 
       const parsed = await ky(`https://vigoplace.com/server/api/admin/console/payouts/${id}`, {
         headers:{
-            'Authorization': token
+          'Authorization': token
         },
       }).json()
-      console.log(parsed)
+      //console.log(parsed)
       return parsed
   } catch (error) {
     console.log(error, 'parsed error')

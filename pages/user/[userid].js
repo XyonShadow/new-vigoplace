@@ -101,6 +101,8 @@ const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
+const API_BASE_URL = "https://vigoplace.com/server";
+//const API_BASE_URL = "http://localhost:4000";
 const Users = () => {
   const router = useRouter();
   const { userid } = router.query;
@@ -123,6 +125,12 @@ const Users = () => {
   const [debitErrorToast, setDebitErrorToast] = React.useState(false);
 
   const [status, setStatus] = React.useState("");
+  const [filters, setFilters] = useState({
+    status: null,
+  });
+  const [page, setPage] = useState(0);
+  const [limit, setLimit] = useState(10);
+  //const [status, setStatus] = useState(null);
   const [isVerified, setIsverified] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [tabValue, setTabValue] = React.useState(0);
@@ -273,7 +281,7 @@ const Users = () => {
     ],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/users/transactions?userId=${userid}&limit=${
+        `${API_BASE_URL}/api/admin/console/users/transactions?userId=${userid}&limit=${
           pagination.pageSize
         }&offset=${pagination.pageIndex * pagination.pageSize}${
           status !== "" ? `&status=${status}` : ""
@@ -285,7 +293,7 @@ const Users = () => {
           },
         }
       );
-      console.log(data);
+      //console.log(data);
       return data;
     },
     {
@@ -318,7 +326,7 @@ const Users = () => {
         }
       );
 
-      console.log(data);
+      //console.log(data);
       return data;
     },
     {
@@ -891,11 +899,6 @@ const Users = () => {
           {/* <Divider orientation="vertical" variant="middle"  /> */}
         </Grid>
 
-
-
-
-
-
         {user?.role === "root" ? (
           <Grid item sm={12} xs={12} lg={6}>
             <Box sx={{ width: "100%" }}>
@@ -1214,6 +1217,7 @@ const Users = () => {
                 <Tab label="Payout" {...a11yProps(2)} />
               </Tabs>
             </Box>
+
             <TabPanel value={tabValue} index={0}>
               <Box sx={{ pt: 3 }}>
                 <form>
@@ -1273,31 +1277,7 @@ const Users = () => {
             </TabPanel>
 
             <TabPanel value={tabValue} index={2}>
-              <Box sx={{ pt: 3 }}>
-                {/* <form> */}
-
-                {/* <Divider /> */}
-                {/* <CardContent> */}
-                <Container maxWidth="lg">
-                  {/* <Card>
-                    <CardHeader subheader="" title="User Payout" />
-                  </Card> */}
-                  <Grid
-                    container
-                    direction="row"
-                    justifyContent="center"
-                    alignItems="stretch"
-                    spacing={3}
-                  >
-                    <Grid item xs={12}>
-                      <RecentOrders payouts={userPayout?.data} />
-                    </Grid>
-                  </Grid>
-                </Container>
-                {/* </CardContent> */}
-                {/* </Card> */}
-                {/* </form> */}
-              </Box>
+              <RecentOrders userPayouts={userPayout?.data} />
             </TabPanel>
           </Box>
         </Grid>

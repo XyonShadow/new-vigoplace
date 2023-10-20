@@ -66,36 +66,6 @@ const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-// const getStatusLabel = (cryptoOrderStatus) => {
-//   const map = {
-//     failed: {
-//       text: "Failed",
-//       color: "error",
-//     },
-//     completed: {
-//       text: "Completed",
-//       color: green[500],
-//     },
-//     pending: {
-//       text: "Pending",
-//       color: yellow[800],
-//     },
-//     declined: {
-//       text: "Declined",
-//       color: yellow[800],
-//     },
-//     processing: {
-//       text: "Processing",
-//       color: yellow[700],
-//     },
-//   };
-//   const {text, color} = map[cryptoOrderStatus];
-//   console.log(text, color);
-
-//   return <Label sx={{ color }}>{text}</Label>;
-//   // return <Label sx={{}} color={color}>{text}</Label>;
-// };
-
 const getStatusLabel = (cryptoOrderStatus) => {
   const map = {
     failed: {
@@ -121,7 +91,7 @@ const getStatusLabel = (cryptoOrderStatus) => {
     onHold: {
       text: "On Hold",
       color: yellow[800],
-    }
+    },
   };
 
   if (map[cryptoOrderStatus]) {
@@ -133,7 +103,6 @@ const getStatusLabel = (cryptoOrderStatus) => {
     return <Label sx={{ color: "defaultColor" }}>{""}</Label>;
   }
 };
-
 
 const applyFilters = (cryptoOrders, filters) => {
   return cryptoOrders?.filter((cryptoOrder) => {
@@ -151,8 +120,12 @@ const applyPagination = (cryptoOrders, page, limit) => {
   return cryptoOrders?.slice(page * limit, page * limit + limit);
 };
 
+const API_BASE_URL = "https://vigoplace.com/server";
+//const API_BASE_URL = "http://localhost:4000";
 export default function RecentOrdersTable() {
   const queryClient = useQueryClient();
+  const router = useRouter();
+  const { userid } = router.query;
   const getUser = useSession();
   const user = getUser?.data?.user;
   const [selectedCryptoOrders, setSelectedCryptoOrders] = useState([]);
@@ -293,7 +266,7 @@ export default function RecentOrdersTable() {
     ],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/payouts?limit=${
+        `${API_BASE_URL}/api/admin/console/payouts?limit=${
           pagination.pageSize
         }&offset=${pagination.pageIndex * pagination.pageSize}${
           status !== undefined && status !== null ? `&status=${status}` : ""
@@ -306,13 +279,53 @@ export default function RecentOrdersTable() {
         }
       );
 
-      console.log(data);
+      //console.log(data);
 
       return data;
     },
     {
       onError: (err) => {
         console.log(err, "err fetching payouts");
+      },
+      enabled: !!user?.token,
+    },
+    { keepPreviousData: true }
+  );
+
+  const {
+    data: userPayouts,
+    isError: userPayoutError,
+    isFetching: userPayoutFetching,
+    isLoading: userPayoutLoading,
+    refetch: userRefetch,
+  } = useQuery(
+    [
+      "payoutUserRequest",
+      // columnFilters, //refetch when columnFilters changes
+      // globalFilter, //refetch when globalFilter changes
+      // sorting, //refetch when sorting changes
+      status,
+      page,
+      limit,
+    ],
+    async () => {
+      const { data } = await axios.get(
+        `${API_BASE_URL}/api/admin/console/payouts/user/${userid}`,
+        // `http://localhost:3001/api/admin/console/payouts?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${status !== undefined && status !== null ? `&status=${status}` : '' }`,
+        {
+          headers: {
+            Authorization: user?.token,
+          },
+        }
+      );
+
+      //console.log(data);
+
+      return data;
+    },
+    {
+      onError: (err) => {
+        console.log(err, "err fetching this user's payout details");
       },
       enabled: !!user?.token,
     },
@@ -339,7 +352,7 @@ export default function RecentOrdersTable() {
     ],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/payout?`,
+        `${API_BASE_URL}/api/admin/console/payout?`,
         // `https://vigoplace.com/server/api/admin/console/payouts?limit=${
         //   pagination.pageSize
         // }&offset=${pagination.pageIndex * pagination.pageSize}${
@@ -353,7 +366,7 @@ export default function RecentOrdersTable() {
         }
       );
 
-      console.log(data);
+      //console.log(data);
 
       return data;
     },
@@ -366,10 +379,18 @@ export default function RecentOrdersTable() {
     { keepPreviousData: true }
   );
 
-  const filteredCryptoOrders = applyFilters(
-    payouts?.data?.payoutRequests,
-    filters
-  );
+  const isUserRoute = router.pathname.startsWith("/user/"); // Check if it's a user route
+
+  const dataToUse = isUserRoute
+    ? userPayouts?.data?.payoutRequests
+    : payouts?.data?.payoutRequests;
+
+  const filteredCryptoOrders = applyFilters(dataToUse, filters);
+
+  // const filteredCryptoOrders = applyFilters(
+  //   payouts?.data?.payoutRequests,
+  //   filters
+  // );
   const paginatedCryptoOrders = applyPagination(
     filteredCryptoOrders,
     pagination.pageIndex,
@@ -444,29 +465,36 @@ export default function RecentOrdersTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredCryptoOrders &&
+          {filteredCryptoOrders && filteredCryptoOrders.length > 0 ? (
               filteredCryptoOrders.map((payout, index) => {
                 const isPayoutSelected = selectedCryptoOrders.includes(
                   payout.payoutRequestId
                 );
                 return (
-                  <Row
-                    // key={payout.payoutRequestId}
-                    key={index}
-                    payout={payout}
-                    isPayoutSelected={isPayoutSelected}
-                    // setRequestId={setPayoutRId}
-                    // isLoading={isLoading}
-                  />
-                );
-              })}
+                <Row
+                  key={index}
+                  payout={payout}
+                  isPayoutSelected={isPayoutSelected}
+                />
+              );
+            })
+          ) : (
+            // Render "No records to display" message when data is empty
+            <TableRow>
+              <TableCell colSpan={5}>No records to display</TableCell>
+            </TableRow>
+          )}
           </TableBody>
         </Table>
       </TableContainer>
       <Box p={2}>
         <TablePagination
           component="div"
-          count={payouts?.data?.count ?? 0}
+          count={
+            isUserRoute
+              ? userPayouts?.data?.count ?? 0
+              : payouts?.data?.count ?? 0
+          }
           onPageChange={handlePageChange}
           onRowsPerPageChange={handleLimitChange}
           page={pagination.pageIndex}
