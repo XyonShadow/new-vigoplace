@@ -459,31 +459,32 @@ export default function RecentOrdersTable() {
 
               <TableCell>Request ID</TableCell>
               <TableCell>Reference</TableCell>
+              <TableCell align="center">Full Name</TableCell>
               <TableCell align="right">Amount</TableCell>
               <TableCell align="right">Status</TableCell>
               <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-          {filteredCryptoOrders && filteredCryptoOrders.length > 0 ? (
+            {filteredCryptoOrders && filteredCryptoOrders.length > 0 ? (
               filteredCryptoOrders.map((payout, index) => {
                 const isPayoutSelected = selectedCryptoOrders.includes(
                   payout.payoutRequestId
                 );
                 return (
-                <Row
-                  key={index}
-                  payout={payout}
-                  isPayoutSelected={isPayoutSelected}
-                />
-              );
-            })
-          ) : (
-            // Render "No records to display" message when data is empty
-            <TableRow>
-              <TableCell colSpan={5}>No records to display</TableCell>
-            </TableRow>
-          )}
+                  <Row
+                    key={index}
+                    payout={payout}
+                    isPayoutSelected={isPayoutSelected}
+                  />
+                );
+              })
+            ) : (
+              // Render "No records to display" message when data is empty
+              <TableRow>
+                <TableCell colSpan={5}>No records to display</TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </TableContainer>
@@ -626,7 +627,9 @@ function Row({ payout, isPayoutSelected }) {
       setPin(null);
     },
   });
-
+  console.log(
+    queryClient.getQueryData(["payoutRequest", payout.payoutRequestId])
+  );
   return (
     <>
       <Snackbar
@@ -641,15 +644,11 @@ function Row({ payout, isPayoutSelected }) {
             approveUSDPayOutMutation.error?.response?.data?.message}
         </Alert>
       </Snackbar>
+
       <TableRow hover selected={isPayoutSelected}>
-        {/* <TableCell padding="checkbox">
-                  <Checkbox
-                    color="primary"
-                    checked={isPayoutSelected}
-                    onChange={(event) => handleSelectOneCryptoOrder(event, payout.payoutRequestId)}
-                    value={isPayoutSelected}
-                  />
-                </TableCell> */}
+        {/* <MenuItem>
+          
+        </MenuItem> */}
         <TableCell>
           <IconButton
             aria-label="expand row"
@@ -678,9 +677,9 @@ function Row({ payout, isPayoutSelected }) {
               <span className="text-red-500 font-bold">EXP</span>
             )}
           </Typography>
-          <Typography variant="body2" color="text.secondary" noWrap>
-            {/* {format(payouts.payoutRequestDate, 'MMMM dd yyyy')} */}
-          </Typography>
+          {/* <Typography variant="body2" color="text.secondary" noWrap>
+            {format(payout.payoutRequestDate, 'MMMM dd yyyy')}
+          </Typography> */}
         </TableCell>
         <TableCell>
           <Typography
@@ -692,6 +691,41 @@ function Row({ payout, isPayoutSelected }) {
           >
             {payout.payoutRequestReference}
           </Typography>
+        </TableCell>
+
+        <TableCell align="center">
+          <a
+            href={`/user/${payout.payoutRequestUId}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              textDecoration: "none",
+              color: "inherit",
+              transition: "text-decoration 0.2s", 
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.textDecoration = "underline"; 
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.textDecoration = "none"; 
+            }}
+          >
+            <Typography
+              variant="body1"
+              fontWeight=""
+              color="text.primary"
+              gutterBottom
+              noWrap
+              style={{
+                textDecoration: "none",
+                ":hover": {
+                  textDecoration: "underline",
+                },
+              }}
+            >
+              {payout.userFullName}
+            </Typography>
+          </a>
         </TableCell>
 
         <TableCell align="right">
@@ -1060,7 +1094,7 @@ function Row({ payout, isPayoutSelected }) {
           paddingTop: 0,
           background: "rgb(230 230 230)",
         }}
-        colSpan={6}
+        colSpan={7}
       >
         <Collapse in={open} timeout="auto" unmountOnExit>
           <Box sx={{ margin: 1 }}>
@@ -1081,7 +1115,7 @@ function Row({ payout, isPayoutSelected }) {
                 <TableHead>
                   <TableRow>
                     <TableCell sx={{ fontWeight: "bold" }}>Date</TableCell>
-                    <TableCell sx={{ fontWeight: "bold" }}>Full Name</TableCell>
+                    {/* <TableCell sx={{ fontWeight: "bold" }}>Full Name</TableCell> */}
                     <TableCell sx={{ fontWeight: "bold" }} align="center">
                       Fee
                     </TableCell>
@@ -1128,14 +1162,14 @@ function Row({ payout, isPayoutSelected }) {
                           ])?.data?.payoutRequestDate
                         ).toLocaleDateString()}
                       </TableCell>
-                      <TableCell align="center">
+                      {/* <TableCell align="center">
                         {
                           queryClient.getQueryData([
                             "payoutRequest",
                             payout.payoutRequestId,
                           ])?.data?.userFullname
                         }
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell align="center">
                         {queryClient
                           .getQueryData([
