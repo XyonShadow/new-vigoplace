@@ -478,35 +478,6 @@ const Users = () => {
         enableColumnFilter: false,
         header: "Phone",
       },
-
-      // {
-      //   accessorFn: (row) => new Date(row.startDate), //convert to Date for sorting and filtering
-      //   id: "startDate",
-      //   header: "Start Date",
-      //   filterFn: "lessThanOrEqualTo",
-      //   sortingFn: "datetime",
-      //   Cell: ({ cell }) => cell.getValue()?.toLocaleDateString(), //render Date as a string
-      //   Header: ({ column }) => <em>{column.columnDef.header}</em>, //custom header markup
-      //   //Custom Date Picker Filter from @mui/x-date-pickers
-      //   Filter: ({ column }) => (
-      //     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      //       <DatePicker
-      //         onChange={(newValue) => {
-      //           column.setFilterValue(newValue);
-      //         }}
-      //         renderInput={(params) => (
-      //           <TextField
-      //             {...params}
-      //             helperText={"Filter Mode: Lesss Than"}
-      //             sx={{ minWidth: "120px" }}
-      //             variant="standard"
-      //           />
-      //         )}
-      //         value={column.getFilterValue()}
-      //       />
-      //     </LocalizationProvider>
-      //   )
-      // }
     ],
     []
   );
@@ -733,7 +704,7 @@ const Users = () => {
               )}
             </MenuItem>,
             <MenuItem
-              key={0}
+              key={1}
               // onClick={handleDeactivate}
               // onClick={() => handleDeactivate()}
               sx={{ m: 0 }}
@@ -770,7 +741,7 @@ const Users = () => {
             </MenuItem>,
 
             <MenuItem
-              key={1}
+              key={2}
               onClick={() => {
                 // View profile logic...
                 router.push(`/user/${row.original.id}`);
@@ -788,7 +759,7 @@ const Users = () => {
             </MenuItem>,
 
             <MenuItem
-              key={1}
+              key={3}
               // onClick={() => {
               //   // View profile logic...
               //   router.push(`/user/${row.original.id}`)

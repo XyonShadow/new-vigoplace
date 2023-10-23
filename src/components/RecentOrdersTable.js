@@ -35,6 +35,7 @@ import {
   TableRow,
   TableContainer,
   Select,
+  Menu,
   MenuItem,
   Typography,
   useTheme,
@@ -48,6 +49,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
 import LoadingButton from "@mui/lab/LoadingButton";
 
@@ -332,53 +334,6 @@ export default function RecentOrdersTable() {
     { keepPreviousData: true }
   );
 
-  const {
-    data: payout,
-    //isError,
-    //isFetching,
-    //isLoading,
-    //refetch,
-  } = useQuery(
-    [
-      "payoutRequest",
-      // columnFilters, //refetch when columnFilters changes
-      // globalFilter, //refetch when globalFilter changes
-      pagination.pageIndex, //refetch when pagination.pageIndex changes
-      pagination.pageSize, //refetch when pagination.pageSize changes
-      // sorting, //refetch when sorting changes
-      status,
-      page,
-      limit,
-    ],
-    async () => {
-      const { data } = await axios.get(
-        `${API_BASE_URL}/api/admin/console/payout?`,
-        // `https://vigoplace.com/server/api/admin/console/payouts?limit=${
-        //   pagination.pageSize
-        // }&offset=${pagination.pageIndex * pagination.pageSize}${
-        //   status !== undefined && status !== null ? `&status=${status}` : ""
-        // }`,
-        // `http://localhost:3001/api/admin/console/payouts?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${status !== undefined && status !== null ? `&status=${status}` : '' }`,
-        {
-          headers: {
-            Authorization: user?.token,
-          },
-        }
-      );
-
-      //console.log(data);
-
-      return data;
-    },
-    {
-      onError: (err) => {
-        console.log(err, "err fetching user payout");
-      },
-      enabled: !!user?.token,
-    },
-    { keepPreviousData: true }
-  );
-
   const isUserRoute = router.pathname.startsWith("/user/"); // Check if it's a user route
 
   const dataToUse = isUserRoute
@@ -462,7 +417,7 @@ export default function RecentOrdersTable() {
               <TableCell align="center">Full Name</TableCell>
               <TableCell align="right">Amount</TableCell>
               <TableCell align="right">Status</TableCell>
-              <TableCell align="right">Actions</TableCell>
+              {/* <TableCell align="right">Actions</TableCell> */}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -519,6 +474,15 @@ function Row({ payout, isPayoutSelected }) {
   const [pin, setPin] = React.useState(null);
   const [deliveryETA, setDeliveryETA] = React.useState("");
   const [reason, setReason] = React.useState("");
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+
+  const handleMenuOpen = (event) => {
+    setMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setMenuAnchorEl(null);
+  };
 
   const handlePin = (e) => {
     setPin(e.target.value);
@@ -627,9 +591,7 @@ function Row({ payout, isPayoutSelected }) {
       setPin(null);
     },
   });
-  console.log(
-    queryClient.getQueryData(["payoutRequest", payout.payoutRequestId])
-  );
+
   return (
     <>
       <Snackbar
@@ -701,13 +663,13 @@ function Row({ payout, isPayoutSelected }) {
             style={{
               textDecoration: "none",
               color: "inherit",
-              transition: "text-decoration 0.2s", 
+              transition: "text-decoration 0.2s",
             }}
             onMouseEnter={(e) => {
-              e.target.style.textDecoration = "underline"; 
+              e.target.style.textDecoration = "underline";
             }}
             onMouseLeave={(e) => {
-              e.target.style.textDecoration = "none"; 
+              e.target.style.textDecoration = "none";
             }}
           >
             <Typography
@@ -757,336 +719,6 @@ function Row({ payout, isPayoutSelected }) {
           </Typography>
           {/* {getStatusLabel(payout.payoutRequestStatus)} */}
         </TableCell>
-
-        <TableCell align="right">
-          {/* <Tooltip title="Edit Order" arrow>
-            <IconButton
-              sx={{
-                "&:hover": {
-                  // background: theme.colors.primary.lighter
-                },
-                color: theme.palette.primary.main,
-              }}
-              color="inherit"
-              size="small"
-            >
-              <EditTwoToneIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-
-          <Tooltip title="Delete Order" arrow>
-            <IconButton
-              sx={{
-                // '&:hover': { background: theme.colors.error.lighter },
-                color: theme.palette.error.main,
-              }}
-              color="inherit"
-              size="small"
-            >
-              <DeleteTwoToneIcon fontSize="small" />
-            </IconButton>
-          </Tooltip> */}
-          {payout.payoutRequestStatus === "pending" ? (
-            <>
-              <Button
-                sx={{ margin: 1, bgcolor: green[500] }}
-                size="small"
-                variant="contained"
-                color="success"
-                onClick={() => {
-                  setOpenModal(true);
-                }}
-              >
-                {approvePayOutMutation.isLoading ? (
-                  <CircularProgress size={23} color="inherit" />
-                ) : approvePayOutMutation.isSuccess ? (
-                  <CheckIcon />
-                ) : (
-                  "Approve"
-                )}
-              </Button>
-              <Button
-                size="small"
-                variant="contained"
-                color="error"
-                onClick={() => {
-                  setDeclineModal(true);
-                }}
-              >
-                {declinePayOutMutation.isLoading ? (
-                  <CircularProgress size={23} color="inherit" />
-                ) : approvePayOutMutation.isSuccess ? (
-                  <CheckIcon />
-                ) : (
-                  "Decline"
-                )}
-              </Button>
-              <Button
-                sx={{ margin: 1, bgcolor: green["A700"] }}
-                size="small"
-                variant="contained"
-                color="success"
-                onClick={() => {
-                  // setOpenModal(true);
-                  router.push(`/user/${payout.payoutRequestUId}`);
-                }}
-              >
-                Profile
-              </Button>
-
-              <Dialog
-                open={openModal}
-                onClose={() => {
-                  setOpenModal(false);
-                  setPin(null);
-                }}
-              >
-                <DialogTitle>Approve Payout</DialogTitle>
-                <DialogContent>
-                  <DialogContentText>
-                    Please enter{" "}
-                    {queryClient.getQueryData([
-                      "payoutRequest",
-                      payout.payoutRequestId,
-                    ])?.data?.currency === "US Dollar" && (
-                      <span>the date and</span>
-                    )}{" "}
-                    your admin approval pin to approve this request, if you dont
-                    have one yet, head to{" "}
-                    {
-                      <Link style={{ color: "blue" }} href="/settings">
-                        Settings
-                      </Link>
-                    }{" "}
-                    to create one now
-                  </DialogContentText>
-                  {queryClient.getQueryData([
-                    "payoutRequest",
-                    payout.payoutRequestId,
-                  ])?.data?.currency === "US Dollar" && (
-                    <div className="flex items-center gap-5">
-                      <h3>Expected Delivery Date:</h3>
-                      <input
-                        type="date"
-                        className="my-5"
-                        value={deliveryETA}
-                        onChange={(e) => setDeliveryETA(e.target.value)}
-                      />
-                    </div>
-                  )}
-
-                  <TextField
-                    autoFocus
-                    margin="dense"
-                    id="name"
-                    label="Approval Pin"
-                    type="number"
-                    fullWidth
-                    value={pin}
-                    variant="standard"
-                    onChange={handlePin}
-                  />
-                </DialogContent>
-                <DialogActions>
-                  <Button
-                    onClick={() => {
-                      setOpenModal(false);
-                      setPin(null);
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <LoadingButton
-                    variant="contained"
-                    loading={
-                      approvePayOutMutation.isLoading ||
-                      approveUSDPayOutMutation.isLoading
-                    }
-                    disabled={
-                      pin === null ||
-                      pin?.length <= 5 ||
-                      (queryClient.getQueryData([
-                        "payoutRequest",
-                        payout.payoutRequestId,
-                      ])?.data?.currency !== "Naira" &&
-                        deliveryETA === "")
-                    }
-                    onClick={() => {
-                      (queryClient.getQueryData([
-                        "payoutRequest",
-                        payout.payoutRequestId,
-                      ])?.data?.currency === "Naira"
-                        ? approvePayOutMutation
-                        : approveUSDPayOutMutation
-                      ).mutate(
-                        queryClient.getQueryData([
-                          "payoutRequest",
-                          payout.payoutRequestId,
-                        ])?.data?.currency === "Naira"
-                          ? {
-                              id: payout.payoutRequestId,
-                              pin,
-                            }
-                          : {
-                              id: payout.payoutRequestId,
-                              pin,
-                              deliveryETA,
-                            }
-                      );
-                      setPin(null);
-                      setDeliveryETA("");
-                    }}
-                  >
-                    Approve
-                  </LoadingButton>
-                </DialogActions>
-              </Dialog>
-
-              <Dialog
-                open={declineModal}
-                onClose={() => {
-                  setDeclineModal(false);
-                  setPin(null);
-                }}
-              >
-                <DialogTitle>Decline Payout</DialogTitle>
-                <DialogContent>
-                  <DialogContentText>
-                    Please enter your admin approval pin to Decline this
-                    request, if you dont have one yet, head to{" "}
-                    {
-                      <Link style={{ color: "blue" }} href="/settings">
-                        Settings
-                      </Link>
-                    }{" "}
-                    to create one now
-                  </DialogContentText>
-                  <TextField
-                    autoFocus
-                    margin="dense"
-                    id="name"
-                    label="Approval Pin"
-                    type="number"
-                    fullWidth
-                    value={pin}
-                    variant="standard"
-                    onChange={handlePin}
-                  />
-                  <TextField
-                    autoFocus
-                    margin="dense"
-                    id="reason"
-                    label="Reason"
-                    type="text"
-                    fullWidth
-                    value={reason}
-                    variant="standard"
-                    onChange={handleReason}
-                  />
-                </DialogContent>
-                <DialogActions>
-                  <Button
-                    onClick={() => {
-                      setDeclineModal(false);
-                      setPin(null);
-                      // setReason("")
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <LoadingButton
-                    variant="contained"
-                    loading={approvePayOutMutation.isLoading}
-                    disabled={pin === null || pin?.length <= 5}
-                    onClick={() => {
-                      declinePayOutMutation.mutate({
-                        id: payout.payoutRequestId,
-                        pin,
-                        reason,
-                      });
-                      setPin(null);
-                    }}
-                  >
-                    Decline
-                  </LoadingButton>
-                </DialogActions>
-              </Dialog>
-            </>
-          ) : payout.payoutRequestStatus === "processing" ? (
-            <>
-              <Box
-                sx={{
-                  display: "flex",
-                  width: "100%",
-                  justifyContent: "flex-end",
-                }}
-              >
-                <Box sx={{ width: "100px" }}>
-                  <LinearProgress />
-                </Box>
-              </Box>
-              <Button
-                sx={{ margin: 1, bgcolor: green[500] }}
-                size="small"
-                variant="contained"
-                color="success"
-                onClick={() => {
-                  // setOpenModal(true);
-                  router.push(`/user/${payout.payoutRequestUId}`);
-                }}
-              >
-                Profile
-              </Button>
-            </>
-          ) : payout.payoutRequestStatus === "declined" ? (
-            <>
-              <Button
-                size="small"
-                disabled
-                variant="contained"
-                color="error"
-                sx={{ bgcolor: green[500] }}
-              >
-                Declined <CancelIcon />
-              </Button>
-              <Button
-                sx={{ margin: 1, bgcolor: green["A700"] }}
-                size="small"
-                variant="contained"
-                color="success"
-                onClick={() => {
-                  // setOpenModal(true);
-                  router.push(`/user/${payout.payoutRequestUId}`);
-                }}
-              >
-                Profile
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button
-                size="small"
-                variant="contained"
-                color="error"
-                sx={{ bgcolor: green[500] }}
-              >
-                Approved <CheckIcon />
-              </Button>
-              <Button
-                sx={{ margin: 1, bgcolor: green["A700"] }}
-                size="small"
-                variant="contained"
-                color="success"
-                onClick={() => {
-                  // setOpenModal(true);
-                  router.push(`/user/${payout.payoutRequestUId}`);
-                }}
-              >
-                Profile
-              </Button>
-            </>
-          )}
-        </TableCell>
       </TableRow>
       <TableCell
         style={{
@@ -1099,13 +731,26 @@ function Row({ payout, isPayoutSelected }) {
         <Collapse in={open} timeout="auto" unmountOnExit>
           <Box sx={{ margin: 1 }}>
             <Typography
-              variant="h6"
-              fontWeight={"bold"}
-              gutterBottom
-              component="div"
+              sx={{ display: "flex", justifyContent: "space-between" }}
             >
-              More Details
+              <Typography
+                variant="h6"
+                fontWeight={"bold"}
+                gutterBottom
+                component="div"
+              >
+                More Details
+              </Typography>
+              <Typography
+                variant="h6"
+                fontWeight={"bold"}
+                gutterBottom
+                component="div"
+              >
+                Actions
+              </Typography>
             </Typography>
+
             {isLoading ? (
               <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <CircularProgress />
@@ -1115,7 +760,6 @@ function Row({ payout, isPayoutSelected }) {
                 <TableHead>
                   <TableRow>
                     <TableCell sx={{ fontWeight: "bold" }}>Date</TableCell>
-                    {/* <TableCell sx={{ fontWeight: "bold" }}>Full Name</TableCell> */}
                     <TableCell sx={{ fontWeight: "bold" }} align="center">
                       Fee
                     </TableCell>
@@ -1137,15 +781,386 @@ function Row({ payout, isPayoutSelected }) {
                     <TableCell sx={{ fontWeight: "bold" }} align="center">
                       routingNumber
                     </TableCell>
+                    <TableCell align="center">
+                      <IconButton
+                        onClick={handleMenuOpen}
+                        id="long-button"
+                        aria-controls={
+                          Boolean(menuAnchorEl) ? "menu-buttons" : undefined
+                        }
+                        aria-expanded={
+                          Boolean(menuAnchorEl) ? "true" : undefined
+                        }
+                        aria-haspopup="true"
+                        size="small"
+                        sx={{ fontWeight: "bold" }}
+                      >
+                        <MoreHorizIcon />
+                      </IconButton>
+                    </TableCell>
+
+                    <Menu
+                      anchorEl={menuAnchorEl}
+                      open={Boolean(menuAnchorEl)}
+                      onClose={handleMenuClose}
+                      PaperProps={{
+                        elevation: 0,
+                        sx: {
+                          overflow: "visible",
+                          filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                          mt: 1.5,
+                          "& .MuiAvatar-root": {
+                            width: 32,
+                            height: 32,
+                            ml: -0.5,
+                            mr: 1,
+                          },
+                          "&:before": {
+                            content: '""',
+                            display: "block",
+                            position: "absolute",
+                            top: 0,
+                            right: 14,
+                            width: 10,
+                            height: 10,
+                            bgcolor: "background.paper",
+                            transform: "translateY(-50%) rotate(45deg)",
+                            zIndex: 0,
+                          },
+                        },
+                      }}
+                      transformOrigin={{ horizontal: "right", vertical: "top" }}
+                      anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+                    >
+                      {payout.payoutRequestStatus === "pending" ? (
+                        <div>
+                          <MenuItem>
+                            <Button
+                              sx={{ margin: 1, bgcolor: green[500] }}
+                              size="small"
+                              variant="contained"
+                              color="success"
+                              onClick={() => {
+                                setOpenModal(true);
+                              }}
+                            >
+                              {approvePayOutMutation.isLoading ? (
+                                <CircularProgress size={23} color="inherit" />
+                              ) : approvePayOutMutation.isSuccess ? (
+                                <CheckIcon />
+                              ) : (
+                                "Approve"
+                              )}
+                            </Button>
+                          </MenuItem>
+                          <MenuItem>
+                            <Button
+                              size="small"
+                              variant="contained"
+                              color="error"
+                              sx={{ margin: 1 }}
+                              onClick={() => {
+                                setDeclineModal(true);
+                              }}
+                            >
+                              {declinePayOutMutation.isLoading ? (
+                                <CircularProgress size={23} color="inherit" />
+                              ) : approvePayOutMutation.isSuccess ? (
+                                <CheckIcon />
+                              ) : (
+                                "Decline"
+                              )}
+                            </Button>
+                          </MenuItem>
+                          {/* <MenuItem>
+                            <Button
+                              sx={{ margin: 1, bgcolor: green["A700"] }}
+                              size="small"
+                              variant="contained"
+                              color="success"
+                              onClick={() => {
+                                // setOpenModal(true);
+                                router.push(`/user/${payout.payoutRequestUId}`);
+                              }}
+                            >
+                              Profile
+                            </Button>
+                          </MenuItem> */}
+                          <Dialog
+                            open={openModal}
+                            onClose={() => {
+                              setOpenModal(false);
+                              setPin(null);
+                            }}
+                          >
+                            <DialogTitle>Approve Payout</DialogTitle>
+                            <DialogContent>
+                              <DialogContentText>
+                                Please enter{" "}
+                                {queryClient.getQueryData([
+                                  "payoutRequest",
+                                  payout.payoutRequestId,
+                                ])?.data?.currency === "US Dollar" && (
+                                  <span>the date and</span>
+                                )}{" "}
+                                your admin approval pin to approve this request,
+                                if you dont have one yet, head to{" "}
+                                {
+                                  <Link
+                                    style={{ color: "blue" }}
+                                    href="/settings"
+                                  >
+                                    Settings
+                                  </Link>
+                                }{" "}
+                                to create one now
+                              </DialogContentText>
+                              {queryClient.getQueryData([
+                                "payoutRequest",
+                                payout.payoutRequestId,
+                              ])?.data?.currency === "US Dollar" && (
+                                <div className="flex items-center gap-5">
+                                  <h3>Expected Delivery Date:</h3>
+                                  <input
+                                    type="date"
+                                    className="my-5"
+                                    value={deliveryETA}
+                                    onChange={(e) =>
+                                      setDeliveryETA(e.target.value)
+                                    }
+                                  />
+                                </div>
+                              )}
+
+                              <TextField
+                                autoFocus
+                                margin="dense"
+                                id="name"
+                                label="Approval Pin"
+                                type="number"
+                                fullWidth
+                                value={pin}
+                                variant="standard"
+                                onChange={handlePin}
+                              />
+                            </DialogContent>
+                            <DialogActions>
+                              <Button
+                                onClick={() => {
+                                  setOpenModal(false);
+                                  setPin(null);
+                                }}
+                              >
+                                Cancel
+                              </Button>
+                              <LoadingButton
+                                variant="contained"
+                                loading={
+                                  approvePayOutMutation.isLoading ||
+                                  approveUSDPayOutMutation.isLoading
+                                }
+                                disabled={
+                                  pin === null ||
+                                  pin?.length <= 5 ||
+                                  (queryClient.getQueryData([
+                                    "payoutRequest",
+                                    payout.payoutRequestId,
+                                  ])?.data?.currency !== "Naira" &&
+                                    deliveryETA === "")
+                                }
+                                onClick={() => {
+                                  (queryClient.getQueryData([
+                                    "payoutRequest",
+                                    payout.payoutRequestId,
+                                  ])?.data?.currency === "Naira"
+                                    ? approvePayOutMutation
+                                    : approveUSDPayOutMutation
+                                  ).mutate(
+                                    queryClient.getQueryData([
+                                      "payoutRequest",
+                                      payout.payoutRequestId,
+                                    ])?.data?.currency === "Naira"
+                                      ? {
+                                          id: payout.payoutRequestId,
+                                          pin,
+                                        }
+                                      : {
+                                          id: payout.payoutRequestId,
+                                          pin,
+                                          deliveryETA,
+                                        }
+                                  );
+                                  setPin(null);
+                                  setDeliveryETA("");
+                                }}
+                              >
+                                Approve
+                              </LoadingButton>
+                            </DialogActions>
+                          </Dialog>
+
+                          <Dialog
+                            open={declineModal}
+                            onClose={() => {
+                              setDeclineModal(false);
+                              setPin(null);
+                            }}
+                          >
+                            <DialogTitle>Decline Payout</DialogTitle>
+                            <DialogContent>
+                              <DialogContentText>
+                                Please enter your admin approval pin to Decline
+                                this request, if you dont have one yet, head to{" "}
+                                {
+                                  <Link
+                                    style={{ color: "blue" }}
+                                    href="/settings"
+                                  >
+                                    Settings
+                                  </Link>
+                                }{" "}
+                                to create one now
+                              </DialogContentText>
+                              <TextField
+                                autoFocus
+                                margin="dense"
+                                id="name"
+                                label="Approval Pin"
+                                type="number"
+                                fullWidth
+                                value={pin}
+                                variant="standard"
+                                onChange={handlePin}
+                              />
+                              <TextField
+                                autoFocus
+                                margin="dense"
+                                id="reason"
+                                label="Reason"
+                                type="text"
+                                fullWidth
+                                value={reason}
+                                variant="standard"
+                                onChange={handleReason}
+                              />
+                            </DialogContent>
+                            <DialogActions>
+                              <Button
+                                onClick={() => {
+                                  setDeclineModal(false);
+                                  setPin(null);
+                                  // setReason("")
+                                }}
+                              >
+                                Cancel
+                              </Button>
+                              <LoadingButton
+                                variant="contained"
+                                loading={approvePayOutMutation.isLoading}
+                                disabled={pin === null || pin?.length <= 5}
+                                onClick={() => {
+                                  declinePayOutMutation.mutate({
+                                    id: payout.payoutRequestId,
+                                    pin,
+                                    reason,
+                                  });
+                                  setPin(null);
+                                }}
+                              >
+                                Decline
+                              </LoadingButton>
+                            </DialogActions>
+                          </Dialog>
+                        </div>
+                      ) : payout.payoutRequestStatus === "processing" ? (
+                        <div>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              width: "100%",
+                              justifyContent: "flex-end",
+                            }}
+                          >
+                            <Box sx={{ width: "100px" }}>
+                              <LinearProgress />
+                            </Box>
+                          </Box>
+                          {/* <MenuItem>
+                            <Button
+                              sx={{ margin: 1, bgcolor: green[500] }}
+                              size="small"
+                              variant="contained"
+                              color="success"
+                              onClick={() => {
+                                // setOpenModal(true);
+                                router.push(`/user/${payout.payoutRequestUId}`);
+                              }}
+                            >
+                              Profile
+                            </Button>
+                          </MenuItem> */}
+                        </div>
+                      ) : payout.payoutRequestStatus === "declined" ? (
+                        <div>
+                          <MenuItem>
+                            <Button
+                              size="small"
+                              disabled
+                              variant="contained"
+                              color="error"
+                              sx={{ bgcolor: green[500] }}
+                            >
+                              Declined <CancelIcon />
+                            </Button>
+                          </MenuItem>
+                          {/* <MenuItem>
+                            <Button
+                              sx={{ margin: 1, bgcolor: green["A700"] }}
+                              size="small"
+                              variant="contained"
+                              color="success"
+                              onClick={() => {
+                                // setOpenModal(true);
+                                router.push(`/user/${payout.payoutRequestUId}`);
+                              }}
+                            >
+                              Profile
+                            </Button>
+                          </MenuItem> */}
+                        </div>
+                      ) : (
+                        <div>
+                          <MenuItem>
+                            <Button
+                              size="small"
+                              variant="contained"
+                              color="error"
+                              sx={{ margin: 1, bgcolor: green[500] }}
+                            >
+                              Approved <CheckIcon />
+                            </Button>
+                          </MenuItem>
+                          {/* <MenuItem>
+                            <Button
+                              sx={{ margin: 1, bgcolor: green["A700"] }}
+                              size="small"
+                              variant="contained"
+                              color="success"
+                              onClick={() => {
+                                // setOpenModal(true);
+                                router.push(`/user/${payout.payoutRequestUId}`);
+                              }}
+                            >
+                              Profile
+                            </Button>
+                          </MenuItem> */}
+                        </div>
+                      )}
+                    </Menu>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {/* {
-                  queryClient.getQueryData(["payoutRequest", 10])
-
-                } */}
                   {
-                    // row.history.map((historyRow) => (
                     <TableRow
                       key={
                         queryClient.getQueryData([
@@ -1226,12 +1241,7 @@ function Row({ payout, isPayoutSelected }) {
                           ])?.data?.accountRoutingNumber
                         }
                       </TableCell>
-
-                      {/* <TableCell align="right">
-                      {Math.round(historyRow.amount * row.price * 100) / 100}
-                    </TableCell> */}
                     </TableRow>
-                    // ))
                   }
                 </TableBody>
               </Table>
