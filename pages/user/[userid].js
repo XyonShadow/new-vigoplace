@@ -510,6 +510,61 @@ const Users = () => {
     },
   });
 
+  const postNoDebit = async (id) => {
+    const postNoDebitUser = await axios.post(
+      "https://vigoplace.com/server/api/admin/console/post-no-debit",
+      { userId: id.toString(), status: "suspend" },
+      {
+        headers: {
+          Authorization: user?.token,
+        },
+      }
+    );
+    return postNoDebitUser;
+  };
+
+  const postNoDebitMutation = useMutation({
+    mutationKey: ["postNoDebitUser"],
+    mutationFn: postNoDebit,
+    onSuccess: () => {
+      console.log("successful");
+      //queryClient.invalidateQueries("fetchUsers");
+    },
+    onError: async (error) => {
+      console.log("Error:", error);
+      if (error.response) {
+        console.log("Response Data:", error.response.data);
+      }
+    },
+  });
+
+  const postYesDebit = async (id) => {
+    const postYesDebitUser = await axios.post(
+      "https://vigoplace.com/server/api/admin/console/post-no-debit",
+      { userId: id.toString(), status: "activate" },
+      {
+        headers: {
+          Authorization: user?.token,
+        },
+      }
+    );
+    return postYesDebitUser;
+  };
+
+  const postYesDebitMutation = useMutation({
+    mutationKey: ["postYesDebitUser"],
+    mutationFn: postYesDebit,
+    onSuccess: () => {
+      queryClient.invalidateQueries("fetchUsers");
+    },
+    onError: async (error) => {
+      console.log("Error:", error);
+      if (error.response) {
+        console.log("Response Data:", error.response.data);
+      }
+    },
+  });
+
   const columns = useMemo(
     () => [
       {
@@ -562,35 +617,6 @@ const Users = () => {
         enableClickToCopy: false,
         header: "Date",
       },
-
-      // {
-      //   accessorFn: (row) => new Date(row.startDate), //convert to Date for sorting and filtering
-      //   id: "startDate",
-      //   header: "Start Date",
-      //   filterFn: "lessThanOrEqualTo",
-      //   sortingFn: "datetime",
-      //   Cell: ({ cell }) => cell.getValue()?.toLocaleDateString(), //render Date as a string
-      //   Header: ({ column }) => <em>{column.columnDef.header}</em>, //custom header markup
-      //   //Custom Date Picker Filter from @mui/x-date-pickers
-      //   Filter: ({ column }) => (
-      //     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      //       <DatePicker
-      //         onChange={(newValue) => {
-      //           column.setFilterValue(newValue);
-      //         }}
-      //         renderInput={(params) => (
-      //           <TextField
-      //             {...params}
-      //             helperText={"Filter Mode: Lesss Than"}
-      //             sx={{ minWidth: "120px" }}
-      //             variant="standard"
-      //           />
-      //         )}
-      //         value={column.getFilterValue()}
-      //       />
-      //     </LocalizationProvider>
-      //   )
-      // }
     ],
     []
   );
@@ -657,6 +683,7 @@ const Users = () => {
     "Payment",
   ];
 
+  console.log(userDetails?.data?.user);
   return (
     <>
       <Snackbar
@@ -890,6 +917,35 @@ const Users = () => {
                       <CircularProgress size={23} color="inherit" />
                     ) : (
                       "Flag"
+                    )}
+                  </Button>
+                )}
+
+                {userDetails?.data?.user?.postNoDebit === 1 ? (
+                  <Button
+                    variant="contained"
+                    onClick={() =>
+                      postYesDebitMutation.mutate(userDetails?.data?.user?.id)
+                    }
+                  >
+                    {postYesDebitMutation.isLoading ? (
+                      <CircularProgress size={23} color="inherit" />
+                    ) : (
+                      "Activate Wallet"
+                    )}
+                  </Button>
+                ) : (
+                  <Button
+                    color="error"
+                    variant="contained"
+                    onClick={() =>
+                      postNoDebitMutation.mutate(userDetails?.data?.user?.id)
+                    }
+                  >
+                    {postNoDebitMutation.isLoading ? (
+                      <CircularProgress size={23} color="inherit" />
+                    ) : (
+                      "Lien Wallet"
                     )}
                   </Button>
                 )}

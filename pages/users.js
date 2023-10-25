@@ -272,6 +272,62 @@ const Users = () => {
     },
   });
 
+  const postNoDebit = async (id) => {
+    const postNoDebitUser = await axios.post(
+      // "http://localhost:3001/api/admin/console/users/block",
+      "https://vigoplace.com/server/api/admin/console/post-no-debit",
+      { userId: id.toString(), status: "suspend" },
+      {
+        headers: {
+          Authorization: user?.token,
+        },
+      }
+    );
+    return postNoDebitUser;
+  };
+
+  const postNoDebitMutation = useMutation({
+    mutationKey: ["postNoDebitUser"],
+    mutationFn: postNoDebit,
+    onSuccess: () => {
+      queryClient.invalidateQueries("fetchUsers");
+    },
+    onError: async (error) => {
+      console.log("Error:", error);
+      if (error.response) {
+        console.log("Response Data:", error.response.data);
+      }
+    },
+  });
+
+  const postYesDebit = async (id) => {
+    const postYesDebitUser = await axios.post(
+      // "http://localhost:3001/api/admin/console/users/block",
+      "https://vigoplace.com/server/api/admin/console/post-no-debit",
+      { userId: id.toString(), status: "activate" },
+      {
+        headers: {
+          Authorization: user?.token,
+        },
+      }
+    );
+    return postYesDebitUser;
+  };
+
+  const postYesDebitMutation = useMutation({
+    mutationKey: ["postYesDebitUser"],
+    mutationFn: postYesDebit,
+    onSuccess: () => {
+      queryClient.invalidateQueries("fetchUsers");
+    },
+    onError: async (error) => {
+      console.log("Error:", error);
+      if (error.response) {
+        console.log("Response Data:", error.response.data);
+      }
+    },
+  });
+
   useEffect(() => {
     setPagination({ ...pagination, pageIndex: 0 });
   }, [columnFilters]);
@@ -315,28 +371,6 @@ const Users = () => {
       flagged,
       wallet,
     ],
-    // async () => {
-    //   // const url = new URL(
-    //   //   'localhost:3001/api/admin/console/users',
-    //   //   process.env.NODE_ENV === 'production'
-    //   //     ? 'https://www.material-react-table.com'
-    //   //     : 'http://localhost:30001',
-    //   // );
-    //   const url = new URL('localhost:3001/api/admin/console/users');
-    //   url.searchParams.set(
-    //     'start',
-    //     `${pagination.pageIndex * pagination.pageSize}`,
-    //   );
-    //   url.searchParams.set('size', `${pagination.pageSize}`);
-    //   url.searchParams.set('filters', JSON.stringify(columnFilters ?? []));
-    //   url.searchParams.set('globalFilter', globalFilter ?? '');
-    //   url.searchParams.set('sorting', JSON.stringify(sorting ?? []));
-
-    //   const response = await fetch(url.href);
-    //   const json = await response.json();
-    //   return json;
-
-    // },
     async () => {
       const { data } = await axios.get(
         `https://vigoplace.com/server/api/admin/console/users?limit=${10000000000}&walletCurrencyId=${wallet}${
@@ -348,7 +382,6 @@ const Users = () => {
             ? `&search=${JSON.stringify(columnFilters)}`
             : ""
         }`,
-        // `http://localhost:3001/api/admin/console/users?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}&walletCurrencyId=${wallet}${gender !== '' ? `&gender=${gender}` : ''}${status !== '' ? `&status=${status}` : ''}${flagged !== '' ? `&flagged=${flagged}` : ''}${isVerified !== '' ? `&isVerified=${isVerified}` : ''}${columnFilters?.length >= 1 ? `&search=${JSON.stringify(columnFilters)}` : ''}`,
         {
           headers: {
             Authorization: user?.token,
@@ -361,10 +394,12 @@ const Users = () => {
       const sortedData = data?.data?.sort(
         (a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)
       );
+
       const paginatedData = sortedData.slice(
         pagination.pageIndex * pagination.pageSize,
         (pagination.pageIndex + 1) * pagination.pageSize
       );
+
       return paginatedData;
     },
     {
@@ -440,13 +475,6 @@ const Users = () => {
         header: "Email",
       },
       {
-        accessorKey: "balance",
-        enableClickToCopy: false,
-        header: "Balance",
-        filterVariant: "range",
-        // filterFn: 'lessThanOrEqualTo'
-      },
-      {
         accessorKey: "status",
         enableClickToCopy: false,
         header: "Status",
@@ -477,6 +505,22 @@ const Users = () => {
         enableClickToCopy: false,
         enableColumnFilter: false,
         header: "Phone",
+      },
+
+      {
+        accessorKey: "postNoDebit",
+        enableClickToCopy: false,
+        enableColumnFilter: false,
+        header: "Wallet Status",
+        Cell: ({ cell }) => (
+          <span>
+            {cell.getValue() === 1
+              ? "Suspended"
+              : cell.getValue() === 0
+              ? "Active"
+              : "Unknown"}
+          </span>
+        ),
       },
     ],
     []
@@ -622,34 +666,11 @@ const Users = () => {
                   <UserBio usersBio={row.original.bio} />
                   {/* <UserBalanceCard /> */}
                 </Box>
-
-                {/* <Box
-              sx={{
-                // display: "flex",
-                // justifyContent: "space-between",
-                // alignItems: "center",
-                width: '100%', typography: 'body1'
-              }}
-            >
-            <TabContext value={value}>
-  <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-    <TabList onChange={handleChange} aria-label="lab API tabs example">
-      <Tab label="Dollar" value="1" />
-      <Tab label="Naira" value="2" />
-    </TabList>
-  </Box>
-  <TabPanel value="1">
-     <Typography variant="h4">Balance: $ 30000</Typography>
-  </TabPanel>
-  <TabPanel value="2">Item Two</TabPanel>
-</TabContext>
-            </Box> */}
               </Box>
             </>
           );
         }}
         renderRowActionMenuItems={({ closeMenu, row, table }) => {
-          // console.log(table.getSelectedRowModel().flatRows[0]?.getValue('fullname'), 'table')
           const handleDeactivate = () => {
             blockMutation.mutate(row.original.id);
           };
@@ -664,6 +685,14 @@ const Users = () => {
           };
           const handleUnFlag = () => {
             unflagUserMutation.mutate(row.original.id);
+          };
+
+          const handlePostNoDebit = () => {
+            postNoDebitMutation.mutate(row.original.id);
+          };
+
+          const handlePostYesDebit = () => {
+            postYesDebitMutation.mutate(row.original.id);
           };
 
           return [
@@ -740,8 +769,36 @@ const Users = () => {
               )}
             </MenuItem>,
 
+            <MenuItem key={2}>
+              {row.original?.postNoDebit ? (
+                <Button
+                  onClick={() => handlePostYesDebit()}
+                  color="success"
+                  variant="contained"
+                >
+                  {postYesDebitMutation.isLoading ? (
+                    <CircularProgress size={23} color="inherit" />
+                  ) : (
+                    "Activate Wallet"
+                  )}
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => handlePostNoDebit()}
+                  color="error"
+                  variant="contained"
+                >
+                  {postNoDebitMutation.isLoading ? (
+                    <CircularProgress size={23} color="inherit" />
+                  ) : (
+                    "Lien Wallet"
+                  )}
+                </Button>
+              )}
+            </MenuItem>,
+
             <MenuItem
-              key={2}
+              key={3}
               onClick={() => {
                 // View profile logic...
                 router.push(`/user/${row.original.id}`);
@@ -759,7 +816,7 @@ const Users = () => {
             </MenuItem>,
 
             <MenuItem
-              key={3}
+              key={4}
               // onClick={() => {
               //   // View profile logic...
               //   router.push(`/user/${row.original.id}`)
