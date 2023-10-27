@@ -122,8 +122,8 @@ const applyPagination = (cryptoOrders, page, limit) => {
   return cryptoOrders?.slice(page * limit, page * limit + limit);
 };
 
-const API_BASE_URL = "https://vigoplace.com/server";
-//const API_BASE_URL = "http://localhost:4000";
+//const API_BASE_URL = "https://vigoplace.com/server";
+const API_BASE_URL = "http://localhost:4000";
 export default function RecentOrdersTable() {
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -456,6 +456,7 @@ function Row({ payout, isPayoutSelected }) {
   const [openModal, setOpenModal] = React.useState(false);
   const [declineModal, setDeclineModal] = React.useState(false);
   const [splitModal, setSplitModal] = React.useState(false);
+  const [holdModal, setHoldModal] = React.useState(false);
   const [pin, setPin] = React.useState(null);
   const [amount, setAmount] = React.useState({
     amount1: null,
@@ -626,6 +627,36 @@ function Row({ payout, isPayoutSelected }) {
     },
     onError: async (error) => {
       console.log(error.message);
+      setOpenToast(true);
+      setPin(null);
+    },
+  });
+
+  const holdPayOut = async ({ reference, pin, reason }) => {
+    const token = await getToken();
+    const parsed = await axios.put(
+      "http://localhost:4000/api/admin/console/transaction",
+      //"https://vigoplace.com/server/api/admin/console/transaction",
+      { reference: reference, status: "onHold", approvalPin: pin, reason },
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+    return parsed;
+  };
+
+  const holdPayOutMutation = useMutation({
+    mutationKey: ["holdPayOut"],
+    mutationFn: holdPayOut,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries("payoutRequests");
+      setPin(null);
+      setReason("");
+      setOpenModal(false);
+    },
+    onError: async (error) => {
       setOpenToast(true);
       setPin(null);
     },
@@ -890,25 +921,53 @@ function Row({ payout, isPayoutSelected }) {
                             </Button>
                           </MenuItem>
                           {payout.payoutRequestStatus !== "onHold" && (
-                            <MenuItem>
-                              <Button
-                                size="small"
-                                variant="contained"
-                                color="success"
-                                sx={{ margin: 1, bgcolor: green[500] }}
-                                onClick={() => {
-                                  setSplitModal(true);
-                                }}
-                              >
-                                {splitPayOutMutation.isLoading ? (
-                                  <CircularProgress size={23} color="inherit" />
-                                ) : splitPayOutMutation.isSuccess ? (
-                                  <CheckIcon />
-                                ) : (
-                                  "Split"
-                                )}
-                              </Button>
-                            </MenuItem>
+                            <>
+                              <MenuItem>
+                                <Button
+                                  size="small"
+                                  variant="contained"
+                                  color="success"
+                                  sx={{ margin: 1, bgcolor: green[500] }}
+                                  onClick={() => {
+                                    setSplitModal(true);
+                                  }}
+                                >
+                                  {splitPayOutMutation.isLoading ? (
+                                    <CircularProgress
+                                      size={23}
+                                      color="inherit"
+                                    />
+                                  ) : splitPayOutMutation.isSuccess ? (
+                                    <CheckIcon />
+                                  ) : (
+                                    "Split"
+                                  )}
+                                </Button>
+                              </MenuItem>
+
+                              <MenuItem>
+                                <Button
+                                  sx={{ margin: 1, bgcolor: yellow[800] }}
+                                  size="small"
+                                  variant="contained"
+                                  color="warning"
+                                  onClick={() => {
+                                    setHoldModal(true);
+                                  }}
+                                >
+                                  {holdPayOutMutation.isLoading ? (
+                                    <CircularProgress
+                                      size={23}
+                                      color="inherit"
+                                    />
+                                  ) : holdPayOutMutation.isSuccess ? (
+                                    <CheckIcon />
+                                  ) : (
+                                    "Hold"
+                                  )}
+                                </Button>
+                              </MenuItem>
+                            </>
                           )}
                           <MenuItem>
                             <Button
@@ -1164,6 +1223,79 @@ function Row({ payout, isPayoutSelected }) {
                                 }}
                               >
                                 Split
+                              </LoadingButton>
+                            </DialogActions>
+                          </Dialog>
+
+                          <Dialog
+                            open={holdModal}
+                            onClose={() => {
+                              setHoldModal(false);
+                              setPin(null);
+                            }}
+                          >
+                            <DialogTitle>Hold Payout</DialogTitle>
+                            <DialogContent>
+                              <DialogContentText>
+                                Please enter your admin approval pin to Hold
+                                this request, if you dont have one yet, head to{" "}
+                                {
+                                  <Link
+                                    style={{ color: "blue" }}
+                                    href="/settings"
+                                  >
+                                    Settings
+                                  </Link>
+                                }{" "}
+                                to create one now
+                              </DialogContentText>
+                              <TextField
+                                autoFocus
+                                margin="dense"
+                                id="reason"
+                                label="Reason"
+                                type="text"
+                                fullWidth
+                                value={reason}
+                                variant="standard"
+                                onChange={handleReason}
+                              />
+                              <TextField
+                                //autoFocus
+                                margin="dense"
+                                id="name"
+                                label="Approval Pin"
+                                type="number"
+                                fullWidth
+                                value={pin}
+                                variant="standard"
+                                onChange={handlePin}
+                              />
+                            </DialogContent>
+                            <DialogActions>
+                              <Button
+                                onClick={() => {
+                                  setHoldModal(false);
+                                  setPin(null);
+                                  setReason("");
+                                }}
+                              >
+                                Cancel
+                              </Button>
+                              <LoadingButton
+                                variant="contained"
+                                loading={holdPayOutMutation.isLoading}
+                                disabled={pin === null || pin?.length <= 5 || reason === ""}
+                                onClick={() => {
+                                  holdPayOutMutation.mutate({
+                                    reference: payout.payoutRequestReference,
+                                    pin,
+                                    reason,
+                                  });
+                                  setPin(null);
+                                }}
+                              >
+                                Hold
                               </LoadingButton>
                             </DialogActions>
                           </Dialog>
