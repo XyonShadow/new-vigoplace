@@ -185,7 +185,7 @@ export default function RecentOrdersTable() {
       name: "Declined",
     },
     {
-      id: "on-hold",
+      id: "onHold",
       name: "On Hold",
     },
   ];
@@ -396,28 +396,13 @@ export default function RecentOrdersTable() {
         <Table stickyHeader>
           <TableHead>
             <TableRow>
-              <TableCell padding="checkbox">
-                {/* <Checkbox
-                  color="primary"
-                  checked={selectedAllCryptoOrders}
-                  indeterminate={selectedSomeCryptoOrders}
-                  onChange={handleSelectAllCryptoOrders}
-                /> */}
-              </TableCell>
-
-              {/* <TableCell>Order Details</TableCell> */}
-              {/* <TableCell>Request ID</TableCell>
-              <TableCell>Source</TableCell>
-              <TableCell align="right">Amount</TableCell>
-              <TableCell align="right">Status</TableCell>
-              <TableCell align="right">Actions</TableCell> */}
+              <TableCell padding="checkbox"></TableCell>
 
               <TableCell>Request ID</TableCell>
               <TableCell>Reference</TableCell>
               <TableCell align="center">Full Name</TableCell>
               <TableCell align="right">Amount</TableCell>
               <TableCell align="right">Status</TableCell>
-              {/* <TableCell align="right">Actions</TableCell> */}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -435,7 +420,6 @@ export default function RecentOrdersTable() {
                 );
               })
             ) : (
-              // Render "No records to display" message when data is empty
               <TableRow>
                 <TableCell colSpan={5}>No records to display</TableCell>
               </TableRow>
@@ -471,7 +455,12 @@ function Row({ payout, isPayoutSelected }) {
   const [openToast, setOpenToast] = React.useState(false);
   const [openModal, setOpenModal] = React.useState(false);
   const [declineModal, setDeclineModal] = React.useState(false);
+  const [splitModal, setSplitModal] = React.useState(false);
   const [pin, setPin] = React.useState(null);
+  const [amount, setAmount] = React.useState({
+    amount1: null,
+    amount2: null,
+  });
   const [deliveryETA, setDeliveryETA] = React.useState("");
   const [reason, setReason] = React.useState("");
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
@@ -487,6 +476,7 @@ function Row({ payout, isPayoutSelected }) {
   const handlePin = (e) => {
     setPin(e.target.value);
   };
+
   const handleReason = (e) => {
     setReason(e.target.value);
   };
@@ -592,6 +582,55 @@ function Row({ payout, isPayoutSelected }) {
     },
   });
 
+  const splitPayOut = async ({ reference, amount1, amount2, pin, reason }) => {
+    const token = await getToken();
+    const parsed = await axios.post(
+      //"http://localhost:4000/api/admin/console/split/payment",
+      "https://vigoplace.com/server/api/admin/console/split/payment",
+      {
+        reference: reference,
+        split: [
+          {
+            amount: Math.floor(amount1),
+            status: "onHold",
+          },
+          {
+            amount: Math.floor(amount2),
+            status: "processing",
+          },
+        ],
+        approvalPin: pin,
+        reason,
+      },
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+    return parsed;
+  };
+
+  const splitPayOutMutation = useMutation({
+    mutationKey: ["splitPayoutRequest"],
+    mutationFn: splitPayOut,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries("payoutRequests");
+      setPin(null);
+      setReason("");
+      setAmount({
+        amount1: null,
+        amount2: null,
+      });
+      setOpenModal(false);
+    },
+    onError: async (error) => {
+      console.log(error.message);
+      setOpenToast(true);
+      setPin(null);
+    },
+  });
+
   return (
     <>
       <Snackbar
@@ -603,7 +642,8 @@ function Row({ payout, isPayoutSelected }) {
         <Alert onClose={handleClose} severity="warning" sx={{ width: "100%" }}>
           {approvePayOutMutation.error?.response?.data?.message ||
             declinePayOutMutation.error?.response?.data?.message ||
-            approveUSDPayOutMutation.error?.response?.data?.message}
+            approveUSDPayOutMutation.error?.response?.data?.message ||
+            splitPayOutMutation.error?.response?.data?.message}
         </Alert>
       </Snackbar>
 
@@ -700,11 +740,6 @@ function Row({ payout, isPayoutSelected }) {
           >
             {payout.payoutRequestAmount.toLocaleString("en-US")}
           </Typography>
-          {/* <Typography variant="body2" color="text.secondary" noWrap>
-                    {numeral(payout.payoutRequestAmount).format(
-                      `${cryptoOrder.currency}0,0.00`
-                    )}
-                  </Typography> */}
         </TableCell>
         <TableCell align="right">
           <Typography
@@ -832,7 +867,8 @@ function Row({ payout, isPayoutSelected }) {
                       transformOrigin={{ horizontal: "right", vertical: "top" }}
                       anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
                     >
-                      {payout.payoutRequestStatus === "pending" ? (
+                      {payout.payoutRequestStatus === "pending" ||
+                      payout.payoutRequestStatus === "onHold" ? (
                         <div>
                           <MenuItem>
                             <Button
@@ -853,6 +889,27 @@ function Row({ payout, isPayoutSelected }) {
                               )}
                             </Button>
                           </MenuItem>
+                          {payout.payoutRequestStatus !== "onHold" && (
+                            <MenuItem>
+                              <Button
+                                size="small"
+                                variant="contained"
+                                color="success"
+                                sx={{ margin: 1, bgcolor: green[500] }}
+                                onClick={() => {
+                                  setSplitModal(true);
+                                }}
+                              >
+                                {splitPayOutMutation.isLoading ? (
+                                  <CircularProgress size={23} color="inherit" />
+                                ) : splitPayOutMutation.isSuccess ? (
+                                  <CheckIcon />
+                                ) : (
+                                  "Split"
+                                )}
+                              </Button>
+                            </MenuItem>
+                          )}
                           <MenuItem>
                             <Button
                               size="small"
@@ -872,20 +929,7 @@ function Row({ payout, isPayoutSelected }) {
                               )}
                             </Button>
                           </MenuItem>
-                          {/* <MenuItem>
-                            <Button
-                              sx={{ margin: 1, bgcolor: green["A700"] }}
-                              size="small"
-                              variant="contained"
-                              color="success"
-                              onClick={() => {
-                                // setOpenModal(true);
-                                router.push(`/user/${payout.payoutRequestUId}`);
-                              }}
-                            >
-                              Profile
-                            </Button>
-                          </MenuItem> */}
+
                           <Dialog
                             open={openModal}
                             onClose={() => {
@@ -1000,6 +1044,131 @@ function Row({ payout, isPayoutSelected }) {
                           </Dialog>
 
                           <Dialog
+                            open={splitModal}
+                            onClose={() => {
+                              setSplitModal(false);
+                              setPin(null);
+                              setAmount({
+                                amount1: null,
+                                amount2: null,
+                              });
+                              setReason("");
+                            }}
+                          >
+                            <DialogTitle>Split Payout</DialogTitle>
+                            <DialogContent>
+                              <DialogContentText>
+                                Please enter the amount you want to put on hold
+                                and the amount you want to send to the user in
+                                the inputs below. Also, enter your admin
+                                approval pin to Split this payment request. If
+                                you don't have one yet, head to{" "}
+                                <Link
+                                  style={{ color: "blue" }}
+                                  href="/settings"
+                                >
+                                  Settings
+                                </Link>{" "}
+                                to create one now.
+                              </DialogContentText>
+                              <TextField
+                                autoFocus
+                                margin="dense"
+                                id="amount1"
+                                label="Amount to be on Hold"
+                                type="number"
+                                fullWidth
+                                value={amount.amount1}
+                                variant="standard"
+                                onChange={(e) =>
+                                  setAmount({
+                                    ...amount,
+                                    amount1: e.target.value,
+                                  })
+                                }
+                              />
+                              <TextField
+                                margin="dense"
+                                id="amount2"
+                                label="Amount to be pending"
+                                type="number"
+                                fullWidth
+                                value={amount.amount2}
+                                variant="standard"
+                                onChange={(e) =>
+                                  setAmount({
+                                    ...amount,
+                                    amount2: e.target.value,
+                                  })
+                                }
+                              />
+                              <TextField
+                                margin="dense"
+                                id="reason"
+                                label="Reason"
+                                type="text"
+                                fullWidth
+                                value={reason}
+                                variant="standard"
+                                onChange={handleReason}
+                              />
+                              <TextField
+                                margin="dense"
+                                id="name"
+                                label="Approval Pin"
+                                type="number"
+                                fullWidth
+                                value={pin}
+                                variant="standard"
+                                onChange={handlePin}
+                              />
+                            </DialogContent>
+                            <DialogActions>
+                              <Button
+                                onClick={() => {
+                                  setSplitModal(false);
+                                  setPin(null);
+                                  setAmount({
+                                    amount1: null,
+                                    amount2: null,
+                                  });
+                                  setReason("");
+                                }}
+                              >
+                                Cancel
+                              </Button>
+                              <LoadingButton
+                                variant="contained"
+                                loading={splitPayOutMutation.isLoading}
+                                disabled={
+                                  amount.amount1 === null ||
+                                  amount.amount2 === null ||
+                                  pin === null ||
+                                  pin?.length <= 5 ||
+                                  reason === ""
+                                }
+                                onClick={() => {
+                                  splitPayOutMutation.mutate({
+                                    reference: payout.payoutRequestReference,
+                                    amount1: amount.amount1,
+                                    amount2: amount.amount2,
+                                    pin,
+                                    reason,
+                                  });
+                                  setPin(null);
+                                  setAmount({
+                                    amount1: null,
+                                    amount2: null,
+                                  });
+                                  setReason("");
+                                }}
+                              >
+                                Split
+                              </LoadingButton>
+                            </DialogActions>
+                          </Dialog>
+
+                          <Dialog
                             open={declineModal}
                             onClose={() => {
                               setDeclineModal(false);
@@ -1049,7 +1218,7 @@ function Row({ payout, isPayoutSelected }) {
                                 onClick={() => {
                                   setDeclineModal(false);
                                   setPin(null);
-                                  // setReason("")
+                                  setReason("");
                                 }}
                               >
                                 Cancel
@@ -1085,20 +1254,6 @@ function Row({ payout, isPayoutSelected }) {
                               <LinearProgress />
                             </Box>
                           </Box>
-                          {/* <MenuItem>
-                            <Button
-                              sx={{ margin: 1, bgcolor: green[500] }}
-                              size="small"
-                              variant="contained"
-                              color="success"
-                              onClick={() => {
-                                // setOpenModal(true);
-                                router.push(`/user/${payout.payoutRequestUId}`);
-                              }}
-                            >
-                              Profile
-                            </Button>
-                          </MenuItem> */}
                         </div>
                       ) : payout.payoutRequestStatus === "declined" ? (
                         <div>
@@ -1113,20 +1268,6 @@ function Row({ payout, isPayoutSelected }) {
                               Declined <CancelIcon />
                             </Button>
                           </MenuItem>
-                          {/* <MenuItem>
-                            <Button
-                              sx={{ margin: 1, bgcolor: green["A700"] }}
-                              size="small"
-                              variant="contained"
-                              color="success"
-                              onClick={() => {
-                                // setOpenModal(true);
-                                router.push(`/user/${payout.payoutRequestUId}`);
-                              }}
-                            >
-                              Profile
-                            </Button>
-                          </MenuItem> */}
                         </div>
                       ) : (
                         <div>
