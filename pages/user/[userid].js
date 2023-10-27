@@ -527,8 +527,8 @@ const Users = () => {
     mutationKey: ["postNoDebitUser"],
     mutationFn: postNoDebit,
     onSuccess: () => {
-      console.log("successful");
-      //queryClient.invalidateQueries("fetchUsers");
+      //console.log("successful");
+      queryClient.invalidateQueries("fetchUsers");
     },
     onError: async (error) => {
       console.log("Error:", error);
@@ -683,7 +683,6 @@ const Users = () => {
     "Payment",
   ];
 
-  console.log(userDetails?.data?.user);
   return (
     <>
       <Snackbar
