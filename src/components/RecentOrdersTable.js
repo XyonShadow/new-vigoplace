@@ -122,8 +122,8 @@ const applyPagination = (cryptoOrders, page, limit) => {
   return cryptoOrders?.slice(page * limit, page * limit + limit);
 };
 
-//const API_BASE_URL = "https://vigoplace.com/server";
-const API_BASE_URL = "http://localhost:4000";
+const API_BASE_URL = "https://vigoplace.com/server";
+//const API_BASE_URL = "http://localhost:4000";
 export default function RecentOrdersTable() {
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -635,8 +635,8 @@ function Row({ payout, isPayoutSelected }) {
   const holdPayOut = async ({ reference, pin, reason }) => {
     const token = await getToken();
     const parsed = await axios.put(
-      "http://localhost:4000/api/admin/console/transaction",
-      //"https://vigoplace.com/server/api/admin/console/transaction",
+      //"http://localhost:4000/api/admin/console/transaction",
+      "https://vigoplace.com/server/api/admin/console/transaction",
       { reference: reference, status: "onHold", approvalPin: pin, reason },
       {
         headers: {
