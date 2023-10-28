@@ -53,7 +53,19 @@ import {
   MenuItem,
   Typography,
   TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
+import Link from "next/link";
+
+// import Dialog from "@mui/material/Dialog";
+// import DialogActions from "@mui/material/DialogActions";
+// import DialogContent from "@mui/material/DialogContent";
+// import DialogContentText from "@mui/material/DialogContentText";
+// import DialogTitle from "@mui/material/DialogTitle";
 
 //Icons Imports
 import { AccountCircle, Send } from "@mui/icons-material";
@@ -119,15 +131,18 @@ const Users = () => {
     pageIndex: 0,
     pageSize: 10,
   });
+  const [openToast, setOpenToast] = React.useState(false);
   const [creditSuccessToast, setCreditSuccessToast] = React.useState(false);
   const [creditErrorToast, setCreditErrorToast] = React.useState(false);
   const [debitSuccessToast, setDebitSuccessToast] = React.useState(false);
   const [debitErrorToast, setDebitErrorToast] = React.useState(false);
-
+  const [lienModal, setLienModal] = React.useState(false);
   const [status, setStatus] = React.useState("");
   const [filters, setFilters] = useState({
     status: null,
   });
+  const [pin, setPin] = React.useState(null);
+  const [reason, setReason] = React.useState("");
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10);
   //const [status, setStatus] = useState(null);
@@ -203,6 +218,14 @@ const Users = () => {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  const handlePin = (e) => {
+    setPin(e.target.value);
+  };
+
+  const handleReason = (e) => {
+    setReason(e.target.value);
   };
 
   /* ************* Queries *************** */
@@ -315,9 +338,10 @@ const Users = () => {
     ["fetchSingleUserActivities"],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/activityLog/${userid}&limit=${
+        //`http://localhost:4000/api/admin/console/users/activities?userId=${userid}&perPage=${
+        `https://vigoplace.com/server/api/admin/console/users/activities?userId=${userid}&perPage=${
           pagination.pageSize
-        }&offset=${pagination.pageIndex * pagination.pageSize}`,
+        }&page=${pagination.pageIndex + 1}`,
         // `http://localhost:3001/api/admin/console/users/activities?userId=${userid}&limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}`,
         {
           headers: {
@@ -510,10 +534,10 @@ const Users = () => {
     },
   });
 
-  const postNoDebit = async (id) => {
+  const postNoDebit = async ({ id, pin, reason }) => {
     const postNoDebitUser = await axios.post(
       "https://vigoplace.com/server/api/admin/console/post-no-debit",
-      { userId: id.toString(), status: "suspend" },
+      { userId: id.toString(), status: "suspend", pin, reason },
       {
         headers: {
           Authorization: user?.token,
@@ -528,7 +552,10 @@ const Users = () => {
     mutationFn: postNoDebit,
     onSuccess: () => {
       //console.log("successful");
-      queryClient.invalidateQueries("fetchUsers");
+      queryClient.invalidateQueries("fetchSingleUser");
+      setTimeout(() => {
+        postNoDebitMutation.reset(); // Reset the mutation
+      }, 2000);
     },
     onError: async (error) => {
       console.log("Error:", error);
@@ -538,10 +565,10 @@ const Users = () => {
     },
   });
 
-  const postYesDebit = async (id) => {
+  const postYesDebit = async ({ id, pin, reason }) => {
     const postYesDebitUser = await axios.post(
       "https://vigoplace.com/server/api/admin/console/post-no-debit",
-      { userId: id.toString(), status: "activate" },
+      { userId: id.toString(), status: "activate", pin: pin, reason: reason },
       {
         headers: {
           Authorization: user?.token,
@@ -555,7 +582,10 @@ const Users = () => {
     mutationKey: ["postYesDebitUser"],
     mutationFn: postYesDebit,
     onSuccess: () => {
-      queryClient.invalidateQueries("fetchUsers");
+      queryClient.invalidateQueries("fetchSingleUser");
+      setTimeout(() => {
+        postYesDebitMutation.reset(); // Reset the mutation
+      }, 2000);
     },
     onError: async (error) => {
       console.log("Error:", error);
@@ -644,10 +674,15 @@ const Users = () => {
         header: "Browser",
       },
       {
+        accessorKey: "location",
+        enableClickToCopy: false,
+        header: "Location",
+      },
+      {
         // accessorKey: "transactionDate",
         accessorFn: (row) => {
-          if (row?.createdAt) {
-            return format(new Date(row.createdAt), "MM/dd/yyyy hh:mm a");
+          if (row?.created_at) {
+            return format(new Date(row.created_at), "MM/dd/yyyy hh:mm a");
           } else {
             return "";
           }
@@ -671,6 +706,10 @@ const Users = () => {
   };
   const handleDebitErrorToastClose = (event, reason) => {
     setDebitErrorToast(false);
+  };
+
+  const handleClose = (event, reason) => {
+    setOpenToast(false);
   };
 
   // Please change this section to fetch the reason type live from the api endpoint.
@@ -742,6 +781,18 @@ const Users = () => {
           sx={{ width: "100%" }}
         >
           {debitUserMutation?.error?.response?.data?.message}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        TransitionComponent={Slide}
+        open={openToast}
+        autoHideDuration={6000}
+        onClose={handleClose}
+      >
+        <Alert onClose={handleClose} severity="warning" sx={{ width: "100%" }}>
+          {postNoDebitMutation.error?.response?.data?.message ||
+            postYesDebitMutation.error?.response?.data?.message}
         </Alert>
       </Snackbar>
 
@@ -921,32 +972,202 @@ const Users = () => {
                 )}
 
                 {userDetails?.data?.user?.postNoDebit === 1 ? (
-                  <Button
-                    variant="contained"
-                    onClick={() =>
-                      postYesDebitMutation.mutate(userDetails?.data?.user?.id)
-                    }
-                  >
-                    {postYesDebitMutation.isLoading ? (
-                      <CircularProgress size={23} color="inherit" />
-                    ) : (
-                      "Activate Wallet"
-                    )}
-                  </Button>
+                  <>
+                    <MenuItem>
+                      <Button
+                        variant="contained"
+                        onClick={
+                          () => setLienModal(true)
+                          //postYesDebitMutation.mutate(userDetails?.data?.user?.id)
+                        }
+                      >
+                        {/* {postYesDebitMutation.isLoading ? (
+                          <CircularProgress size={23} color="inherit" />
+                        ) : (
+                          "Activate Wallet"
+                        )} */}
+                        {postYesDebitMutation.isLoading ? (
+                          <CircularProgress size={23} color="inherit" />
+                        ) : postYesDebitMutation.isSuccess ? (
+                          <CheckIcon />
+                        ) : (
+                          "Activate Wallet"
+                        )}
+                      </Button>
+                    </MenuItem>
+
+                    <Dialog
+                      open={lienModal}
+                      onClose={() => {
+                        setLienModal(false);
+                        setPin(null);
+                      }}
+                    >
+                      <DialogTitle>Activate Wallet</DialogTitle>
+                      <DialogContent>
+                        <DialogContentText>
+                          Please enter your admin approval pin to Activate this
+                          user's liened wallet, if you dont have one yet, head
+                          to{" "}
+                          {
+                            <Link style={{ color: "blue" }} href="/settings">
+                              Settings
+                            </Link>
+                          }{" "}
+                          to create one now
+                        </DialogContentText>
+                        <TextField
+                          autoFocus
+                          margin="dense"
+                          id="reason"
+                          label="Reason"
+                          type="text"
+                          fullWidth
+                          value={reason}
+                          variant="standard"
+                          onChange={handleReason}
+                        />
+                        <TextField
+                          //autoFocus
+                          margin="dense"
+                          id="name"
+                          label="Approval Pin"
+                          type="number"
+                          fullWidth
+                          value={pin}
+                          variant="standard"
+                          onChange={handlePin}
+                        />
+                      </DialogContent>
+                      <DialogActions>
+                        <Button
+                          onClick={() => {
+                            setLienModal(false);
+                            setPin(null);
+                            setReason("");
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                        <LoadingButton
+                          variant="contained"
+                          loading={postYesDebitMutation.isLoading}
+                          disabled={
+                            pin === null || pin?.length <= 5 || reason === ""
+                          }
+                          onClick={() => {
+                            //postYesDebitMutation.mutate({id: userDetails?.data?.user?.id})
+                            postYesDebitMutation.mutate({
+                              id: userDetails?.data?.user?.id,
+                              pin,
+                              reason,
+                            });
+                            setReason("");
+                            setLienModal(false);
+                            setPin(null);
+                          }}
+                        >
+                          Activate
+                        </LoadingButton>
+                      </DialogActions>
+                    </Dialog>
+                  </>
                 ) : (
-                  <Button
-                    color="error"
-                    variant="contained"
-                    onClick={() =>
-                      postNoDebitMutation.mutate(userDetails?.data?.user?.id)
-                    }
-                  >
-                    {postNoDebitMutation.isLoading ? (
-                      <CircularProgress size={23} color="inherit" />
-                    ) : (
-                      "Lien Wallet"
-                    )}
-                  </Button>
+                  <>
+                    <MenuItem>
+                      <Button
+                        color="error"
+                        variant="contained"
+                        onClick={
+                          () => setLienModal(true)
+                          //postNoDebitMutation.mutate(userDetails?.data?.user?.id)
+                        }
+                      >
+                        {postNoDebitMutation.isLoading ? (
+                          <CircularProgress size={23} color="inherit" />
+                        ) : postNoDebitMutation.isSuccess ? (
+                          <CheckIcon />
+                        ) : (
+                          "Lien Wallet"
+                        )}
+                      </Button>
+                    </MenuItem>
+
+                    <Dialog
+                      open={lienModal}
+                      onClose={() => {
+                        setLienModal(false);
+                        setPin(null);
+                      }}
+                    >
+                      <DialogTitle>Lien Wallet</DialogTitle>
+                      <DialogContent>
+                        <DialogContentText>
+                          Please enter your admin approval pin to Lien this
+                          user's wallet, if you dont have one yet, head to{" "}
+                          {
+                            <Link style={{ color: "blue" }} href="/settings">
+                              Settings
+                            </Link>
+                          }{" "}
+                          to create one now
+                        </DialogContentText>
+                        <TextField
+                          autoFocus
+                          margin="dense"
+                          id="reason"
+                          label="Reason"
+                          type="text"
+                          fullWidth
+                          value={reason}
+                          variant="standard"
+                          onChange={handleReason}
+                        />
+                        <TextField
+                          //autoFocus
+                          margin="dense"
+                          id="name"
+                          label="Approval Pin"
+                          type="number"
+                          fullWidth
+                          value={pin}
+                          variant="standard"
+                          onChange={handlePin}
+                        />
+                      </DialogContent>
+                      <DialogActions>
+                        <Button
+                          onClick={() => {
+                            setLienModal(false);
+                            setPin(null);
+                            setReason("");
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                        <LoadingButton
+                          variant="contained"
+                          loading={postNoDebitMutation.isLoading}
+                          disabled={
+                            pin === null || pin?.length <= 5 || reason === ""
+                          }
+                          onClick={() => {
+                            //postYesDebitMutation.mutate({id: userDetails?.data?.user?.id})
+                            postNoDebitMutation.mutate({
+                              id: userDetails?.data?.user?.id,
+                              pin: pin,
+                              reason: reason,
+                            });
+                            setPin(null);
+                            setReason("");
+                            setLienModal(false);
+                          }}
+                        >
+                          Lien
+                        </LoadingButton>
+                      </DialogActions>
+                    </Dialog>
+                  </>
                 )}
               </Box>
             </CardContent>
@@ -1312,7 +1533,7 @@ const Users = () => {
                       <MaterialTable
                         columns={activitiesColumns}
                         data={userActivities?.data ?? []}
-                        rowCount={userActivities?.data?.length ?? 0}
+                        rowCount={userActivities?.count ?? 0}
                         isLoading={loadingActivities}
                         isError={fetchActivitiesError}
                         isFetching={fetchingActivities}
