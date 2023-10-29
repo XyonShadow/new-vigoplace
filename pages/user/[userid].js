@@ -564,6 +564,7 @@ const Users = () => {
     },
     onError: async (error) => {
       console.log("Error:", error);
+      setOpenToast(true);
       if (error.response) {
         console.log("Response Data:", error.response.data);
       }
@@ -598,6 +599,7 @@ const Users = () => {
       }, 2000);
     },
     onError: async (error) => {
+      setOpenToast(true);
       console.log("Error:", error);
       if (error.response) {
         console.log("Response Data:", error.response.data);
