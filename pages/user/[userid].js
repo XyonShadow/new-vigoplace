@@ -537,7 +537,12 @@ const Users = () => {
   const postNoDebit = async ({ id, pin, reason }) => {
     const postNoDebitUser = await axios.post(
       "https://vigoplace.com/server/api/admin/console/post-no-debit",
-      { userId: id.toString(), status: "suspend", pin, reason },
+      {
+        userId: id.toString(),
+        status: "suspend",
+        approvalPin: pin,
+        reason: reason,
+      },
       {
         headers: {
           Authorization: user?.token,
@@ -568,7 +573,12 @@ const Users = () => {
   const postYesDebit = async ({ id, pin, reason }) => {
     const postYesDebitUser = await axios.post(
       "https://vigoplace.com/server/api/admin/console/post-no-debit",
-      { userId: id.toString(), status: "activate", pin: pin, reason: reason },
+      {
+        userId: id.toString(),
+        status: "activate",
+        approvalPin: pin,
+        reason: reason,
+      },
       {
         headers: {
           Authorization: user?.token,
