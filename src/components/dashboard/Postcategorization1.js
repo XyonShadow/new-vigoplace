@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { GrFormClose } from "react-icons/gr";
 import { AiOutlineSearch } from "react-icons/ai";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getSession, useSession } from "next-auth/react";
 import { UncategorizedPost } from "./UncategorizedPost";
 import { CategorizedPost } from "./CategorizedPost";
 import { toast } from "react-toastify";
@@ -38,8 +39,8 @@ export function Postcategorization1({
 
   const queryClient = useQueryClient();
 
-  const API_BASE_URL = "https://vigoplace.com/server";
-  //const API_BASE_URL = "http://localhost:4000";
+  //const API_BASE_URL = "https://vigoplace.com/server";
+  const API_BASE_URL = "http://localhost:4000";
 
   const fetchUncategorizedData = async () => {
     const response = await fetch(`${API_BASE_URL}/api/admin/uncategorized`);
@@ -79,6 +80,10 @@ export function Postcategorization1({
   //     setCategorizedPost((prevPost) => [...prevPost, ...newPost]);
   //   },
   // });
+  const getToken = async () => {
+    const session = await getSession();
+    return session?.user?.token;
+  };
 
   const updateCategorizedIndex = (index) => setCategorizedIndex(index);
   const updateCategorizedPost = (post) => setCategorizedPost(post);
@@ -275,7 +280,8 @@ export function Postcategorization1({
     }
   };
 
-  const handlePostClick = (category, id) => {
+  const handlePostClick = async (category, id) => {
+    const token = await getToken();
     const postId = unCategorizedData[currentIndex]?.POId;
     setSelectedCategory(category);
     if (category?.length === 0) {
@@ -286,6 +292,7 @@ export function Postcategorization1({
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": token,
       },
 
       body: JSON.stringify({
@@ -318,8 +325,9 @@ export function Postcategorization1({
         toast.error("Error categorizing post!");
       });
   };
-
-  const handleCategorizedPostClick = (category, id) => {
+  
+  const handleCategorizedPostClick = async (category, id) => {
+    const token = await getToken();
     const postId = categorizedData[currentIndex]?.POId;
     setSelectedCategory(category);
     if (category?.length === 0) {
@@ -330,6 +338,7 @@ export function Postcategorization1({
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": token,
       },
 
       body: JSON.stringify({
@@ -355,10 +364,15 @@ export function Postcategorization1({
   };
 
   const removeCategory = async (id) => {
+    const token = await getToken();
     toast.success("Removing category from list");
     try {
       const response = await fetch(`${API_BASE_URL}/api/admin/category/${id}`, {
         method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": token,
+        },
       });
 
       if (!response.ok) {
