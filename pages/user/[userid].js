@@ -143,6 +143,7 @@ const Users = () => {
   });
   const [pin, setPin] = React.useState(null);
   const [reason, setReason] = React.useState("");
+  const [duration, setDuration] = React.useState("");
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10);
   //const [status, setStatus] = useState(null);
@@ -226,6 +227,10 @@ const Users = () => {
 
   const handleReason = (e) => {
     setReason(e.target.value);
+  };
+
+  const handleDuration = (e) => {
+    setDuration(e.target.value);
   };
 
   /* ************* Queries *************** */
@@ -534,14 +539,17 @@ const Users = () => {
     },
   });
 
-  const postNoDebit = async ({ id, pin, reason }) => {
+  const postNoDebit = async ({ id, pin, reason, duration }) => {
+    console.log(duration);
     const postNoDebitUser = await axios.post(
       "https://vigoplace.com/server/api/admin/console/post-no-debit",
       {
         userId: id.toString(),
         status: "suspend",
-        approvalPin: pin,
         reason: reason,
+        duration: duration.toLowerCase(),
+        approvalPin: pin,
+
       },
       {
         headers: {
@@ -577,8 +585,8 @@ const Users = () => {
       {
         userId: id.toString(),
         status: "activate",
-        approvalPin: pin,
         reason: reason,
+        approvalPin: pin,
       },
       {
         headers: {
@@ -1122,7 +1130,9 @@ const Users = () => {
                               Settings
                             </Link>
                           }{" "}
-                          to create one now
+                          to create one now. Specify "Indefinite" in the duration
+                          field if you want the user's wallet to be indefinitely
+                          suspended.
                         </DialogContentText>
                         <TextField
                           autoFocus
@@ -1138,6 +1148,17 @@ const Users = () => {
                         <TextField
                           //autoFocus
                           margin="dense"
+                          id="duration"
+                          label="Duration"
+                          type="text"
+                          fullWidth
+                          value={duration}
+                          variant="standard"
+                          onChange={handleDuration}
+                        />
+                        <TextField
+                          //autoFocus
+                          margin="dense"
                           id="name"
                           label="Approval Pin"
                           type="number"
@@ -1146,6 +1167,7 @@ const Users = () => {
                           variant="standard"
                           onChange={handlePin}
                         />
+                        
                       </DialogContent>
                       <DialogActions>
                         <Button
@@ -1153,6 +1175,7 @@ const Users = () => {
                             setLienModal(false);
                             setPin(null);
                             setReason("");
+                            setDuration("");
                           }}
                         >
                           Cancel
@@ -1161,7 +1184,7 @@ const Users = () => {
                           variant="contained"
                           loading={postNoDebitMutation.isLoading}
                           disabled={
-                            pin === null || pin?.length <= 5 || reason === ""
+                            pin === null || pin?.length <= 5 || reason === "" || duration === ""
                           }
                           onClick={() => {
                             //postYesDebitMutation.mutate({id: userDetails?.data?.user?.id})
@@ -1169,9 +1192,11 @@ const Users = () => {
                               id: userDetails?.data?.user?.id,
                               pin: pin,
                               reason: reason,
+                              duration: duration
                             });
                             setPin(null);
                             setReason("");
+                            setDuration("");
                             setLienModal(false);
                           }}
                         >
