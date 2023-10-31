@@ -41,7 +41,7 @@ export const CategorizedPost = ({
   const [openModal, setOpenModal] = useState(false);
 
   const deletePost = async (postId) => {
-    console.log(postId);
+    //console.log(postId);
     try {
       const response = await fetch(
         `${API_BASE_URL}/api/admin/categorization/${postId}/post`,

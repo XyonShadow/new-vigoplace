@@ -52,7 +52,7 @@ export function Postcategorization1({
     isLoading: uncategorizedDataLoading,
     error: uncategorizedDataError,
   } = useQuery(["uncategorizedData"], fetchUncategorizedData, {});
-
+  //console.log(unCategorizedData);
   // const fetchCategory = async (currentPage, pageSize) => {
   //   const response = await fetch(
   //     `${API_BASE_URL}/api/admin/categorized?page=${currentPage}&itemsPerPage=${pageSize}`
@@ -212,10 +212,9 @@ export function Postcategorization1({
     const newPostId = unCategorizedData[indexOfFilteredData]?.POId;
     updateCurrentPost(newPostId);
 
-    // setCurrentPost(filteredPosts[0]?.POId)
     setFilteredPost(filteredPosts);
 
-    // updateCurrentPost(filteredPosts[0]?.POId);
+
   };
 
   const handleCategorizedSearch = (searchInput) => {

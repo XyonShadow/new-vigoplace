@@ -56,7 +56,7 @@ export const UncategorizedPost = ({
       };
     });
   };
-
+  //console.log(images);
   // useEffect(() => {
   //   //fix rerendering issue
   //   if (categorizedPost[0].POId === images[currentIndex]?.POId) {
@@ -170,7 +170,7 @@ export const UncategorizedPost = ({
 
   const nextSlide = async () => {
     setFilteredPost([]);
-    console.log(currentIndex)
+    //console.log(currentIndex)
     const isLastSlide = currentIndex === images.length - 1;
 
     const newIndex = isLastSlide ? 0 : currentIndex + 1;
@@ -200,10 +200,11 @@ export const UncategorizedPost = ({
                   // Display images if filteredResults is empty
                   <div className="relative object-contain">
                     {filteredPost.length > 0 ? (
+                      //console.log(filteredPost)
                       <CarouselMini autoSlide={false} autoSlideInterval={3000}>
-                        {filteredPost[0]?.PMMedia?.map((media) => {
-                          console.log(currentIndex)
-                          console.log(media);
+                        {images[0]?.PMMedia?.map((media) => {
+                          //console.log(currentIndex)
+                          //console.log(media);
                           // console.log(data.data[currentIndex]);
                           if (media.type === "video")
                           return (
