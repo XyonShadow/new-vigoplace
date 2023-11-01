@@ -39,7 +39,7 @@ function ActivityLogs() {
   const [gender, setGender] = React.useState('');
   const [status, setStatus] = React.useState('');
   const [isVerified, setIsverified] = React.useState('');
-
+  const [logCount, setLogCount] = React.useState(0);
 
   useEffect(() => {
     setPagination({...pagination, pageIndex: 0})
@@ -124,6 +124,7 @@ function ActivityLogs() {
         }
       );
 
+      setLogCount(data?.count?.total ?? 0);
       return data;
     },
     {
@@ -167,7 +168,7 @@ function ActivityLogs() {
       enableStickyFooter
       manualPagination
       onPaginationChange={setPagination}
-      rowCount={data?.count?.total ?? 0}
+      rowCount={logCount}
       // onColumnFiltersChange={()=>{
       //   setColumnFilters
       // }}
