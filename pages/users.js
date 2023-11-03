@@ -768,34 +768,34 @@ const Users = () => {
                 </Button>
               )}
             </MenuItem>,
-
-            <MenuItem key={2}>
-              {row.original?.postNoDebit ? (
-                <Button
-                  onClick={() => handlePostYesDebit()}
-                  color="success"
-                  variant="contained"
-                >
-                  {postYesDebitMutation.isLoading ? (
-                    <CircularProgress size={23} color="inherit" />
-                  ) : (
-                    "Activate Wallet"
-                  )}
-                </Button>
-              ) : (
-                <Button
-                  onClick={() => handlePostNoDebit()}
-                  color="error"
-                  variant="contained"
-                >
-                  {postNoDebitMutation.isLoading ? (
-                    <CircularProgress size={23} color="inherit" />
-                  ) : (
-                    "Lien Wallet"
-                  )}
-                </Button>
-              )}
-            </MenuItem>,
+            // YOU CAN UNCOMMENT THE BUTTON BACK AND THE FUNCTIONALITY REMAINS UNTOUCHED
+            // <MenuItem key={2}>
+            //   {row.original?.postNoDebit ? (
+            //     <Button
+            //       onClick={() => handlePostYesDebit()}
+            //       color="success"
+            //       variant="contained"
+            //     >
+            //       {postYesDebitMutation.isLoading ? (
+            //         <CircularProgress size={23} color="inherit" />
+            //       ) : (
+            //         "Activate Wallet"
+            //       )}
+            //     </Button>
+            //   ) : (
+            //     <Button
+            //       onClick={() => handlePostNoDebit()}
+            //       color="error"
+            //       variant="contained"
+            //     >
+            //       {postNoDebitMutation.isLoading ? (
+            //         <CircularProgress size={23} color="inherit" />
+            //       ) : (
+            //         "Lien Wallet"
+            //       )}
+            //     </Button>
+            //   )}
+            // </MenuItem>,
 
             <MenuItem
               key={3}

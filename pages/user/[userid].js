@@ -132,11 +132,14 @@ const Users = () => {
     pageSize: 10,
   });
   const [openToast, setOpenToast] = React.useState(false);
+  const [ticketErrorToast, setTicketErrorToast] = React.useState(false);
+  const [ticketSuccessToast, setTicketSuccessToast] = React.useState(false);
   const [creditSuccessToast, setCreditSuccessToast] = React.useState(false);
   const [creditErrorToast, setCreditErrorToast] = React.useState(false);
   const [debitSuccessToast, setDebitSuccessToast] = React.useState(false);
   const [debitErrorToast, setDebitErrorToast] = React.useState(false);
   const [lienModal, setLienModal] = React.useState(false);
+  const [ticketModal, setTicketModal] = React.useState(false);
   const [status, setStatus] = React.useState("");
   const [filters, setFilters] = useState({
     status: null,
@@ -144,6 +147,9 @@ const Users = () => {
   const [pin, setPin] = React.useState(null);
   const [reason, setReason] = React.useState("");
   const [duration, setDuration] = React.useState("");
+  const [categoryId, setCategoryId] = React.useState(0);
+  const [description, setDescription] = React.useState("");
+  const [subject, setSubject] = React.useState("");
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10);
   //const [status, setStatus] = useState(null);
@@ -231,6 +237,18 @@ const Users = () => {
 
   const handleDuration = (e) => {
     setDuration(e.target.value);
+  };
+
+  const handleCategoryId = (e) => {
+    setCategoryId(e.target.value);
+  };
+
+  const handleSubject = (e) => {
+    setSubject(e.target.value);
+  };
+
+  const handleDescription = (e) => {
+    setDescription(e.target.value);
   };
 
   /* ************* Queries *************** */
@@ -549,7 +567,6 @@ const Users = () => {
         reason: reason,
         duration: duration.toLowerCase(),
         approvalPin: pin,
-
       },
       {
         headers: {
@@ -608,6 +625,51 @@ const Users = () => {
     },
     onError: async (error) => {
       setOpenToast(true);
+      console.log("Error:", error);
+      if (error.response) {
+        console.log("Response Data:", error.response.data);
+      }
+    },
+  });
+
+  const createTicket = async ({
+    id,
+    description,
+    subject,
+    categoryId,
+    pin,
+  }) => {
+    const createTicketUser = await axios.post(
+      "https://vigoplace.com/server/api/admin/ticket/user",
+      //"http://localhost:4000/api/admin/ticket/user",
+      {
+        userId: id.toString(),
+        description,
+        subject,
+        categoryId,
+        //approvalPin: pin,
+      },
+      {
+        headers: {
+          Authorization: user?.token,
+        },
+      }
+    );
+    return createTicketUser;
+  };
+
+  const createTicketMutation = useMutation({
+    mutationKey: ["postYesDebitUser"],
+    mutationFn: createTicket,
+    onSuccess: () => {
+      queryClient.invalidateQueries("fetchSingleUser");
+      setTicketSuccessToast(true);
+      setTimeout(() => {
+        createTicketMutation.reset(); 
+      }, 2000);
+    },
+    onError: async (error) => {
+      setTicketErrorToast(true);
       console.log("Error:", error);
       if (error.response) {
         console.log("Response Data:", error.response.data);
@@ -732,6 +794,16 @@ const Users = () => {
     setOpenToast(false);
   };
 
+  const handleTicketClose = (event, reason) => {
+    setTicketErrorToast(false);
+  };
+
+  const handleSuccessTicketToastClose = (event, reason) => {
+    setTicketSuccessToast(false);
+  };
+
+
+
   // Please change this section to fetch the reason type live from the api endpoint.
   // This was added due to the fact that the api meant for this hasn't been deployed yet on production server.
   const validReasonTypes = [
@@ -813,6 +885,36 @@ const Users = () => {
         <Alert onClose={handleClose} severity="warning" sx={{ width: "100%" }}>
           {postNoDebitMutation.error?.response?.data?.message ||
             postYesDebitMutation.error?.response?.data?.message}
+        </Alert>
+      </Snackbar>
+      
+      <Snackbar
+        TransitionComponent={Slide}
+        open={ticketSuccessToast}
+        autoHideDuration={6000}
+        onClose={handleSuccessTicketToastClose}
+      >
+        <Alert
+          onClose={handleSuccessTicketToastClose}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {createTicketMutation?.data?.data?.message}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        TransitionComponent={Slide}
+        open={ticketErrorToast}
+        autoHideDuration={6000}
+        onClose={handleTicketClose}
+      >
+        <Alert
+          onClose={handleTicketClose}
+          severity="warning"
+          sx={{ width: "100%" }}
+        >
+          {createTicketMutation.error?.response?.data?.message}
         </Alert>
       </Snackbar>
 
@@ -1130,9 +1232,9 @@ const Users = () => {
                               Settings
                             </Link>
                           }{" "}
-                          to create one now. Specify "Indefinite" in the duration
-                          field if you want the user's wallet to be indefinitely
-                          suspended.
+                          to create one now. Specify "Indefinite" in the
+                          duration field if you want the user's wallet to be
+                          indefinitely suspended.
                         </DialogContentText>
                         <TextField
                           autoFocus
@@ -1167,7 +1269,6 @@ const Users = () => {
                           variant="standard"
                           onChange={handlePin}
                         />
-                        
                       </DialogContent>
                       <DialogActions>
                         <Button
@@ -1184,7 +1285,10 @@ const Users = () => {
                           variant="contained"
                           loading={postNoDebitMutation.isLoading}
                           disabled={
-                            pin === null || pin?.length <= 5 || reason === "" || duration === ""
+                            pin === null ||
+                            pin?.length <= 5 ||
+                            reason === "" ||
+                            duration === ""
                           }
                           onClick={() => {
                             //postYesDebitMutation.mutate({id: userDetails?.data?.user?.id})
@@ -1192,7 +1296,7 @@ const Users = () => {
                               id: userDetails?.data?.user?.id,
                               pin: pin,
                               reason: reason,
-                              duration: duration
+                              duration: duration,
                             });
                             setPin(null);
                             setReason("");
@@ -1206,6 +1310,131 @@ const Users = () => {
                     </Dialog>
                   </>
                 )}
+                <>
+                  <MenuItem>
+                    <Button
+                      variant="contained"
+                      onClick={() => setTicketModal(true)}
+                    >
+                      {createTicketMutation.isLoading ? (
+                        <CircularProgress size={23} color="inherit" />
+                      ) : createTicketMutation.isSuccess ? (
+                        <CheckIcon />
+                      ) : (
+                        "Create Ticket"
+                      )}
+                    </Button>
+                  </MenuItem>
+
+                  <Dialog
+                    open={ticketModal}
+                    onClose={() => {
+                      setTicketModal(false);
+                      setPin(null);
+                    }}
+                  >
+                    <DialogTitle>Create User Ticket</DialogTitle>
+                    <DialogContent>
+                      <DialogContentText>
+                        Please enter your admin approval pin to create a ticket
+                        on this user's account, if you dont have one yet, head
+                        to{" "}
+                        {
+                          <Link style={{ color: "blue" }} href="/settings">
+                            Settings
+                          </Link>
+                        }{" "}
+                        to create one now
+                      </DialogContentText>
+                      <TextField
+                        autoFocus
+                        margin="dense"
+                        id="categoryid"
+                        label="Category"
+                        type="number"
+                        fullWidth
+                        value={categoryId}
+                        variant="standard"
+                        onChange={handleCategoryId}
+                      />
+                      <TextField
+                        //autoFocus
+                        margin="dense"
+                        id="subject"
+                        label="Subject"
+                        type="text"
+                        fullWidth
+                        value={subject}
+                        variant="standard"
+                        onChange={handleSubject}
+                      />
+                      <TextField
+                        //autoFocus
+                        margin="dense"
+                        id="description"
+                        label="Description"
+                        type="text"
+                        fullWidth
+                        value={description}
+                        variant="standard"
+                        onChange={handleDescription}
+                      />
+                      <TextField
+                        //autoFocus
+                        margin="dense"
+                        id="name"
+                        label="Approval Pin"
+                        type="number"
+                        fullWidth
+                        value={pin}
+                        variant="standard"
+                        onChange={handlePin}
+                      />
+                    </DialogContent>
+                    <DialogActions>
+                      <Button
+                        onClick={() => {
+                          setPin(null);
+                          setDescription("");
+                          setSubject("");
+                          setCategoryId(0);
+                          setTicketModal(false);
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                      <LoadingButton
+                        variant="contained"
+                        loading={createTicketMutation.isLoading}
+                        disabled={
+                          pin === null ||
+                          pin?.length <= 5 ||
+                          subject === "" ||
+                          description === "" ||
+                          categoryId === 0
+                            ? true
+                            : false
+                        }
+                        onClick={() => {
+                          createTicketMutation.mutate({
+                            id: userDetails?.data?.user?.id,
+                            pin,
+                            description,
+                            subject,
+                            categoryId,
+                          });
+                          setPin(null);
+                          setDescription("");
+                          setSubject("");
+                          setCategoryId(0);
+                          setTicketModal(false);
+                        }}
+                      >
+                        Create
+                      </LoadingButton>
+                    </DialogActions>
+                  </Dialog>
+                </>
               </Box>
             </CardContent>
           </Card>
