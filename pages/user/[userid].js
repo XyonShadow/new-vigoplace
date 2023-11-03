@@ -17,6 +17,7 @@ import {
   Paper,
   Tab,
   Tooltip,
+  OutlinedInput,
 } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import axios from "axios";
@@ -60,6 +61,9 @@ import {
   DialogTitle,
 } from "@mui/material";
 import Link from "next/link";
+
+//import { TextareaAutosize } from "@mui/base/TextareaAutosize";
+import TextareaAutosize from "@mui/material/TextareaAutosize";
 
 // import Dialog from "@mui/material/Dialog";
 // import DialogActions from "@mui/material/DialogActions";
@@ -147,7 +151,7 @@ const Users = () => {
   const [pin, setPin] = React.useState(null);
   const [reason, setReason] = React.useState("");
   const [duration, setDuration] = React.useState("");
-  const [categoryId, setCategoryId] = React.useState(0);
+  const [categoryId, setCategoryId] = React.useState("");
   const [description, setDescription] = React.useState("");
   const [subject, setSubject] = React.useState("");
   const [page, setPage] = useState(0);
@@ -239,8 +243,12 @@ const Users = () => {
     setDuration(e.target.value);
   };
 
+  // const handleCategoryId = (e) => {
+  //   setCategoryId(e.target.value);
+  // };
+
   const handleCategoryId = (e) => {
-    setCategoryId(e.target.value);
+    setCategoryId(Number(e.target.value) || "");
   };
 
   const handleSubject = (e) => {
@@ -620,7 +628,7 @@ const Users = () => {
     onSuccess: () => {
       queryClient.invalidateQueries("fetchSingleUser");
       setTimeout(() => {
-        postYesDebitMutation.reset(); // Reset the mutation
+        postYesDebitMutation.reset();
       }, 2000);
     },
     onError: async (error) => {
@@ -647,7 +655,7 @@ const Users = () => {
         description,
         subject,
         categoryId,
-        //approvalPin: pin,
+        approvalPin: pin,
       },
       {
         headers: {
@@ -665,8 +673,8 @@ const Users = () => {
       queryClient.invalidateQueries("fetchSingleUser");
       setTicketSuccessToast(true);
       setTimeout(() => {
-        createTicketMutation.reset(); 
-      }, 2000);
+        createTicketMutation.reset();
+      }, 7000);
     },
     onError: async (error) => {
       setTicketErrorToast(true);
@@ -802,8 +810,6 @@ const Users = () => {
     setTicketSuccessToast(false);
   };
 
-
-
   // Please change this section to fetch the reason type live from the api endpoint.
   // This was added due to the fact that the api meant for this hasn't been deployed yet on production server.
   const validReasonTypes = [
@@ -887,7 +893,7 @@ const Users = () => {
             postYesDebitMutation.error?.response?.data?.message}
         </Alert>
       </Snackbar>
-      
+
       <Snackbar
         TransitionComponent={Slide}
         open={ticketSuccessToast}
@@ -1346,17 +1352,28 @@ const Users = () => {
                         }{" "}
                         to create one now
                       </DialogContentText>
-                      <TextField
-                        autoFocus
-                        margin="dense"
-                        id="categoryid"
-                        label="Category"
-                        type="number"
-                        fullWidth
-                        value={categoryId}
-                        variant="standard"
-                        onChange={handleCategoryId}
-                      />
+                      <FormControl fullWidth>
+                        <InputLabel
+                          id="demo-dialog-select-label"
+                          style={{ marginTop: "18px" }}
+                        >
+                          Select an issue
+                        </InputLabel>
+                        <Select
+                          labelId="demo-dialog-select-label"
+                          id="demo-dialog-select"
+                          value={categoryId}
+                          onChange={handleCategoryId}
+                          input={<OutlinedInput label="Category" />}
+                          fullWidth
+                          style={{ marginTop: "20px" }}
+                        >
+                          <MenuItem value={1}>Authentication</MenuItem>
+                          <MenuItem value={2}>Transaction</MenuItem>
+                          <MenuItem value={3}>Voting</MenuItem>
+                          <MenuItem value={4}>Wallet</MenuItem>
+                        </Select>
+                      </FormControl>
                       <TextField
                         //autoFocus
                         margin="dense"
@@ -1379,6 +1396,23 @@ const Users = () => {
                         variant="standard"
                         onChange={handleDescription}
                       />
+                      {/* <TextareaAutosize
+                        //autoFocus
+                        minRows={3}
+                        id="description"
+                        placeholder="Description"
+                        fullWidth
+                        value={description}
+                        onChange={handleDescription}
+                        style={{
+                          //marginTop: 20,
+                          width: "100%",
+                          padding: "10px",
+                          resize: "none",
+                          border: "1px solid #ccc", // Add a border here
+                          borderRadius: "4px", // Add rounded corners
+                        }}
+                      /> */}
                       <TextField
                         //autoFocus
                         margin="dense"
@@ -1397,7 +1431,7 @@ const Users = () => {
                           setPin(null);
                           setDescription("");
                           setSubject("");
-                          setCategoryId(0);
+                          setCategoryId("");
                           setTicketModal(false);
                         }}
                       >
@@ -1411,9 +1445,8 @@ const Users = () => {
                           pin?.length <= 5 ||
                           subject === "" ||
                           description === "" ||
-                          categoryId === 0
-                            ? true
-                            : false
+                          categoryId === "Category" ||
+                          categoryId === ""
                         }
                         onClick={() => {
                           createTicketMutation.mutate({
@@ -1426,7 +1459,7 @@ const Users = () => {
                           setPin(null);
                           setDescription("");
                           setSubject("");
-                          setCategoryId(0);
+                          setCategoryId("");
                           setTicketModal(false);
                         }}
                       >
