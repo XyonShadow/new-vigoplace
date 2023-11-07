@@ -441,6 +441,11 @@ const Users = () => {
   const columns = useMemo(
     () => [
       {
+        accessorKey: "username",
+        enableClickToCopy: false,
+        header: "User Name",
+      },
+      {
         accessorFn: (row) => row.fullname,
         // accessorFn: (row) => `${row.fullname}`,
         id: "name", //id is still required when using accessorFn instead of accessorKey
