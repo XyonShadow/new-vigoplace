@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import MaterialReactTable from "material-react-table";
 import { useRouter } from "next/router";
 import { format } from "date-fns";
@@ -116,6 +116,7 @@ const SingleTicket = () => {
     approvalPin: "",
   });
   const [showAttachments, setShowAttachments] = useState(false);
+  const [userDetails, setUserDetails] = useState(null);
 
   /* ******* onchange functions ********** */
 
@@ -173,7 +174,7 @@ const SingleTicket = () => {
     async () => {
       const { data } = await axios.get(
         `https://vigoplace.com/server/api/admin/ticket/messages/${ticketid}`,
-        // `http://localhost:3001/api/admin/ticket/messages/${ticketid},
+        // `http://localhost:4000/api/admin/ticket/messages/${ticketid}`,
         {
           headers: {
             Authorization: user?.token,
@@ -202,8 +203,8 @@ const SingleTicket = () => {
     ["fetchTicket"],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/ticket/${ticketid}`,
-        // `http://localhost:3001/api/admin/ticket/${ticketid},
+      `https://vigoplace.com/server/api/admin/ticket/${ticketid}`,
+        //`http://localhost:4000/api/admin/ticket/${ticketid}`,
         {
           headers: {
             Authorization: user?.token,
@@ -222,29 +223,52 @@ const SingleTicket = () => {
     { keepPreviousData: true }
   );
 
-  const { data: userDetails } = useQuery(
-    ["fetchSingleUser"],
-    async () => {
-      const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/user?userId=${ticket?.data.userId}`,
-        // `http://localhost:3001/api/admin/console/user?userId=${userid}`,
-        {
-          headers: {
-            Authorization: user?.token,
-          },
-        }
-      );
+  // const { data: userDetails } = useQuery(
+  //   ["fetchSingleUser"],
+  //   async () => {
+  //     const { data } = await axios.get(
+  //       `https://vigoplace.com/server/api/admin/console/user?userId=${ticket?.data.userId}`,
+  //       // `http://localhost:3001/api/admin/console/user?userId=${userid}`,
+  //       {
+  //         headers: {
+  //           Authorization: user?.token,
+  //         },
+  //       }
+  //     );
 
-      return data;
-    },
-    {
-      onError: (err) => {
-        console.log(err, "err fetching users");
-      },
-      enabled: !!ticket?.data?.userId,
-    },
-    { keepPreviousData: true }
-  );
+  //     return data;
+  //   },
+  //   {
+  //     onError: (err) => {
+  //       console.log(err, "err fetching users");
+  //     },
+  //     enabled: !!ticket?.data?.userId,
+  //   },
+  //   { keepPreviousData: true }
+  // );
+
+  useEffect(() => {
+    if (ticket?.data?.userId && user?.token) {
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(
+            `https://vigoplace.com/server/api/admin/console/user?userId=${ticket.data.userId}`,
+            //`http://localhost:4000/api/admin/console/user?userId=${ticket.data.userId}`,
+            {
+              headers: {
+                Authorization: user.token,
+              },
+            }
+          );
+          setUserDetails(response.data);
+        } catch (error) {
+          console.log(error, "error fetching users");
+        }
+      };
+
+      fetchData();
+    }
+  }, [ticket, user]);
 
   /* ********** Mutations *************** */
 
@@ -261,7 +285,6 @@ const SingleTicket = () => {
     );
     return unblockedUser;
   };
-
 
   const columns = useMemo(
     () => [
@@ -323,31 +346,6 @@ const SingleTicket = () => {
 
   return (
     <>
-      {/* <Snackbar TransitionComponent={Slide} open={creditSuccessToast} autoHideDuration={6000} onClose={handleCreditSuccessToastClose}>
-        <Alert onClose={handleCreditSuccessToastClose} severity="success" sx={{ width: '100%' }}>
-          {creditUserMutation?.data?.data?.message}
-        </Alert>
-    </Snackbar>
-
-    <Snackbar TransitionComponent={Slide} open={creditErrorToast} autoHideDuration={6000} onClose={handleCreditErrorToastClose}>
-        <Alert onClose={handleCreditErrorToastClose} severity="warning" sx={{ width: '100%' }}>
-          {creditUserMutation?.error?.response?.data?.message}
-        </Alert>
-    </Snackbar>
-
-
-    <Snackbar TransitionComponent={Slide} open={debitSuccessToast} autoHideDuration={6000} onClose={handleDebitSuccessToastClose}>
-        <Alert onClose={handleDebitSuccessToastClose} severity="success" sx={{ width: '100%' }}>
-          {debitUserMutation?.data?.data?.message}
-        </Alert>
-    </Snackbar>
-
-    <Snackbar TransitionComponent={Slide} open={debitErrorToast} autoHideDuration={6000} onClose={handleDebitErrorToastClose}>
-        <Alert onClose={handleDebitErrorToastClose} severity="warning" sx={{ width: '100%' }}>
-          {debitUserMutation?.error?.response?.data?.message}
-        </Alert>
-    </Snackbar> */}
-
       {/* attachments */}
       <Typography variant="h1" marginBottom={2}>
         <b>Attachments:</b>{" "}
@@ -421,7 +419,11 @@ const SingleTicket = () => {
           </Container>
         </Grid>
 
-        <Chat messages={messages} ticket={ticket} userDetails={userDetails} />
+        <Chat 
+         messages={messages} 
+         ticket={ticket} 
+         userDetails={userDetails} 
+        />
       </Box>
     </>
   );
@@ -435,7 +437,7 @@ export const Chat = ({ messages, ticket, userDetails }) => {
 
   const chat = async ({ ticketid, message }) => {
     const sendmessage = await axios.post(
-      // "http://localhost:3001/api/admin/console/users/unblock",
+       //"http://localhost:4000/api/admin/ticket/message",
       "https://vigoplace.com/server/api/admin/ticket/message",
       { ticketid, message },
       {
@@ -538,7 +540,7 @@ export const Chat = ({ messages, ticket, userDetails }) => {
         </List>
         <Divider />
         <Grid container style={{ padding: "20px" }}>
-          <Grid item xs={11}>
+          <Grid item xs={10.5}>
             <TextField
               id="chat"
               value={chatMessage}
@@ -547,7 +549,7 @@ export const Chat = ({ messages, ticket, userDetails }) => {
               fullWidth
             />
           </Grid>
-          <Grid item xs={1} align="right">
+          <Grid item xs={1.5} align="right">
             <Fab
               color="primary"
               aria-label="add"

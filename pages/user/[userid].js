@@ -645,7 +645,6 @@ const Users = () => {
     description,
     subject,
     categoryId,
-    pin,
   }) => {
     const createTicketUser = await axios.post(
       "https://vigoplace.com/server/api/admin/ticket/user",
@@ -655,7 +654,7 @@ const Users = () => {
         description,
         subject,
         categoryId,
-        approvalPin: pin,
+        //approvalPin: pin,
       },
       {
         headers: {
@@ -1336,21 +1335,13 @@ const Users = () => {
                     open={ticketModal}
                     onClose={() => {
                       setTicketModal(false);
-                      setPin(null);
                     }}
                   >
                     <DialogTitle>Create User Ticket</DialogTitle>
                     <DialogContent>
                       <DialogContentText>
-                        Please enter your admin approval pin to create a ticket
-                        on this user's account, if you dont have one yet, head
-                        to{" "}
-                        {
-                          <Link style={{ color: "blue" }} href="/settings">
-                            Settings
-                          </Link>
-                        }{" "}
-                        to create one now
+                        Please enter all the necessary details to create a ticket
+                        on this user's account, 
                       </DialogContentText>
                       <FormControl fullWidth>
                         <InputLabel
@@ -1370,8 +1361,8 @@ const Users = () => {
                         >
                           <MenuItem value={1}>Authentication</MenuItem>
                           <MenuItem value={2}>Transaction</MenuItem>
-                          <MenuItem value={3}>Voting</MenuItem>
-                          <MenuItem value={4}>Wallet</MenuItem>
+                          <MenuItem value={3}>Wallet</MenuItem>
+                          <MenuItem value={4}>Voting</MenuItem>
                         </Select>
                       </FormControl>
                       <TextField
@@ -1413,7 +1404,7 @@ const Users = () => {
                           borderRadius: "4px", // Add rounded corners
                         }}
                       /> */}
-                      <TextField
+                      {/* <TextField
                         //autoFocus
                         margin="dense"
                         id="name"
@@ -1423,12 +1414,11 @@ const Users = () => {
                         value={pin}
                         variant="standard"
                         onChange={handlePin}
-                      />
+                      /> */}
                     </DialogContent>
                     <DialogActions>
                       <Button
                         onClick={() => {
-                          setPin(null);
                           setDescription("");
                           setSubject("");
                           setCategoryId("");
@@ -1441,8 +1431,6 @@ const Users = () => {
                         variant="contained"
                         loading={createTicketMutation.isLoading}
                         disabled={
-                          pin === null ||
-                          pin?.length <= 5 ||
                           subject === "" ||
                           description === "" ||
                           categoryId === "Category" ||
@@ -1451,12 +1439,10 @@ const Users = () => {
                         onClick={() => {
                           createTicketMutation.mutate({
                             id: userDetails?.data?.user?.id,
-                            pin,
                             description,
                             subject,
                             categoryId,
                           });
-                          setPin(null);
                           setDescription("");
                           setSubject("");
                           setCategoryId("");
