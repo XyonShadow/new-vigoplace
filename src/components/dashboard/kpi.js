@@ -39,6 +39,7 @@ const KPI = (props) => {
     ["fetchkpi"],
     async () => {
       let url = "https://vigoplace.com/server/api/admin/statistics/dashboard";
+      //let url = "http://localhost:4000/api/admin/statistics/dashboard";
 
       if (startDate && endDate) {
         url += `?startDate=${startDate}&endDate=${endDate}`;
@@ -49,6 +50,7 @@ const KPI = (props) => {
           users: checkedCheckboxes.includes("users"),
           deletedUsers: checkedCheckboxes.includes("totalDeletedUsers"),
           payout: checkedCheckboxes.includes("payout"),
+          totalUserActivities: checkedCheckboxes.includes("totalUserActivities"),
           virtualAccount: checkedCheckboxes.includes("virtualAccount"),
           marketPlaceCount: checkedCheckboxes.includes("marketPlaceCount"),
           channelPlaceCount: checkedCheckboxes.includes("channelPlaceCount"),
@@ -82,6 +84,7 @@ const KPI = (props) => {
 
   const firstCheckboxData = [
     { id: "users", value: "totalUsers", label: "Users" },
+    { id: "user_activities", value: "totalUserActivities", label: "User Activities" },
     { id: "deleted_users", value: "totalDeletedUsers", label: "Deleted Users" },
     { id: "wallet", value: "totalWalletCount", label: "Wallet count" },
     { id: "emails", value: "totalVerifiedEmails", label: "Verified emails" },
@@ -154,7 +157,7 @@ const KPI = (props) => {
       // setCheckedValues([...checkedValues, myObject]);
       setCheckedCheckboxes((prevState) => [...prevState, myObject]);
     } else {
-      console.log("Unche  kedddddddd")
+      //console.log("Unche  kedddddddd")
       // setCheckedValues(checkedValues.filter((v) => v.value !== value));
       setCheckedCheckboxes((prevState) =>
         prevState.filter((item) => item.value !== value)
