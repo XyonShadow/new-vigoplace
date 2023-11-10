@@ -66,7 +66,7 @@ const KPI = (props) => {
           Authorization: user?.token,
         },
       });
-      //console.log(data)
+      console.log(data);
       return data;
     },
     {
@@ -131,12 +131,21 @@ const KPI = (props) => {
       value: "contestPlaceRevenue",
       label: "Contest place revenue",
     },
-
-    // {
-    //   id: "contest_place_revenue",
-    //   value: "contestPlaceRevenue",
-    //   label: "Contest place revenue",
-    // },
+    {
+      id: "payout_revenue",
+      value: "payoutRevenue",
+      label: "Payout revenue",
+    },
+    {
+      id: "wallet_loading_revenue",
+      value: "walletLoadingRevenue",
+      label: "Wallet Loading revenue",
+    },
+    {
+      id: "total_revenue",
+      value: "totalRevenue",
+      label: "Total revenue",
+    },
   ];
 
   const handleStartDateChange = (event) => {
@@ -148,6 +157,7 @@ const KPI = (props) => {
   };
 
   const handleCheckboxChange = (event) => {
+    console.log(event.target);
     const { value, checked, id } = event.target;
     const myObject = {}; // Step 2: Create an object
 
