@@ -3,24 +3,26 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import {
   Box,
   Typography,
+  InputLabel,
+  Select,
+  MenuItem,
   Button,
   Card,
   Checkbox,
   Grid,
   Paper,
   styled,
-  useTheme
+  useTheme,
 } from "@mui/material";
 import axios from "axios";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 
-
 const KPI = (props) => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [checkedCheckboxes, setCheckedCheckboxes] = useState([]);
-
+  const [currency, setCurrency] = useState("USD");
 
   const theme = useTheme();
 
@@ -50,7 +52,9 @@ const KPI = (props) => {
           users: checkedCheckboxes.includes("users"),
           deletedUsers: checkedCheckboxes.includes("totalDeletedUsers"),
           payout: checkedCheckboxes.includes("payout"),
-          totalUserActivities: checkedCheckboxes.includes("totalUserActivities"),
+          totalUserActivities: checkedCheckboxes.includes(
+            "totalUserActivities"
+          ),
           virtualAccount: checkedCheckboxes.includes("virtualAccount"),
           marketPlaceCount: checkedCheckboxes.includes("marketPlaceCount"),
           channelPlaceCount: checkedCheckboxes.includes("channelPlaceCount"),
@@ -61,12 +65,15 @@ const KPI = (props) => {
           walletCount: checkedCheckboxes.includes("walletCount"),
           verifiedEmailCount: checkedCheckboxes.includes("verifiedEmailCount"),
           verifiedPhoneCount: checkedCheckboxes.includes("verifiedPhoneCount"),
+          payoutRevenue: checkedCheckboxes.includes("payoutRevenue"),
+          totalRevenue: checkedCheckboxes.includes("totalRevenue"),
+          currency: currency,
         },
         headers: {
           Authorization: user?.token,
         },
       });
-      console.log(data);
+      //console.log(data);
       return data;
     },
     {
@@ -78,13 +85,17 @@ const KPI = (props) => {
   );
 
   useEffect(() => {
-    // When any of the query parameters change, trigger a refetch
+    // When any of the query parameters or currency change, trigger a refetch
     refetch();
-  }, [startDate, endDate, checkedCheckboxes]);
+  }, [startDate, endDate, checkedCheckboxes, currency]);
 
   const firstCheckboxData = [
     { id: "users", value: "totalUsers", label: "Users" },
-    { id: "user_activities", value: "totalUserActivities", label: "User Activities" },
+    {
+      id: "user_activities",
+      value: "totalUserActivities",
+      label: "User Activities",
+    },
     { id: "deleted_users", value: "totalDeletedUsers", label: "Deleted Users" },
     { id: "wallet", value: "totalWalletCount", label: "Wallet count" },
     { id: "emails", value: "totalVerifiedEmails", label: "Verified emails" },
@@ -156,8 +167,12 @@ const KPI = (props) => {
     setEndDate(event.target.value);
   };
 
+  const handleCurrencyChange = (event) => {
+    setCurrency(event.target.value);
+  };
+
   const handleCheckboxChange = (event) => {
-    console.log(event.target);
+    //console.log(event.target);
     const { value, checked, id } = event.target;
     const myObject = {}; // Step 2: Create an object
 
@@ -175,6 +190,12 @@ const KPI = (props) => {
     }
   };
 
+  const formatCurrency = (value, currency) => {
+    const formattedValue =
+      currency === "NGN" ? `₦${value?.toFixed(2)}` : `$${value?.toFixed(2)}`;
+    return formattedValue;
+  };
+
   return (
     <Card {...props}>
       <Box
@@ -189,9 +210,9 @@ const KPI = (props) => {
         <Typography
           sx={{
             color: "white",
-            [theme.breakpoints.down('sm')]: {
-              fontSize: "12px"
-             },
+            [theme.breakpoints.down("sm")]: {
+              fontSize: "12px",
+            },
           }}
         >
           To begin enter your start and end date then click on the checkbox to
@@ -204,15 +225,20 @@ const KPI = (props) => {
           justifyContent: "center",
           gap: "6rem",
           p: 5,
-          [theme.breakpoints.down('sm')]: {
-           flexDirection: 'column',
-           p:2
+          [theme.breakpoints.down("sm")]: {
+            flexDirection: "column",
+            p: 2,
           },
         }}
       >
-        <Box sx={{ width: "60%", [theme.breakpoints.down('sm')]: {
-           width: "100%"
-          }, }}>
+        <Box
+          sx={{
+            width: "60%",
+            [theme.breakpoints.down("sm")]: {
+              width: "100%",
+            },
+          }}
+        >
           <Box sx={{ display: "flex", gap: 3 }}>
             <Box sx={{ display: "flex", flexDirection: "column", gap: "8px" }}>
               <label htmlFor="startDate">
@@ -221,15 +247,21 @@ const KPI = (props) => {
                   sx={{
                     fontWeight: 500,
                     fontSize: "14px",
-                    [theme.breakpoints.down('sm')]: {
-                      fontSize: "12px"
-                     },
+                    [theme.breakpoints.down("sm")]: {
+                      fontSize: "12px",
+                    },
                   }}
                 >
                   Start date
                 </Typography>
               </label>
-              <input className="text-xs" type="date" id="startDate" value={startDate} onChange={handleStartDateChange} />
+              <input
+                className="text-xs"
+                type="date"
+                id="startDate"
+                value={startDate}
+                onChange={handleStartDateChange}
+              />
             </Box>
             <Box sx={{ display: "flex", flexDirection: "column", gap: "8px" }}>
               <label htmlFor="endDate">
@@ -238,15 +270,46 @@ const KPI = (props) => {
                   sx={{
                     fontWeight: 500,
                     fontSize: "14px",
-                    [theme.breakpoints.down('sm')]: {
-                      fontSize: "12px"
-                     },
+                    [theme.breakpoints.down("sm")]: {
+                      fontSize: "12px",
+                    },
                   }}
                 >
                   End date
                 </Typography>
               </label>
-              <input className="text-xs" type="date" id="endDate" value={endDate} onChange={handleEndDateChange} />
+              <input
+                className="text-xs"
+                type="date"
+                id="endDate"
+                value={endDate}
+                onChange={handleEndDateChange}
+              />
+            </Box>
+
+            <Box sx={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+              <InputLabel htmlFor="currency">
+                <Typography
+                  sx={{
+                    fontWeight: 500,
+                    fontSize: "14px",
+                    [theme.breakpoints.down("sm")]: {
+                      fontSize: "12px",
+                    },
+                  }}
+                >
+                  Currency
+                </Typography>
+              </InputLabel>
+              <Select
+                label="Currency"
+                id="currency"
+                value={currency}
+                onChange={handleCurrencyChange}
+              >
+                <MenuItem value="USD">USD</MenuItem>
+                <MenuItem value="NGN">NGN</MenuItem>
+              </Select>
             </Box>
           </Box>
           <Grid
@@ -261,18 +324,38 @@ const KPI = (props) => {
               px: 4,
               py: "37px",
               overflowY: "auto",
-              [theme.breakpoints.down('sm')]: {
+              [theme.breakpoints.down("sm")]: {
                 ml: 0,
                 fontSize: "14px",
                 px: 1,
-               },
+              },
             }}
           >
             {checkedCheckboxes.length === 0 && <>No data to display</>}
             {checkedCheckboxes.map((checkedValue) => (
               <Grid key={checkedValue.label} item xs={6}>
-                <>{checkedValue.label}</>
-                <Item>{kpis?.data?.[checkedValue.value]}</Item>
+                <>
+                  {fourthCheckboxData.find(
+                    (checkbox) => checkbox.label === checkedValue.label
+                  ) ? (
+                    <>
+                      {checkedValue.label}
+                      <Item>
+                        {kpis?.data?.[checkedValue.value] !== 0
+                          ? formatCurrency(
+                              kpis?.data?.[checkedValue.value],
+                              currency
+                            )
+                          : kpis?.data?.[checkedValue.value]}
+                      </Item>
+                    </>
+                  ) : (
+                    <>
+                      {checkedValue.label}
+                      <Item>{kpis?.data?.[checkedValue.value]}</Item>
+                    </>
+                  )}
+                </>
               </Grid>
             ))}
           </Grid>
@@ -298,11 +381,11 @@ const KPI = (props) => {
               border: "1px solid #E6E6E6",
               borderRadius: 1,
               p: 3,
-              [theme.breakpoints.down('sm')]: {
-                p:1,
+              [theme.breakpoints.down("sm")]: {
+                p: 1,
                 maxHeight: "400px",
                 fontSize: "14px",
-               },
+              },
             }}
           >
             <Box
