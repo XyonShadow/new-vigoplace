@@ -37,6 +37,7 @@ const KPI = (props) => {
     color: theme.palette.text.secondary,
   }));
 
+  
   const { data: kpis, refetch } = useQuery(
     ["fetchkpi"],
     async () => {
