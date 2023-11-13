@@ -1380,7 +1380,7 @@ const Users = () => {
                         //autoFocus
                         margin="dense"
                         id="description"
-                        label="Description"
+                        label="Message"
                         type="text"
                         fullWidth
                         value={description}
