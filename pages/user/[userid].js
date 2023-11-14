@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import MaterialReactTable from "material-react-table";
 import { useRouter } from "next/router";
 import { format } from "date-fns";
@@ -154,9 +154,7 @@ const Users = () => {
   const [categoryId, setCategoryId] = React.useState("");
   const [description, setDescription] = React.useState("");
   const [subject, setSubject] = React.useState("");
-  const [page, setPage] = useState(0);
-  const [limit, setLimit] = useState(10);
-  //const [status, setStatus] = useState(null);
+  const [activityCount, setActivityCount] = useState(0);
   const [isVerified, setIsverified] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [tabValue, setTabValue] = React.useState(0);
@@ -366,7 +364,11 @@ const Users = () => {
     isLoading: loadingActivities,
     refetch: refetchActivities,
   } = useQuery(
-    ["fetchSingleUserActivities"],
+    [
+      "fetchSingleUserActivities",
+      pagination.pageIndex, //refetch when pagination.pageIndex changes
+      pagination.pageSize, //refetch when pagination.pageSize changes
+    ],
     async () => {
       const { data } = await axios.get(
         //`http://localhost:4000/api/admin/console/users/activities?userId=${userid}&perPage=${
@@ -381,6 +383,7 @@ const Users = () => {
         }
       );
 
+      //setActivityCount(userActivities?.count ?? 0);
       //console.log(data);
       return data;
     },
@@ -392,6 +395,36 @@ const Users = () => {
     },
     { keepPreviousData: true }
   );
+
+  const fetchUserActivities = async () => {
+    try {
+      const { data } = await axios.get(
+        `https://vigoplace.com/server/api/admin/console/users/activities?userId=${userid}&perPage=${
+          pagination.pageSize
+        }&page=${pagination.pageIndex + 1}`,
+        {
+          headers: {
+            Authorization: user?.token,
+          },
+        }
+      );
+
+      // Set activity count from initial data
+      setActivityCount(data?.count ?? 0);
+      // Handle other data processing and state updates
+      // ...
+    } catch (err) {
+      console.log(err, "err fetching users");
+      // Handle error state if needed
+    }
+  };
+
+  useEffect(() => {
+    fetchUserActivities();
+  }, []); // Empty dependency array ensures this runs once on mount
+
+  // Further use of activityCount in your component
+  // ...
 
   /* ********** Mutations *************** */
 
@@ -640,12 +673,7 @@ const Users = () => {
     },
   });
 
-  const createTicket = async ({
-    id,
-    description,
-    subject,
-    categoryId,
-  }) => {
+  const createTicket = async ({ id, description, subject, categoryId }) => {
     const createTicketUser = await axios.post(
       "https://vigoplace.com/server/api/admin/ticket/user",
       //"http://localhost:4000/api/admin/ticket/user",
@@ -1340,8 +1368,8 @@ const Users = () => {
                     <DialogTitle>Create User Ticket</DialogTitle>
                     <DialogContent>
                       <DialogContentText>
-                        Please enter all the necessary details to create a ticket
-                        on this user's account, 
+                        Please enter all the necessary details to create a
+                        ticket on this user's account,
                       </DialogContentText>
                       <FormControl fullWidth>
                         <InputLabel
@@ -1818,7 +1846,8 @@ const Users = () => {
                       <MaterialTable
                         columns={activitiesColumns}
                         data={userActivities?.data ?? []}
-                        rowCount={userActivities?.count ?? 0}
+                        //rowCount={userActivities?.count ?? 0}
+                        rowCount={activityCount}
                         isLoading={loadingActivities}
                         isError={fetchActivitiesError}
                         isFetching={fetchingActivities}
