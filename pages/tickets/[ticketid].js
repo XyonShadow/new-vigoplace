@@ -1,4 +1,5 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import MaterialReactTable from "material-react-table";
 import { useRouter } from "next/router";
 import { format } from "date-fns";
@@ -203,7 +204,7 @@ const SingleTicket = () => {
     ["fetchTicket"],
     async () => {
       const { data } = await axios.get(
-      `https://vigoplace.com/server/api/admin/ticket/${ticketid}`,
+        `https://vigoplace.com/server/api/admin/ticket/${ticketid}`,
         //`http://localhost:4000/api/admin/ticket/${ticketid}`,
         {
           headers: {
@@ -419,11 +420,7 @@ const SingleTicket = () => {
           </Container>
         </Grid>
 
-        <Chat 
-         messages={messages} 
-         ticket={ticket} 
-         userDetails={userDetails} 
-        />
+        <Chat messages={messages} ticket={ticket} userDetails={userDetails} />
       </Box>
     </>
   );
@@ -434,10 +431,11 @@ export const Chat = ({ messages, ticket, userDetails }) => {
   const user = getUser?.data?.user;
   const queryClient = useQueryClient();
   const [chatMessage, setChatMessage] = useState("");
+  const userLinkRef = useRef(null);
 
   const chat = async ({ ticketid, message }) => {
     const sendmessage = await axios.post(
-       //"http://localhost:4000/api/admin/ticket/message",
+      //"http://localhost:4000/api/admin/ticket/message",
       "https://vigoplace.com/server/api/admin/ticket/message",
       { ticketid, message },
       {
@@ -465,6 +463,18 @@ export const Chat = ({ messages, ticket, userDetails }) => {
     setChatMessage(event.target.value);
   };
 
+  const handleMouseEnter = () => {
+    if (userLinkRef.current) {
+      userLinkRef.current.style.textDecoration = "underline";
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (userLinkRef.current) {
+      userLinkRef.current.style.textDecoration = "none";
+    }
+  };
+
   return (
     <Grid
       xs={12}
@@ -487,13 +497,28 @@ export const Chat = ({ messages, ticket, userDetails }) => {
             src={ticket?.data?.userphoto}
             sx={{ marginRight: "40px" }}
           />
-          <Typography
-            variant="h2"
-            sx={{ fontWeight: "bold" }}
-            className="header-message"
+          <a
+            href={`/user/${ticket?.data?.userId}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            style={{
+              textDecoration: "none",
+              fontWeight: "bold",
+              cursor: "pointer",
+            }}
           >
-            {userDetails?.data?.user?.fullname}
-          </Typography>
+            <Typography
+              component="span"
+              className="header-message"
+              variant="h2"
+              sx={{ fontWeight: "bold" }}
+              ref={userLinkRef}
+            >
+              {userDetails?.data?.user?.fullname}
+            </Typography>
+          </a>
         </Grid>
         <Divider variant="fullWidth" orientation="horizontal" />
       </Grid>
