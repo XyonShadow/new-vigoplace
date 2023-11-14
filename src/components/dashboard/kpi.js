@@ -37,7 +37,6 @@ const KPI = (props) => {
     color: theme.palette.text.secondary,
   }));
 
-  
   const { data: kpis, refetch } = useQuery(
     ["fetchkpi"],
     async () => {
@@ -191,9 +190,19 @@ const KPI = (props) => {
     }
   };
 
+  // const formatCurrency = (value, currency) => {
+  //   const formattedValue =
+  //     currency === "NGN" ? `₦${value?.toFixed(2)}` : `$${value?.toFixed(2)}`;
+  //   return formattedValue;
+  // };
+
   const formatCurrency = (value, currency) => {
     const formattedValue =
-      currency === "NGN" ? `₦${value?.toFixed(2)}` : `$${value?.toFixed(2)}`;
+      typeof value === "number"
+        ? currency === "NGN"
+          ? `₦${value.toFixed(2)}`
+          : `$${value.toFixed(2)}`
+        : value; // Return the value as is if it's not a number
     return formattedValue;
   };
 
