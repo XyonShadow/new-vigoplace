@@ -155,6 +155,7 @@ const Users = () => {
   const [description, setDescription] = React.useState("");
   const [subject, setSubject] = React.useState("");
   const [activityCount, setActivityCount] = useState(0);
+  const [placeCount, setPlaceCount] = useState(0);
   const [isVerified, setIsverified] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [tabValue, setTabValue] = React.useState(0);
@@ -357,6 +358,8 @@ const Users = () => {
     { keepPreviousData: true }
   );
 
+
+  ////////////ACTIVITY API/////////////////////
   const {
     data: userActivities,
     isError: fetchActivitiesError,
@@ -364,18 +367,13 @@ const Users = () => {
     isLoading: loadingActivities,
     refetch: refetchActivities,
   } = useQuery(
-    [
-      "fetchSingleUserActivities",
-      pagination.pageIndex, //refetch when pagination.pageIndex changes
-      pagination.pageSize, //refetch when pagination.pageSize changes
-    ],
+    ["fetchSingleUserActivities", pagination.pageIndex, pagination.pageSize],
     async () => {
       const { data } = await axios.get(
         //`http://localhost:4000/api/admin/console/users/activities?userId=${userid}&perPage=${
         `https://vigoplace.com/server/api/admin/console/users/activities?userId=${userid}&perPage=${
           pagination.pageSize
         }&page=${pagination.pageIndex + 1}`,
-        // `http://localhost:3001/api/admin/console/users/activities?userId=${userid}&limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}`,
         {
           headers: {
             Authorization: user?.token,
@@ -383,7 +381,6 @@ const Users = () => {
         }
       );
 
-      //setActivityCount(userActivities?.count ?? 0);
       //console.log(data);
       return data;
     },
@@ -408,23 +405,74 @@ const Users = () => {
           },
         }
       );
-
       // Set activity count from initial data
       setActivityCount(data?.count ?? 0);
-      // Handle other data processing and state updates
-      // ...
     } catch (err) {
       console.log(err, "err fetching users");
-      // Handle error state if needed
     }
   };
 
   useEffect(() => {
     fetchUserActivities();
-  }, []); // Empty dependency array ensures this runs once on mount
+  }, []);
 
-  // Further use of activityCount in your component
-  // ...
+
+  /////////PLACES API ////////////////////
+  const {
+    data: userPlaces,
+    isError: fetchPlacesError,
+    isFetching: fetchingPlaces,
+    isLoading: loadingPlaces,
+    refetch: refetchPlaces,
+  } = useQuery(
+    ["fetchSingleUserPlaces", pagination.pageIndex, pagination.pageSize],
+    async () => {
+      const { data } = await axios.get(
+        //`http://localhost:4000/api/admin/user/${userid}&perPage=${
+        `https://vigoplace.com/server/api/admin/places/user/${userid}?perPage=${
+          pagination.pageSize
+        }&page=${pagination.pageIndex + 1}`,
+        {
+          headers: {
+            Authorization: user?.token,
+          },
+        }
+      );
+
+      //console.log(data);
+      return data;
+    },
+    {
+      onError: (err) => {
+        console.log(err, "err fetching users");
+      },
+      enabled: !!user?.token,
+    },
+    { keepPreviousData: true }
+  );
+
+  const fetchUserPlaces = async () => {
+    try {
+      const { data } = await axios.get(
+        `https://vigoplace.com/server/api/admin/places/user/${userid}?perPage=${
+          pagination.pageSize
+        }&page=${pagination.pageIndex + 1}`,
+        {
+          headers: {
+            Authorization: user?.token,
+          },
+        }
+      );
+      // Set place count from initial data
+      setPlaceCount(data?.totalPlaces ?? 0);
+    } catch (err) {
+      console.log(err, "err fetching users");
+    }
+  };
+
+  useEffect(() => {
+    fetchUserPlaces();
+  }, []);
 
   /* ********** Mutations *************** */
 
@@ -807,6 +855,65 @@ const Users = () => {
         enableClickToCopy: false,
         header: "Date",
       },
+    ],
+    []
+  );
+
+  const renderCellData = (rowData, accessorKey) => {
+    const value = rowData[accessorKey];
+
+    if (value === null || value === undefined) {
+      return "null"; // You can replace this with any placeholder text
+    }
+
+    return value;
+  };
+
+  const placesColumns = useMemo(
+    () => [
+      {
+        accessorKey: "placeId",
+        enableClickToCopy: false,
+        header: "Id",
+      },
+      {
+        accessorKey: "placeName",
+        enableClickToCopy: true,
+        header: "Place Name",
+      },
+      {
+        accessorKey: "placeCategory",
+        enableClickToCopy: false,
+        header: "Category",
+        render: (rowData) => renderCellData(rowData, "placeCategory"),
+      },
+      {
+        accessorKey: "placeDescription",
+        enableClickToCopy: false,
+        header: "Place Description",
+      },
+      {
+        accessorKey: "placeAddress",
+        enableClickToCopy: false,
+        header: "Place Address",
+      },
+      {
+        accessorKey: "sysPlace",
+        enableClickToCopy: false,
+        header: "Sys Place",
+      },
+      // {
+      //   // accessorKey: "transactionDate",
+      //   accessorFn: (row) => {
+      //     if (row?.created_at) {
+      //       return format(new Date(row.created_at), "MM/dd/yyyy hh:mm a");
+      //     } else {
+      //       return "";
+      //     }
+      //   },
+      //   enableClickToCopy: false,
+      //   header: "Date",
+      // },
     ],
     []
   );
@@ -1803,7 +1910,8 @@ const Users = () => {
               >
                 <Tab label="Transactions" {...a11yProps(0)} />
                 <Tab label="Activities" {...a11yProps(1)} />
-                <Tab label="Payout" {...a11yProps(2)} />
+                <Tab label="Places" {...a11yProps(2)} />
+                <Tab label="Payout" {...a11yProps(3)} />
               </Tabs>
             </Box>
 
@@ -1867,6 +1975,36 @@ const Users = () => {
             </TabPanel>
 
             <TabPanel value={tabValue} index={2}>
+              <Box sx={{ pt: 3 }}>
+                <form>
+                  <Card>
+                    <CardHeader subheader="" title="User Places" />
+                    <Divider />
+                    <CardContent>
+                      <MaterialTable
+                        columns={placesColumns}
+                        data={userPlaces?.data ?? []}
+                        //rowCount={userActivities?.count ?? 0}
+                        rowCount={placeCount}
+                        status={status}
+                        setStatus={setStatus}
+                        handleStatus={handleStatus}
+                        isLoading={loadingPlaces}
+                        isError={fetchPlacesError}
+                        isFetching={fetchingPlaces}
+                        pagination={pagination}
+                        setPagination={setPagination}
+                        setGlobalFilter={setGlobalFilter}
+                        globalFilter={globalFilter}
+                        refetch={refetchPlaces}
+                      />
+                    </CardContent>
+                  </Card>
+                </form>
+              </Box>
+            </TabPanel>
+
+            <TabPanel value={tabValue} index={3}>
               <RecentOrders userPayouts={userPayout?.data} />
             </TabPanel>
           </Box>
