@@ -62,14 +62,6 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 
-//import { TextareaAutosize } from "@mui/base/TextareaAutosize";
-import TextareaAutosize from "@mui/material/TextareaAutosize";
-
-// import Dialog from "@mui/material/Dialog";
-// import DialogActions from "@mui/material/DialogActions";
-// import DialogContent from "@mui/material/DialogContent";
-// import DialogContentText from "@mui/material/DialogContentText";
-// import DialogTitle from "@mui/material/DialogTitle";
 
 //Icons Imports
 import { AccountCircle, Send } from "@mui/icons-material";
@@ -83,6 +75,7 @@ import {
   usePayoutRequests,
   fetchPayoutRequests,
 } from "../../hooks/usePayoutRequests";
+import Orders from "./orders";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -1912,6 +1905,7 @@ const Users = () => {
                 <Tab label="Activities" {...a11yProps(1)} />
                 <Tab label="Places" {...a11yProps(2)} />
                 <Tab label="Payout" {...a11yProps(3)} />
+                <Tab label="Orders" {...a11yProps(4)} />
               </Tabs>
             </Box>
 
@@ -2006,6 +2000,20 @@ const Users = () => {
 
             <TabPanel value={tabValue} index={3}>
               <RecentOrders userPayouts={userPayout?.data} />
+            </TabPanel>
+
+            <TabPanel value={tabValue} index={4}>
+              <Box sx={{ pt: 3 }}>
+                <form>
+                  <Card>
+                    <CardHeader subheader="" title="User Orders" />
+                    <Divider />
+                    <CardContent>
+                      <Orders />
+                    </CardContent>
+                  </Card>
+                </form>
+              </Box>
             </TabPanel>
           </Box>
         </Grid>
