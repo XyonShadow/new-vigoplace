@@ -61,7 +61,7 @@ export default function Orders() {
         }
       );
 
-      console.log(data);
+      //console.log(data);
       setOrders(data?.data?.totalUserOrders);
       setOrderCount(data?.data?.count);
     } catch (err) {
