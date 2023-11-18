@@ -134,7 +134,6 @@ export default function Orders() {
     []
   );
 
-  console.log(userid);
   return (
     <>
       <MaterialReactTable

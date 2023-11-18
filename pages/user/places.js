@@ -109,7 +109,6 @@ export default function Places() {
     []
   );
 
-  console.log(userid);
   return (
     <>
       <MaterialReactTable
