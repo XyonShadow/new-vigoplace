@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useEffect } from "react";
-import MaterialReactTable from "material-react-table";
 import { useRouter } from "next/router";
 import { format } from "date-fns";
+import axios from "axios";
 import {
   Avatar,
   Card,
@@ -18,19 +18,16 @@ import {
   Tab,
   Tooltip,
   OutlinedInput,
+  Chip,
+  Select,
+  Stack,
+  InputLabel,
+  FormControl,
 } from "@mui/material";
+
 import RefreshIcon from "@mui/icons-material/Refresh";
-import axios from "axios";
 import CheckIcon from "@mui/icons-material/Check";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import InputLabel from "@mui/material/InputLabel";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import SearchIcon from "@mui/icons-material/Search";
-import Input from "@mui/material/Input";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import Chip from "@mui/material/Chip";
-import Stack from "@mui/material/Stack";
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import MuiAlert from "@mui/material/Alert";
@@ -62,13 +59,8 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 
-
 //Icons Imports
-import { AccountCircle, Send } from "@mui/icons-material";
-import { UserBalanceCard } from "../../src/components/dashboard/userBalanceCard";
-import { UserBio } from "../../src/components/dashboard/userBio";
 import { LoadingButton, TabContext, TabList } from "@mui/lab";
-import BaseCard from "../../src/components/baseCard/BaseCard";
 import { MaterialTable } from "../../src/components/table";
 import RecentOrders from "../../src/components/RecentOrders";
 import {
@@ -76,6 +68,8 @@ import {
   fetchPayoutRequests,
 } from "../../hooks/usePayoutRequests";
 import Orders from "./orders";
+import Activities from "./activities";
+import Places from "./places";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -138,19 +132,13 @@ const Users = () => {
   const [lienModal, setLienModal] = React.useState(false);
   const [ticketModal, setTicketModal] = React.useState(false);
   const [status, setStatus] = React.useState("");
-  const [filters, setFilters] = useState({
-    status: null,
-  });
   const [pin, setPin] = React.useState(null);
   const [reason, setReason] = React.useState("");
   const [duration, setDuration] = React.useState("");
   const [categoryId, setCategoryId] = React.useState("");
   const [description, setDescription] = React.useState("");
   const [subject, setSubject] = React.useState("");
-  const [activityCount, setActivityCount] = useState(0);
-  const [placeCount, setPlaceCount] = useState(0);
   const [isVerified, setIsverified] = React.useState("");
-  const [email, setEmail] = React.useState("");
   const [tabValue, setTabValue] = React.useState(0);
   const [creditDetails, setCreditDetails] = useState({
     amount: "",
@@ -234,10 +222,6 @@ const Users = () => {
   const handleDuration = (e) => {
     setDuration(e.target.value);
   };
-
-  // const handleCategoryId = (e) => {
-  //   setCategoryId(e.target.value);
-  // };
 
   const handleCategoryId = (e) => {
     setCategoryId(Number(e.target.value) || "");
@@ -332,7 +316,6 @@ const Users = () => {
         }&offset=${pagination.pageIndex * pagination.pageSize}${
           status !== "" ? `&status=${status}` : ""
         }`,
-        // `http://localhost:3001/api/admin/console/users/transactions?userId=${userid}&limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${status !=='' ? `&status=${status}`:''}`,
         {
           headers: {
             Authorization: user?.token,
@@ -350,125 +333,8 @@ const Users = () => {
     },
     { keepPreviousData: true }
   );
-
-
-  ////////////ACTIVITY API/////////////////////
-  const {
-    data: userActivities,
-    isError: fetchActivitiesError,
-    isFetching: fetchingActivities,
-    isLoading: loadingActivities,
-    refetch: refetchActivities,
-  } = useQuery(
-    ["fetchSingleUserActivities", pagination.pageIndex, pagination.pageSize],
-    async () => {
-      const { data } = await axios.get(
-        //`http://localhost:4000/api/admin/console/users/activities?userId=${userid}&perPage=${
-        `https://vigoplace.com/server/api/admin/console/users/activities?userId=${userid}&perPage=${
-          pagination.pageSize
-        }&page=${pagination.pageIndex + 1}`,
-        {
-          headers: {
-            Authorization: user?.token,
-          },
-        }
-      );
-
-      //console.log(data);
-      return data;
-    },
-    {
-      onError: (err) => {
-        console.log(err, "err fetching users");
-      },
-      enabled: !!user?.token,
-    },
-    { keepPreviousData: true }
-  );
-
-  const fetchUserActivities = async () => {
-    try {
-      const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/users/activities?userId=${userid}&perPage=${
-          pagination.pageSize
-        }&page=${pagination.pageIndex + 1}`,
-        {
-          headers: {
-            Authorization: user?.token,
-          },
-        }
-      );
-      // Set activity count from initial data
-      setActivityCount(data?.count ?? 0);
-    } catch (err) {
-      console.log(err, "err fetching users");
-    }
-  };
-
-  useEffect(() => {
-    fetchUserActivities();
-  }, []);
-
-
-  /////////PLACES API ////////////////////
-  const {
-    data: userPlaces,
-    isError: fetchPlacesError,
-    isFetching: fetchingPlaces,
-    isLoading: loadingPlaces,
-    refetch: refetchPlaces,
-  } = useQuery(
-    ["fetchSingleUserPlaces", pagination.pageIndex, pagination.pageSize],
-    async () => {
-      const { data } = await axios.get(
-        //`http://localhost:4000/api/admin/user/${userid}&perPage=${
-        `https://vigoplace.com/server/api/admin/places/user/${userid}?perPage=${
-          pagination.pageSize
-        }&page=${pagination.pageIndex + 1}`,
-        {
-          headers: {
-            Authorization: user?.token,
-          },
-        }
-      );
-
-      //console.log(data);
-      return data;
-    },
-    {
-      onError: (err) => {
-        console.log(err, "err fetching users");
-      },
-      enabled: !!user?.token,
-    },
-    { keepPreviousData: true }
-  );
-
-  const fetchUserPlaces = async () => {
-    try {
-      const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/places/user/${userid}?perPage=${
-          pagination.pageSize
-        }&page=${pagination.pageIndex + 1}`,
-        {
-          headers: {
-            Authorization: user?.token,
-          },
-        }
-      );
-      // Set place count from initial data
-      setPlaceCount(data?.totalPlaces ?? 0);
-    } catch (err) {
-      console.log(err, "err fetching users");
-    }
-  };
-
-  useEffect(() => {
-    fetchUserPlaces();
-  }, []);
 
   /* ********** Mutations *************** */
-
   const creditUser = async ({
     amount,
     approvalPin,
@@ -663,7 +529,6 @@ const Users = () => {
     mutationKey: ["postNoDebitUser"],
     mutationFn: postNoDebit,
     onSuccess: () => {
-      //console.log("successful");
       queryClient.invalidateQueries("fetchSingleUser");
       setTimeout(() => {
         postNoDebitMutation.reset(); // Reset the mutation
@@ -723,7 +588,6 @@ const Users = () => {
         description,
         subject,
         categoryId,
-        //approvalPin: pin,
       },
       {
         headers: {
@@ -781,14 +645,12 @@ const Users = () => {
         header: "Currency",
       },
       {
-        // accessorKey: "transactionTotal",
         id: "transactionTotal",
         accessorFn: (row) => row.transactionNetTotal?.toLocaleString("en-US"),
         enableClickToCopy: false,
         header: "Amount",
       },
       {
-        // accessorKey: "transactionTotal",
         id: "transactionFee",
         accessorKey: "transactionFee",
         enableClickToCopy: false,
@@ -805,108 +667,6 @@ const Users = () => {
         enableClickToCopy: false,
         header: "Date",
       },
-    ],
-    []
-  );
-
-  const activitiesColumns = useMemo(
-    () => [
-      {
-        accessorKey: "Action",
-        enableClickToCopy: false,
-        header: "Action",
-      },
-      {
-        accessorKey: "Description",
-        enableClickToCopy: true,
-        header: "Description",
-      },
-      {
-        accessorKey: "ip",
-        enableClickToCopy: false,
-        header: "IP Address",
-      },
-      {
-        accessorKey: "browser",
-        enableClickToCopy: false,
-        header: "Browser",
-      },
-      {
-        accessorKey: "location",
-        enableClickToCopy: false,
-        header: "Location",
-      },
-      {
-        // accessorKey: "transactionDate",
-        accessorFn: (row) => {
-          if (row?.created_at) {
-            return format(new Date(row.created_at), "MM/dd/yyyy hh:mm a");
-          } else {
-            return "";
-          }
-        },
-        enableClickToCopy: false,
-        header: "Date",
-      },
-    ],
-    []
-  );
-
-  const renderCellData = (rowData, accessorKey) => {
-    const value = rowData[accessorKey];
-
-    if (value === null || value === undefined) {
-      return "null"; // You can replace this with any placeholder text
-    }
-
-    return value;
-  };
-
-  const placesColumns = useMemo(
-    () => [
-      {
-        accessorKey: "placeId",
-        enableClickToCopy: false,
-        header: "Id",
-      },
-      {
-        accessorKey: "placeName",
-        enableClickToCopy: true,
-        header: "Place Name",
-      },
-      {
-        accessorKey: "placeCategory",
-        enableClickToCopy: false,
-        header: "Category",
-        render: (rowData) => renderCellData(rowData, "placeCategory"),
-      },
-      {
-        accessorKey: "placeDescription",
-        enableClickToCopy: false,
-        header: "Place Description",
-      },
-      {
-        accessorKey: "placeAddress",
-        enableClickToCopy: false,
-        header: "Place Address",
-      },
-      {
-        accessorKey: "sysPlace",
-        enableClickToCopy: false,
-        header: "Sys Place",
-      },
-      // {
-      //   // accessorKey: "transactionDate",
-      //   accessorFn: (row) => {
-      //     if (row?.created_at) {
-      //       return format(new Date(row.created_at), "MM/dd/yyyy hh:mm a");
-      //     } else {
-      //       return "";
-      //     }
-      //   },
-      //   enableClickToCopy: false,
-      //   header: "Date",
-      // },
     ],
     []
   );
@@ -1073,8 +833,6 @@ const Users = () => {
             flexWrap: "wrap",
           }}
         >
-          {/* <BaseCard title=""> */}
-          {/* <Card> */}
           <Card sx={{ width: 400 }} xs={12} sm={12}>
             <CardHeader
               avatar={
@@ -1112,7 +870,6 @@ const Users = () => {
                 <b>BIO:</b> {userDetails?.data?.user?.bio}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {/* <b>Joined:</b> {userDetails?.data?.user?.createdAt} */}
                 <b>Joined:</b>{" "}
                 {userDetails?.data?.user?.createdAt
                   ? format(new Date(userDetails?.data?.user?.createdAt), "Pp")
@@ -1157,7 +914,6 @@ const Users = () => {
                   ))
                 : null}
 
-              {/* <Grid item sm={12} xs={12} lg={12} marginTop={8}> */}
               <Box
                 sx={{
                   width: "100%",
@@ -1283,7 +1039,6 @@ const Users = () => {
                           onChange={handleReason}
                         />
                         <TextField
-                          //autoFocus
                           margin="dense"
                           id="name"
                           label="Approval Pin"
@@ -1311,7 +1066,6 @@ const Users = () => {
                             pin === null || pin?.length <= 5 || reason === ""
                           }
                           onClick={() => {
-                            //postYesDebitMutation.mutate({id: userDetails?.data?.user?.id})
                             postYesDebitMutation.mutate({
                               id: userDetails?.data?.user?.id,
                               pin,
@@ -1381,7 +1135,6 @@ const Users = () => {
                           onChange={handleReason}
                         />
                         <TextField
-                          //autoFocus
                           margin="dense"
                           id="duration"
                           label="Duration"
@@ -1392,7 +1145,6 @@ const Users = () => {
                           onChange={handleDuration}
                         />
                         <TextField
-                          //autoFocus
                           margin="dense"
                           id="name"
                           label="Approval Pin"
@@ -1424,7 +1176,6 @@ const Users = () => {
                             duration === ""
                           }
                           onClick={() => {
-                            //postYesDebitMutation.mutate({id: userDetails?.data?.user?.id})
                             postNoDebitMutation.mutate({
                               id: userDetails?.data?.user?.id,
                               pin: pin,
@@ -1494,7 +1245,6 @@ const Users = () => {
                         </Select>
                       </FormControl>
                       <TextField
-                        //autoFocus
                         margin="dense"
                         id="subject"
                         label="Subject"
@@ -1505,7 +1255,6 @@ const Users = () => {
                         onChange={handleSubject}
                       />
                       <TextField
-                        //autoFocus
                         margin="dense"
                         id="description"
                         label="Message"
@@ -1515,34 +1264,6 @@ const Users = () => {
                         variant="standard"
                         onChange={handleDescription}
                       />
-                      {/* <TextareaAutosize
-                        //autoFocus
-                        minRows={3}
-                        id="description"
-                        placeholder="Description"
-                        fullWidth
-                        value={description}
-                        onChange={handleDescription}
-                        style={{
-                          //marginTop: 20,
-                          width: "100%",
-                          padding: "10px",
-                          resize: "none",
-                          border: "1px solid #ccc", // Add a border here
-                          borderRadius: "4px", // Add rounded corners
-                        }}
-                      /> */}
-                      {/* <TextField
-                        //autoFocus
-                        margin="dense"
-                        id="name"
-                        label="Approval Pin"
-                        type="number"
-                        fullWidth
-                        value={pin}
-                        variant="standard"
-                        onChange={handlePin}
-                      /> */}
                     </DialogContent>
                     <DialogActions>
                       <Button
@@ -1733,7 +1454,6 @@ const Users = () => {
                               walletId,
                             };
                             creditUserMutation.mutate(mergedDetails);
-                            // setOpenModal2(true);
                           }}
                         >
                           Credit
@@ -1865,7 +1585,6 @@ const Users = () => {
                               ...debitDetails,
                               walletId,
                             });
-                            // setOpenModal2(true);
                           }}
                         >
                           Debit
@@ -1897,7 +1616,6 @@ const Users = () => {
                 value={tabValue}
                 onChange={handleTabChange}
                 textColor="inherit"
-                // centered
                 scrollButtons="auto"
                 aria-label=""
               >
@@ -1945,23 +1663,7 @@ const Users = () => {
                     <CardHeader subheader="" title="User Activities" />
                     <Divider />
                     <CardContent>
-                      <MaterialTable
-                        columns={activitiesColumns}
-                        data={userActivities?.data ?? []}
-                        //rowCount={userActivities?.count ?? 0}
-                        rowCount={activityCount}
-                        isLoading={loadingActivities}
-                        isError={fetchActivitiesError}
-                        isFetching={fetchingActivities}
-                        status={status}
-                        setStatus={setStatus}
-                        handleStatus={handleStatus}
-                        pagination={pagination}
-                        setPagination={setPagination}
-                        setGlobalFilter={setGlobalFilter}
-                        globalFilter={globalFilter}
-                        refetch={refetchActivities}
-                      />
+                      <Activities />
                     </CardContent>
                   </Card>
                 </form>
@@ -1975,23 +1677,7 @@ const Users = () => {
                     <CardHeader subheader="" title="User Places" />
                     <Divider />
                     <CardContent>
-                      <MaterialTable
-                        columns={placesColumns}
-                        data={userPlaces?.data ?? []}
-                        //rowCount={userActivities?.count ?? 0}
-                        rowCount={placeCount}
-                        status={status}
-                        setStatus={setStatus}
-                        handleStatus={handleStatus}
-                        isLoading={loadingPlaces}
-                        isError={fetchPlacesError}
-                        isFetching={fetchingPlaces}
-                        pagination={pagination}
-                        setPagination={setPagination}
-                        setGlobalFilter={setGlobalFilter}
-                        globalFilter={globalFilter}
-                        refetch={refetchPlaces}
-                      />
+                      <Places />
                     </CardContent>
                   </Card>
                 </form>
@@ -2021,5 +1707,6 @@ const Users = () => {
     </>
   );
 };
+
 Users.auth = true;
 export default Users;

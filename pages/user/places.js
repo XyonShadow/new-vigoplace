@@ -26,16 +26,15 @@ import { getSession, useSession } from "next-auth/react";
 
 const API_BASE_URL = "https://vigoplace.com/server";
 //const API_BASE_URL = "http://localhost:4000";
-export default function Orders() {
+export default function Places() {
   const router = useRouter();
   const { userid } = router.query;
   const queryClient = useQueryClient();
   const getUser = useSession();
   const user = getUser?.data?.user;
-  const [orders, setOrders] = useState([]);
-  const [orderCount, setOrderCount] = useState(0);
+  const [places, setPlaces] = useState([]);
+  const [placeCount, setPlaceCount] = useState(0);
   const [globalFilter, setGlobalFilter] = useState("");
-  const [status, setStatus] = React.useState("all");
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
@@ -44,16 +43,12 @@ export default function Orders() {
     pageSize: 10,
   });
 
-  const handleStatus = (event) => {
-    setStatus(event.target.value);
-  };
-
-  const fetchUserOrders = async () => {
+  const fetchUserPlaces = async () => {
     setIsFetching(true);
     setIsLoading(true);
     try {
       const { data } = await axios.get(
-        `${API_BASE_URL}/api/admin/console/users/orders?userId=${userid}&status=${status}&perPage=${pagination.pageSize}&page=${pagination.pageIndex}`,
+        `${API_BASE_URL}/api/admin/places/user/${userid}?perPage=${pagination.pageSize}&page=${pagination.pageIndex}`,
         {
           headers: {
             Authorization: user?.token,
@@ -62,11 +57,11 @@ export default function Orders() {
       );
 
       //console.log(data);
-      setOrders(data?.data?.totalUserOrders);
-      setOrderCount(data?.data?.count);
+      setPlaces(data?.data ?? []);
+      setPlaceCount(data?.totalPlaces ?? 0);
     } catch (err) {
       setIsError(true);
-      console.log(err, "err fetching user orders");
+      console.log(err, "err fetching user places");
     } finally {
       setIsLoading(false);
       setIsFetching(false);
@@ -74,61 +69,41 @@ export default function Orders() {
   };
 
   useEffect(() => {
-    fetchUserOrders();
-  }, [userid, status, pagination]);
+    fetchUserPlaces();
+  }, [userid, pagination]);
 
-  const columns = useMemo(
+  const placesColumns = useMemo(
     () => [
       {
-        accessorKey: "OPSOId",
+        accessorKey: "placeId",
         enableClickToCopy: false,
-        header: "Order Id",
+        header: "Id",
       },
       {
-        accessorKey: "OPSOProductId",
-        enableClickToCopy: false,
-        header: "Product Id",
+        accessorKey: "placeName",
+        enableClickToCopy: true,
+        header: "Place Name",
       },
       {
-        accessorKey: "OPSOTransactionId",
+        accessorKey: "placeCategory",
         enableClickToCopy: false,
-        header: "Transaction Id",
+        header: "Category",
+        render: (rowData) => renderCellData(rowData, "placeCategory"),
       },
       {
-        accessorKey: "OPSOStatus",
+        accessorKey: "placeDescription",
         enableClickToCopy: false,
-        header: "Status",
+        header: "Place Description",
       },
       {
-        accessorKey: "OPSOCurrencyId",
+        accessorKey: "placeAddress",
         enableClickToCopy: false,
-        header: "Currency Id",
+        header: "Place Address",
       },
       {
-        accessorKey: "OPSOQuantity",
+        accessorKey: "sysPlace",
         enableClickToCopy: false,
-        header: "Order Quantity",
-      },
-      {
-        accessorKey: "OPSOAmount",
-        enableClickToCopy: false,
-        header: "Order Currency Amount",
-      },
-      {
-        accessorKey: "OPSOAddress",
-        enableClickToCopy: false,
-        header: "Address",
-      },
-      {
-        accessorFn: (row) => {
-          if (row?.OPSOCreatedAt) {
-            return format(new Date(row.OPSOCreatedAt), "MM/dd/yyyy hh:mm a");
-          } else {
-            return "";
-          }
-        },
-        enableClickToCopy: false,
-        header: "Date",
+        header: "Sys Place",
       },
     ],
     []
@@ -141,14 +116,14 @@ export default function Orders() {
         enableColumnFilterModes
         enableColumnOrdering
         enablePinning
-        columns={columns}
-        data={orders}
+        columns={placesColumns}
+        data={places}
         enableStickyHeader
         enablePagination
         manualPagination
         manualFiltering
         onPaginationChange={setPagination}
-        rowCount={orderCount}
+        rowCount={placeCount}
         onGlobalFilterChange={setGlobalFilter}
         initialState={{ showColumnFilters: false }}
         positionToolbarAlertBanner="bottom"
@@ -165,30 +140,10 @@ export default function Orders() {
           return (
             <div style={{ display: "flex", gap: "0.5rem" }}>
               <Tooltip arrow title="Refresh Data">
-                <IconButton onClick={() => fetchUserOrders()}>
+                <IconButton onClick={() => fetchUserPlaces()}>
                   <RefreshIcon />
                 </IconButton>
               </Tooltip>
-
-              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                <InputLabel id="demo-simple-select-standard-label">
-                  Status
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-standard-label"
-                  id="demo-simple-select-standard"
-                  value={status}
-                  defaultValue="None"
-                  onChange={handleStatus}
-                  label="Status"
-                >
-                  <MenuItem value={"all"}>All</MenuItem>
-                  <MenuItem value={"pending"}>Pending</MenuItem>
-                  <MenuItem value={"shipped"}>Shipped</MenuItem>
-                  <MenuItem value={"completed"}>Completed</MenuItem>
-                  <MenuItem value={"cancelled"}>Cancelled</MenuItem>
-                </Select>
-              </FormControl>
             </div>
           );
         }}
