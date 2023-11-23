@@ -70,6 +70,7 @@ import {
 import Orders from "./orders";
 import Activities from "./activities";
 import Places from "./places";
+import Followers from "./followers"
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -1624,6 +1625,7 @@ const Users = () => {
                 <Tab label="Places" {...a11yProps(2)} />
                 <Tab label="Payout" {...a11yProps(3)} />
                 <Tab label="Orders" {...a11yProps(4)} />
+                <Tab label="Followers" {...a11yProps(5)} />
               </Tabs>
             </Box>
 
@@ -1696,6 +1698,20 @@ const Users = () => {
                     <Divider />
                     <CardContent>
                       <Orders />
+                    </CardContent>
+                  </Card>
+                </form>
+              </Box>
+            </TabPanel>
+
+            <TabPanel value={tabValue} index={5}>
+              <Box sx={{ pt: 3 }}>
+                <form>
+                  <Card>
+                    <CardHeader subheader="" title="User Followers" />
+                    <Divider />
+                    <CardContent>
+                      <Followers />
                     </CardContent>
                   </Card>
                 </form>
