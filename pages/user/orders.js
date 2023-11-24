@@ -53,7 +53,7 @@ export default function Orders() {
     setIsLoading(true);
     try {
       const { data } = await axios.get(
-        `${API_BASE_URL}/api/admin/console/users/orders?userId=${userid}&status=${status}&perPage=${pagination.pageSize}&page=${pagination.pageIndex}`,
+        `${API_BASE_URL}/api/admin/console/user/orders?userId=${userid}&status=${status}&perPage=${pagination.pageSize}&page=${pagination.pageIndex}`,
         {
           headers: {
             Authorization: user?.token,
@@ -102,7 +102,7 @@ export default function Orders() {
       {
         accessorKey: "OPSOCurrencyId",
         enableClickToCopy: false,
-        header: "Currency Id",
+        header: "Currency",
       },
       {
         accessorKey: "OPSOQuantity",
