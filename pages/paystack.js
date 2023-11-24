@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import { MaterialReactTable } from "material-react-table";
 import { useRouter } from "next/router";
 import { format } from "date-fns";
@@ -99,8 +99,6 @@ const Users = () => {
   const queryClient = useQueryClient();
   const getUser = useSession();
   const user = getUser?.data?.user;
-  const [value, setValue] = React.useState("1");
-  const [walletId, setWalletId] = React.useState(null);
 
   const [columnFilters, setColumnFilters] = useState([]);
   const [globalFilter, setGlobalFilter] = useState("");
@@ -113,25 +111,15 @@ const Users = () => {
     pageIndex: 1,
     pageSize: 10,
   });
+  const [pageIndex, setPageIndex] = useState(1);
+  const [isLoadingT, setIsLoadingT] = useState(false);
+  const [isErrorT, setIsErrorT] = useState(false);
+  const [isFetchingT, setIsFetchingT] = useState(false);
+  const [transaction, setTransaction] = useState([]);
   const [transactionCount, setTransactionCount] = useState(0);
   const [transferCount, setTransferCount] = useState(0);
-  const [creditSuccessToast, setCreditSuccessToast] = React.useState(false);
-  const [creditErrorToast, setCreditErrorToast] = React.useState(false);
-  const [debitSuccessToast, setDebitSuccessToast] = React.useState(false);
-  const [debitErrorToast, setDebitErrorToast] = React.useState(false);
-
   const [status, setStatus] = React.useState("");
-  const [isVerified, setIsverified] = React.useState("");
-  const [email, setEmail] = React.useState("");
   const [tabValue, setTabValue] = React.useState(0);
-  const [creditDetails, setCreditDetails] = useState({
-    amount: "",
-    approvalPin: "",
-  });
-  const [debitDetails, setDebitDetails] = useState({
-    amount: "",
-    approvalPin: "",
-  });
 
   /* ******* onchange functions ********** */
 
@@ -173,26 +161,14 @@ const Users = () => {
     { keepPreviousData: true }
   );
 
-  const {
-    data: transactionData,
-    isError: transactionError,
-    isFetching: transactionFetching,
-    isLoading: transactionLoading,
-    refetch: transactionRefetch,
-  } = useQuery(
-    [
-      "fetchpaystackTransactions",
-      columnFilters, //refetch when columnFilters changes
-      globalFilter, //refetch when globalFilter changes
-      transactionPagination.pageIndex, //refetch when pagination.pageIndex changes
-      transactionPagination.pageSize, //refetch when pagination.pageSize changes
-      sorting, //refetch when sorting changes
-      status,
-    ],
-    async () => {
+  //console.log(pageIndex);
+  //const test = 0;
+  const fetchTransactions = async () => {
+    setIsFetchingT(true);
+    setIsLoadingT(true);
+    try {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/transactions/paystack?perPage=${transactionPagination.pageSize}&page=${transactionPagination.pageIndex}`,
-        // `http://localhost:3001/api/admin/console/transactions/paystack?perPage=${transactionPagination.pageSize}&page=${transactionPagination.pageIndex}`,
+        `https://vigoplace.com/server/api/admin/console/transactions/paystack?perPage=${transactionPagination.pageSize}&page=${pageIndex}`,
         {
           headers: {
             Authorization: user?.token,
@@ -201,17 +177,60 @@ const Users = () => {
       );
 
       //console.log(data);
-      setTransactionCount(transactionData?.meta?.total ?? 0);
-      return data;
-    },
-    {
-      onError: (err) => {
-        console.log(err, "err fetching users");
-      },
-      enabled: !!user?.token,
-    },
-    { keepPreviousData: true }
-  );
+      setTransaction(data?.data ?? []);
+      setTransactionCount(data?.meta?.total ?? 0);
+    } catch (err) {
+      setIsErrorT(true);
+      console.log(err, "err fetching transactions");
+    } finally {
+      setIsLoadingT(false);
+      setIsFetchingT(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTransactions();
+  }, [userid, status, transactionPagination, globalFilter]);
+
+  // const {
+  //   data: transactionData,
+  //   isError: transactionError,
+  //   isFetching: transactionFetching,
+  //   isLoading: transactionLoading,
+  //   refetch: transactionRefetch,
+  // } = useQuery(
+  //   [
+  //     "fetchpaystackTransactions",
+  //     columnFilters, //refetch when columnFilters changes
+  //     globalFilter, //refetch when globalFilter changes
+  //     transactionPagination.pageIndex, //refetch when pagination.pageIndex changes
+  //     transactionPagination.pageSize, //refetch when pagination.pageSize changes
+  //     sorting, //refetch when sorting changes
+  //     status,
+  //   ],
+  //   async () => {
+  //     const { data } = await axios.get(
+  //       `https://vigoplace.com/server/api/admin/console/transactions/paystack?perPage=${transactionPagination.pageSize}&page=${transactionPagination.pageIndex}`,
+  //       // `http://localhost:3001/api/admin/console/transactions/paystack?perPage=${transactionPagination.pageSize}&page=${transactionPagination.pageIndex}`,
+  //       {
+  //         headers: {
+  //           Authorization: user?.token,
+  //         },
+  //       }
+  //     );
+
+  //     //console.log(data);
+  //     setTransactionCount(transactionData?.meta?.total ?? 0);
+  //     return data;
+  //   },
+  //   {
+  //     onError: (err) => {
+  //       console.log(err, "err fetching users");
+  //     },
+  //     enabled: !!user?.token,
+  //   },
+  //   { keepPreviousData: true }
+  // );
 
   const columns = useMemo(
     () => [
@@ -487,13 +506,13 @@ const Users = () => {
                   enableColumnOrdering
                   enablePinning
                   columns={transactionColumns}
-                  data={transactionData?.data ?? []}
+                  data={transaction}
                   enableStickyHeader
                   //enableStickyFooter
                   enablePagination
                   manualPagination
                   manualFiltering
-                  onPaginationChange={setTransactionPagination}
+                  onPaginationChange={setTransactionPagination || setPageIndex}
                   //rowCount={transactionData?.meta?.total ?? 0}
                   rowCount={transactionCount}
                   onGlobalFilterChange={setGlobalFilter}
@@ -518,7 +537,7 @@ const Users = () => {
                     return (
                       <div style={{ display: "flex", gap: "0.5rem" }}>
                         <Tooltip arrow title="Refresh Data">
-                          <IconButton onClick={() => transactionRefetch()}>
+                          <IconButton onClick={() => fetchTransactions()}>
                             <RefreshIcon />
                           </IconButton>
                         </Tooltip>
@@ -571,10 +590,10 @@ const Users = () => {
                     );
                   }}
                   state={{
-                    isLoading: transactionLoading,
-                    showAlertBanner: transactionError,
-                    showProgressBars: transactionFetching,
-                    pagination: transactionPagination,
+                    isLoadingT,
+                    showAlertBanner: isErrorT,
+                    showProgressBars: isFetchingT,
+                    pagination: transactionPagination || pageIndex,
                     globalFilter,
                   }}
                   muiTableContainerProps={{ sx: { height: "75vh" } }}
