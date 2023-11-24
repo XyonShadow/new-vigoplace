@@ -48,12 +48,16 @@ export default function Orders() {
     setStatus(event.target.value);
   };
 
+  const handleSearch = (event) => {
+    setGlobalFilter(event || "");
+  };
+
   const fetchUserOrders = async () => {
     setIsFetching(true);
     setIsLoading(true);
     try {
       const { data } = await axios.get(
-        `${API_BASE_URL}/api/admin/console/user/orders?userId=${userid}&status=${status}&perPage=${pagination.pageSize}&page=${pagination.pageIndex}`,
+        `${API_BASE_URL}/api/admin/console/user/orders?userId=${userid}&status=${status}&perPage=${pagination.pageSize}&page=${pagination.pageIndex}&search=${globalFilter}`,
         {
           headers: {
             Authorization: user?.token,
@@ -75,7 +79,7 @@ export default function Orders() {
 
   useEffect(() => {
     fetchUserOrders();
-  }, [userid, status, pagination]);
+  }, [userid, status, pagination, globalFilter]);
 
   const columns = useMemo(
     () => [
@@ -148,7 +152,7 @@ export default function Orders() {
         manualFiltering
         onPaginationChange={setPagination}
         rowCount={orderCount}
-        onGlobalFilterChange={setGlobalFilter}
+        onGlobalFilterChange={handleSearch}
         initialState={{ showColumnFilters: false }}
         positionToolbarAlertBanner="bottom"
         muiToolbarAlertBannerProps={
