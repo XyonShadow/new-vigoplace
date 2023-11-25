@@ -43,12 +43,16 @@ export default function Activities() {
     pageSize: 10,
   });
 
+  const handleSearch = (event) => {
+    setGlobalFilter(event || "");
+  };
+
   const fetchUserActivities = async () => {
     setIsFetching(true);
     setIsLoading(true);
     try {
       const { data } = await axios.get(
-        `${API_BASE_URL}/api/admin/console/users/activities?userId=${userid}&perPage=${pagination.pageSize}&page=${pagination.pageIndex}`,
+        `${API_BASE_URL}/api/admin/console/users/activities?userId=${userid}&perPage=${pagination.pageSize}&page=${pagination.pageIndex}&search=${globalFilter}`,
         {
           headers: {
             Authorization: user?.token,
@@ -70,7 +74,7 @@ export default function Activities() {
 
   useEffect(() => {
     fetchUserActivities();
-  }, [userid, pagination]);
+  }, [userid, pagination, globalFilter]);
 
   const activitiesColumns = useMemo(
     () => [
@@ -128,7 +132,7 @@ export default function Activities() {
         manualFiltering
         onPaginationChange={setPagination}
         rowCount={activityCount}
-        onGlobalFilterChange={setGlobalFilter}
+        onGlobalFilterChange={handleSearch}
         initialState={{ showColumnFilters: false }}
         positionToolbarAlertBanner="bottom"
         muiToolbarAlertBannerProps={

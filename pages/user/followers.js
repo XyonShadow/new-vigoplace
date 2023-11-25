@@ -72,12 +72,17 @@ export default function Followers() {
     setFollowerEndDate(event.target.value);
   };
 
+  const handleSearch = (event) => {
+    setGlobalFilter(event || "");
+  };
+  //console.log(globalFilter);
+
   const fetchUserFollowers = async () => {
     setIsFetching(true);
     setIsLoading(true);
     try {
       const { data } = await axios.get(
-        `${API_BASE_URL}/api/admin/console/followers?userId=${userid}&perPage=${pagination.pageSize}&page=${pagination.pageIndex}&followRequestStart=${startFollowerDate}&followRequestEnd=${endFollowerDate}&userCreatedAtStart=${startUserDate}&userCreatedAtEnd=${endUserDate}`,
+        `${API_BASE_URL}/api/admin/console/followers?userId=${userid}&perPage=${pagination.pageSize}&page=${pagination.pageIndex}&followRequestStart=${startFollowerDate}&followRequestEnd=${endFollowerDate}&userCreatedAtStart=${startUserDate}&userCreatedAtEnd=${endUserDate}&search=${globalFilter}`,
         {
           headers: {
             Authorization: user?.token,
@@ -85,7 +90,7 @@ export default function Followers() {
         }
       );
 
-      //console.log(data);
+      ///console.log(data);
       setFollowers(data?.data?.followers);
       setFollowerCount(data?.data?.totalFollowers);
     } catch (err) {
@@ -171,6 +176,7 @@ export default function Followers() {
     startFollowerDate,
     endFollowerDate,
     anyDatePopulated,
+    globalFilter,
   ]);
 
   const columns = useMemo(
@@ -249,7 +255,7 @@ export default function Followers() {
         manualFiltering
         onPaginationChange={setPagination}
         rowCount={followerCount}
-        onGlobalFilterChange={setGlobalFilter}
+        onGlobalFilterChange={handleSearch}
         initialState={{ showColumnFilters: false }}
         positionToolbarAlertBanner="bottom"
         muiToolbarAlertBannerProps={
@@ -275,8 +281,20 @@ export default function Followers() {
                 </IconButton>
               </Tooltip>
 
-              <Box sx={{ display: "flex", gap: 20, justifyContent: "space-between" }}>
-                <Box sx={{ display: "flex", flexDirection: "column", marginLeft: "10px"}}>
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: 20,
+                  justifyContent: "space-between",
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    marginLeft: "10px",
+                  }}
+                >
                   <InputLabel id="demo-simple-select-standard-label">
                     User Creation Date
                   </InputLabel>
