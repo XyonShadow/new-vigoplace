@@ -75,7 +75,6 @@ export default function Followers() {
   const handleSearch = (event) => {
     setGlobalFilter(event || "");
   };
-  //console.log(globalFilter);
 
   const fetchUserFollowers = async () => {
     setIsFetching(true);
@@ -90,7 +89,7 @@ export default function Followers() {
         }
       );
 
-      ///console.log(data);
+      //console.log(data);
       setFollowers(data?.data?.followers);
       setFollowerCount(data?.data?.totalFollowers);
     } catch (err) {
@@ -116,6 +115,8 @@ export default function Followers() {
       endUserDate !== "" ||
       startFollowerDate !== "" ||
       endFollowerDate !== "";
+
+    const searched = globalFilter !== "" || globalFilter === "";
 
     if (anyDateEntered) {
       setAnyDatePopulated(true);
@@ -149,6 +150,10 @@ export default function Followers() {
     }
 
     if (userid !== prevUserId || pagination !== prevPagination) {
+      shouldFetch = true;
+    }
+
+    if (searched) {
       shouldFetch = true;
     }
 
