@@ -45,7 +45,12 @@ const Menuitems = [
     icon: "paper",
     href: "/logs",
     roles: ['admin', 'administrator']
-
+  },
+  {
+    title: "Stripe",
+    icon: "dollar-sign",
+    href: "/stripe",
+    roles: ['admin', 'administrator']
   },
 
   // {
