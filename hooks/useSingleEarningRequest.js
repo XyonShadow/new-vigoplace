@@ -7,25 +7,20 @@ const getToken = async () => {
   return session?.user?.token;
 };
 
-const fetchSinglePayoutRequest = async (id) => {
+const fetchSingleEarningRequest = async (id) => {
   try {
     const token = await getToken();
 
-    // const parsed = await ky(`http://localhost:3001/api/admin/console/payouts/${id}`, {
-    //   headers:{
-    //       'Authorization': token
-    //   },
-    // }).json()
-
     const parsed = await ky(
-      `https://vigoplace.com/server/api/admin/console/payouts/${id}`,
+      `https://vigoplace.com/server/api/admin/console/earnings/${id}`,
+      //`http://localhost:4000/api/admin/console/earnings/${id}`,
       {
         headers: {
           Authorization: token,
         },
       }
     ).json();
-    //console.log(parsed)
+    //console.log(parsed);
     return parsed;
   } catch (error) {
     console.log(error, "parsed error");
@@ -33,12 +28,12 @@ const fetchSinglePayoutRequest = async (id) => {
   }
 };
 
-const useSinglePayoutRequest = (id) => {
+const useSingleEarningRequest = (id) => {
   return useQuery({
-    queryKey: ["payoutRequest", id],
-    queryFn: () => fetchSinglePayoutRequest(id),
+    queryKey: ["earningRequest", id],
+    queryFn: () => fetchSingleEarningRequest(id),
     enabled: !!id,
   });
 };
 
-export { useSinglePayoutRequest, fetchSinglePayoutRequest };
+export { useSingleEarningRequest, fetchSingleEarningRequest };
