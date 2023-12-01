@@ -18,8 +18,8 @@ const fetchSinglePayoutRequest = async (id) => {
     // }).json()
 
     const parsed = await ky(
-      //`https://vigoplace.com/server/api/admin/console/payouts/${id}`,
-      `http://localhost:4000/api/admin/console/payouts/${id}`,
+      `https://vigoplace.com/server/api/admin/console/payouts/${id}`,
+      //`http://localhost:4000/api/admin/console/payouts/${id}`,
       {
         headers: {
           Authorization: token,

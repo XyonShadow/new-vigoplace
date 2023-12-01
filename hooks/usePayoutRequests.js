@@ -7,8 +7,8 @@ const getToken = async () => {
   return session?.user?.token;
 };
 
-//const API_BASE_URL = "https://vigoplace.com/server";
-const API_BASE_URL = "http://localhost:4000";
+const API_BASE_URL = "https://vigoplace.com/server";
+//const API_BASE_URL = "http://localhost:4000";
 const fetchPayoutRequests = async (limit, offset, status) => {
   try {
     const token = await getToken();
