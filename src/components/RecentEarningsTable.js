@@ -70,6 +70,10 @@ const getStatusLabel = (cryptoOrderStatus) => {
       text: "Completed",
       color: green[500],
     },
+    approved: {
+      text: "Approved",
+      color: green[500],
+    },
     pending: {
       text: "Pending",
       color: yellow[800],
@@ -145,6 +149,10 @@ export default function RecentEarningsTable() {
       name: "Completed",
     },
     {
+      id: "approved",
+      name: "Approved",
+    },
+    {
       id: "pending",
       name: "Pending",
     },
@@ -195,24 +203,17 @@ export default function RecentEarningsTable() {
   } = useQuery(
     [
       "earningsRequests",
-      // columnFilters, //refetch when columnFilters changes
-      // globalFilter, //refetch when globalFilter changes
-      pagination.pageIndex, //refetch when pagination.pageIndex changes
-      pagination.pageSize, //refetch when pagination.pageSize changes
-      // sorting, //refetch when sorting changes
+      pagination.pageIndex, 
+      pagination.pageSize, 
       status,
       page,
       limit,
     ],
     async () => {
       const { data } = await axios.get(
-        `${API_BASE_URL}/api/admin/console/earnings`,
-        //?limit=${
-        //   pagination.pageSize
-        // }&offset=${pagination.pageIndex * pagination.pageSize}${
-        //   status !== undefined && status !== null ? `&status=${status}` : ""
-        // }`,
-        // `http://localhost:3001/api/admin/console/payouts?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${status !== undefined && status !== null ? `&status=${status}` : '' }`,
+        `${API_BASE_URL}/api/admin/console/earnings?perPage=${pagination.pageSize}&page=${
+          pagination.pageIndex * pagination.pageSize
+        }${status !== undefined && status !== null ? `&status=${status}` : ""}`,
         {
           headers: {
             Authorization: user?.token,
@@ -281,30 +282,11 @@ export default function RecentEarningsTable() {
 
   const filteredCryptoOrders = applyFilters(dataToUse, filters);
 
-  // const filteredCryptoOrders = applyFilters(
-  //   payouts?.data?.payoutRequests,
-  //   filters
-  // );
-  const paginatedCryptoOrders = applyPagination(
-    filteredCryptoOrders,
-    pagination.pageIndex,
-    pagination.pageSize
-  );
-
-  const selectedSomeCryptoOrders =
-    selectedCryptoOrders.length > 0 &&
-    selectedCryptoOrders.length < cryptoOrders.length;
-  const selectedAllCryptoOrders =
-    selectedCryptoOrders?.length === payouts?.length;
   const theme = useTheme();
 
   return (
     <Card>
-      {selectedBulkActions && (
-        <Box flex={1} p={2}>
-          {/* <BulkActions /> */}
-        </Box>
-      )}
+      {selectedBulkActions && <Box flex={1} p={2}></Box>}
       {!selectedBulkActions && (
         <CardHeader
           action={
@@ -394,14 +376,8 @@ function Row({ payout, isPayoutSelected }) {
   const [openToast, setOpenToast] = React.useState(false);
   const [openModal, setOpenModal] = React.useState(false);
   const [declineModal, setDeclineModal] = React.useState(false);
-  const [splitModal, setSplitModal] = React.useState(false);
   const [holdModal, setHoldModal] = React.useState(false);
   const [pin, setPin] = React.useState(null);
-  const [amount, setAmount] = React.useState({
-    amount1: null,
-    amount2: null,
-  });
-  const [deliveryETA, setDeliveryETA] = React.useState("");
   const [reason, setReason] = React.useState("");
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
 
@@ -430,12 +406,12 @@ function Row({ payout, isPayoutSelected }) {
     return session?.user?.token;
   };
 
-  const approvePayOut = async ({ id, pin }) => {
+  const approveEarning = async ({ reference, pin }) => {
     const token = await getToken();
-    const parsed = await axios.post(
-      // "http://localhost:3001/api/admin/console/approvepayout",
-      "https://vigoplace.com/server/api/admin/console/approvepayout",
-      { payoutRequestId: id, approvalPin: pin },
+    const parsed = await axios.patch(
+      "https://vigoplace.com/server/api/admin/console/earnings/approve",
+      //"http://localhost:4000/api/admin/console/earnings/approve",
+      { reference: reference, approvalPin: pin },
       {
         headers: {
           Authorization: token,
@@ -445,11 +421,11 @@ function Row({ payout, isPayoutSelected }) {
     return parsed;
   };
 
-  const approvePayOutMutation = useMutation({
-    mutationKey: ["approvePayOut"],
-    mutationFn: approvePayOut,
+  const approveEarningMutation = useMutation({
+    mutationKey: ["approveEarning"],
+    mutationFn: approveEarning,
     onSuccess: () => {
-      queryClient.invalidateQueries("payoutRequests");
+      queryClient.invalidateQueries("earningsRequests");
       setPin(null);
       setOpenModal(false);
     },
@@ -459,16 +435,12 @@ function Row({ payout, isPayoutSelected }) {
     },
   });
 
-  const approveUSDPayOut = async ({ id, pin, deliveryETA }) => {
-    if (deliveryETA === "") {
-      toast.error("Please pick a date");
-      return;
-    }
+  const declineEarning = async ({ reference, pin }) => {
     const token = await getToken();
-    const parsed = await axios.post(
-      // "http://localhost:3001/api/admin/console/approvepayout",
-      "https://vigoplace.com/server/api/admin/console/approvepayout",
-      { payoutRequestId: id, approvalPin: pin, deliveryETA },
+    const parsed = await axios.put(
+      "https://vigoplace.com/server/api/admin/console/earnings/reject",
+      //"http://localhost:4000/api/admin/console/earnings/reject",
+      { reference: reference, approvalPin: pin },
       {
         headers: {
           Authorization: token,
@@ -478,94 +450,15 @@ function Row({ payout, isPayoutSelected }) {
     return parsed;
   };
 
-  const approveUSDPayOutMutation = useMutation({
-    mutationKey: ["approveUSDPayOut"],
-    mutationFn: approveUSDPayOut,
+  const declineEarningMutation = useMutation({
+    mutationKey: ["declineEarning"],
+    mutationFn: declineEarning,
     onSuccess: () => {
-      queryClient.invalidateQueries("payoutRequests");
+      queryClient.invalidateQueries("earningsRequests");
       setPin(null);
       setOpenModal(false);
     },
     onError: async (error) => {
-      setOpenToast(true);
-      setPin(null);
-    },
-  });
-
-  const declinePayOut = async ({ id, pin, reason }) => {
-    const token = await getToken();
-    const parsed = await axios.post(
-      // "http://localhost:3001/api/admin/console/declinepayout",
-      "https://vigoplace.com/server/api/admin/console/declinepayout",
-      { payoutRequestId: id, approvalPin: pin, reason },
-      {
-        headers: {
-          Authorization: token,
-        },
-      }
-    );
-    return parsed;
-  };
-
-  const declinePayOutMutation = useMutation({
-    mutationKey: ["declinePayOut"],
-    mutationFn: declinePayOut,
-    onSuccess: (data) => {
-      queryClient.invalidateQueries("payoutRequests");
-      setPin(null);
-      setReason("");
-      setOpenModal(false);
-    },
-    onError: async (error) => {
-      setOpenToast(true);
-      setPin(null);
-    },
-  });
-
-  const splitPayOut = async ({ reference, amount1, amount2, pin, reason }) => {
-    const token = await getToken();
-    const parsed = await axios.post(
-      //"http://localhost:4000/api/admin/console/split/payment",
-      "https://vigoplace.com/server/api/admin/console/split/payment",
-      {
-        reference: reference,
-        split: [
-          {
-            amount: Math.floor(amount1),
-            status: "onHold",
-          },
-          {
-            amount: Math.floor(amount2),
-            status: "processing",
-          },
-        ],
-        approvalPin: pin,
-        reason,
-      },
-      {
-        headers: {
-          Authorization: token,
-        },
-      }
-    );
-    return parsed;
-  };
-
-  const splitPayOutMutation = useMutation({
-    mutationKey: ["splitPayoutRequest"],
-    mutationFn: splitPayOut,
-    onSuccess: (data) => {
-      queryClient.invalidateQueries("payoutRequests");
-      setPin(null);
-      setReason("");
-      setAmount({
-        amount1: null,
-        amount2: null,
-      });
-      setOpenModal(false);
-    },
-    onError: async (error) => {
-      console.log(error.message);
       setOpenToast(true);
       setPin(null);
     },
@@ -586,11 +479,11 @@ function Row({ payout, isPayoutSelected }) {
     return parsed;
   };
 
-  const holdPayOutMutation = useMutation({
+  const holdEarningMutation = useMutation({
     mutationKey: ["holdPayOut"],
     mutationFn: holdPayOut,
     onSuccess: (data) => {
-      queryClient.invalidateQueries("payoutRequests");
+      queryClient.invalidateQueries("earningsRequests");
       setPin(null);
       setReason("");
       setOpenModal(false);
@@ -610,10 +503,9 @@ function Row({ payout, isPayoutSelected }) {
         onClose={handleClose}
       >
         <Alert onClose={handleClose} severity="warning" sx={{ width: "100%" }}>
-          {approvePayOutMutation.error?.response?.data?.message ||
-            declinePayOutMutation.error?.response?.data?.message ||
-            approveUSDPayOutMutation.error?.response?.data?.message ||
-            splitPayOutMutation.error?.response?.data?.message}
+          {approveEarningMutation.error?.response?.data?.message ||
+            declineEarningMutation.error?.response?.data?.message ||
+            holdEarningMutation.error?.response?.data?.message}
         </Alert>
       </Snackbar>
 
@@ -843,9 +735,9 @@ function Row({ payout, isPayoutSelected }) {
                                 setOpenModal(true);
                               }}
                             >
-                              {approvePayOutMutation.isLoading ? (
+                              {approveEarningMutation.isLoading ? (
                                 <CircularProgress size={23} color="inherit" />
-                              ) : approvePayOutMutation.isSuccess ? (
+                              ) : approveEarningMutation.isSuccess ? (
                                 <CheckIcon />
                               ) : (
                                 "Approve"
@@ -856,29 +748,6 @@ function Row({ payout, isPayoutSelected }) {
                             <>
                               <MenuItem>
                                 <Button
-                                  size="small"
-                                  variant="contained"
-                                  color="success"
-                                  sx={{ margin: 1, bgcolor: green[500] }}
-                                  onClick={() => {
-                                    setSplitModal(true);
-                                  }}
-                                >
-                                  {splitPayOutMutation.isLoading ? (
-                                    <CircularProgress
-                                      size={23}
-                                      color="inherit"
-                                    />
-                                  ) : splitPayOutMutation.isSuccess ? (
-                                    <CheckIcon />
-                                  ) : (
-                                    "Split"
-                                  )}
-                                </Button>
-                              </MenuItem>
-
-                              <MenuItem>
-                                <Button
                                   sx={{ margin: 1, bgcolor: yellow[800] }}
                                   size="small"
                                   variant="contained"
@@ -887,12 +756,12 @@ function Row({ payout, isPayoutSelected }) {
                                     setHoldModal(true);
                                   }}
                                 >
-                                  {holdPayOutMutation.isLoading ? (
+                                  {holdEarningMutation.isLoading ? (
                                     <CircularProgress
                                       size={23}
                                       color="inherit"
                                     />
-                                  ) : holdPayOutMutation.isSuccess ? (
+                                  ) : holdEarningMutation.isSuccess ? (
                                     <CheckIcon />
                                   ) : (
                                     "Hold"
@@ -911,9 +780,9 @@ function Row({ payout, isPayoutSelected }) {
                                 setDeclineModal(true);
                               }}
                             >
-                              {declinePayOutMutation.isLoading ? (
+                              {declineEarningMutation.isLoading ? (
                                 <CircularProgress size={23} color="inherit" />
-                              ) : approvePayOutMutation.isSuccess ? (
+                              ) : approveEarningMutation.isSuccess ? (
                                 <CheckIcon />
                               ) : (
                                 "Decline"
@@ -928,18 +797,11 @@ function Row({ payout, isPayoutSelected }) {
                               setPin(null);
                             }}
                           >
-                            <DialogTitle>Approve Payout</DialogTitle>
+                            <DialogTitle>Approve User Earnings</DialogTitle>
                             <DialogContent>
                               <DialogContentText>
-                                Please enter{" "}
-                                {queryClient.getQueryData([
-                                  "payoutRequest",
-                                  payout.payoutRequestId,
-                                ])?.data?.currency === "US Dollar" && (
-                                  <span>the date and</span>
-                                )}{" "}
-                                your admin approval pin to approve this request,
-                                if you dont have one yet, head to{" "}
+                                Please enter your admin approval pin to Approve
+                                this request, if you dont have one yet, head to{" "}
                                 {
                                   <Link
                                     style={{ color: "blue" }}
@@ -950,22 +812,6 @@ function Row({ payout, isPayoutSelected }) {
                                 }{" "}
                                 to create one now
                               </DialogContentText>
-                              {queryClient.getQueryData([
-                                "payoutRequest",
-                                payout.payoutRequestId,
-                              ])?.data?.currency === "US Dollar" && (
-                                <div className="flex items-center gap-5">
-                                  <h3>Expected Delivery Date:</h3>
-                                  <input
-                                    type="date"
-                                    className="my-5"
-                                    value={deliveryETA}
-                                    onChange={(e) =>
-                                      setDeliveryETA(e.target.value)
-                                    }
-                                  />
-                                </div>
-                              )}
 
                               <TextField
                                 autoFocus
@@ -990,171 +836,17 @@ function Row({ payout, isPayoutSelected }) {
                               </Button>
                               <LoadingButton
                                 variant="contained"
-                                loading={
-                                  approvePayOutMutation.isLoading ||
-                                  approveUSDPayOutMutation.isLoading
-                                }
-                                disabled={
-                                  pin === null ||
-                                  pin?.length <= 5 ||
-                                  (queryClient.getQueryData([
-                                    "payoutRequest",
-                                    payout.payoutRequestId,
-                                  ])?.data?.currency !== "Naira" &&
-                                    deliveryETA === "")
-                                }
+                                loading={approveEarningMutation.isLoading}
+                                disabled={pin === null || pin?.length <= 5}
                                 onClick={() => {
-                                  (queryClient.getQueryData([
-                                    "payoutRequest",
-                                    payout.payoutRequestId,
-                                  ])?.data?.currency === "Naira"
-                                    ? approvePayOutMutation
-                                    : approveUSDPayOutMutation
-                                  ).mutate(
-                                    queryClient.getQueryData([
-                                      "payoutRequest",
-                                      payout.payoutRequestId,
-                                    ])?.data?.currency === "Naira"
-                                      ? {
-                                          id: payout.payoutRequestId,
-                                          pin,
-                                        }
-                                      : {
-                                          id: payout.payoutRequestId,
-                                          pin,
-                                          deliveryETA,
-                                        }
-                                  );
+                                  approveEarningMutation.mutate({
+                                    reference: payout.reference,
+                                    pin,
+                                  });
                                   setPin(null);
-                                  setDeliveryETA("");
                                 }}
                               >
                                 Approve
-                              </LoadingButton>
-                            </DialogActions>
-                          </Dialog>
-
-                          <Dialog
-                            open={splitModal}
-                            onClose={() => {
-                              setSplitModal(false);
-                              setPin(null);
-                              setAmount({
-                                amount1: null,
-                                amount2: null,
-                              });
-                              setReason("");
-                            }}
-                          >
-                            <DialogTitle>Split Payout</DialogTitle>
-                            <DialogContent>
-                              <DialogContentText>
-                                Please enter the amount you want to put on hold
-                                and the amount you want to send to the user in
-                                the inputs below. Also, enter your admin
-                                approval pin to Split this payment request. If
-                                you don't have one yet, head to{" "}
-                                <Link
-                                  style={{ color: "blue" }}
-                                  href="/settings"
-                                >
-                                  Settings
-                                </Link>{" "}
-                                to create one now.
-                              </DialogContentText>
-                              <TextField
-                                autoFocus
-                                margin="dense"
-                                id="amount1"
-                                label="Amount to be on Hold"
-                                type="number"
-                                fullWidth
-                                value={amount.amount1}
-                                variant="standard"
-                                onChange={(e) =>
-                                  setAmount({
-                                    ...amount,
-                                    amount1: e.target.value,
-                                  })
-                                }
-                              />
-                              <TextField
-                                margin="dense"
-                                id="amount2"
-                                label="Amount to be pending"
-                                type="number"
-                                fullWidth
-                                value={amount.amount2}
-                                variant="standard"
-                                onChange={(e) =>
-                                  setAmount({
-                                    ...amount,
-                                    amount2: e.target.value,
-                                  })
-                                }
-                              />
-                              <TextField
-                                margin="dense"
-                                id="reason"
-                                label="Reason"
-                                type="text"
-                                fullWidth
-                                value={reason}
-                                variant="standard"
-                                onChange={handleReason}
-                              />
-                              <TextField
-                                margin="dense"
-                                id="name"
-                                label="Approval Pin"
-                                type="number"
-                                fullWidth
-                                value={pin}
-                                variant="standard"
-                                onChange={handlePin}
-                              />
-                            </DialogContent>
-                            <DialogActions>
-                              <Button
-                                onClick={() => {
-                                  setSplitModal(false);
-                                  setPin(null);
-                                  setAmount({
-                                    amount1: null,
-                                    amount2: null,
-                                  });
-                                  setReason("");
-                                }}
-                              >
-                                Cancel
-                              </Button>
-                              <LoadingButton
-                                variant="contained"
-                                loading={splitPayOutMutation.isLoading}
-                                disabled={
-                                  amount.amount1 === null ||
-                                  amount.amount2 === null ||
-                                  pin === null ||
-                                  pin?.length <= 5 ||
-                                  reason === ""
-                                }
-                                onClick={() => {
-                                  splitPayOutMutation.mutate({
-                                    reference: payout.payoutRequestReference,
-                                    amount1: amount.amount1,
-                                    amount2: amount.amount2,
-                                    pin,
-                                    reason,
-                                  });
-                                  setPin(null);
-                                  setAmount({
-                                    amount1: null,
-                                    amount2: null,
-                                  });
-                                  setReason("");
-                                }}
-                              >
-                                Split
                               </LoadingButton>
                             </DialogActions>
                           </Dialog>
@@ -1166,7 +858,7 @@ function Row({ payout, isPayoutSelected }) {
                               setPin(null);
                             }}
                           >
-                            <DialogTitle>Hold Payout</DialogTitle>
+                            <DialogTitle>Hold User Earnings</DialogTitle>
                             <DialogContent>
                               <DialogContentText>
                                 Please enter your admin approval pin to Hold
@@ -1181,7 +873,7 @@ function Row({ payout, isPayoutSelected }) {
                                 }{" "}
                                 to create one now
                               </DialogContentText>
-                              <TextField
+                              {/* <TextField
                                 autoFocus
                                 margin="dense"
                                 id="reason"
@@ -1191,9 +883,9 @@ function Row({ payout, isPayoutSelected }) {
                                 value={reason}
                                 variant="standard"
                                 onChange={handleReason}
-                              />
+                              /> */}
                               <TextField
-                                //autoFocus
+                                autoFocus
                                 margin="dense"
                                 id="name"
                                 label="Approval Pin"
@@ -1209,22 +901,22 @@ function Row({ payout, isPayoutSelected }) {
                                 onClick={() => {
                                   setHoldModal(false);
                                   setPin(null);
-                                  setReason("");
+                                  //setReason("");
                                 }}
                               >
                                 Cancel
                               </Button>
                               <LoadingButton
                                 variant="contained"
-                                loading={holdPayOutMutation.isLoading}
+                                loading={holdEarningMutation.isLoading}
                                 disabled={
                                   pin === null ||
                                   pin?.length <= 5 ||
                                   reason === ""
                                 }
                                 onClick={() => {
-                                  holdPayOutMutation.mutate({
-                                    reference: payout.payoutRequestReference,
+                                  holdEarningMutation.mutate({
+                                    reference: payout.reference,
                                     pin,
                                     reason,
                                   });
@@ -1243,7 +935,7 @@ function Row({ payout, isPayoutSelected }) {
                               setPin(null);
                             }}
                           >
-                            <DialogTitle>Decline Payout</DialogTitle>
+                            <DialogTitle>Decline User Earnings</DialogTitle>
                             <DialogContent>
                               <DialogContentText>
                                 Please enter your admin approval pin to Decline
@@ -1269,7 +961,7 @@ function Row({ payout, isPayoutSelected }) {
                                 variant="standard"
                                 onChange={handlePin}
                               />
-                              <TextField
+                              {/* <TextField
                                 autoFocus
                                 margin="dense"
                                 id="reason"
@@ -1279,27 +971,27 @@ function Row({ payout, isPayoutSelected }) {
                                 value={reason}
                                 variant="standard"
                                 onChange={handleReason}
-                              />
+                              /> */}
                             </DialogContent>
                             <DialogActions>
                               <Button
                                 onClick={() => {
                                   setDeclineModal(false);
                                   setPin(null);
-                                  setReason("");
+                                  //setReason("");
                                 }}
                               >
                                 Cancel
                               </Button>
                               <LoadingButton
                                 variant="contained"
-                                loading={approvePayOutMutation.isLoading}
+                                loading={approveEarningMutation.isLoading}
                                 disabled={pin === null || pin?.length <= 5}
                                 onClick={() => {
-                                  declinePayOutMutation.mutate({
-                                    id: payout.payoutRequestId,
+                                  declineEarningMutation.mutate({
+                                    reference: payout.reference,
                                     pin,
-                                    reason,
+                                    //reason,
                                   });
                                   setPin(null);
                                 }}
@@ -1372,81 +1064,68 @@ function Row({ payout, isPayoutSelected }) {
                   {
                     <TableRow
                       key={
-                        queryClient.getQueryData([
-                          "earningRequest",
-                          payout.Id,
-                        ])?.data?.status
+                        queryClient.getQueryData(["earningRequest", payout.Id])
+                          ?.data?.earningRequestStatus
                       }
                     >
                       <TableCell align="center" component="th" scope="row">
                         {new Date(
                           queryClient.getQueryData([
-                            "payoutRequest",
-                            payout.payoutRequestId,
-                          ])?.data?.payoutRequestDate
+                            "earningRequest",
+                            payout.Id,
+                          ])?.data?.earningRequestDate
                         ).toLocaleDateString()}
                       </TableCell>
-                      {/* <TableCell align="center">
-                        {
-                          queryClient.getQueryData([
-                            "payoutRequest",
-                            payout.payoutRequestId,
-                          ])?.data?.userFullname
-                        }
-                      </TableCell> */}
                       <TableCell align="center">
                         {queryClient
-                          .getQueryData([
-                            "payoutRequest",
-                            payout.payoutRequestId,
-                          ])
+                          .getQueryData(["earningRequest", payout.Id])
                           ?.data?.payoutRequestFee?.toLocaleString("en-US")}
                       </TableCell>
                       <TableCell align="center">
                         {
                           queryClient.getQueryData([
-                            "payoutRequest",
-                            payout.payoutRequestId,
+                            "earningRequest",
+                            payout.Id,
                           ])?.data?.paymentMethodName
                         }
                       </TableCell>
                       <TableCell align="center">
                         {
                           queryClient.getQueryData([
-                            "payoutRequest",
-                            payout.payoutRequestId,
-                          ])?.data?.currency
+                            "earningRequest",
+                            payout.Id,
+                          ])?.data?.earningRequestCurrency
                         }
                       </TableCell>
                       <TableCell align="center">
                         {
                           queryClient.getQueryData([
-                            "payoutRequest",
-                            payout.payoutRequestId,
+                            "earningRequest",
+                            payout.Id,
                           ])?.data?.accountName
                         }
                       </TableCell>
                       <TableCell align="center">
                         {
                           queryClient.getQueryData([
-                            "payoutRequest",
-                            payout.payoutRequestId,
+                            "earningRequest",
+                            payout.Id,
                           ])?.data?.acountBankName
                         }
                       </TableCell>
                       <TableCell align="center">
                         {
                           queryClient.getQueryData([
-                            "payoutRequest",
-                            payout.payoutRequestId,
+                            "earningRequest",
+                            payout.Id,
                           ])?.data?.accountNumber
                         }
                       </TableCell>
                       <TableCell align="center">
                         {
                           queryClient.getQueryData([
-                            "payoutRequest",
-                            payout.payoutRequestId,
+                            "earningRequest",
+                            payout.Id,
                           ])?.data?.accountRoutingNumber
                         }
                       </TableCell>

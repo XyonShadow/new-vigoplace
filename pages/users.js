@@ -400,6 +400,8 @@ const Users = () => {
         (pagination.pageIndex + 1) * pagination.pageSize
       );
 
+      console.log(paginatedData);
+
       return paginatedData;
     },
     {

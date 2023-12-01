@@ -74,6 +74,7 @@ export const UncategorizedPost = ({
   // }, [currentPostId]);
 
   const API_BASE_URL = "https://vigoplace.com/server/";
+  //const API_BASE_URL = "http://localhost:4000";
 
   // const fetchData = async () => {
   //   const response = await fetch(`${API_BASE_URL}/api/admin/uncategorized`);

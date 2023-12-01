@@ -38,6 +38,7 @@ export const CategorizedPost = ({
   categorizedPost,
   updateCategoryPost,
 }) => {
+  console.log(images?.[categorizedIndex]?.PMMedia)
   const [openModal, setOpenModal] = useState(false);
 
   const deletePost = async (postId) => {

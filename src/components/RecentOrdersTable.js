@@ -10,7 +10,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import CheckIcon from "@mui/icons-material/Check";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { green, yellow } from "@mui/material/colors";
+import { green, yellow, red } from "@mui/material/colors";
 import { format } from "date-fns";
 import Slide from "@mui/material/Slide";
 import PropTypes from "prop-types";
@@ -82,9 +82,13 @@ const getStatusLabel = (cryptoOrderStatus) => {
       text: "Pending",
       color: yellow[800],
     },
-    declined: {
+    // declined: {
+    //   text: "Declined",
+    //   color: yellow[800],
+    // },
+    cancelled: {
       text: "Declined",
-      color: yellow[800],
+      color: red[500],
     },
     processing: {
       text: "Processing",
@@ -122,8 +126,8 @@ const applyPagination = (cryptoOrders, page, limit) => {
   return cryptoOrders?.slice(page * limit, page * limit + limit);
 };
 
-const API_BASE_URL = "https://vigoplace.com/server";
-//const API_BASE_URL = "http://localhost:4000";
+//const API_BASE_URL = "https://vigoplace.com/server";
+const API_BASE_URL = "http://localhost:4000";
 export default function RecentOrdersTable() {
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -180,9 +184,13 @@ export default function RecentOrdersTable() {
       id: "processing",
       name: "Processing",
     },
+    // {
+    //   id: "declined",
+    //   name: "Declined",
+    // },
     {
-      id: "declined",
-      name: "Declined",
+      id: "cancelled",
+      name: "Cancelled",
     },
     {
       id: "onHold",
@@ -1285,7 +1293,11 @@ function Row({ payout, isPayoutSelected }) {
                               <LoadingButton
                                 variant="contained"
                                 loading={holdPayOutMutation.isLoading}
-                                disabled={pin === null || pin?.length <= 5 || reason === ""}
+                                disabled={
+                                  pin === null ||
+                                  pin?.length <= 5 ||
+                                  reason === ""
+                                }
                                 onClick={() => {
                                   holdPayOutMutation.mutate({
                                     reference: payout.payoutRequestReference,
@@ -1387,7 +1399,7 @@ function Row({ payout, isPayoutSelected }) {
                             </Box>
                           </Box>
                         </div>
-                      ) : payout.payoutRequestStatus === "declined" ? (
+                      ) : payout.payoutRequestStatus === "cancelled" ? (
                         <div>
                           <MenuItem>
                             <Button
@@ -1395,7 +1407,8 @@ function Row({ payout, isPayoutSelected }) {
                               disabled
                               variant="contained"
                               color="error"
-                              sx={{ bgcolor: green[500] }}
+                              //sx={{ backgroundColor: green[500] }}
+                              style={{backgroundColor: red[600], color: "black"}}
                             >
                               Declined <CancelIcon />
                             </Button>
