@@ -289,7 +289,7 @@ export default function RecentOrdersTable() {
         }
       );
 
-      console.log(data);
+      //console.log(data);
 
       return data;
     },

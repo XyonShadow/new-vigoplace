@@ -38,7 +38,8 @@ export const CategorizedPost = ({
   categorizedPost,
   updateCategoryPost,
 }) => {
-  console.log(images?.[categorizedIndex]?.PMMedia)
+  //console.log(images?.[categorizedIndex]?.PMMedia)
+  //console.log(categorizedPost?.[categorizedIndex]?.OPCCategory);
   const [openModal, setOpenModal] = useState(false);
 
   const deletePost = async (postId) => {
@@ -86,10 +87,8 @@ export const CategorizedPost = ({
           ? categorizedPost[categorizedIndex]
           : images[categorizedIndex];
 
-      const newPost = categorizedPost?.length > 0
-      ? [...categorizedPost]
-      : [...images];
-
+      const newPost =
+        categorizedPost?.length > 0 ? [...categorizedPost] : [...images];
 
       newPost.splice(categorizedIndex, 1, {
         ...findPost,
@@ -206,7 +205,7 @@ export const CategorizedPost = ({
     // Increment the index and ensure it wraps around correctly
     const newIndex =
       categorizedIndex > images?.length - 1 ? 0 : categorizedIndex + 1;
-      //console.log(newIndex);
+    //console.log(newIndex);
     setCategoryResults([images[newIndex]]);
     updateCategorizedIndex(newIndex);
   };
@@ -304,21 +303,20 @@ export const CategorizedPost = ({
             {categorizedPost?.length > 0
               ? categorizedPost?.[categorizedIndex]?.OPCCategory?.map(
                   (item, index) => {
-                    // console.log(item);
-                    if (item === "") return;
+                    if (item === "") return null;
                     return (
                       <div
                         key={index}
-                        className="flex justify-between py-2 px-6  w-full bg-white rounded-lg"
+                        className="flex justify-between py-2 px-6 w-full bg-white rounded-lg"
                       >
-                        <p>{item}</p>
+                        <p>{item.category}</p>
                         <GrFormClose
                           size={20}
                           className="cursor-pointer"
                           onClick={() =>
                             deletePostCategory(
                               images?.[categorizedIndex]?.POId,
-                              item
+                              item.category // Assuming 'category' is used to identify the category
                             )
                           }
                         />
@@ -327,21 +325,20 @@ export const CategorizedPost = ({
                   }
                 )
               : images?.[categorizedIndex]?.OPCCategory?.map((item, index) => {
-                  // console.log(item);
-                  if (item === "") return;
+                  if (item === "") return null;
                   return (
                     <div
                       key={index}
-                      className="flex justify-between py-2 px-6  w-full bg-white rounded-lg"
+                      className="flex justify-between py-2 px-6 w-full bg-white rounded-lg"
                     >
-                      <p>{item}</p>
+                      <p>{item.category}</p>
                       <GrFormClose
                         size={20}
                         className="cursor-pointer"
                         onClick={() =>
                           deletePostCategory(
                             images?.[categorizedIndex]?.POId,
-                            item
+                            item.category // Assuming 'category' is used to identify the category
                           )
                         }
                       />
