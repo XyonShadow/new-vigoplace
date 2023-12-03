@@ -464,11 +464,11 @@ function Row({ payout, isPayoutSelected }) {
     },
   });
 
-  const holdPayOut = async ({ reference, pin, reason }) => {
+  const holdEarning = async ({ reference, pin, reason }) => {
     const token = await getToken();
     const parsed = await axios.put(
       //"http://localhost:4000/api/admin/console/transaction",
-      "https://vigoplace.com/server/api/admin/console/transaction",
+      "https://vigoplace.com/server/api/admin/console/earnings/hold",
       { reference: reference, status: "onHold", approvalPin: pin, reason },
       {
         headers: {
@@ -481,7 +481,7 @@ function Row({ payout, isPayoutSelected }) {
 
   const holdEarningMutation = useMutation({
     mutationKey: ["holdPayOut"],
-    mutationFn: holdPayOut,
+    mutationFn: holdEarning,
     onSuccess: (data) => {
       queryClient.invalidateQueries("earningsRequests");
       setPin(null);
@@ -650,16 +650,16 @@ function Row({ payout, isPayoutSelected }) {
                 <TableHead>
                   <TableRow>
                     <TableCell sx={{ fontWeight: "bold" }}>Date</TableCell>
-                    <TableCell sx={{ fontWeight: "bold" }} align="center">
+                    {/* <TableCell sx={{ fontWeight: "bold" }} align="left">
                       Fee
-                    </TableCell>
-                    <TableCell sx={{ fontWeight: "bold" }} align="center">
+                    </TableCell> */}
+                    {/* <TableCell sx={{ fontWeight: "bold" }} align="center">
                       payment Method
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell sx={{ fontWeight: "bold" }} align="center">
                       currency
                     </TableCell>
-                    <TableCell sx={{ fontWeight: "bold" }} align="center">
+                    {/* <TableCell sx={{ fontWeight: "bold" }} align="center">
                       account Name
                     </TableCell>
                     <TableCell sx={{ fontWeight: "bold" }} align="center">
@@ -670,8 +670,8 @@ function Row({ payout, isPayoutSelected }) {
                     </TableCell>
                     <TableCell sx={{ fontWeight: "bold" }} align="center">
                       routingNumber
-                    </TableCell>
-                    <TableCell align="center">
+                    </TableCell> */}
+                    <TableCell align="right">
                       <IconButton
                         onClick={handleMenuOpen}
                         id="long-button"
@@ -1068,7 +1068,7 @@ function Row({ payout, isPayoutSelected }) {
                           ?.data?.earningRequestStatus
                       }
                     >
-                      <TableCell align="center" component="th" scope="row">
+                      <TableCell align="left" component="th" scope="row">
                         {new Date(
                           queryClient.getQueryData([
                             "earningRequest",
@@ -1076,19 +1076,19 @@ function Row({ payout, isPayoutSelected }) {
                           ])?.data?.earningRequestDate
                         ).toLocaleDateString()}
                       </TableCell>
-                      <TableCell align="center">
+                      {/* <TableCell align="center">
                         {queryClient
                           .getQueryData(["earningRequest", payout.Id])
                           ?.data?.payoutRequestFee?.toLocaleString("en-US")}
-                      </TableCell>
-                      <TableCell align="center">
+                      </TableCell> */}
+                      {/* <TableCell align="center">
                         {
                           queryClient.getQueryData([
                             "earningRequest",
                             payout.Id,
                           ])?.data?.paymentMethodName
                         }
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell align="center">
                         {
                           queryClient.getQueryData([
@@ -1097,38 +1097,38 @@ function Row({ payout, isPayoutSelected }) {
                           ])?.data?.earningRequestCurrency
                         }
                       </TableCell>
-                      <TableCell align="center">
+                      {/* <TableCell align="center">
                         {
                           queryClient.getQueryData([
                             "earningRequest",
                             payout.Id,
                           ])?.data?.accountName
                         }
-                      </TableCell>
-                      <TableCell align="center">
+                      </TableCell> */}
+                      {/* <TableCell align="center">
                         {
                           queryClient.getQueryData([
                             "earningRequest",
                             payout.Id,
                           ])?.data?.acountBankName
                         }
-                      </TableCell>
-                      <TableCell align="center">
+                      </TableCell> */}
+                      {/* <TableCell align="center">
                         {
                           queryClient.getQueryData([
                             "earningRequest",
                             payout.Id,
                           ])?.data?.accountNumber
                         }
-                      </TableCell>
-                      <TableCell align="center">
+                      </TableCell> */}
+                      {/* <TableCell align="center">
                         {
                           queryClient.getQueryData([
                             "earningRequest",
                             payout.Id,
                           ])?.data?.accountRoutingNumber
                         }
-                      </TableCell>
+                      </TableCell> */}
                     </TableRow>
                   }
                 </TableBody>
