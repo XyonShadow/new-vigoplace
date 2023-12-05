@@ -309,14 +309,14 @@ export const CategorizedPost = ({
                         key={index}
                         className="flex justify-between py-2 px-6 w-full bg-white rounded-lg"
                       >
-                        <p>{item.category}</p>
+                        <p>{item}</p>
                         <GrFormClose
                           size={20}
                           className="cursor-pointer"
                           onClick={() =>
                             deletePostCategory(
                               images?.[categorizedIndex]?.POId,
-                              item.category // Assuming 'category' is used to identify the category
+                              item 
                             )
                           }
                         />
@@ -331,14 +331,14 @@ export const CategorizedPost = ({
                       key={index}
                       className="flex justify-between py-2 px-6 w-full bg-white rounded-lg"
                     >
-                      <p>{item.category}</p>
+                      <p>{item}</p>
                       <GrFormClose
                         size={20}
                         className="cursor-pointer"
                         onClick={() =>
                           deletePostCategory(
                             images?.[categorizedIndex]?.POId,
-                            item.category // Assuming 'category' is used to identify the category
+                            item 
                           )
                         }
                       />
