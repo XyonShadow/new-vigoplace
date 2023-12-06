@@ -202,42 +202,129 @@ export function Postcategorization1({
     handleCategorizedSearch(searchInput);
   };
 
-  const handleUncategorizedSearch = (searchInput) => {
+  const handleUncategorizedSearch = async (searchInput) => {
     const filteredPosts = unCategorizedData.filter(
       (post) => post.POId === Number(searchInput)
     );
-    if (filteredPosts.length === 0 && tab === 0) {
-      toast.error("Post not found");
+    //console.log(filteredPosts);
+
+    if (filteredPosts.length !== 0 && tab === 0) {
+      // console.log("Inside the if block");
+      //console.log("filteredPosts length:", filteredPosts.length);
+      // console.log("tab value:", tab);
+      try {
+        const response = await fetch(
+          `${API_BASE_URL}/api/admin/uncategorized/${searchInput}`
+        );
+        const data = await response.json();
+        //console.log(data);
+
+        if (data) {
+          const foundPost = data.data;
+
+          updateCurrentPost(foundPost.POId);
+          //console.log(currentPost);
+          setCurrentIndex(0);
+          setFilteredPost([foundPost]);
+        } else {
+          //toast.error("Post not found");
+        }
+      } catch (error) {
+        console.error("Error fetching post:", error);
+        toast.error("Error fetching post");
+      }
       return;
     }
 
-    const indexOfFilteredData = unCategorizedData.indexOf(filteredPosts[0]);
-    //console.log(indexOfFilteredData);
-    setCurrentIndex(indexOfFilteredData);
-    const newPostId = unCategorizedData[indexOfFilteredData]?.POId;
-    updateCurrentPost(newPostId);
+    const indexOfFilteredData = unCategorizedData.findIndex(
+      (post) => post.POId === Number(searchInput)
+    );
+    //console.log("Index of Filtered Data:", indexOfFilteredData);
 
-    setFilteredPost(filteredPosts);
-
-
+    if (indexOfFilteredData !== -1) {
+      setCurrentIndex(indexOfFilteredData);
+      const newPostId = unCategorizedData[indexOfFilteredData]?.POId;
+      updateCurrentPost(newPostId);
+      setFilteredPost([unCategorizedData[indexOfFilteredData]]);
+    } else {
+      //toast.error("Post not found");
+    }
   };
 
-  const handleCategorizedSearch = (searchInput) => {
+  const handleCategorizedSearch = async (searchInput) => {
     const categorizedFiltered = categorizedData.filter(
       (post) => post.POId === Number(searchInput)
     );
-    if (categorizedFiltered.length === 0 && tab === 1) {
-      toast.error("Post not found");
+
+    if (categorizedFiltered.length !== 0 && tab === 1) {
+      try {
+        const response = await fetch(
+          `${API_BASE_URL}/api/admin/categorized/${searchInput}`
+        );
+        const data = await response.json();
+        if (data) {
+          // Handle categorized post found
+          const foundPost = data.data;
+          const indexOfFoundPost = categorizedData.findIndex(
+            (post) => post.POId === foundPost.POId
+          );
+
+          if (indexOfFoundPost !== -1) {
+            updateCategorizedIndex(indexOfFoundPost);
+            setCategoryResults([foundPost]);
+          } else {
+            toast.error("Post not found in the fetched data");
+          }
+        } else {
+          toast.error("Post not found");
+        }
+      } catch (error) {
+        console.error("Error fetching post:", error);
+        toast.error("Error fetching post");
+      }
       return;
     }
 
     const indexOfFilteredData = categorizedData.indexOf(categorizedFiltered[0]);
     updateCategorizedIndex(indexOfFilteredData);
-    //  const newPostId = categorizedData[indexOfFilteredData]?.POId;
-    //  updateCurrentPost(newPostId);
-
     setCategoryResults(categorizedFiltered);
   };
+
+  // const handleUncategorizedSearch = (searchInput) => {
+  //   const filteredPosts = unCategorizedData.filter(
+  //     (post) => post.POId === Number(searchInput)
+  //   );
+  //   if (filteredPosts.length === 0 && tab === 0) {
+  //     toast.error("Post not found");
+  //     return;
+  //   }
+
+  //   const indexOfFilteredData = unCategorizedData.indexOf(filteredPosts[0]);
+  //   //console.log(indexOfFilteredData);
+  //   setCurrentIndex(indexOfFilteredData);
+  //   const newPostId = unCategorizedData[indexOfFilteredData]?.POId;
+  //   updateCurrentPost(newPostId);
+
+  //   setFilteredPost(filteredPosts);
+
+  // };
+
+  // const handleCategorizedSearch = (searchInput) => {
+  //   const categorizedFiltered = categorizedData.filter(
+  //     (post) => post.POId === Number(searchInput)
+  //   );
+  //   if (categorizedFiltered.length === 0 && tab === 1) {
+  //     toast.error("Post not found");
+  //     return;
+  //   }
+
+  //   const indexOfFilteredData = categorizedData.indexOf(categorizedFiltered[0]);
+  //   updateCategorizedIndex(indexOfFilteredData);
+  //   //  const newPostId = categorizedData[indexOfFilteredData]?.POId;
+  //   //  updateCurrentPost(newPostId);
+
+  //   setCategoryResults(categorizedFiltered);
+  // };
 
   const handleClick = () => {
     if (
@@ -292,12 +379,12 @@ export function Postcategorization1({
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": token,
+        Authorization: token,
       },
 
       body: JSON.stringify({
         postId: id ? id : postId,
-        category
+        category,
       }),
     })
       .then((response) => {
@@ -325,7 +412,7 @@ export function Postcategorization1({
         toast.error("Error categorizing post!");
       });
   };
-  
+
   const handleCategorizedPostClick = async (category, id) => {
     const token = await getToken();
     const postId = categorizedData[currentIndex]?.POId;
@@ -338,12 +425,12 @@ export function Postcategorization1({
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": token,
+        Authorization: token,
       },
 
       body: JSON.stringify({
         postId: id ? id : postId,
-        category
+        category,
       }),
     })
       .then((response) => {
@@ -371,7 +458,7 @@ export function Postcategorization1({
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": token,
+          Authorization: token,
         },
       });
 

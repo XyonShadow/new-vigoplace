@@ -316,7 +316,7 @@ export const CategorizedPost = ({
                           onClick={() =>
                             deletePostCategory(
                               images?.[categorizedIndex]?.POId,
-                              item 
+                              item
                             )
                           }
                         />
@@ -338,7 +338,7 @@ export const CategorizedPost = ({
                         onClick={() =>
                           deletePostCategory(
                             images?.[categorizedIndex]?.POId,
-                            item 
+                            item
                           )
                         }
                       />

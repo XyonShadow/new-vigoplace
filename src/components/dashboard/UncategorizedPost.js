@@ -164,7 +164,9 @@ export const UncategorizedPost = ({
     setFilteredPost([]);
     const isFirstSlide = currentIndex === 0;
     const newIndex = isFirstSlide ? images.length - 1 : currentIndex - 1;
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + images?.length) % images?.length);
+    setCurrentIndex(
+      (prevIndex) => (prevIndex - 1 + images?.length) % images?.length
+    );
     const newPostId = images[newIndex]?.POId;
     updateCurrentPost(newPostId);
   };
@@ -181,14 +183,16 @@ export const UncategorizedPost = ({
       const data = await selectedCategories[currentPostId]?.map(
         (category) => category.OCName
       );
-  
+
       await handlePostClick(data);
     } else {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % images?.length);
       const newPostId = images[newIndex]?.POId;
-      updateCurrentPost(newPostId)
+      updateCurrentPost(newPostId);
     }
   };
+
+  //console.log(filteredPost);
 
   return (
     <>
@@ -201,44 +205,38 @@ export const UncategorizedPost = ({
                   // Display images if filteredResults is empty
                   <div className="relative object-contain">
                     {filteredPost.length > 0 ? (
-                      //console.log(filteredPost)
                       <CarouselMini autoSlide={false} autoSlideInterval={3000}>
-                        {images[0]?.PMMedia?.map((media) => {
-                          //console.log(currentIndex)
-                          //console.log(media);
-                          // console.log(data.data[currentIndex]);
-                          if (media.type === "video")
-                          return (
-                            <ReactPlayer
-                            width={300}
-                            height={300}
-                              url={media.media}
-                              muted={true}
-                              playsinline
-                              autoPlay={false}
-                              controls
-                              key={media.media}
-                            />
-                          );
-                        else
-                          return (
-                            // <div
-                            //   key={media.media}
-                            //   className="lg:w-[30vw] w-full h-[50vh] lg:h-[35vh] object-contain relative"
-                            // >
-                            //   {" "}
-                            <Image
-                              width={400}
-                              height={400}
-                              src={media?.media}
-                              key={media.media}
-                              alt=""
-                              priority
-                              className={`${filteredPost[0]?.PMMedia?.length === 1 ? "max-h-[35vh]" : ""} w-full h-auto rounded-xl`}
-                              // sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            />
-                            // </div>
-                          );
+                        {filteredPost[0]?.PMMedia?.map((media) => {
+                          if (media.type === "video") {
+                            return (
+                              <ReactPlayer
+                                width={300}
+                                height={300}
+                                url={media.media}
+                                muted={true}
+                                playsinline
+                                autoPlay={false}
+                                controls
+                                key={media.media}
+                              />
+                            );
+                          } else {
+                            return (
+                              <Image
+                                width={400}
+                                height={400}
+                                src={media.media}
+                                key={media.media}
+                                alt=""
+                                priority
+                                className={`${
+                                  filteredPost[0]?.PMMedia?.length === 1
+                                    ? "max-h-[35vh]"
+                                    : ""
+                                } w-full h-auto rounded-xl`}
+                              />
+                            );
+                          }
                         })}
                       </CarouselMini>
                     ) : (
@@ -251,8 +249,8 @@ export const UncategorizedPost = ({
                           if (media.type === "video")
                             return (
                               <ReactPlayer
-                              width={300}
-                              height={300}
+                                width={300}
+                                height={300}
                                 url={media.media}
                                 muted={true}
                                 playsinline
@@ -275,7 +273,11 @@ export const UncategorizedPost = ({
                                 key={media.media}
                                 alt=""
                                 priority
-                                className={`${images[currentIndex]?.PMMedia.length === 1 ? "max-h-[35vh]" : ""} w-full h-auto rounded-xl`}
+                                className={`${
+                                  images[currentIndex]?.PMMedia.length === 1
+                                    ? "max-h-[35vh]"
+                                    : ""
+                                } w-full h-auto rounded-xl`}
                                 // sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                               />
                               // </div>
@@ -299,19 +301,13 @@ export const UncategorizedPost = ({
             </div>
             <div className="flex text-[#706464] text-start text-base mt-8 gap-3">
               <h2 className="">
-                <span className=" font-semibold">
-                Post Type:
-                </span>
-                {" "}
+                <span className=" font-semibold">Post Type:</span>{" "}
                 {filteredPost.length
                   ? filteredPost[0].postType
                   : images[currentIndex]?.postType}
               </h2>
               <h2 className="">
-              <span className=" font-semibold">
-                Post Id:
-                </span>
-                {" "}
+                <span className=" font-semibold">Post Id:</span>{" "}
                 {filteredPost.length
                   ? filteredPost[0].POId
                   : images[currentIndex]?.POId}
