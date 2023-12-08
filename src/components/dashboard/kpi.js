@@ -316,6 +316,23 @@ const KPI = (props) => {
                 id="currency"
                 value={currency}
                 onChange={handleCurrencyChange}
+                sx={{
+                  height: "30px", // Custom height for the Select
+                  width: "100px", // Custom width for the Select
+                  "& .MuiSelect-select": {
+                    minHeight: "30px", // Custom height for the select input
+                    lineHeight: "30px", // Adjust line height if needed
+                  },
+                  "& .MuiInputBase-input": {
+                    fontSize: "12px", // Custom font size for Select input text
+                  },
+                  "& .MuiListItem-root": {
+                    minHeight: "30px", // Custom height for each MenuItem
+                  },
+                  "& .MuiMenuItem-root": {
+                    fontSize: "10px", // Custom font size for MenuItem
+                  },
+                }}
               >
                 <MenuItem value="USD">USD</MenuItem>
                 <MenuItem value="NGN">NGN</MenuItem>

@@ -57,7 +57,7 @@ export default function Index() {
     ["fetchActiveUsersCount"],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/users/count?status=active`,
+        `https://vigoplace.com/server/api/admin/console/users/active/count`,
         //`https://vigoplace.com/server/api/admin/console/users/active/count`,
         // `http://localhost:3001/api/admin/console/users/count?status=active`,
         {

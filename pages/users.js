@@ -372,6 +372,7 @@ const Users = () => {
       wallet,
     ],
     async () => {
+      //`http://localhost:4000/api/admin/console/users?limit=${10000000000}&walletCurrencyId=$
       const { data } = await axios.get(
         `https://vigoplace.com/server/api/admin/console/users?limit=${10000000000}&walletCurrencyId=${wallet}${
           gender !== "" ? `&gender=${gender}` : ""
@@ -400,7 +401,7 @@ const Users = () => {
         (pagination.pageIndex + 1) * pagination.pageSize
       );
 
-      console.log(paginatedData);
+      //console.log(paginatedData);
 
       return paginatedData;
     },
@@ -525,7 +526,7 @@ const Users = () => {
               ? "Suspended"
               : cell.getValue() === 0
               ? "Active"
-              : "Unknown"}
+              : "No Owned Wallet"}
           </span>
         ),
       },
