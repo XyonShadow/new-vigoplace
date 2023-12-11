@@ -10,7 +10,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import CheckIcon from "@mui/icons-material/Check";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { green, yellow } from "@mui/material/colors";
+import { green, yellow, red } from "@mui/material/colors";
 import { format } from "date-fns";
 import Slide from "@mui/material/Slide";
 import PropTypes from "prop-types";
@@ -78,9 +78,9 @@ const getStatusLabel = (cryptoOrderStatus) => {
       text: "Pending",
       color: yellow[800],
     },
-    declined: {
+    denied: {
       text: "Declined",
-      color: yellow[800],
+      color: red[800],
     },
     processing: {
       text: "Processing",
@@ -118,8 +118,8 @@ const applyPagination = (cryptoOrders, page, limit) => {
   return cryptoOrders?.slice(page * limit, page * limit + limit);
 };
 
-const API_BASE_URL = "https://vigoplace.com/server";
-//const API_BASE_URL = "http://localhost:4000";
+//const API_BASE_URL = "https://vigoplace.com/server";
+const API_BASE_URL = "http://localhost:4000";
 export default function RecentEarningsTable() {
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -161,7 +161,7 @@ export default function RecentEarningsTable() {
       name: "Processing",
     },
     {
-      id: "declined",
+      id: "denied",
       name: "Declined",
     },
     {
@@ -437,7 +437,7 @@ function Row({ payout, isPayoutSelected }) {
 
   const declineEarning = async ({ reference, pin }) => {
     const token = await getToken();
-    const parsed = await axios.put(
+    const parsed = await axios.patch(
       "https://vigoplace.com/server/api/admin/console/earnings/reject",
       //"http://localhost:4000/api/admin/console/earnings/reject",
       { reference: reference, approvalPin: pin },
@@ -466,10 +466,10 @@ function Row({ payout, isPayoutSelected }) {
 
   const holdEarning = async ({ reference, pin, reason }) => {
     const token = await getToken();
-    const parsed = await axios.put(
-      //"http://localhost:4000/api/admin/console/transaction",
-      "https://vigoplace.com/server/api/admin/console/earnings/hold",
-      { reference: reference, status: "onHold", approvalPin: pin, reason },
+    const parsed = await axios.patch(
+      "http://localhost:4000/api/admin/console/earnings/hold",
+      //"https://vigoplace.com/server/api/admin/console/earnings/hold",
+      { reference: reference, approvalPin: pin, reason },
       {
         headers: {
           Authorization: token,
@@ -1015,7 +1015,7 @@ function Row({ payout, isPayoutSelected }) {
                             </Box>
                           </Box>
                         </div>
-                      ) : payout.status === "declined" ? (
+                      ) : payout.status === "denied" ? (
                         <div>
                           <MenuItem>
                             <Button
@@ -1023,7 +1023,8 @@ function Row({ payout, isPayoutSelected }) {
                               disabled
                               variant="contained"
                               color="error"
-                              sx={{ bgcolor: green[500] }}
+                              style={{backgroundColor: red[800], color: "white"}}
+                              //sx={{ backgroundColor: green[500] }}
                             >
                               Declined <CancelIcon />
                             </Button>
