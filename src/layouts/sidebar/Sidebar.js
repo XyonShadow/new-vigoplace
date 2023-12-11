@@ -45,7 +45,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
 
   useEffect(() => {
     // Load storedRoutes from localStorage
-    const storedRoutesData = JSON.parse(localStorage.getItem("parsed"));
+    const storedRoutesData = JSON.parse(localStorage.getItem("parse"));
 
     if (storedRoutesData) {
       setStoredRoutes(storedRoutesData);
