@@ -38,10 +38,10 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
     right: false,
   });
   const [storedRoutes, setStoredRoutes] = React.useState([]);
+  //console.log(storedRoutes)
 
   const { data: fetchedRoles, isLoading, isFetching } = useRouteRoles();
-
-  //console.log(window);
+  //console.log(fetchedRoles);
 
   useEffect(() => {
     // Load storedRoutes from localStorage
@@ -207,7 +207,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
   ];
 
   //const sidebarMenu = fetchedRoles
-  const sidebarMenu = storedRoutes ? (userInfo?.user?.adminType === "sub-admin" ? subAdminRoutes : storedRoutes)?.map((menu) => {
+  const sidebarMenu = storedRoutes ? (userInfo?.user?.adminType === "sub-admin" ? subAdminRoutes : fetchedRoles)?.map((menu) => {
         return {
           title: menu.title,
           icon: menu.icon,
