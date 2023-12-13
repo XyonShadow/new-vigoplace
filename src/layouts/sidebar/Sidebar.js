@@ -1,4 +1,4 @@
-'use-client';
+"use-client";
 import React, { useEffect } from "react";
 import NextLink from "next/link";
 import PropTypes from "prop-types";
@@ -21,7 +21,7 @@ import FeatherIcon from "feather-icons-react";
 import LogoIcon from "../logo/LogoIcon";
 import Menuitems from "./MenuItems";
 import Buynow from "./Buynow";
-import { useRouter } from "next/router"; 
+import { useRouter } from "next/router";
 
 import { useRouteRoles } from "../../../hooks/useRouteRoles";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
@@ -40,19 +40,129 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
   const [storedRoutes, setStoredRoutes] = React.useState([]);
   //console.log(storedRoutes)
 
-  const { data: fetchedRoles, isLoading, isFetching } = useRouteRoles();
+  //const { data: fetchedRoles, isLoading, isFetching } = useRouteRoles();
   //console.log(fetchedRoles);
+  const fetchedRoles = [
+    {
+      id: 1,
+      title: "Dashboard",
+      icon: "home",
+      href: "/dashboard",
+      roles: ["admin", "root"],
+      SCPCreatedAt: "2022-12-19T06:46:44.000Z",
+      SCPUpdatedAt: null,
+    },
+    {
+      id: 2,
+      title: "Tickets",
+      icon: "headphones",
+      href: "/tickets",
+      roles: ["admin", "root"],
+      SCPCreatedAt: "2022-12-19T06:46:44.000Z",
+      SCPUpdatedAt: null,
+    },
+    {
+      id: 3,
+      title: "Payouts",
+      icon: "dollar-sign",
+      href: "/payouts",
+      roles: ["admin", "root"],
+      SCPCreatedAt: "2022-12-19T06:46:44.000Z",
+      SCPUpdatedAt: null,
+    },
+    {
+      id: 4,
+      title: "Users",
+      icon: "users",
+      href: "/users",
+      roles: ["admin", "root"],
+      SCPCreatedAt: "2022-12-19T06:46:44.000Z",
+      SCPUpdatedAt: null,
+    },
+    {
+      id: 5,
+      title: "Settings",
+      icon: "settings",
+      href: "/settings",
+      roles: ["admin", "root"],
+      SCPCreatedAt: "2022-12-19T06:46:44.000Z",
+      SCPUpdatedAt: null,
+    },
+    {
+      id: 6,
+      title: "Activity Logs",
+      icon: "activity",
+      href: "/logs",
+      roles: ["admin", "root"],
+      SCPCreatedAt: "2022-12-19T06:46:44.000Z",
+      SCPUpdatedAt: null,
+    },
+    {
+      id: 7,
+      title: "Paystack",
+      icon: "dollar-sign",
+      href: "/paystack",
+      roles: ["admin", "superAdmin", "root"],
+      SCPCreatedAt: "2023-02-03T11:21:15.000Z",
+      SCPUpdatedAt: null,
+    },
+    {
+      id: 8,
+      title: "Promo",
+      icon: "dollar-sign",
+      href: "promo",
+      roles: ["admin", "superAdmin", "root"],
+      SCPCreatedAt: "2023-04-12T14:19:30.000Z",
+      SCPUpdatedAt: null,
+    },
+    {
+      id: 9,
+      title: "Post categorization",
+      icon: "post",
+      href: "/post-categorization",
+      roles: ["admin", "root"],
+      SCPCreatedAt: "2023-07-11T06:35:41.000Z",
+      SCPUpdatedAt: null,
+    },
+    {
+      id: 10,
+      title: "Stripe",
+      icon: "dollar-sign",
+      href: "/stripe",
+      roles: ["admin", "root"],
+      SCPCreatedAt: "2023-08-24T12:35:04.000Z",
+      SCPUpdatedAt: null,
+    },
+    {
+      id: 11,
+      title: "Earnings",
+      icon: "wallet",
+      href: "/earnings",
+      roles: ["admin", "administrator"],
+      SCPCreatedAt: "2023-11-28T10:16:47.000Z",
+      SCPUpdatedAt: null,
+    },
+    {
+      id: 12,
+      title: "Orders",
+      icon: "cart",
+      href: "/orders",
+      roles: ["admin", "administrator"],
+      SCPCreatedAt: "2023-11-28T10:17:02.000Z",
+      SCPUpdatedAt: null,
+    },
+  ];
 
-  useEffect(() => {
-    // Load storedRoutes from localStorage
-    const storedRoutesData = JSON.parse(localStorage.getItem("parse"));
+  // useEffect(() => {
+  //   // Load storedRoutes from localStorage
+  //   const storedRoutesData = JSON.parse(localStorage.getItem("parse"));
 
-    if (storedRoutesData) {
-      setStoredRoutes(storedRoutesData);
-    } else {
-      setStoredRoutes(fetchedRoles);
-    }
-  }, []);
+  //   if (storedRoutesData) {
+  //     setStoredRoutes(storedRoutesData);
+  //   } else {
+  //     setStoredRoutes(fetchedRoles);
+  //   }
+  // }, []);
   const getUser = useSession();
   const user = getUser?.data?.user;
   //console.log(user);
@@ -70,7 +180,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
   };
 
   const queryClient = useQueryClient();
-  
+
   const dataFromAbove = queryClient.getQueryData(["routeRoles"]);
 
   const { data: paystackBalance, isError } = useQuery(
@@ -207,7 +317,11 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
   ];
 
   //const sidebarMenu = fetchedRoles
-  const sidebarMenu = storedRoutes ? (userInfo?.user?.adminType === "sub-admin" ? subAdminRoutes : fetchedRoles)?.map((menu) => {
+  const sidebarMenu = fetchedRoles
+    ? (userInfo?.user?.adminType === "sub-admin"
+        ? subAdminRoutes
+        : fetchedRoles
+      )?.map((menu) => {
         return {
           title: menu.title,
           icon: menu.icon,
@@ -247,13 +361,13 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
         //height: "100vh",
       }}
     >
-      <Box 
+      <Box
       //height="100dvh"
       >
         <Box
           sx={{
             display: "flex",
-            alignItems: "center",      
+            alignItems: "center",
           }}
         >
           <LogoIcon />
@@ -281,7 +395,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
                         ...(location === item.href && {
                           color: "white",
                           // backgroundColor: "red",
-                           backgroundColor: (theme) =>
+                          backgroundColor: (theme) =>
                             `${theme.palette.primary.main}!important`,
                         }),
                       }}
@@ -311,7 +425,14 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
         </Box>
       </Box>
 
-      <Box sx={{ marginTop: "auto", display: "flex", alignItems: "center", alignSelf: "Center" }}>
+      <Box
+        sx={{
+          marginTop: "auto",
+          display: "flex",
+          alignItems: "center",
+          alignSelf: "Center",
+        }}
+      >
         <Button
           variant="outlined"
           onClick={toggleDrawer("right", true)}
