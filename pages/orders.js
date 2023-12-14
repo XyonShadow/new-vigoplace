@@ -89,7 +89,7 @@ export default function Orders() {
         header: "Order Id",
       },
       {
-        accessorKey: "UFullName",
+        accessorKey: "SellerFullName",
         enableClickToCopy: false,
         muiTableBodyCellProps: ({ cell }) => ({
           style: {
@@ -108,8 +108,31 @@ export default function Orders() {
             e.target.style.textDecoration = "none";
           },
         }),
-        header: "Seller",
+        header: "Buyer",
         id: "fullName",
+      },
+      {
+        accessorKey: "BuyerFullName",
+        enableClickToCopy: false,
+        muiTableBodyCellProps: ({ cell }) => ({
+          style: {
+            cursor: "pointer",
+          },
+          onClick: () => {
+            //console.log(cell.getValue());
+            const userId = cell.row.original.BuyerId;
+            const url = `/user/${userId}`;
+            window.open(url, "_blank");
+          },
+          onMouseEnter: (e) => {
+            e.target.style.textDecoration = "underline";
+          },
+          onMouseLeave: (e) => {
+            e.target.style.textDecoration = "none";
+          },
+        }),
+        header: "Seller",
+        id: "2fullName",
       },
       {
         accessorKey: "OPSOProductId",
