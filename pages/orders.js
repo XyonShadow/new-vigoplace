@@ -89,6 +89,29 @@ export default function Orders() {
         header: "Order Id",
       },
       {
+        accessorKey: "UFullName",
+        enableClickToCopy: false,
+        muiTableBodyCellProps: ({ cell }) => ({
+          style: {
+            cursor: "pointer",
+          },
+          onClick: () => {
+            //console.log(cell.getValue());
+            const userId = cell.row.original.OPSOUserId;
+            const url = `/user/${userId}`;
+            window.open(url, "_blank");
+          },
+          onMouseEnter: (e) => {
+            e.target.style.textDecoration = "underline";
+          },
+          onMouseLeave: (e) => {
+            e.target.style.textDecoration = "none";
+          },
+        }),
+        header: "Seller",
+        id: "fullName",
+      },
+      {
         accessorKey: "OPSOProductId",
         enableClickToCopy: false,
         header: "Product Id",
