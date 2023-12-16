@@ -118,8 +118,8 @@ const applyPagination = (cryptoOrders, page, limit) => {
   return cryptoOrders?.slice(page * limit, page * limit + limit);
 };
 
-//const API_BASE_URL = "https://vigoplace.com/server";
-const API_BASE_URL = "http://localhost:4000";
+const API_BASE_URL = "https://vigoplace.com/server";
+//const API_BASE_URL = "http://localhost:4000";
 export default function RecentEarningsTable() {
   const queryClient = useQueryClient();
   const router = useRouter();
