@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import { dehydrate, QueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { Grid, Container } from "@mui/material";
-import RecentEarnings from "./RecentEarnings";
+import RecentEarnings from "../src/components/RecentEarnings";
 import {
   usePayoutRequests,
   fetchPayoutRequests,
-} from "../../hooks/usePayoutRequests";
+} from "../hooks/usePayoutRequests";
 
 function Earnings() {
   const [fetchParams, setFetchParams] = useState({
