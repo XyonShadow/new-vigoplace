@@ -467,8 +467,8 @@ function Row({ payout, isPayoutSelected }) {
   const holdEarning = async ({ reference, pin, reason }) => {
     const token = await getToken();
     const parsed = await axios.patch(
-      "http://localhost:4000/api/admin/console/earnings/hold",
-      //"https://vigoplace.com/server/api/admin/console/earnings/hold",
+      //"http://localhost:4000/api/admin/console/earnings/hold",
+      "https://vigoplace.com/server/api/admin/console/earnings/hold",
       { reference: reference, approvalPin: pin, reason },
       {
         headers: {
