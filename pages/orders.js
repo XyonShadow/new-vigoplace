@@ -88,52 +88,52 @@ export default function Orders() {
         enableClickToCopy: false,
         header: "Order Id",
       },
-      // {
-      //   accessorKey: "SellerFullName",
-      //   enableClickToCopy: false,
-      //   muiTableBodyCellProps: ({ cell }) => ({
-      //     style: {
-      //       cursor: "pointer",
-      //     },
-      //     onClick: () => {
-      //       //console.log(cell.getValue());
-      //       const userId = cell.row.original.OPSOUserId;
-      //       const url = `/user/${userId}`;
-      //       window.open(url, "_blank");
-      //     },
-      //     onMouseEnter: (e) => {
-      //       e.target.style.textDecoration = "underline";
-      //     },
-      //     onMouseLeave: (e) => {
-      //       e.target.style.textDecoration = "none";
-      //     },
-      //   }),
-      //   header: "Buyer",
-      //   id: "fullName",
-      // },
-      // {
-      //   accessorKey: "BuyerFullName",
-      //   enableClickToCopy: false,
-      //   muiTableBodyCellProps: ({ cell }) => ({
-      //     style: {
-      //       cursor: "pointer",
-      //     },
-      //     onClick: () => {
-      //       //console.log(cell.getValue());
-      //       const userId = cell.row.original.BuyerId;
-      //       const url = `/user/${userId}`;
-      //       window.open(url, "_blank");
-      //     },
-      //     onMouseEnter: (e) => {
-      //       e.target.style.textDecoration = "underline";
-      //     },
-      //     onMouseLeave: (e) => {
-      //       e.target.style.textDecoration = "none";
-      //     },
-      //   }),
-      //   header: "Seller",
-      //   id: "2fullName",
-      // },
+      {
+        accessorKey: "SellerFullName",
+        enableClickToCopy: false,
+        muiTableBodyCellProps: ({ cell }) => ({
+          style: {
+            cursor: "pointer",
+          },
+          onClick: () => {
+            //console.log(cell.getValue());
+            const userId = cell.row.original.OPSOUserId;
+            const url = `/user/${userId}`;
+            window.open(url, "_blank");
+          },
+          onMouseEnter: (e) => {
+            e.target.style.textDecoration = "underline";
+          },
+          onMouseLeave: (e) => {
+            e.target.style.textDecoration = "none";
+          },
+        }),
+        header: "Buyer",
+        id: "fullName",
+      },
+      {
+        accessorKey: "BuyerFullName",
+        enableClickToCopy: false,
+        muiTableBodyCellProps: ({ cell }) => ({
+          style: {
+            cursor: "pointer",
+          },
+          onClick: () => {
+            //console.log(cell.getValue());
+            const userId = cell.row.original.BuyerId;
+            const url = `/user/${userId}`;
+            window.open(url, "_blank");
+          },
+          onMouseEnter: (e) => {
+            e.target.style.textDecoration = "underline";
+          },
+          onMouseLeave: (e) => {
+            e.target.style.textDecoration = "none";
+          },
+        }),
+        header: "Seller",
+        id: "2fullName",
+      },
       {
         accessorKey: "OPSOProductId",
         enableClickToCopy: false,
