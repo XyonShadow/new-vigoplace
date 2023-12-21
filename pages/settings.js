@@ -6,7 +6,7 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import AdminSecurity from '../src/components/AdminSecurity';
-
+import Charges from '../src/components/Charge';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -77,7 +77,7 @@ export default function Settings() {
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-       Coming soon...
+       <Charges />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <AdminSecurity/>

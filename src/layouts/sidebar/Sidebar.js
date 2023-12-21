@@ -118,7 +118,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
     {
       id: 9,
       title: "Post categorization",
-      icon: "post",
+      icon: "file-plus",
       href: "/post-categorization",
       roles: ["admin", "root"],
       SCPCreatedAt: "2023-07-11T06:35:41.000Z",
@@ -136,7 +136,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
     {
       id: 11,
       title: "Earnings",
-      icon: "wallet",
+      icon: "credit-card",
       href: "/earnings",
       roles: ["admin", "root"],
       SCPCreatedAt: "2023-11-28T10:16:47.000Z",
@@ -145,7 +145,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
     {
       id: 12,
       title: "Orders",
-      icon: "cart",
+      icon: "shopping-cart",
       href: "/orders",
       roles: ["admin", "root"],
       SCPCreatedAt: "2023-11-28T10:17:02.000Z",
