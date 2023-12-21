@@ -38,9 +38,9 @@ function Charges() {
   });
   const [openModal, setOpenModal] = React.useState(false);
   const [charges, setCharges] = useState({
-    currencyId: "", // Add the currencyId state
-    operation: "", // Add the operation state
-    newChargeValue: "", // Add the newChargeValue state
+    currencyId: "", 
+    operation: "",
+    newChargeValue: "", 
   });
 
   const handleChargeChange = (event) => {
