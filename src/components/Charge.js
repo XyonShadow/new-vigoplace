@@ -67,8 +67,8 @@ function Charges() {
 
   const updateCharges = async ({ currencyId, operation, newChargeValue }) => {
     const updatedCharges = await axios.put(
-      `http://localhost:4000/api/admin/settings/charges/${currencyId}`,
-      //`https://vigoplace.com/server/api/admin/settings/charges/${currencyId}`,
+      //`http://localhost:4000/api/admin/settings/charges/${currencyId}`,
+      `https://vigoplace.com/server/api/admin/settings/charges/${currencyId}`,
       { operation, newChargeValue },
       {
         headers: {
