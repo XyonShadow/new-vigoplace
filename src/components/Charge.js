@@ -90,7 +90,7 @@ function Charges() {
     onSuccess: () => {
       // Handle success
       setToast({ ...toast, success: true });
-      setCharges({ currencyId: "", operation: "", newChargeValue: 0 });
+      setCharges({ currencyId: "", operation: "", newChargeValue: "" });
       setOpenModal(false);
     },
   });
