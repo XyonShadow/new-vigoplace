@@ -121,8 +121,112 @@ function Charges() {
           {updateChargesMutation?.data?.data?.message}
         </Alert>
       </Snackbar>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+        }}
+      >
+        <Container maxWidth="lg">
+          <Box sx={{ pt: 3 }}>
+            <form>
+              <Card>
+                <CardHeader subheader="" title="Update Charges" />
+                <Divider />
+                <CardContent>
+                  <FormControl fullWidth>
+                    <InputLabel style={{ marginTop: "18px" }}>
+                      Select a Currency
+                    </InputLabel>
+                    <Select
+                      value={charges.currencyId}
+                      onChange={handleChargeChange}
+                      inputProps={{
+                        name: "currencyId",
+                      }}
+                      style={{ marginTop: "20px" }}
+                    >
+                      <MenuItem value={175}>Naira</MenuItem>
+                      <MenuItem value={250}>Usd</MenuItem>
+                    </Select>
+                  </FormControl>
 
-      {/* <Snackbar
+                  <FormControl fullWidth>
+                    <InputLabel
+                      //id="demo-dialog-select-label"
+                      style={{ marginTop: "18px" }}
+                    >
+                      Select an Operation
+                    </InputLabel>
+                    <Select
+                      //labelId="demo-dialog-select-label"
+                      //id="demo-dialog-select"
+                      value={charges.operation}
+                      onChange={handleChargeChange}
+                      //   inputProps={{
+                      //     name: "operation",
+                      //   }}
+                      input={<OutlinedInput label="Charge" name="operation" />}
+                      style={{ marginTop: "20px" }}
+                    >
+                      {operations.map((op) => (
+                        <MenuItem key={op.id} value={op.id}>
+                          {op.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+
+                  <TextField
+                    fullWidth
+                    label="New Charge Value"
+                    margin="normal"
+                    name="newChargeValue"
+                    onChange={handleChargeChange}
+                    type="number"
+                    value={charges.newChargeValue}
+                    variant="outlined"
+                  />
+                </CardContent>
+                <Divider />
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    p: 2,
+                  }}
+                >
+                  <LoadingButton
+                    variant="contained"
+                    color="primary"
+                    loading={updateChargesMutation.isLoading}
+                    disabled={
+                      charges.currencyId === "" ||
+                      charges.operation === "" ||
+                      charges.newChargeValue === ""
+                    }
+                    onClick={() => {
+                      updateChargesMutation.mutate(charges);
+                    }}
+                  >
+                    Update Charges
+                  </LoadingButton>
+                </Box>
+              </Card>
+            </form>
+          </Box>
+        </Container>
+      </Box>
+    </>
+  );
+}
+
+export default Charges;
+
+
+
+{
+  /* <Snackbar
         TransitionComponent={Slide}
         open={passwordToast.error}
         autoHideDuration={6000}
@@ -141,8 +245,10 @@ function Charges() {
         <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
           {updatePasswordMutation?.data?.data?.message}
         </Alert>
-      </Snackbar> */}
-      {/* <Box
+      </Snackbar> */
+}
+{
+  /* <Box
         component="main"
         sx={{
           flexGrow: 1,
@@ -154,8 +260,10 @@ function Charges() {
               <Card>
                 <CardHeader subheader="" title="Update Charges" />
                 <Divider />
-                <CardContent> */}
-      {/* <TextField
+                <CardContent> */
+}
+{
+  /* <TextField
                     fullWidth
                     label="Currency ID"
                     margin="normal"
@@ -164,8 +272,10 @@ function Charges() {
                     type="text"
                     value={charges.currencyId}
                     variant="outlined"
-                  /> */}
-      {/* <FormControl fullWidth>
+                  /> */
+}
+{
+  /* <FormControl fullWidth>
                     <InputLabel
                       id="demo-dialog-select-label"
                       style={{ marginTop: "18px" }}
@@ -239,106 +349,5 @@ function Charges() {
   );
 }
 
-export default Charges; */}
-
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-        }}
-      >
-        <Container maxWidth="lg">
-          <Box sx={{ pt: 3 }}>
-            <form>
-              <Card>
-                <CardHeader subheader="" title="Update Charges" />
-                <Divider />
-                <CardContent>
-                  <FormControl fullWidth>
-                    <InputLabel style={{ marginTop: "18px" }}>
-                      Select a Currency
-                    </InputLabel>
-                    <Select
-                      value={charges.currencyId}
-                      onChange={handleChargeChange}
-                      inputProps={{
-                        name: "currencyId",
-                      }}
-                      style={{ marginTop: "20px" }}
-                    >
-                      <MenuItem value={175}>Naira</MenuItem>
-                      <MenuItem value={250}>Usd</MenuItem>
-                    </Select>
-                  </FormControl>
-
-                  <FormControl fullWidth>
-                    <InputLabel
-                      //id="demo-dialog-select-label"
-                      style={{ marginTop: "18px" }}
-                    >
-                      Select an Operation
-                    </InputLabel>
-                    <Select
-                      //labelId="demo-dialog-select-label"
-                      //id="demo-dialog-select"
-                      value={charges.operation}
-                      onChange={handleChargeChange}
-                    //   inputProps={{
-                    //     name: "operation",
-                    //   }}
-                      input={<OutlinedInput label="Charge" name="operation"/>}
-                      style={{ marginTop: "20px" }}
-                    >
-                      {operations.map((op) => (
-                        <MenuItem key={op.id} value={op.id}>
-                          {op.label}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-
-                  <TextField
-                    fullWidth
-                    label="New Charge Value"
-                    margin="normal"
-                    name="newChargeValue"
-                    onChange={handleChargeChange}
-                    type="number"
-                    value={charges.newChargeValue}
-                    variant="outlined"
-                  />
-                </CardContent>
-                <Divider />
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    p: 2,
-                  }}
-                >
-                  <LoadingButton
-                    variant="contained"
-                    color="primary"
-                    loading={updateChargesMutation.isLoading}
-                    disabled={
-                      charges.currencyId === "" ||
-                      charges.operation === "" ||
-                      charges.newChargeValue === ""
-                    }
-                    onClick={() => {
-                      updateChargesMutation.mutate(charges);
-                    }}
-                  >
-                    Update Charges
-                  </LoadingButton>
-                </Box>
-              </Card>
-            </form>
-          </Box>
-        </Container>
-      </Box>
-    </>
-  );
+export default Charges; */
 }
-
-export default Charges;
