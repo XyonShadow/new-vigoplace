@@ -48,7 +48,7 @@ function Charges() {
     const { name, value } = event.target;
     setCharges({
       ...charges,
-      [name]: value,
+      [event.target.name]: event.target.value,
     });
 
     if (name === "operation") {
