@@ -600,7 +600,7 @@ const Users = () => {
   };
 
   const createTicketMutation = useMutation({
-    mutationKey: ["postYesDebitUser"],
+    mutationKey: ["createTicketUser"],
     mutationFn: createTicket,
     onSuccess: () => {
       queryClient.invalidateQueries("fetchSingleUser");
@@ -1235,7 +1235,7 @@ const Users = () => {
                           id="demo-dialog-select"
                           value={categoryId}
                           onChange={handleCategoryId}
-                          input={<OutlinedInput label="Category" />}
+                          input={<OutlinedInput label="Select an issue" />}
                           fullWidth
                           style={{ marginTop: "20px" }}
                         >
