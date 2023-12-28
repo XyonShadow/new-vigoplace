@@ -82,12 +82,12 @@ const getStatusLabel = (cryptoOrderStatus) => {
       text: "Pending",
       color: yellow[800],
     },
-    // declined: {
-    //   text: "Declined",
-    //   color: yellow[800],
-    // },
-    cancelled: {
+    declined: {
       text: "Declined",
+      color: yellow[800],
+    },
+    cancelled: {
+      text: "Cancelled",
       color: red[500],
     },
     processing: {
@@ -184,10 +184,10 @@ export default function RecentOrdersTable() {
       id: "processing",
       name: "Processing",
     },
-    // {
-    //   id: "declined",
-    //   name: "Declined",
-    // },
+    {
+      id: "declined",
+      name: "Declined",
+    },
     {
       id: "cancelled",
       name: "Cancelled",
@@ -1408,7 +1408,27 @@ function Row({ payout, isPayoutSelected }) {
                               variant="contained"
                               color="error"
                               //sx={{ backgroundColor: green[500] }}
-                              style={{backgroundColor: red[600], color: "black"}}
+                              style={{
+                                backgroundColor: red[600],
+                                color: "black",
+                              }}
+                            >
+                              Cancelled <CancelIcon />
+                            </Button>
+                          </MenuItem>
+                        </div>
+                      ) : payout.payoutRequestStatus === "declined" ? (
+                        <div>
+                          <MenuItem>
+                            <Button
+                              size="small"
+                              disabled
+                              variant="contained"
+                              color="error"
+                              style={{
+                                backgroundColor: yellow[800],
+                                color: "black",
+                              }}
                             >
                               Declined <CancelIcon />
                             </Button>
