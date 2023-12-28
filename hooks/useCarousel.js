@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 
-const API_BASE_URL = "http://localhost:4000";
+//const API_BASE_URL = "http://localhost:4000";
+const API_BASE_URL = "https://vigoplace.com/server"
 
 const useCarousel = () => {
   const [categorizedData, setCategorizedData] = useState()
