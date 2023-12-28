@@ -77,7 +77,8 @@ export default function Settings() {
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-       <Charges />
+       coming soon ...
+       {/* <Charges /> */}
       </TabPanel>
       <TabPanel value={value} index={1}>
         <AdminSecurity/>
