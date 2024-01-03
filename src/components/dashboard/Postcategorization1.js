@@ -16,6 +16,7 @@ export function Postcategorization1({
   isError,
   fetchCatgorizedData,
   isLoading,
+  setCategorizedData,
 }) {
   const [tab, setTab] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
@@ -26,16 +27,14 @@ export function Postcategorization1({
   const [filteredPost, setFilteredPost] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [filteredCategoryResults, setFilteredCategoryResults] = useState([]);
-  // const [FilteredImages, setFilteredImages] = useState([])
   const [searchInput, setSearchInput] = useState("");
   const [categoryResults, setCategoryResults] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
-  // const [selectedCategoryIndexes, setSelectedCategoryIndexes] = useState({});
   const [currentPostId, setCurrentPostId] = useState(0);
   const [categorizedPost, setCategorizedPost] = useState([]);
   const [categorizedIndex, setCategorizedIndex] = useState(0);
-  //let categorizedIndex = useRef(0).current;
-  //When fetching the next 100, Change the currentPage to 2
+  const [originalIndex, setOriginalIndex] = useState(0);
+  const [postFetched, setPostFetched] = useState(false);
 
   const queryClient = useQueryClient();
 
@@ -53,33 +52,7 @@ export function Postcategorization1({
     isLoading: uncategorizedDataLoading,
     error: uncategorizedDataError,
   } = useQuery(["uncategorizedData"], fetchUncategorizedData, {});
-  //console.log(unCategorizedData);
-  // const fetchCategory = async (currentPage, pageSize) => {
-  //   const response = await fetch(
-  //     `${API_BASE_URL}/api/admin/categorized?page=${currentPage}&itemsPerPage=${pageSize}`
-  //   );
-  //   if (!response.ok) {
-  //     throw new Error("Failed to fetch data");
-  //   }
-  //   const data = await response.json();
-  //   //console.log(data);
-  //   return data;
-  // };
 
-  //const queryKey = ["categorizedPost", currentPage, pageSize];
-
-  // const {
-  //   data: categorizedItem,
-  //   isLoading,
-  //   isError,
-  //   isSuccess,
-  // } = useQuery(queryKey, () => fetchCategory(currentPage, pageSize), {
-  //   //enabled: false,
-  //   onSuccess: (data) => {
-  //     const newPost = data?.data || [];
-  //     setCategorizedPost((prevPost) => [...prevPost, ...newPost]);
-  //   },
-  // });
   const getToken = async () => {
     const session = await getSession();
     return session?.user?.token;
@@ -157,13 +130,6 @@ export function Postcategorization1({
     isLoading: categoryListLoading,
     error: categoryListError,
   } = useQuery(["categoryList"], fetchData);
-
-  // useEffect(() => {
-  //   if (uncategorizedData) {
-  //     // Update currentIndex based on the uncategorized data length
-  //     setCurrentIndex(0);
-  //   }
-  // }, [uncategorizedData, categoryList, fetchData]);
 
   if (categoryListLoading || uncategorizedDataLoading) {
     return <div>Loading...</div>;
@@ -251,80 +217,66 @@ export function Postcategorization1({
     }
   };
 
+
   const handleCategorizedSearch = async (searchInput) => {
-    const categorizedFiltered = categorizedData.filter(
-      (post) => post.POId === Number(searchInput)
+    const postid = Number(searchInput);
+
+    const indexOfFoundPost = categorizedData.findIndex(
+      (post) => post.POId === postid
     );
 
-    if (categorizedFiltered.length !== 0 && tab === 1) {
+    if (indexOfFoundPost !== -1) {
+      // Post found within the categorizedData, update index and results
+      updateCategorizedIndex(indexOfFoundPost);
+      setCategoryResults([categorizedData[indexOfFoundPost]]);
+    } else {
       try {
         const response = await fetch(
-          `${API_BASE_URL}/api/admin/categorized/${searchInput}`
+          `${API_BASE_URL}/api/admin/categorized/${postid}`
         );
-        const data = await response.json();
-        if (data) {
-          // Handle categorized post found
-          const foundPost = data.data;
-          const indexOfFoundPost = categorizedData.findIndex(
-            (post) => post.POId === foundPost.POId
-          );
+        const responseData = await response.json();
 
-          if (indexOfFoundPost !== -1) {
-            updateCategorizedIndex(indexOfFoundPost);
+        if (tab === 1) {
+          if (
+            responseData.flag === false &&
+            responseData.message === "Categorized post not found"
+          ) {
+            // Handle the case where the post is not found
+            toast.error("Categorized post not found");
+          } else if (
+            responseData.data &&
+            Object.keys(responseData.data).length === 0
+          ) {
+            // Handle the case where data object is empty
+            toast.error("Categorized post not found");
+          } else if (responseData.data && responseData.data) {
+            const foundPost = responseData.data;
+
+            // Update categorized data with the fetched post
+            updateCategoryPost([foundPost]);
+
+            const newIndexOfFoundPost = categorizedData.length; // Find the last index
+            updateCategorizedIndex(newIndexOfFoundPost);
+
+            setCategorizedData((prev) => [...prev, foundPost]);
+
             setCategoryResults([foundPost]);
+
+            setOriginalIndex(categorizedIndex);  
+
+            setPostFetched(true);
+        
           } else {
-            toast.error("Post not found in the fetched data");
+            // Handle other cases or error scenarios
+            toast.error("Error fetching post");
           }
-        } else {
-          toast.error("Post not found");
         }
       } catch (error) {
         console.error("Error fetching post:", error);
         toast.error("Error fetching post");
       }
-      return;
     }
-
-    const indexOfFilteredData = categorizedData.indexOf(categorizedFiltered[0]);
-    updateCategorizedIndex(indexOfFilteredData);
-    setCategoryResults(categorizedFiltered);
   };
-
-  // const handleUncategorizedSearch = (searchInput) => {
-  //   const filteredPosts = unCategorizedData.filter(
-  //     (post) => post.POId === Number(searchInput)
-  //   );
-  //   if (filteredPosts.length === 0 && tab === 0) {
-  //     toast.error("Post not found");
-  //     return;
-  //   }
-
-  //   const indexOfFilteredData = unCategorizedData.indexOf(filteredPosts[0]);
-  //   //console.log(indexOfFilteredData);
-  //   setCurrentIndex(indexOfFilteredData);
-  //   const newPostId = unCategorizedData[indexOfFilteredData]?.POId;
-  //   updateCurrentPost(newPostId);
-
-  //   setFilteredPost(filteredPosts);
-
-  // };
-
-  // const handleCategorizedSearch = (searchInput) => {
-  //   const categorizedFiltered = categorizedData.filter(
-  //     (post) => post.POId === Number(searchInput)
-  //   );
-  //   if (categorizedFiltered.length === 0 && tab === 1) {
-  //     toast.error("Post not found");
-  //     return;
-  //   }
-
-  //   const indexOfFilteredData = categorizedData.indexOf(categorizedFiltered[0]);
-  //   updateCategorizedIndex(indexOfFilteredData);
-  //   //  const newPostId = categorizedData[indexOfFilteredData]?.POId;
-  //   //  updateCurrentPost(newPostId);
-
-  //   setCategoryResults(categorizedFiltered);
-  // };
 
   const handleClick = () => {
     if (
@@ -560,6 +512,10 @@ export function Postcategorization1({
             isLoading={isLoading}
             isError={isError}
             updateCategoryPost={updateCategoryPost}
+            setOriginalIndex={setOriginalIndex}
+            originalIndex={originalIndex}
+            postFetched={postFetched}
+            setPostFetched={setPostFetched}
           />
         )}
       </div>

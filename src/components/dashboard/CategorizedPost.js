@@ -37,6 +37,10 @@ export const CategorizedPost = ({
   fetchCatgorizedData,
   categorizedPost,
   updateCategoryPost,
+  originalIndex,
+  setOriginalIndex,
+  postFetched,
+  setPostFetched,
 }) => {
   //console.log(images?.[categorizedIndex]?.PMMedia)
   //console.log(categorizedPost?.[categorizedIndex]?.OPCCategory);
@@ -145,22 +149,6 @@ export const CategorizedPost = ({
     }
   };
 
-  // const isAtBeginning = categorizedIndex === 0;
-  // // Check if carousel is at the end (last image)
-  // const isAtEnd =
-  //   (categoryResults && categorizedIndex === categoryResults.length - 1) ||
-  //   (images && categorizedIndex === images.length - 1);
-
-  // const categoryDelete = async (postId) => {
-  //   try {
-  //     console.log("Calling categoryDelete with postId:", postId);
-  //     await mutation.mutateAsync(postId);
-  //   } catch (error) {
-  //     console.error("Error deleting post:", error);
-  //     toast.error("Error deleting the category!");
-  //   }
-  // };
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -196,19 +184,49 @@ export const CategorizedPost = ({
   };
 
   const nextSlide = () => {
-    //console.log(images);
-    if (images?.[categorizedIndex]?.POId === images[images.length - 11]?.POId) {
-      currentPage.current += 1;
-      fetchCatgorizedData();
+    // Check if a post was fetched and originalIndex is not null
+    if (postFetched && originalIndex !== null) {
+      // Set the categorizedIndex to the originalIndex
+      setCategoryResults([images[originalIndex]]);
+      updateCategorizedIndex(originalIndex);
+      setOriginalIndex(0); 
+      setPostFetched(false); 
+    } else {
+      if (
+        images?.[categorizedIndex]?.POId === images[images.length - 11]?.POId
+      ) {
+        currentPage.current += 1;
+        fetchCatgorizedData();
+      }
+      // Increment the index and ensure it wraps around correctly
+      const newIndex =
+        categorizedIndex >= images.length - 1 ? 0 : categorizedIndex + 1;
+      setCategoryResults([images[newIndex]]);
+      updateCategorizedIndex(newIndex);
+      setOriginalIndex(newIndex);
     }
-
-    // Increment the index and ensure it wraps around correctly
-    const newIndex =
-      categorizedIndex > images?.length - 1 ? 0 : categorizedIndex + 1;
-    //console.log(newIndex);
-    setCategoryResults([images[newIndex]]);
-    updateCategorizedIndex(newIndex);
   };
+
+  // const nextSlide = () => {
+  //   //console.log(images);
+  //   if (images?.[categorizedIndex]?.POId === images[images.length - 11]?.POId) {
+  //     currentPage.current += 1;
+  //     fetchCatgorizedData();
+  //   }
+
+  //   // Increment the index and ensure it wraps around correctly
+  //   const newIndex =
+  //     categorizedIndex > images?.length - 1 ? 0 : categorizedIndex + 1;
+  //   //console.log(newIndex);
+  //   setCategoryResults([images[newIndex]]);
+  //   updateCategorizedIndex(newIndex);
+  //   setOriginalIndex(newIndex);
+
+  //   // if (postFetched) {
+  //   //   updateCategorizedIndex(originalIndex);
+  //   // }
+  //   //setPostFetched(false)
+  // };
 
   return (
     <>

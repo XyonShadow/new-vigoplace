@@ -70,7 +70,7 @@ import {
 import Orders from "./orders";
 import Activities from "./activities";
 import Places from "./places";
-import Followers from "./followers"
+import Followers from "./followers";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -130,8 +130,11 @@ const Users = () => {
   const [creditErrorToast, setCreditErrorToast] = React.useState(false);
   const [debitSuccessToast, setDebitSuccessToast] = React.useState(false);
   const [debitErrorToast, setDebitErrorToast] = React.useState(false);
+  const [notifySuccessToast, setNotifySuccessToast] = React.useState(false);
+  const [notifyErrorToast, setNotifyErrorToast] = React.useState(false);
   const [lienModal, setLienModal] = React.useState(false);
   const [ticketModal, setTicketModal] = React.useState(false);
+  const [notifyModal, setNotifyModal] = React.useState(false);
   const [status, setStatus] = React.useState("");
   const [pin, setPin] = React.useState(null);
   const [reason, setReason] = React.useState("");
@@ -139,6 +142,7 @@ const Users = () => {
   const [categoryId, setCategoryId] = React.useState("");
   const [description, setDescription] = React.useState("");
   const [subject, setSubject] = React.useState("");
+  const [notificationText, setNotificationText] = useState("");
   const [isVerified, setIsverified] = React.useState("");
   const [tabValue, setTabValue] = React.useState(0);
   const [creditDetails, setCreditDetails] = useState({
@@ -234,6 +238,10 @@ const Users = () => {
 
   const handleDescription = (e) => {
     setDescription(e.target.value);
+  };
+
+  const handleNotificationText = (event) => {
+    setNotificationText(event.target.value);
   };
 
   /* ************* Queries *************** */
@@ -507,7 +515,7 @@ const Users = () => {
   });
 
   const postNoDebit = async ({ id, pin, reason, duration }) => {
-    console.log(duration);
+    //console.log(duration);
     const postNoDebitUser = await axios.post(
       "https://vigoplace.com/server/api/admin/console/post-no-debit",
       {
@@ -618,6 +626,42 @@ const Users = () => {
     },
   });
 
+  const notifyUser = async ({ id, notificationText }) => {
+    const notification = await axios.post(
+      //"http://localhost:4000/api/notifications",
+      "https://vigoplace.com/server/api/notifications",
+      { users: [id], message: notificationText },
+      {
+        headers: {
+          Authorization: user?.token,
+        },
+      }
+    );
+
+    // if (notification.status === 200) {
+    //   toast.success(notification.data.message);
+    // }
+
+    return notification;
+  };
+
+  const notifyUserMutation = useMutation({
+    mutationKey: ["notifyUser"],
+    mutationFn: notifyUser,
+    onSuccess: () => {
+      setNotificationText("");
+      //handleClose();
+      setNotifySuccessToast(true);
+      queryClient.invalidateQueries("fetchSingleUser");
+      setTimeout(() => {
+        notifyUserMutation.reset();
+      }, 7000);
+    },
+    onError: async (error) => {
+      setNotifyErrorToast(true);
+    },
+  });
+
   const columns = useMemo(
     () => [
       {
@@ -684,6 +728,13 @@ const Users = () => {
   };
   const handleDebitErrorToastClose = (event, reason) => {
     setDebitErrorToast(false);
+  };
+
+  const handleNotifySuccessToastClose = (event, reason) => {
+    setNotifySuccessToast(false);
+  };
+  const handleNotifyErrorToastClose = (event, reason) => {
+    setNotifyErrorToast(false);
   };
 
   const handleClose = (event, reason) => {
@@ -809,6 +860,36 @@ const Users = () => {
           sx={{ width: "100%" }}
         >
           {createTicketMutation.error?.response?.data?.message}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        TransitionComponent={Slide}
+        open={notifySuccessToast}
+        autoHideDuration={6000}
+        onClose={handleNotifySuccessToastClose}
+      >
+        <Alert
+          onClose={handleNotifySuccessToastClose}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {notifyUserMutation?.data?.data?.message}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        TransitionComponent={Slide}
+        open={notifyErrorToast}
+        autoHideDuration={6000}
+        onClose={handleNotifyErrorToastClose}
+      >
+        <Alert
+          onClose={handleNotifyErrorToastClose}
+          severity="warning"
+          sx={{ width: "100%" }}
+        >
+          {notifyUserMutation?.error?.response?.data?.message}
         </Alert>
       </Snackbar>
 
@@ -1195,6 +1276,7 @@ const Users = () => {
                     </Dialog>
                   </>
                 )}
+
                 <>
                   <MenuItem>
                     <Button
@@ -1300,6 +1382,73 @@ const Users = () => {
                         }}
                       >
                         Create
+                      </LoadingButton>
+                    </DialogActions>
+                  </Dialog>
+                </>
+
+                <>
+                  <MenuItem>
+                    <Button
+                      variant="contained"
+                      onClick={() => setNotifyModal(true)}
+                    >
+                      {notifyUserMutation.isLoading ? (
+                        <CircularProgress size={23} color="inherit" />
+                      ) : notifyUserMutation.isSuccess ? (
+                        <CheckIcon />
+                      ) : (
+                        "Send Notification"
+                      )}
+                    </Button>
+                  </MenuItem>
+
+                  <Dialog
+                    open={notifyModal}
+                    onClose={() => {
+                      setNotifyModal(false);
+                    }}
+                  >
+                    <DialogTitle>Send Notification</DialogTitle>
+                    <DialogContent>
+                      <DialogContentText>
+                        Enter Notification Text
+                      </DialogContentText>
+
+                      <TextField
+                        autoFocus
+                        margin="normal"
+                        id="name"
+                        label="Enter Notification Text"
+                        type="email"
+                        fullWidth
+                        variant="standard"
+                        onChange={handleNotificationText}
+                      />
+                    </DialogContent>
+                    <DialogActions>
+                      <Button
+                        onClick={() => {
+                          setNotificationText("");
+                          setNotifyModal(false);
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                      <LoadingButton
+                        variant="contained"
+                        loading={notifyUserMutation.isLoading}
+                        disabled={notificationText === ""}
+                        onClick={() => {
+                          notifyUserMutation.mutate({
+                            id: userDetails?.data?.user?.id,
+                            notificationText,
+                          });
+                          setNotificationText("");
+                          setNotifyModal(false);
+                        }}
+                      >
+                        Notify
                       </LoadingButton>
                     </DialogActions>
                   </Dialog>
