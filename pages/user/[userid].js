@@ -1412,7 +1412,7 @@ const Users = () => {
                     <DialogTitle>Send Notification</DialogTitle>
                     <DialogContent>
                       <DialogContentText>
-                        Enter Notification Text
+                        Enter Notification Text You Wish To Send To This User
                       </DialogContentText>
 
                       <TextField
