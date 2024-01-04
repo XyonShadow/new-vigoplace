@@ -235,6 +235,7 @@ export function Postcategorization1({
           `${API_BASE_URL}/api/admin/categorized/${postid}`
         );
         const responseData = await response.json();
+        console.log(responseData)
 
         if (tab === 1) {
           if (
@@ -259,6 +260,8 @@ export function Postcategorization1({
             updateCategorizedIndex(newIndexOfFoundPost);
 
             setCategorizedData((prev) => [...prev, foundPost]);
+
+            setCategorizedPost([]);
 
             setCategoryResults([foundPost]);
 
