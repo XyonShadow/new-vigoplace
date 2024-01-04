@@ -235,7 +235,6 @@ export function Postcategorization1({
           `${API_BASE_URL}/api/admin/categorized/${postid}`
         );
         const responseData = await response.json();
-        console.log(responseData)
 
         if (tab === 1) {
           if (
@@ -268,7 +267,6 @@ export function Postcategorization1({
             setOriginalIndex(categorizedIndex);  
 
             setPostFetched(true);
-        
           } else {
             // Handle other cases or error scenarios
             toast.error("Error fetching post");
