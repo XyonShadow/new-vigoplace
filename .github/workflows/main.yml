@@ -38,7 +38,7 @@ jobs:
                 ssh-add ~/.ssh/admin
                 cd /var/www/admin.vigoplace.com
                 # git reset --hard HEAD
-                git clone ssh://root@68.183.6.190:git@github.com:Vigoplace/vigoplace-admin.git .
+                git clone ssh://root@68.183.6.190:git@github.com:Vigoplace/vigoplace-admin.git
                 # git clone 
                 # git pull
                 npm i
