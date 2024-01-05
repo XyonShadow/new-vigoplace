@@ -36,7 +36,7 @@ jobs:
               script: |
                 eval `ssh-agent -s`
                 ssh-add ~/.ssh/admin
-                cd /var/www/
+                cd /var/www/admin.vigoplace.com
                 git reset --hard HEAD
                 git pull
                 npm i
