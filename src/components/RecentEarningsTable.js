@@ -534,6 +534,8 @@ function Row({ payout, isPayoutSelected }) {
     }
   );
 
+  console.log(listEarning);
+
   return (
     <>
       <Snackbar
