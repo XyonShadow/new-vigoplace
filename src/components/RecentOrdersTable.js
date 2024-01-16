@@ -1007,6 +1007,57 @@ function Row({ payout, isPayoutSelected }) {
                             <DialogTitle>Approve Payout</DialogTitle>
                             <DialogContent>
                               <DialogContentText>
+                                You are about to approve the amount of{" "}
+                                <span style={{ fontWeight: "bold" }}>
+                                  {
+                                    queryClient.getQueryData([
+                                      "payoutRequest",
+                                      payout.payoutRequestId,
+                                    ])?.data?.currencySymbol
+                                  }{""}
+                                  {
+                                    queryClient.getQueryData([
+                                      "payoutRequest",
+                                      payout.payoutRequestId,
+                                    ])?.data?.payoutRequestAmount.toLocaleString()
+                                  }
+                                </span>{" "}
+                                to <br />
+                                <span style={{ fontWeight: "bold" }}>
+                                  Account name
+                                </span>{" "}
+                                -{" "}
+                                {
+                                  queryClient.getQueryData([
+                                    "payoutRequest",
+                                    payout.payoutRequestId,
+                                  ])?.data?.accountName
+                                }{" "}
+                                <br />
+                                <span style={{ fontWeight: "bold" }}>
+                                  Account number
+                                </span>{" "}
+                                -{" "}
+                                {
+                                  queryClient.getQueryData([
+                                    "payoutRequest",
+                                    payout.payoutRequestId,
+                                  ])?.data?.accountNumber
+                                }{" "}
+                                <br />
+                                <span style={{ fontWeight: "bold" }}>
+                                  Bank Name
+                                </span>{" "}
+                                -{" "}
+                                {
+                                  queryClient.getQueryData([
+                                    "payoutRequest",
+                                    payout.payoutRequestId,
+                                  ])?.data?.acountBankName
+                                }
+                                .
+                                <br />
+                                <br />
                                 Please enter{" "}
                                 {queryClient.getQueryData([
                                   "payoutRequest",
@@ -1024,7 +1075,7 @@ function Row({ payout, isPayoutSelected }) {
                                     Settings
                                   </Link>
                                 }{" "}
-                                to create one now
+                                to create one now.
                               </DialogContentText>
                               {queryClient.getQueryData([
                                 "payoutRequest",

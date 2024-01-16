@@ -3,6 +3,7 @@ import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { getSession, useSession } from "next-auth/react";
 import Snackbar from "@mui/material/Snackbar";
 import axios from "axios";
+import { Gift, DollarSign, Hash, BarChart2 } from "react-feather";
 import MuiAlert from "@mui/material/Alert";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import Collapse from "@mui/material/Collapse";
@@ -56,6 +57,8 @@ import {
   useSingleEarningRequest,
 } from "../../hooks/useSingleEarningRequest";
 import { toast } from "react-toast";
+import gift from "../../assets/images/icons/gift.svg";
+import barChart from "../../assets/images/icons/bar-chart-2.svg";
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -203,17 +206,19 @@ export default function RecentEarningsTable() {
   } = useQuery(
     [
       "earningsRequests",
-      pagination.pageIndex, 
-      pagination.pageSize, 
+      pagination.pageIndex,
+      pagination.pageSize,
       status,
       page,
       limit,
     ],
     async () => {
       const { data } = await axios.get(
-        `${API_BASE_URL}/api/admin/console/earnings?perPage=${pagination.pageSize}&page=${
-          pagination.pageIndex * pagination.pageSize
-        }${status !== undefined && status !== null ? `&status=${status}` : ""}`,
+        `${API_BASE_URL}/api/admin/console/earnings?perPage=${
+          pagination.pageSize
+        }&page=${pagination.pageIndex * pagination.pageSize}${
+          status !== undefined && status !== null ? `&status=${status}` : ""
+        }`,
         {
           headers: {
             Authorization: user?.token,
@@ -368,11 +373,13 @@ export default function RecentEarningsTable() {
 }
 
 function Row({ payout, isPayoutSelected }) {
+  //Destructure from this, useSingleEarningRequest(payoutRId) as used in line 381.
+  //Then get the details immediately to use in line 508 and 510
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
   const queryClient = useQueryClient();
   const [payoutRId, setPayoutRId] = React.useState(null);
-  const { isLoading } = useSingleEarningRequest(payoutRId);
+  const { isLoading, data } = useSingleEarningRequest(payoutRId);
   const [openToast, setOpenToast] = React.useState(false);
   const [openModal, setOpenModal] = React.useState(false);
   const [declineModal, setDeclineModal] = React.useState(false);
@@ -380,6 +387,8 @@ function Row({ payout, isPayoutSelected }) {
   const [pin, setPin] = React.useState(null);
   const [reason, setReason] = React.useState("");
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const currencyid = data?.data?.currencyId;
+  const userid = data?.data?.userId;
 
   const handleMenuOpen = (event) => {
     setMenuAnchorEl(event.currentTarget);
@@ -493,6 +502,37 @@ function Row({ payout, isPayoutSelected }) {
       setPin(null);
     },
   });
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const token = await getToken();
+
+      const { data } = await axios.get(
+        `https://vigoplace.com/server/api/admin/console/user-earnings/list/${userid}?currencyId=${currencyid}`,
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      );
+      queryClient.setQueryData(["listUserEarnings"], data);
+    };
+
+    fetchData();
+  }, [userid, currencyid, queryClient]);
+
+  const { data: listEarning } = useQuery(
+    ["listUserEarnings"],
+    () => {
+      // This function can be empty, as the data will be set using queryClient.setQueryData
+    },
+    {
+      onError: (err) => {
+        console.log(err, "err fetching list of user earnings");
+      },
+      enabled: false,
+    }
+  );
 
   return (
     <>
@@ -800,6 +840,97 @@ function Row({ payout, isPayoutSelected }) {
                             <DialogTitle>Approve User Earnings</DialogTitle>
                             <DialogContent>
                               <DialogContentText>
+                                <span style={{ fontWeight: "bold" }}>
+                                  Earning Categories
+                                </span>{" "}
+                                <br /> <br />
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    gap: "20px",
+                                    justifyContent: "space-between",
+                                    paddingRight: "30%",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      flexDirection: "column",
+                                      gap: "10px",
+                                    }}
+                                  >
+                                    {listEarning?.data?.earnings.map(
+                                      (earning, index) => (
+                                        <span key={index}>
+                                          {earning.categoryName}
+                                        </span>
+                                      )
+                                    )}
+                                  </div>
+
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      flexDirection: "column",
+                                      gap: "10px",
+                                    }}
+                                  >
+                                    {listEarning?.data?.earnings.map(
+                                      (earning, index) => (
+                                        <div
+                                          key={index}
+                                          style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "8px",
+                                          }}
+                                        >
+                                          <BarChart2 size={20} />
+                                          <span>{earning.count}</span>
+                                        </div>
+                                      )
+                                    )}
+                                  </div>
+
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      flexDirection: "column",
+                                      gap: "10px",
+                                    }}
+                                  >
+                                    {listEarning?.data?.earnings.map(
+                                      (earning, index) => (
+                                        <div
+                                          key={index}
+                                          style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "8px",
+                                          }}
+                                        >
+                                          <Gift size={17} />
+
+                                          <span>
+                                            {listEarning?.data?.currency[0]
+                                              ?.currencyName === "Naira" ? (
+                                              <span>#</span>
+                                            ) : listEarning?.data?.currency[0]
+                                                ?.currencyName === "Dollar" ? (
+                                              <span>$</span>
+                                            ) : (
+                                              <span>&nbsp;</span>
+                                            )}
+                                            {earning.earnings}
+                                          </span>
+                                        </div>
+                                      )
+                                    )}
+                                  </div>
+                                </div>
+                                <br />
+                                {/* {listEarning?.currencySymbol} to <br /> */}
                                 Please enter your admin approval pin to Approve
                                 this request, if you dont have one yet, head to{" "}
                                 {
@@ -1023,7 +1154,10 @@ function Row({ payout, isPayoutSelected }) {
                               disabled
                               variant="contained"
                               color="error"
-                              style={{backgroundColor: red[800], color: "white"}}
+                              style={{
+                                backgroundColor: red[800],
+                                color: "white",
+                              }}
                               //sx={{ backgroundColor: green[500] }}
                             >
                               Declined <CancelIcon />

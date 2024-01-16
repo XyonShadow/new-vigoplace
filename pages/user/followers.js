@@ -80,16 +80,19 @@ export default function Followers() {
     setIsFetching(true);
     setIsLoading(true);
     try {
-      const { data } = await axios.get(
-        `${API_BASE_URL}/api/admin/console/followers?userId=${userid}&perPage=${pagination.pageSize}&page=${pagination.pageIndex}&followRequestStart=${startFollowerDate}&followRequestEnd=${endFollowerDate}&userCreatedAtStart=${startUserDate}&userCreatedAtEnd=${endUserDate}&search=${globalFilter}`,
-        {
-          headers: {
-            Authorization: user?.token,
-          },
-        }
-      );
+      const url = `${API_BASE_URL}/api/admin/console/followers?userId=${userid}&perPage=${
+        pagination.pageSize
+      }&page=${
+        pagination.pageIndex
+      }&followRequestStart=${startFollowerDate}&followRequestEnd=${endFollowerDate}&userCreatedAtStart=${startUserDate}&userCreatedAtEnd=${endUserDate}&search=${globalFilter}`;
 
-      //console.log(data);
+      const { data } = await axios.get(url, {
+        headers: {
+          Authorization: user?.token,
+        },
+      });
+
+      console.log(data);
       setFollowers(data?.data?.followers);
       setFollowerCount(data?.data?.totalFollowers);
     } catch (err) {
@@ -101,88 +104,144 @@ export default function Followers() {
     }
   };
 
+  // useEffect(() => {
+  //   console.log(startUserDate);
+  //   console.log(endUserDate);
+  //   let shouldFetch = false;
+
+  //   const allDateRangesAvailable =
+  //     startUserDate !== "" &&
+  //     endUserDate !== "" &&
+  //     startFollowerDate !== "" &&
+  //     endFollowerDate !== "";
+
+  //   const anyDateEntered =
+  //     (startUserDate !== "" && endUserDate !== "") ||
+  //     (startFollowerDate !== "" && endFollowerDate !== "");
+
+  //   //console.log(anyDateEntered)
+
+  //   const searched = globalFilter !== "" || globalFilter === "";
+
+  //   if (anyDateEntered) {
+  //     setAnyDatePopulated(true);
+  //   }
+
+  //   console.log(anyDatePopulated);
+
+  //   if (anyDatePopulated && !anyDateEntered) {
+  //     console.log("here");
+  //     shouldFetch = true;
+  //     setAnyDatePopulated(false);
+  //     setErrorText("");
+  //     setError(false);
+  //   }
+
+  //   if (
+  //     startUserDate &&
+  //     endUserDate &&
+  //     !startFollowerDate &&
+  //     !endFollowerDate
+  //   ) {
+  //     console.log("hereeee");
+  //     shouldFetch = true;
+  //     setErrorText("");
+  //     setError(false);
+  //   } else if (
+  //     !startUserDate &&
+  //     !endUserDate &&
+  //     startFollowerDate &&
+  //     endFollowerDate
+  //   ) {
+  //     console.log("therrrreee");
+  //     shouldFetch = true;
+  //     setErrorText("");
+  //     setError(false);
+  //   }
+
+  //   if (userid !== prevUserId || pagination !== prevPagination) {
+  //     console.log("damnn");
+  //     shouldFetch = true;
+  //   }
+
+  //   if (searched) {
+  //     shouldFetch = true;
+  //   }
+
+  //   if (allDateRangesAvailable) {
+  //     shouldFetch = false;
+  //     setErrorText(
+  //       "Please provide either user date range or follower date range, but not both."
+  //     );
+  //     setError(true);
+  //     setFollowers([]);
+  //     setFollowerCount(0);
+  //   }
+
+  //   //console.log(shouldFetch)
+  //   if (shouldFetch) {
+  //     fetchUserFollowers();
+  //   }
+
+  //   prevUserId = userid;
+  //   prevPagination = pagination;
+  // }, [
+  //   userid,
+  //   pagination,
+  //   startUserDate,
+  //   endUserDate,
+  //   startFollowerDate,
+  //   endFollowerDate,
+  //   anyDatePopulated,
+  //   globalFilter,
+  // ]);
+
+
+  //2
+
+  // useEffect(() => {
+  //   // Determine whether to fetch data based on conditions
+  //   const shouldFetch =
+  //     (startUserDate && endUserDate) || (startFollowerDate && endFollowerDate);
+
+  //   if (shouldFetch) {
+  //     fetchUserFollowers();
+  //   }
+  // }, [startUserDate, endUserDate, startFollowerDate, endFollowerDate]);
+
+
+  //3
   useEffect(() => {
-    let shouldFetch = false;
-
-    const allDateRangesAvailable =
-      startUserDate !== "" &&
-      endUserDate !== "" &&
-      startFollowerDate !== "" &&
-      endFollowerDate !== "";
-
-    const anyDateEntered =
-      startUserDate !== "" ||
-      endUserDate !== "" ||
-      startFollowerDate !== "" ||
-      endFollowerDate !== "";
-
-    const searched = globalFilter !== "" || globalFilter === "";
-
-    if (anyDateEntered) {
-      setAnyDatePopulated(true);
-    }
-
-    if (anyDatePopulated && !anyDateEntered) {
-      shouldFetch = true;
-      setAnyDatePopulated(false);
-      setErrorText("");
-      setError(false);
-    }
-
-    if (
-      startUserDate &&
-      endUserDate &&
-      !startFollowerDate &&
-      !endFollowerDate
-    ) {
-      shouldFetch = true;
-      setErrorText("");
-      setError(false);
-    } else if (
-      !startUserDate &&
-      !endUserDate &&
-      startFollowerDate &&
-      endFollowerDate
-    ) {
-      shouldFetch = true;
-      setErrorText("");
-      setError(false);
-    }
-
-    if (userid !== prevUserId || pagination !== prevPagination) {
-      shouldFetch = true;
-    }
-
-    if (searched) {
-      shouldFetch = true;
-    }
-
-    if (allDateRangesAvailable) {
-      shouldFetch = false;
+    // Determine whether to fetch data based on conditions
+    const shouldFetch =
+      (startUserDate && !endUserDate) ||
+      (!startUserDate && endUserDate) ||
+      (startFollowerDate && !endFollowerDate) ||
+      (!startFollowerDate && endFollowerDate);
+  
+    if (shouldFetch) {
       setErrorText(
         "Please provide either user date range or follower date range, but not both."
       );
-      setError(true);
-      setFollowers([]);
-      setFollowerCount(0);
-    }
-
-    if (shouldFetch) {
+    } else {
+      setErrorText(""); // Clear error text if conditions are met
       fetchUserFollowers();
     }
-
-    prevUserId = userid;
-    prevPagination = pagination;
-  }, [
-    userid,
-    pagination,
-    startUserDate,
-    endUserDate,
-    startFollowerDate,
-    endFollowerDate,
-    anyDatePopulated,
-    globalFilter,
-  ]);
+  }, [startUserDate, endUserDate, startFollowerDate, endFollowerDate]);
+  
+  // useEffect for refetching when all inputs are cleared
+  useEffect(() => {
+    const allInputsCleared =
+      startUserDate === "" &&
+      endUserDate === "" &&
+      startFollowerDate === "" &&
+      endFollowerDate === "";
+  
+    if (allInputsCleared) {
+      fetchUserFollowers();
+    }
+  }, [startUserDate, endUserDate, startFollowerDate, endFollowerDate]);  
+  
 
   const columns = useMemo(
     () => [
