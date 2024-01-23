@@ -79,7 +79,7 @@ const Users = () => {
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState([]);
   const [pagination, setPagination] = useState({
-    pageIndex: 0,
+    pageIndex: 1,
     pageSize: 10,
   });
   const [gender, setGender] = React.useState("");
@@ -372,9 +372,13 @@ const Users = () => {
       wallet,
     ],
     async () => {
-      //`http://localhost:4000/api/admin/console/users?limit=${10000000000}&walletCurrencyId=$
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/users?limit=${10000000000}&walletCurrencyId=${wallet}${
+        // `http://localhost:4000/api/admin/console/users?perPage=${
+        //   pagination.pageSize
+        // }&page=${pagination.pageIndex + 1}&walletCurrencyId=${wallet}${
+        `https://vigoplace.com/server/api/admin/console/users?perPage=${
+          pagination.pageSize
+        }&page=${pagination.pageIndex}&walletCurrencyId=${wallet}${
           gender !== "" ? `&gender=${gender}` : ""
         }${status !== "" ? `&status=${status}` : ""}${
           flagged !== "" ? `&flagged=${flagged}` : ""
@@ -390,20 +394,23 @@ const Users = () => {
         }
       );
 
+      //console.log(data);
       setDatalenght(data?.count?.total);
 
       const sortedData = data?.data?.sort(
         (a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt)
       );
 
-      const paginatedData = sortedData.slice(
-        pagination.pageIndex * pagination.pageSize,
-        (pagination.pageIndex + 1) * pagination.pageSize
-      );
+      //console.log(sortedData);
+      return data;
+      // const paginatedData = sortedData.slice(
+      //   pagination.pageIndex * pagination.pageSize,
+      //   (pagination.pageIndex + 1) * pagination.pageSize
+      // );
 
       //console.log(paginatedData);
 
-      return paginatedData;
+      //return paginatedData;
     },
     {
       onError: (err) => {
@@ -603,7 +610,7 @@ const Users = () => {
     <>
       <MaterialReactTable
         columns={columns}
-        data={data ?? []}
+        data={data?.data ?? []}
         getRowId={(row) => {
           return row.id;
         }}
@@ -617,11 +624,9 @@ const Users = () => {
         enableStickyFooter
         // enableRowSelection
         manualPagination
+        enablePagination
         onPaginationChange={setPagination}
         rowCount={datalenght ?? 0}
-        // onColumnFiltersChange={()=>{
-        //   setColumnFilters
-        // }}
         onColumnFiltersChange={setColumnFilters}
         onGlobalFilterChange={setGlobalFilter}
         initialState={{ showColumnFilters: true }}

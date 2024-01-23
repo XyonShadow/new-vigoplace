@@ -59,6 +59,7 @@ import {
 import { toast } from "react-toast";
 import gift from "../../assets/images/icons/gift.svg";
 import barChart from "../../assets/images/icons/bar-chart-2.svg";
+import { LensTwoTone } from "@mui/icons-material";
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -272,7 +273,7 @@ export default function RecentEarningsTable() {
     },
     {
       onError: (err) => {
-        console.log(err, "err fetching this user's payout details");
+        console.log(err, "err fetching this user's earning details");
       },
       enabled: !!user?.token,
     },
@@ -387,8 +388,6 @@ function Row({ payout, isPayoutSelected }) {
   const [pin, setPin] = React.useState(null);
   const [reason, setReason] = React.useState("");
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
-  const currencyid = data?.data?.currencyId;
-  const userid = data?.data?.userId;
 
   const handleMenuOpen = (event) => {
     setMenuAnchorEl(event.currentTarget);
@@ -503,26 +502,50 @@ function Row({ payout, isPayoutSelected }) {
     },
   });
 
+  let currencyid = queryClient.getQueryData(["earningRequest", payout.Id])?.data
+    ?.currencyId;
+  let userid = queryClient.getQueryData(["earningRequest", payout.Id])?.data
+    ?.userId;
+
+  console.log(currencyid, userid);
+
   React.useEffect(() => {
     const fetchData = async () => {
       const token = await getToken();
 
-      const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/user-earnings/list/${userid}?currencyId=${currencyid}`,
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
-      );
-      queryClient.setQueryData(["listUserEarnings"], data);
+      try {
+        const { data } = await axios.get(
+          //`http://localhost:4000/api/admin/console/user-earnings/list/${userid}?currencyId=${currencyid}`,
+          `https://vigoplace.com/server/api/admin/console/user-earnings/list/${userid}?currencyId=${currencyid}`,
+          {
+            headers: {
+              Authorization: token,
+            },
+          }
+        );
+
+        console.log("here");
+
+        // Update the specific query key with the fetched data
+        queryClient.setQueryData(
+          ["listUserEarnings", { userid, currencyid, payoutId: payout.Id }],
+          data
+        );
+
+        console.log("there");
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     };
 
-    fetchData();
-  }, [userid, currencyid, queryClient]);
+    // Only run the effect when userid changes
+    if (userid) {
+      fetchData();
+    }
+  }, [userid, queryClient]);
 
   const { data: listEarning } = useQuery(
-    ["listUserEarnings"],
+    ["listUserEarnings", { userid, currencyid, payoutId: payout.Id }],
     () => {
       // This function can be empty, as the data will be set using queryClient.setQueryData
     },
@@ -534,6 +557,36 @@ function Row({ payout, isPayoutSelected }) {
     }
   );
 
+  // const { data: listEarning } = useQuery(
+  //   ["listUserEarnings"],
+  //   async () => {
+  //     const token = await getToken();
+
+  //     console.log(userid, currencyid);
+  //     const { data } = await axios.get(
+  //       `https://vigoplace.com/server/api/admin/console/user-earnings/list/${userid}?currencyId=${currencyid}`,
+  //       {
+  //         headers: {
+  //           Authorization: token,
+  //         },
+  //       }
+  //     );
+
+  //     //console.log(data);
+
+  //     return data;
+  //   },
+  //   {
+  //     onError: (err) => {
+  //       console.log(err, "err fetching list of user earnings");
+  //     },
+  //     enabled: true,
+  //   }
+  // );
+
+  //Move the earning page to the drop down
+  //After earning approvals it should be logged in the activities
+  //Integrate the revenues in the admin console frontend
   console.log(listEarning);
 
   return (
@@ -692,27 +745,47 @@ function Row({ payout, isPayoutSelected }) {
                 <TableHead>
                   <TableRow>
                     <TableCell sx={{ fontWeight: "bold" }}>Date</TableCell>
-                    {/* <TableCell sx={{ fontWeight: "bold" }} align="left">
-                      Fee
-                    </TableCell> */}
-                    {/* <TableCell sx={{ fontWeight: "bold" }} align="center">
-                      payment Method
-                    </TableCell> */}
-                    <TableCell sx={{ fontWeight: "bold" }} align="center">
+                    <TableCell sx={{ fontWeight: "bold" }} align="left">
                       currency
                     </TableCell>
-                    {/* <TableCell sx={{ fontWeight: "bold" }} align="center">
-                      account Name
-                    </TableCell>
-                    <TableCell sx={{ fontWeight: "bold" }} align="center">
-                      acountBankName
-                    </TableCell>
-                    <TableCell sx={{ fontWeight: "bold" }} align="center">
-                      accountNumber
-                    </TableCell>
-                    <TableCell sx={{ fontWeight: "bold" }} align="center">
-                      routingNumber
-                    </TableCell> */}
+
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <div>
+                        <TableCell sx={{ fontWeight: "bold" }} align="left">
+                          View
+                        </TableCell>
+                      </div>
+
+                      <div>
+                        <TableCell sx={{ fontWeight: "bold" }} align="center">
+                          Like
+                        </TableCell>
+                      </div>
+
+                      <div>
+                        <TableCell sx={{ fontWeight: "bold" }} align="center">
+                          Comment
+                        </TableCell>
+                      </div>
+
+                      <div>
+                        <TableCell sx={{ fontWeight: "bold" }} align="center">
+                          Followers
+                        </TableCell>
+                      </div>
+
+                      <div>
+                        <TableCell sx={{ fontWeight: "bold" }} align="center">
+                          Picture Post
+                        </TableCell>
+                      </div>
+
+                      <div>
+                        <TableCell sx={{ fontWeight: "bold" }} align="center">
+                          Video Post
+                        </TableCell>
+                      </div>
+                    </div>
                     <TableCell align="right">
                       <IconButton
                         onClick={handleMenuOpen}
@@ -842,96 +915,6 @@ function Row({ payout, isPayoutSelected }) {
                             <DialogTitle>Approve User Earnings</DialogTitle>
                             <DialogContent>
                               <DialogContentText>
-                                <span style={{ fontWeight: "bold" }}>
-                                  Earning Categories
-                                </span>{" "}
-                                <br /> <br />
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    flexDirection: "row",
-                                    gap: "20px",
-                                    justifyContent: "space-between",
-                                    paddingRight: "30%",
-                                  }}
-                                >
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      flexDirection: "column",
-                                      gap: "10px",
-                                    }}
-                                  >
-                                    {listEarning?.data?.earnings.map(
-                                      (earning, index) => (
-                                        <span key={index}>
-                                          {earning.categoryName}
-                                        </span>
-                                      )
-                                    )}
-                                  </div>
-
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      flexDirection: "column",
-                                      gap: "10px",
-                                    }}
-                                  >
-                                    {listEarning?.data?.earnings.map(
-                                      (earning, index) => (
-                                        <div
-                                          key={index}
-                                          style={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            gap: "8px",
-                                          }}
-                                        >
-                                          <BarChart2 size={20} />
-                                          <span>{earning.count}</span>
-                                        </div>
-                                      )
-                                    )}
-                                  </div>
-
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      flexDirection: "column",
-                                      gap: "10px",
-                                    }}
-                                  >
-                                    {listEarning?.data?.earnings.map(
-                                      (earning, index) => (
-                                        <div
-                                          key={index}
-                                          style={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            gap: "8px",
-                                          }}
-                                        >
-                                          <Gift size={17} />
-
-                                          <span>
-                                            {listEarning?.data?.currency[0]
-                                              ?.currencyName === "Naira" ? (
-                                              <span>#</span>
-                                            ) : listEarning?.data?.currency[0]
-                                                ?.currencyName === "Dollar" ? (
-                                              <span>$</span>
-                                            ) : (
-                                              <span>&nbsp;</span>
-                                            )}
-                                            {earning.earnings}
-                                          </span>
-                                        </div>
-                                      )
-                                    )}
-                                  </div>
-                                </div>
-                                <br />
                                 {/* {listEarning?.currencySymbol} to <br /> */}
                                 Please enter your admin approval pin to Approve
                                 this request, if you dont have one yet, head to{" "}
@@ -1006,17 +989,7 @@ function Row({ payout, isPayoutSelected }) {
                                 }{" "}
                                 to create one now
                               </DialogContentText>
-                              {/* <TextField
-                                autoFocus
-                                margin="dense"
-                                id="reason"
-                                label="Reason"
-                                type="text"
-                                fullWidth
-                                value={reason}
-                                variant="standard"
-                                onChange={handleReason}
-                              /> */}
+
                               <TextField
                                 autoFocus
                                 margin="dense"
@@ -1094,17 +1067,6 @@ function Row({ payout, isPayoutSelected }) {
                                 variant="standard"
                                 onChange={handlePin}
                               />
-                              {/* <TextField
-                                autoFocus
-                                margin="dense"
-                                id="reason"
-                                label="Reason"
-                                type="text"
-                                fullWidth
-                                value={reason}
-                                variant="standard"
-                                onChange={handleReason}
-                              /> */}
                             </DialogContent>
                             <DialogActions>
                               <Button
@@ -1160,7 +1122,6 @@ function Row({ payout, isPayoutSelected }) {
                                 backgroundColor: red[800],
                                 color: "white",
                               }}
-                              //sx={{ backgroundColor: green[500] }}
                             >
                               Declined <CancelIcon />
                             </Button>
@@ -1178,96 +1139,149 @@ function Row({ payout, isPayoutSelected }) {
                               Approved <CheckIcon />
                             </Button>
                           </MenuItem>
-                          {/* <MenuItem>
-                            <Button
-                              sx={{ margin: 1, bgcolor: green["A700"] }}
-                              size="small"
-                              variant="contained"
-                              color="success"
-                              onClick={() => {
-                                // setOpenModal(true);
-                                router.push(`/user/${payout.payoutRequestUId}`);
-                              }}
-                            >
-                              Profile
-                            </Button>
-                          </MenuItem> */}
                         </div>
                       )}
                     </Menu>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {
-                    <TableRow
-                      key={
+                  <TableRow
+                    key={
+                      queryClient.getQueryData(["earningRequest", payout.Id])
+                        ?.data?.earningRequestStatus
+                    }
+                  >
+                    <TableCell align="left" component="th" scope="row">
+                      {new Date(
+                        queryClient.getQueryData([
+                          "earningRequest",
+                          payout.Id,
+                        ])?.data?.earningRequestDate
+                      ).toLocaleDateString()}
+                    </TableCell>
+
+                    <TableCell align="left">
+                      {
                         queryClient.getQueryData(["earningRequest", payout.Id])
-                          ?.data?.earningRequestStatus
+                          ?.data?.earningRequestCurrency
                       }
+                    </TableCell>
+
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-around",
+                      }}
                     >
-                      <TableCell align="left" component="th" scope="row">
-                        {new Date(
-                          queryClient.getQueryData([
-                            "earningRequest",
-                            payout.Id,
-                          ])?.data?.earningRequestDate
-                        ).toLocaleDateString()}
-                      </TableCell>
-                      {/* <TableCell align="center">
-                        {queryClient
-                          .getQueryData(["earningRequest", payout.Id])
-                          ?.data?.payoutRequestFee?.toLocaleString("en-US")}
-                      </TableCell> */}
-                      {/* <TableCell align="center">
-                        {
-                          queryClient.getQueryData([
-                            "earningRequest",
-                            payout.Id,
-                          ])?.data?.paymentMethodName
-                        }
-                      </TableCell> */}
-                      <TableCell align="center">
-                        {
-                          queryClient.getQueryData([
-                            "earningRequest",
-                            payout.Id,
-                          ])?.data?.earningRequestCurrency
-                        }
-                      </TableCell>
-                      {/* <TableCell align="center">
-                        {
-                          queryClient.getQueryData([
-                            "earningRequest",
-                            payout.Id,
-                          ])?.data?.accountName
-                        }
-                      </TableCell> */}
-                      {/* <TableCell align="center">
-                        {
-                          queryClient.getQueryData([
-                            "earningRequest",
-                            payout.Id,
-                          ])?.data?.acountBankName
-                        }
-                      </TableCell> */}
-                      {/* <TableCell align="center">
-                        {
-                          queryClient.getQueryData([
-                            "earningRequest",
-                            payout.Id,
-                          ])?.data?.accountNumber
-                        }
-                      </TableCell> */}
-                      {/* <TableCell align="center">
-                        {
-                          queryClient.getQueryData([
-                            "earningRequest",
-                            payout.Id,
-                          ])?.data?.accountRoutingNumber
-                        }
-                      </TableCell> */}
-                    </TableRow>
-                  }
+                      <div>
+                        <TableCell
+                          align="center"
+                          style={{ display: "flex", alignItems: "center" }}
+                        >
+                          <BarChart2 size={20} style={{ marginRight: "8px" }} />
+                          {listEarning?.data?.earnings[0]?.count}
+                        </TableCell>
+
+                        <TableCell
+                          align="center"
+                          style={{ display: "flex", alignItems: "center" }}
+                        >
+                          <Gift size={16} style={{ marginRight: "8px" }} />
+                          {listEarning?.data?.earnings[0]?.earnings}
+                        </TableCell>
+                      </div>
+
+                      <div>
+                        <TableCell
+                          align="center"
+                          style={{ display: "flex", alignItems: "center" }}
+                        >
+                          <BarChart2 size={20} style={{ marginRight: "8px" }} />
+                          {listEarning?.data?.earnings[1]?.count}
+                        </TableCell>
+
+                        <TableCell
+                          align="center"
+                          style={{ display: "flex", alignItems: "center" }}
+                        >
+                          <Gift size={16} style={{ marginRight: "8px" }} />
+                          {listEarning?.data?.earnings[1]?.earnings}
+                        </TableCell>
+                      </div>
+
+                      <div>
+                        <TableCell
+                          align="center"
+                          style={{ display: "flex", alignItems: "center" }}
+                        >
+                          <BarChart2 size={20} style={{ marginRight: "8px" }} />
+                          {listEarning?.data?.earnings[2]?.count}
+                        </TableCell>
+
+                        <TableCell
+                          align="center"
+                          style={{ display: "flex", alignItems: "center" }}
+                        >
+                          <Gift size={16} style={{ marginRight: "8px" }} />
+                          {listEarning?.data?.earnings[2]?.earnings}
+                        </TableCell>
+                      </div>
+
+                      <div>
+                        <TableCell
+                          align="center"
+                          style={{ display: "flex", alignItems: "center" }}
+                        >
+                          <BarChart2 size={20} style={{ marginRight: "8px" }} />
+                          {listEarning?.data?.earnings[3]?.count}
+                        </TableCell>
+
+                        <TableCell
+                          align="center"
+                          style={{ display: "flex", alignItems: "center" }}
+                        >
+                          <Gift size={16} style={{ marginRight: "8px" }} />
+                          {listEarning?.data?.earnings[3]?.earnings}
+                        </TableCell>
+                      </div>
+
+                      <div>
+                        <TableCell
+                          align="center"
+                          style={{ display: "flex", alignItems: "center" }}
+                        >
+                          <BarChart2 size={20} style={{ marginRight: "8px" }} />
+                          {listEarning?.data?.earnings[4]?.count}
+                        </TableCell>
+
+                        <TableCell
+                          align="center"
+                          style={{ display: "flex", alignItems: "center" }}
+                        >
+                          <Gift size={16} style={{ marginRight: "8px" }} />
+                          {listEarning?.data?.earnings[4]?.earnings}
+                        </TableCell>
+                      </div>
+
+                      <div>
+                        <TableCell
+                          align="center"
+                          style={{ display: "flex", alignItems: "center" }}
+                        >
+                          <BarChart2 size={20} style={{ marginRight: "8px" }} />
+                          {listEarning?.data?.earnings[5]?.count}
+                        </TableCell>
+
+                        <TableCell
+                          align="center"
+                          style={{ display: "flex", alignItems: "center" }}
+                        >
+                          <Gift size={16} style={{ marginRight: "8px" }} />
+                          {listEarning?.data?.earnings[5]?.earnings}
+                        </TableCell>
+                      </div>
+                    </div>
+                  </TableRow>
                 </TableBody>
               </Table>
             )}

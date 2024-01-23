@@ -66,6 +66,10 @@ const KPI = (props) => {
           verifiedEmailCount: checkedCheckboxes.includes("verifiedEmailCount"),
           verifiedPhoneCount: checkedCheckboxes.includes("verifiedPhoneCount"),
           payoutRevenue: checkedCheckboxes.includes("payoutRevenue"),
+          giftRevenue: checkedCheckboxes.includes("giftRevenue"),
+          channelRevenue: checkedCheckboxes.includes("channelRevenue"),
+          fundRaisingRevenue: checkedCheckboxes.includes("fundRaisingRevenue"),
+          placePromotionRevenue: checkedCheckboxes.includes("placePromotionRevenue"),
           totalRevenue: checkedCheckboxes.includes("totalRevenue"),
           currency: currency,
         },
@@ -151,6 +155,26 @@ const KPI = (props) => {
       id: "wallet_loading_revenue",
       value: "walletLoadingRevenue",
       label: "Wallet Loading revenue",
+    },
+    {
+      id: "gift_revenue",
+      value: "giftRevenue",
+      label: "Gift revenue",
+    },
+    {
+      id: "channel_revenue",
+      value: "channelRevenue",
+      label: "Channel revenue",
+    },
+    {
+      id: "fund_raising_revenue",
+      value: "fundRaisingRevenue",
+      label: "Fund Raising revenue",
+    },
+    {
+      id: "place_promotion_revenue",
+      value: "placePromotionRevenue",
+      label: "Place Promotion revenue"
     },
     {
       id: "total_revenue",
