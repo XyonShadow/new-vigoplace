@@ -629,9 +629,9 @@ const Users = () => {
 
   const notifyUser = async ({ id, notificationText }) => {
     const notification = await axios.post(
-      //"http://localhost:4000/api/notifications",
-      "https://vigoplace.com/server/api/notifications",
-      { users: [id], message: notificationText },
+      //"http://localhost:4000/api/admin/notifications/notify",
+      "https://vigoplace.com/server/api/admin/notifications/notify",
+      { users: id, message: notificationText },
       {
         headers: {
           Authorization: user?.token,
@@ -659,6 +659,7 @@ const Users = () => {
       }, 7000);
     },
     onError: async (error) => {
+      console.log(error)
       setNotifyErrorToast(true);
     },
   });

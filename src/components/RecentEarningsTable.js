@@ -51,14 +51,13 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import LoadingButton from "@mui/lab/LoadingButton";
+import Modal from "@mui/material/Modal";
 import Label from "./Label/index";
 import {
   fetchSingleEarningRequest,
   useSingleEarningRequest,
 } from "../../hooks/useSingleEarningRequest";
 import { toast } from "react-toast";
-import gift from "../../assets/images/icons/gift.svg";
-import barChart from "../../assets/images/icons/bar-chart-2.svg";
 import { LensTwoTone } from "@mui/icons-material";
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -247,15 +246,7 @@ export default function RecentEarningsTable() {
     isLoading: userPayoutLoading,
     refetch: userRefetch,
   } = useQuery(
-    [
-      "earningUserRequest",
-      // columnFilters, //refetch when columnFilters changes
-      // globalFilter, //refetch when globalFilter changes
-      // sorting, //refetch when sorting changes
-      status,
-      page,
-      limit,
-    ],
+    ["earningUserRequest", status, page, limit],
     async () => {
       const { data } = await axios.get(
         `${API_BASE_URL}/api/admin/console/earning/user/${userid}`,
@@ -374,11 +365,11 @@ export default function RecentEarningsTable() {
 }
 
 function Row({ payout, isPayoutSelected }) {
-  //Destructure from this, useSingleEarningRequest(payoutRId) as used in line 381.
-  //Then get the details immediately to use in line 508 and 510
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
   const queryClient = useQueryClient();
+  const getUser = useSession();
+  const user = getUser?.data?.user;
   const [payoutRId, setPayoutRId] = React.useState(null);
   const { isLoading, data } = useSingleEarningRequest(payoutRId);
   const [openToast, setOpenToast] = React.useState(false);
@@ -388,6 +379,32 @@ function Row({ payout, isPayoutSelected }) {
   const [pin, setPin] = React.useState(null);
   const [reason, setReason] = React.useState("");
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const [openEModal, setOpenEModal] = React.useState(false);
+  const [modalData, setModalData] = React.useState(null);
+
+  const handleOpenModal = async (userId, categoryId) => {
+    try {
+      const { data } = await axios.get(
+        `https://vigoplace.com/server/api/admin/console/earning/initiators/${userId}/${categoryId}`,
+        {
+          headers: {
+            Authorization: user?.token,
+          },
+        }
+      );
+
+      //console.log(data);
+      setModalData(data);
+      setOpenEModal(true);
+    } catch (error) {
+      console.error("API Error:", error);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setOpenEModal(false);
+    setModalData(null);
+  };
 
   const handleMenuOpen = (event) => {
     setMenuAnchorEl(event.currentTarget);
@@ -507,7 +524,7 @@ function Row({ payout, isPayoutSelected }) {
   let userid = queryClient.getQueryData(["earningRequest", payout.Id])?.data
     ?.userId;
 
-  console.log(currencyid, userid);
+  //console.log(currencyid, userid);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -524,21 +541,15 @@ function Row({ payout, isPayoutSelected }) {
           }
         );
 
-        console.log("here");
-
-        // Update the specific query key with the fetched data
         queryClient.setQueryData(
           ["listUserEarnings", { userid, currencyid, payoutId: payout.Id }],
           data
         );
-
-        console.log("there");
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
 
-    // Only run the effect when userid changes
     if (userid) {
       fetchData();
     }
@@ -557,37 +568,7 @@ function Row({ payout, isPayoutSelected }) {
     }
   );
 
-  // const { data: listEarning } = useQuery(
-  //   ["listUserEarnings"],
-  //   async () => {
-  //     const token = await getToken();
-
-  //     console.log(userid, currencyid);
-  //     const { data } = await axios.get(
-  //       `https://vigoplace.com/server/api/admin/console/user-earnings/list/${userid}?currencyId=${currencyid}`,
-  //       {
-  //         headers: {
-  //           Authorization: token,
-  //         },
-  //       }
-  //     );
-
-  //     //console.log(data);
-
-  //     return data;
-  //   },
-  //   {
-  //     onError: (err) => {
-  //       console.log(err, "err fetching list of user earnings");
-  //     },
-  //     enabled: true,
-  //   }
-  // );
-
-  //Move the earning page to the drop down
-  //After earning approvals it should be logged in the activities
-  //Integrate the revenues in the admin console frontend
-  console.log(listEarning);
+  //console.log(listEarning);
 
   return (
     <>
@@ -630,9 +611,6 @@ function Row({ payout, isPayoutSelected }) {
           >
             {payout.Id}{" "}
           </Typography>
-          {/* <Typography variant="body2" color="text.secondary" noWrap>
-            {format(payout.payoutRequestDate, 'MMMM dd yyyy')}
-          </Typography> */}
         </TableCell>
         <TableCell>
           <Typography
@@ -746,46 +724,36 @@ function Row({ payout, isPayoutSelected }) {
                   <TableRow>
                     <TableCell sx={{ fontWeight: "bold" }}>Date</TableCell>
                     <TableCell sx={{ fontWeight: "bold" }} align="left">
-                      currency
+                      Balance
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: "bold" }} align="left">
+                      Currency
                     </TableCell>
 
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <div>
-                        <TableCell sx={{ fontWeight: "bold" }} align="left">
-                          View
-                        </TableCell>
-                      </div>
+                    <TableCell sx={{ fontWeight: "bold" }} align="left">
+                      View
+                    </TableCell>
 
-                      <div>
-                        <TableCell sx={{ fontWeight: "bold" }} align="center">
-                          Like
-                        </TableCell>
-                      </div>
+                    <TableCell sx={{ fontWeight: "bold" }} align="center">
+                      Like
+                    </TableCell>
 
-                      <div>
-                        <TableCell sx={{ fontWeight: "bold" }} align="center">
-                          Comment
-                        </TableCell>
-                      </div>
+                    <TableCell sx={{ fontWeight: "bold" }} align="center">
+                      Comment
+                    </TableCell>
 
-                      <div>
-                        <TableCell sx={{ fontWeight: "bold" }} align="center">
-                          Followers
-                        </TableCell>
-                      </div>
+                    <TableCell sx={{ fontWeight: "bold" }} align="center">
+                      Followers
+                    </TableCell>
 
-                      <div>
-                        <TableCell sx={{ fontWeight: "bold" }} align="center">
-                          Picture Post
-                        </TableCell>
-                      </div>
+                    <TableCell sx={{ fontWeight: "bold" }} align="center">
+                      Picture Post
+                    </TableCell>
 
-                      <div>
-                        <TableCell sx={{ fontWeight: "bold" }} align="center">
-                          Video Post
-                        </TableCell>
-                      </div>
-                    </div>
+                    <TableCell sx={{ fontWeight: "bold" }} align="center">
+                      Video Post
+                    </TableCell>
+
                     <TableCell align="right">
                       <IconButton
                         onClick={handleMenuOpen}
@@ -915,7 +883,6 @@ function Row({ payout, isPayoutSelected }) {
                             <DialogTitle>Approve User Earnings</DialogTitle>
                             <DialogContent>
                               <DialogContentText>
-                                {/* {listEarning?.currencySymbol} to <br /> */}
                                 Please enter your admin approval pin to Approve
                                 this request, if you dont have one yet, head to{" "}
                                 {
@@ -1144,6 +1111,7 @@ function Row({ payout, isPayoutSelected }) {
                     </Menu>
                   </TableRow>
                 </TableHead>
+
                 <TableBody>
                   <TableRow
                     key={
@@ -1151,7 +1119,7 @@ function Row({ payout, isPayoutSelected }) {
                         ?.data?.earningRequestStatus
                     }
                   >
-                    <TableCell align="left" component="th" scope="row">
+                    <TableCell align="left">
                       {new Date(
                         queryClient.getQueryData([
                           "earningRequest",
@@ -1160,131 +1128,413 @@ function Row({ payout, isPayoutSelected }) {
                       ).toLocaleDateString()}
                     </TableCell>
 
-                    <TableCell align="left">
+                    <TableCell align="center">
+                      {listEarning?.data?.earnings_balance}{" "}
+                      {listEarning?.data?.currency?.[0]?.currencyName}
+                    </TableCell>
+
+                    <TableCell align="center">
                       {
                         queryClient.getQueryData(["earningRequest", payout.Id])
                           ?.data?.earningRequestCurrency
                       }
                     </TableCell>
 
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-around",
-                      }}
-                    >
-                      <div>
-                        <TableCell
-                          align="center"
-                          style={{ display: "flex", alignItems: "center" }}
-                        >
-                          <BarChart2 size={20} style={{ marginRight: "8px" }} />
-                          {listEarning?.data?.earnings[0]?.count}
-                        </TableCell>
+                    <TableCell align="center" style={{ padding: "0px" }}>
+                      <TableCell
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleOpenModal(
+                            listEarning?.data?.earnings[0]?.userId,
+                            listEarning?.data?.earnings[0]?.categoryId
+                          );
+                        }}
+                        colSpan={1}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          cursor: "pointer",
+                        }}
+                        onMouseEnter={(e) =>
+                          (e.currentTarget.style.textDecoration = "underline")
+                        }
+                        onMouseLeave={(e) =>
+                          (e.currentTarget.style.textDecoration = "none")
+                        }
+                      >
+                        <BarChart2 size={20} style={{ marginRight: "8px" }} />
+                        {listEarning?.data?.earnings[0]?.count}
+                      </TableCell>
 
-                        <TableCell
-                          align="center"
-                          style={{ display: "flex", alignItems: "center" }}
-                        >
-                          <Gift size={16} style={{ marginRight: "8px" }} />
-                          {listEarning?.data?.earnings[0]?.earnings}
-                        </TableCell>
-                      </div>
+                      <TableCell
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleOpenModal(
+                            listEarning?.data?.earnings[0]?.userId,
+                            listEarning?.data?.earnings[0]?.categoryId
+                          );
+                        }}
+                        colSpan={1}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          cursor: "pointer",
+                        }}
+                        onMouseEnter={(e) =>
+                          (e.currentTarget.style.textDecoration = "underline")
+                        }
+                        onMouseLeave={(e) =>
+                          (e.currentTarget.style.textDecoration = "none")
+                        }
+                      >
+                        <Gift size={16} style={{ marginRight: "8px" }} />
+                        {listEarning?.data?.earnings[0]?.earnings}
+                      </TableCell>
+                    </TableCell>
 
-                      <div>
-                        <TableCell
-                          align="center"
-                          style={{ display: "flex", alignItems: "center" }}
-                        >
-                          <BarChart2 size={20} style={{ marginRight: "8px" }} />
-                          {listEarning?.data?.earnings[1]?.count}
-                        </TableCell>
+                    <TableCell align="center" style={{ padding: "0px" }}>
+                      <TableCell
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleOpenModal(
+                            listEarning?.data?.earnings[1]?.userId,
+                            listEarning?.data?.earnings[1]?.categoryId
+                          );
+                        }}
+                        colSpan={1}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          cursor: "pointer",
+                        }}
+                        onMouseEnter={(e) =>
+                          (e.currentTarget.style.textDecoration = "underline")
+                        }
+                        onMouseLeave={(e) =>
+                          (e.currentTarget.style.textDecoration = "none")
+                        }
+                      >
+                        <BarChart2 size={20} style={{ marginRight: "8px" }} />
+                        {listEarning?.data?.earnings[1]?.count}
+                      </TableCell>
 
-                        <TableCell
-                          align="center"
-                          style={{ display: "flex", alignItems: "center" }}
-                        >
-                          <Gift size={16} style={{ marginRight: "8px" }} />
-                          {listEarning?.data?.earnings[1]?.earnings}
-                        </TableCell>
-                      </div>
+                      <TableCell
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleOpenModal(
+                            listEarning?.data?.earnings[1]?.userId,
+                            listEarning?.data?.earnings[1]?.categoryId
+                          );
+                        }}
+                        colSpan={1}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          cursor: "pointer",
+                        }}
+                        onMouseEnter={(e) =>
+                          (e.currentTarget.style.textDecoration = "underline")
+                        }
+                        onMouseLeave={(e) =>
+                          (e.currentTarget.style.textDecoration = "none")
+                        }
+                      >
+                        <Gift size={16} style={{ marginRight: "8px" }} />
+                        {listEarning?.data?.earnings[1]?.earnings}
+                      </TableCell>
+                    </TableCell>
 
-                      <div>
-                        <TableCell
-                          align="center"
-                          style={{ display: "flex", alignItems: "center" }}
-                        >
-                          <BarChart2 size={20} style={{ marginRight: "8px" }} />
-                          {listEarning?.data?.earnings[2]?.count}
-                        </TableCell>
+                    <TableCell align="center" style={{ padding: "0px" }}>
+                      <TableCell
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleOpenModal(
+                            listEarning?.data?.earnings[2]?.userId,
+                            listEarning?.data?.earnings[2]?.categoryId
+                          );
+                        }}
+                        colSpan={1}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          cursor: "pointer",
+                        }}
+                        onMouseEnter={(e) =>
+                          (e.currentTarget.style.textDecoration = "underline")
+                        }
+                        onMouseLeave={(e) =>
+                          (e.currentTarget.style.textDecoration = "none")
+                        }
+                      >
+                        <BarChart2 size={20} style={{ marginRight: "8px" }} />
+                        {listEarning?.data?.earnings[2]?.count}
+                      </TableCell>
 
-                        <TableCell
-                          align="center"
-                          style={{ display: "flex", alignItems: "center" }}
-                        >
-                          <Gift size={16} style={{ marginRight: "8px" }} />
-                          {listEarning?.data?.earnings[2]?.earnings}
-                        </TableCell>
-                      </div>
+                      <TableCell
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleOpenModal(
+                            listEarning?.data?.earnings[2]?.userId,
+                            listEarning?.data?.earnings[2]?.categoryId
+                          );
+                        }}
+                        colSpan={1}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          cursor: "pointer",
+                        }}
+                        onMouseEnter={(e) =>
+                          (e.currentTarget.style.textDecoration = "underline")
+                        }
+                        onMouseLeave={(e) =>
+                          (e.currentTarget.style.textDecoration = "none")
+                        }
+                      >
+                        <Gift size={16} style={{ marginRight: "8px" }} />
+                        {listEarning?.data?.earnings[2]?.earnings}
+                      </TableCell>
+                    </TableCell>
 
-                      <div>
-                        <TableCell
-                          align="center"
-                          style={{ display: "flex", alignItems: "center" }}
-                        >
-                          <BarChart2 size={20} style={{ marginRight: "8px" }} />
-                          {listEarning?.data?.earnings[3]?.count}
-                        </TableCell>
+                    <TableCell align="center" style={{ padding: "0px" }}>
+                      <TableCell
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleOpenModal(
+                            listEarning?.data?.earnings[3]?.userId,
+                            listEarning?.data?.earnings[3]?.categoryId
+                          );
+                        }}
+                        colSpan={1}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          cursor: "pointer",
+                        }}
+                        onMouseEnter={(e) =>
+                          (e.currentTarget.style.textDecoration = "underline")
+                        }
+                        onMouseLeave={(e) =>
+                          (e.currentTarget.style.textDecoration = "none")
+                        }
+                      >
+                        <BarChart2 size={20} style={{ marginRight: "8px" }} />
+                        {listEarning?.data?.earnings[3]?.count}
+                      </TableCell>
 
-                        <TableCell
-                          align="center"
-                          style={{ display: "flex", alignItems: "center" }}
-                        >
-                          <Gift size={16} style={{ marginRight: "8px" }} />
-                          {listEarning?.data?.earnings[3]?.earnings}
-                        </TableCell>
-                      </div>
+                      <TableCell
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleOpenModal(
+                            listEarning?.data?.earnings[3]?.userId,
+                            listEarning?.data?.earnings[3]?.categoryId
+                          );
+                        }}
+                        colSpan={1}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          cursor: "pointer",
+                        }}
+                        onMouseEnter={(e) =>
+                          (e.currentTarget.style.textDecoration = "underline")
+                        }
+                        onMouseLeave={(e) =>
+                          (e.currentTarget.style.textDecoration = "none")
+                        }
+                      >
+                        <Gift size={16} style={{ marginRight: "8px" }} />
+                        {listEarning?.data?.earnings[3]?.earnings}
+                      </TableCell>
+                    </TableCell>
 
-                      <div>
-                        <TableCell
-                          align="center"
-                          style={{ display: "flex", alignItems: "center" }}
-                        >
-                          <BarChart2 size={20} style={{ marginRight: "8px" }} />
-                          {listEarning?.data?.earnings[4]?.count}
-                        </TableCell>
+                    <TableCell align="center" style={{ padding: "0px" }}>
+                      <TableCell
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleOpenModal(
+                            listEarning?.data?.earnings[4]?.userId,
+                            listEarning?.data?.earnings[4]?.categoryId
+                          );
+                        }}
+                        colSpan={1}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          cursor: "pointer",
+                        }}
+                        onMouseEnter={(e) =>
+                          (e.currentTarget.style.textDecoration = "underline")
+                        }
+                        onMouseLeave={(e) =>
+                          (e.currentTarget.style.textDecoration = "none")
+                        }
+                      >
+                        <BarChart2 size={20} style={{ marginRight: "8px" }} />
+                        {listEarning?.data?.earnings[4]?.count}
+                      </TableCell>
 
-                        <TableCell
-                          align="center"
-                          style={{ display: "flex", alignItems: "center" }}
-                        >
-                          <Gift size={16} style={{ marginRight: "8px" }} />
-                          {listEarning?.data?.earnings[4]?.earnings}
-                        </TableCell>
-                      </div>
+                      <TableCell
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleOpenModal(
+                            listEarning?.data?.earnings[4]?.userId,
+                            listEarning?.data?.earnings[4]?.categoryId
+                          );
+                        }}
+                        colSpan={1}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          cursor: "pointer",
+                        }}
+                        onMouseEnter={(e) =>
+                          (e.currentTarget.style.textDecoration = "underline")
+                        }
+                        onMouseLeave={(e) =>
+                          (e.currentTarget.style.textDecoration = "none")
+                        }
+                      >
+                        <Gift size={16} style={{ marginRight: "8px" }} />
+                        {listEarning?.data?.earnings[4]?.earnings}
+                      </TableCell>
+                    </TableCell>
 
-                      <div>
-                        <TableCell
-                          align="center"
-                          style={{ display: "flex", alignItems: "center" }}
-                        >
-                          <BarChart2 size={20} style={{ marginRight: "8px" }} />
-                          {listEarning?.data?.earnings[5]?.count}
-                        </TableCell>
+                    <TableCell align="center" style={{ padding: "0px" }}>
+                      <TableCell
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleOpenModal(
+                            listEarning?.data?.earnings[5]?.userId,
+                            listEarning?.data?.earnings[5]?.categoryId
+                          );
+                        }}
+                        colSpan={1}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          cursor: "pointer",
+                        }}
+                        onMouseEnter={(e) =>
+                          (e.currentTarget.style.textDecoration = "underline")
+                        }
+                        onMouseLeave={(e) =>
+                          (e.currentTarget.style.textDecoration = "none")
+                        }
+                      >
+                        <BarChart2 size={20} style={{ marginRight: "8px" }} />
+                        {listEarning?.data?.earnings[5]?.count}
+                      </TableCell>
 
-                        <TableCell
-                          align="center"
-                          style={{ display: "flex", alignItems: "center" }}
-                        >
-                          <Gift size={16} style={{ marginRight: "8px" }} />
-                          {listEarning?.data?.earnings[5]?.earnings}
-                        </TableCell>
-                      </div>
-                    </div>
+                      <TableCell
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleOpenModal(
+                            listEarning?.data?.earnings[5]?.userId,
+                            listEarning?.data?.earnings[5]?.categoryId
+                          );
+                        }}
+                        colSpan={1}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          cursor: "pointer",
+                        }}
+                        onMouseEnter={(e) =>
+                          (e.currentTarget.style.textDecoration = "underline")
+                        }
+                        onMouseLeave={(e) =>
+                          (e.currentTarget.style.textDecoration = "none")
+                        }
+                      >
+                        <Gift size={16} style={{ marginRight: "8px" }} />
+                        {listEarning?.data?.earnings[5]?.earnings}
+                      </TableCell>
+                    </TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
             )}
+
+            <Modal
+              open={openEModal}
+              onClose={handleCloseModal}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  width: 400,
+                  backgroundColor: "white",
+                  boxShadow: 24,
+                  p: 4,
+                  maxHeight: "75vh",
+                  overflowY: "auto",
+                  paddingTop: "3%",
+                  paddingBottom: "3%",
+                  paddingRight: "5%",
+                  paddingLeft: "5%",
+                }}
+              >
+                <Typography
+                  variant="h6"
+                  id="modal-modal-title"
+                  sx={{ marginBottom: "8px", fontSize: "1.1rem" }}
+                >
+                  Users Full Names
+                </Typography>
+                <div id="modal-modal-description">
+                  {modalData?.data?.earningsInitiators?.map(
+                    (initiator, index) => (
+                      <Typography
+                        component="a"
+                        href={`/user/${initiator.initiatorId}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          display: "block",
+                          marginBottom: "8px",
+                          textDecoration: "none",
+                        }}
+                        key={index}
+                        onMouseEnter={(e) =>
+                          (e.currentTarget.style.textDecoration = "underline")
+                        }
+                        onMouseLeave={(e) =>
+                          (e.currentTarget.style.textDecoration = "none")
+                        }
+                      >
+                        {`${index + 1}. ${initiator.userFullName}`}
+                      </Typography>
+                    )
+                  )}
+                </div>
+                <Button
+                  onClick={handleCloseModal}
+                  variant="contained"
+                  color="primary"
+                  style={{ marginTop: "16px" }}
+                >
+                  Close Modal
+                </Button>
+              </div>
+            </Modal>
           </Box>
         </Collapse>
       </TableCell>

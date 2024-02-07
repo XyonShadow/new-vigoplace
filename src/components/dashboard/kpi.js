@@ -67,6 +67,7 @@ const KPI = (props) => {
           verifiedPhoneCount: checkedCheckboxes.includes("verifiedPhoneCount"),
           payoutRevenue: checkedCheckboxes.includes("payoutRevenue"),
           giftRevenue: checkedCheckboxes.includes("giftRevenue"),
+          kycRevenue: checkedCheckboxes.includes("kycRevenue"),
           channelRevenue: checkedCheckboxes.includes("channelRevenue"),
           fundRaisingRevenue: checkedCheckboxes.includes("fundRaisingRevenue"),
           placePromotionRevenue: checkedCheckboxes.includes("placePromotionRevenue"),
@@ -160,6 +161,11 @@ const KPI = (props) => {
       id: "gift_revenue",
       value: "giftRevenue",
       label: "Gift revenue",
+    },
+    {
+      id: "kyc_revenue",
+      value: "kycRevenue",
+      label: "KYC revenue",
     },
     {
       id: "channel_revenue",

@@ -151,6 +151,15 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
       SCPCreatedAt: "2023-11-28T10:17:02.000Z",
       SCPUpdatedAt: null,
     },
+    {
+      id: 13,
+      title: "Users-Statistics",
+      icon: "activity",
+      href: "/user-statistics",
+      roles: ["admin", "root"],
+      SCPCreatedAt: "2024-01-27T10:17:02.000Z",
+      SCPUpdatedAt: null,
+    }
   ];
 
   // useEffect(() => {
