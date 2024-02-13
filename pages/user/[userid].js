@@ -560,6 +560,7 @@ const Users = () => {
         userId: id.toString(),
         status: "activate",
         reason: reason,
+        duration: "null",
         approvalPin: pin,
       },
       {

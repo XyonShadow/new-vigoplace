@@ -43,37 +43,46 @@ const KPI = (props) => {
       let url = "https://vigoplace.com/server/api/admin/statistics/dashboard";
       //let url = "http://localhost:4000/api/admin/statistics/dashboard";
 
+      const queryParams = checkedCheckboxes.reduce((acc, checkbox) => {
+        acc[checkbox.value] = true; // Set the value to true for checked checkboxes
+        return acc;
+      }, {});
+
       if (startDate && endDate) {
         url += `?startDate=${startDate}&endDate=${endDate}`;
       }
       const { data } = await axios.get(url, {
         params: {
-          totalOrders: checkedCheckboxes.includes("totalOrders"),
-          users: checkedCheckboxes.includes("users"),
-          deletedUsers: checkedCheckboxes.includes("totalDeletedUsers"),
-          payout: checkedCheckboxes.includes("payout"),
-          totalUserActivities: checkedCheckboxes.includes(
-            "totalUserActivities"
-          ),
-          virtualAccount: checkedCheckboxes.includes("virtualAccount"),
-          marketPlaceCount: checkedCheckboxes.includes("marketPlaceCount"),
-          channelPlaceCount: checkedCheckboxes.includes("channelPlaceCount"),
-          contestPlaceCount: checkedCheckboxes.includes("contestPlaceCount"),
-          basicPlaceCount: checkedCheckboxes.includes("basicPlaceCount"),
-          newsPostCount: checkedCheckboxes.includes("newsPostCount"),
-          giftPostCount: checkedCheckboxes.includes("giftPostCount"),
-          walletCount: checkedCheckboxes.includes("walletCount"),
-          verifiedEmailCount: checkedCheckboxes.includes("verifiedEmailCount"),
-          verifiedPhoneCount: checkedCheckboxes.includes("verifiedPhoneCount"),
-          payoutRevenue: checkedCheckboxes.includes("payoutRevenue"),
-          giftRevenue: checkedCheckboxes.includes("giftRevenue"),
-          kycRevenue: checkedCheckboxes.includes("kycRevenue"),
-          channelRevenue: checkedCheckboxes.includes("channelRevenue"),
-          fundRaisingRevenue: checkedCheckboxes.includes("fundRaisingRevenue"),
-          placePromotionRevenue: checkedCheckboxes.includes("placePromotionRevenue"),
-          totalRevenue: checkedCheckboxes.includes("totalRevenue"),
+          ...queryParams,
           currency: currency,
         },
+        // params: {
+        //   totalOrders: checkedCheckboxes.includes("totalOrders"),
+        //   users: checkedCheckboxes.includes("users"),
+        //   deletedUsers: checkedCheckboxes.includes("totalDeletedUsers"),
+        //   payout: checkedCheckboxes.includes("payout"),
+        //   totalUserActivities: checkedCheckboxes.includes(
+        //     "totalUserActivities"
+        //   ),
+        //   virtualAccount: checkedCheckboxes.includes("virtualAccount"),
+        //   marketPlaceCount: checkedCheckboxes.includes("marketPlaceCount"),
+        //   channelPlaceCount: checkedCheckboxes.includes("channelPlaceCount"),
+        //   contestPlaceCount: checkedCheckboxes.includes("contestPlaceCount"),
+        //   basicPlaceCount: checkedCheckboxes.includes("basicPlaceCount"),
+        //   newsPostCount: checkedCheckboxes.includes("newsPostCount"),
+        //   giftPostCount: checkedCheckboxes.includes("giftPostCount"),
+        //   walletCount: checkedCheckboxes.includes("walletCount"),
+        //   verifiedEmailCount: checkedCheckboxes.includes("verifiedEmailCount"),
+        //   verifiedPhoneCount: checkedCheckboxes.includes("verifiedPhoneCount"),
+        //   payoutRevenue: checkedCheckboxes.includes("payoutRevenue"),
+        //   giftRevenue: checkedCheckboxes.includes("giftRevenue"),
+        //   kycRevenue: checkedCheckboxes.includes("kycRevenue"),
+        //   channelRevenue: checkedCheckboxes.includes("channelRevenue"),
+        //   fundRaisingRevenue: checkedCheckboxes.includes("fundRaisingRevenue"),
+        //   placePromotionRevenue: checkedCheckboxes.includes("placePromotionRevenue"),
+        //   totalRevenue: checkedCheckboxes.includes("totalRevenue"),
+        //   currency: currency,
+        // },
         headers: {
           Authorization: user?.token,
         },
@@ -202,28 +211,39 @@ const KPI = (props) => {
   };
 
   const handleCheckboxChange = (event) => {
-    //console.log(event.target);
     const { value, checked, id } = event.target;
-    const myObject = {}; // Step 2: Create an object
-
+  
     if (checked) {
-      myObject.value = value;
-      myObject.label = id;
-      // setCheckedValues([...checkedValues, myObject]);
-      setCheckedCheckboxes((prevState) => [...prevState, myObject]);
+      // If checkbox is checked, add it to the state with value true
+      setCheckedCheckboxes((prevState) => [
+        ...prevState,
+        { value: value, label: id, checked: true },
+      ]);
     } else {
-      //console.log("Unche  kedddddddd")
-      // setCheckedValues(checkedValues.filter((v) => v.value !== value));
+      // If checkbox is unchecked, remove it from the state
       setCheckedCheckboxes((prevState) =>
         prevState.filter((item) => item.value !== value)
       );
     }
-  };
+  };  
+  
+  // const handleCheckboxChange = (event) => {
+  //   //console.log(event.target);
+  //   const { value, checked, id } = event.target;
+  //   const myObject = {}; // Step 2: Create an object
 
-  // const formatCurrency = (value, currency) => {
-  //   const formattedValue =
-  //     currency === "NGN" ? `₦${value?.toFixed(2)}` : `$${value?.toFixed(2)}`;
-  //   return formattedValue;
+  //   if (checked) {
+  //     myObject.value = value;
+  //     myObject.label = id;
+  //     // setCheckedValues([...checkedValues, myObject]);
+  //     setCheckedCheckboxes((prevState) => [...prevState, myObject]);
+  //   } else {
+  //     //console.log("Unche  kedddddddd")
+  //     // setCheckedValues(checkedValues.filter((v) => v.value !== value));
+  //     setCheckedCheckboxes((prevState) =>
+  //       prevState.filter((item) => item.value !== value)
+  //     );
+  //   }
   // };
 
   const formatCurrency = (value, currency) => {

@@ -210,10 +210,6 @@ const Users = () => {
   const columns = useMemo(
     () => [
       {
-        id: "followerCount",
-        label: "Follower Count",
-      },
-      {
         id: "postCount",
         label: "Post Count",
       },
@@ -222,12 +218,16 @@ const Users = () => {
         label: "Comment Count",
       },
       {
+        id: "postLikeCount",
+        label: "Post Like Count",
+      },
+      {
         id: "commentLikeCount",
         label: "Comment Like Count",
       },
       {
-        id: "postLikeCount",
-        label: "Post Like Count",
+        id: "followerCount",
+        label: "Follower Count",
       },
       {
         id: "postViewCount",
@@ -247,10 +247,7 @@ const Users = () => {
         id: "userId",
         label: "User",
       },
-      {
-        id: "followerCount",
-        label: "Follower Count",
-      },
+
       {
         id: "postCount",
         label: "Post Count",
@@ -260,12 +257,16 @@ const Users = () => {
         label: "Comment Count",
       },
       {
+        id: "postLikeCount",
+        label: "Post Like Count",
+      },
+      {
         id: "commentLikeCount",
         label: "Comment Like Count",
       },
       {
-        id: "postLikeCount",
-        label: "Post Like Count",
+        id: "followerCount",
+        label: "Follower Count",
       },
       {
         id: "postViewCount",
@@ -274,24 +275,6 @@ const Users = () => {
     ],
     []
   );
-
-  const followerCounts = data?.followerCount?.map((count) => {
-    return {
-      user: count.fullName,
-    };
-  });
-
-  const followerCountss = data?.followerCount?.map((count) => {
-    return {
-      followerCount: count.followerCount,
-    };
-  });
-
-  const followerCountsss = data?.followerCount?.map((count) => {
-    return {
-      lastSeen: count.lastSeen,
-    };
-  });
 
   const postCounts = data?.postCount?.map((count) => {
     return {
@@ -329,6 +312,24 @@ const Users = () => {
     };
   });
 
+  const postLikeCounts = data?.postLikeCount?.map((count) => {
+    return {
+      user: count.fullName,
+    };
+  });
+
+  const postLikeCountss = data?.postLikeCount?.map((count) => {
+    return {
+      postLikeCount: count.postLikeCount,
+    };
+  });
+
+  const postLikeCountsss = data?.postLikeCount?.map((count) => {
+    return {
+      lastSeen: count.lastSeen,
+    };
+  });
+
   const commentLikeCounts = data?.commentLikeCount?.map((count) => {
     return {
       user: count.fullName,
@@ -347,19 +348,19 @@ const Users = () => {
     };
   });
 
-  const postLikeCounts = data?.postLikeCount?.map((count) => {
+  const followerCounts = data?.followerCount?.map((count) => {
     return {
       user: count.fullName,
     };
   });
 
-  const postLikeCountss = data?.postLikeCount?.map((count) => {
+  const followerCountss = data?.followerCount?.map((count) => {
     return {
-      postLikeCount: count.postLikeCount,
+      followerCount: count.followerCount,
     };
   });
 
-  const postLikeCountsss = data?.postLikeCount?.map((count) => {
+  const followerCountsss = data?.followerCount?.map((count) => {
     return {
       lastSeen: count.lastSeen,
     };
@@ -666,56 +667,6 @@ const Users = () => {
                           borderRight: "1px solid #ddd",
                         }}
                       >
-                        {followerCountsss.map((user, index) => (
-                          <div key={index}>
-                            <TableCell height="80px">
-                              {user.lastSeen &&
-                                format(
-                                  new Date(user.lastSeen),
-                                  "MM/dd/yyyy HH:mm:ss"
-                                )}
-                            </TableCell>
-                          </div>
-                        ))}
-                      </TableCell>
-                      <TableCell
-                        colSpan={1}
-                        align="center"
-                        sx={{
-                          borderRight: "1px solid #ddd",
-                        }}
-                      >
-                        {followerCounts.map((user, index) => (
-                          <div key={index}>
-                            <TableCell height="80px">{user.user}</TableCell>
-                          </div>
-                        ))}
-                      </TableCell>
-
-                      <TableCell
-                        colSpan={1}
-                        align="center"
-                        sx={{
-                          borderBottom: "1px solid #ddd",
-                          borderRight: "1px solid #555",
-                        }}
-                      >
-                        {followerCountss.map((user, index) => (
-                          <div key={index}>
-                            <TableCell height="80px">
-                              {user.followerCount}
-                            </TableCell>
-                          </div>
-                        ))}
-                      </TableCell>
-
-                      <TableCell
-                        colSpan={1}
-                        align="center"
-                        sx={{
-                          borderRight: "1px solid #ddd",
-                        }}
-                      >
                         {postCountsss.map((user, index) => (
                           <div key={index}>
                             <TableCell height="80px">
@@ -817,6 +768,57 @@ const Users = () => {
                           borderRight: "1px solid #ddd",
                         }}
                       >
+                        {postLikeCountsss.map((user, index) => (
+                          <div key={index}>
+                            <TableCell height="80px">
+                              {user.lastSeen &&
+                                format(
+                                  new Date(user.lastSeen),
+                                  "MM/dd/yyyy HH:mm:ss"
+                                )}
+                            </TableCell>
+                          </div>
+                        ))}
+                      </TableCell>
+
+                      <TableCell
+                        colSpan={1}
+                        align="center"
+                        sx={{
+                          borderRight: "1px solid #ddd",
+                        }}
+                      >
+                        {postLikeCounts.map((user, index) => (
+                          <div key={index}>
+                            <TableCell height="80px">{user.user}</TableCell>
+                          </div>
+                        ))}
+                      </TableCell>
+
+                      <TableCell
+                        colSpan={1}
+                        align="center"
+                        sx={{
+                          borderBottom: "1px solid #ddd",
+                          borderRight: "1px solid #555",
+                        }}
+                      >
+                        {postLikeCountss.map((user, index) => (
+                          <div key={index}>
+                            <TableCell height="80px">
+                              {user.postLikeCount}
+                            </TableCell>
+                          </div>
+                        ))}
+                      </TableCell>
+
+                      <TableCell
+                        colSpan={1}
+                        align="center"
+                        sx={{
+                          borderRight: "1px solid #ddd",
+                        }}
+                      >
                         {commentLikeCountsss.map((user, index) => (
                           <div key={index}>
                             <TableCell height="80px">
@@ -868,7 +870,7 @@ const Users = () => {
                           borderRight: "1px solid #ddd",
                         }}
                       >
-                        {postLikeCountsss.map((user, index) => (
+                        {followerCountsss.map((user, index) => (
                           <div key={index}>
                             <TableCell height="80px">
                               {user.lastSeen &&
@@ -880,7 +882,6 @@ const Users = () => {
                           </div>
                         ))}
                       </TableCell>
-
                       <TableCell
                         colSpan={1}
                         align="center"
@@ -888,7 +889,7 @@ const Users = () => {
                           borderRight: "1px solid #ddd",
                         }}
                       >
-                        {postLikeCounts.map((user, index) => (
+                        {followerCounts.map((user, index) => (
                           <div key={index}>
                             <TableCell height="80px">{user.user}</TableCell>
                           </div>
@@ -903,10 +904,10 @@ const Users = () => {
                           borderRight: "1px solid #555",
                         }}
                       >
-                        {postLikeCountss.map((user, index) => (
+                        {followerCountss.map((user, index) => (
                           <div key={index}>
                             <TableCell height="80px">
-                              {user.postLikeCount}
+                              {user.followerCount}
                             </TableCell>
                           </div>
                         ))}
@@ -995,12 +996,14 @@ const Users = () => {
                               borderRight: "1px solid #ddd",
                             }}
                           >
-                            {user.lastSeen &&
-                              format(
-                                new Date(user.lastSeen),
-                                "MM/dd/yyyy HH:mm:ss"
-                              )}
+                            {user.lastSeen
+                              ? format(
+                                  new Date(user.lastSeen),
+                                  "MM/dd/yyyy HH:mm:ss"
+                                )
+                              : "01/01/2022 00:00:00"}
                           </TableCell>
+
                           <TableCell
                             align="center"
                             sx={{
@@ -1009,14 +1012,7 @@ const Users = () => {
                           >
                             {user.fullName}
                           </TableCell>
-                          <TableCell
-                            align="center"
-                            sx={{
-                              borderRight: "1px solid #ddd",
-                            }}
-                          >
-                            {user.followerCount}
-                          </TableCell>
+
                           <TableCell
                             align="center"
                             sx={{
@@ -1033,14 +1029,7 @@ const Users = () => {
                           >
                             {user.commentCount}
                           </TableCell>
-                          <TableCell
-                            align="center"
-                            sx={{
-                              borderRight: "1px solid #ddd",
-                            }}
-                          >
-                            {user.commentLikeCount}
-                          </TableCell>
+
                           <TableCell
                             align="center"
                             sx={{
@@ -1049,13 +1038,34 @@ const Users = () => {
                           >
                             {user.postLikeCount}
                           </TableCell>
+
                           <TableCell
                             align="center"
                             sx={{
                               borderRight: "1px solid #ddd",
                             }}
                           >
-                            {user.postViewCount}
+                            {user.commentLikeCount}
+                          </TableCell>
+
+                          <TableCell
+                            align="center"
+                            sx={{
+                              borderRight: "1px solid #ddd",
+                            }}
+                          >
+                            {user.followerCount}
+                          </TableCell>
+
+                          <TableCell
+                            align="center"
+                            sx={{
+                              borderRight: "1px solid #ddd",
+                            }}
+                          >
+                            {user.postViewCount !== null
+                              ? user.postViewCount
+                              : 0}
                           </TableCell>
                         </TableRow>
                       ))}
@@ -1107,14 +1117,7 @@ const Users = () => {
                           >
                             {user.fullName}
                           </TableCell>
-                          <TableCell
-                            align="center"
-                            sx={{
-                              borderRight: "1px solid #ddd",
-                            }}
-                          >
-                            {user.followerCount}
-                          </TableCell>
+
                           <TableCell
                             align="center"
                             sx={{
@@ -1131,14 +1134,7 @@ const Users = () => {
                           >
                             {user.commentCount}
                           </TableCell>
-                          <TableCell
-                            align="center"
-                            sx={{
-                              borderRight: "1px solid #ddd",
-                            }}
-                          >
-                            {user.commentLikeCount}
-                          </TableCell>
+
                           <TableCell
                             align="center"
                             sx={{
@@ -1147,6 +1143,25 @@ const Users = () => {
                           >
                             {user.postLikeCount}
                           </TableCell>
+
+                          <TableCell
+                            align="center"
+                            sx={{
+                              borderRight: "1px solid #ddd",
+                            }}
+                          >
+                            {user.commentLikeCount}
+                          </TableCell>
+
+                          <TableCell
+                            align="center"
+                            sx={{
+                              borderRight: "1px solid #ddd",
+                            }}
+                          >
+                            {user.followerCount}
+                          </TableCell>
+
                           <TableCell
                             align="center"
                             sx={{
