@@ -568,7 +568,7 @@ function Row({ payout, isPayoutSelected }) {
     }
   );
 
-  //console.log(listEarning);
+  console.log(listEarning);
 
   return (
     <>
@@ -724,7 +724,7 @@ function Row({ payout, isPayoutSelected }) {
                   <TableRow>
                     <TableCell sx={{ fontWeight: "bold" }}>Date</TableCell>
                     <TableCell sx={{ fontWeight: "bold" }} align="left">
-                      Balance
+                      Period
                     </TableCell>
                     <TableCell sx={{ fontWeight: "bold" }} align="left">
                       Currency
@@ -1129,8 +1129,9 @@ function Row({ payout, isPayoutSelected }) {
                     </TableCell>
 
                     <TableCell align="center">
-                      {listEarning?.data?.earnings_balance}{" "}
-                      {listEarning?.data?.currency?.[0]?.currencyName}
+                      {`${listEarning?.data?.period?.month?.slice(0, 3)} ${
+                        listEarning?.data?.period?.year
+                      }`}
                     </TableCell>
 
                     <TableCell align="center">

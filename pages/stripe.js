@@ -22,47 +22,23 @@ import {
 } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import axios from "axios";
-import CheckIcon from "@mui/icons-material/Check";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import SearchIcon from "@mui/icons-material/Search";
-import Input from "@mui/material/Input";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import Chip from "@mui/material/Chip";
-import Stack from "@mui/material/Stack";
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import MuiAlert from "@mui/material/Alert";
-import Slide from "@mui/material/Slide";
-import Snackbar from "@mui/material/Snackbar";
-import { MRT_TableBodyCellValue } from "material-react-table";
-
 import {
-  QueryClient,
-  QueryClientProvider,
   useQueryClient,
   useQuery,
-  useMutation,
 } from "@tanstack/react-query";
 import { getSession, useSession } from "next-auth/react";
 //Material-UI Imports
 import {
   Box,
-  Button,
-  ListItemIcon,
   MenuItem,
   Typography,
-  TextField,
 } from "@mui/material";
-
-//Icons Imports
-import { AccountCircle, Send } from "@mui/icons-material";
-import { UserBalanceCard } from "../src/components/dashboard/userBalanceCard";
-import { UserBio } from "../src/components/dashboard/userBio";
-import { LoadingButton, TabContext, TabList } from "@mui/lab";
-import BaseCard from "../src/components/baseCard/BaseCard";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -105,9 +81,6 @@ const Users = () => {
   const queryClient = useQueryClient();
   const getUser = useSession();
   const user = getUser?.data?.user;
-  const [value, setValue] = React.useState("1");
-  const [walletId, setWalletId] = React.useState(null);
-
   const [columnFilters, setColumnFilters] = useState([]);
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState([]);
@@ -115,35 +88,13 @@ const Users = () => {
     pageIndex: 0,
     pageSize: 10,
   });
-  const [loading, setLoading] = useState(true);
-  const [searchValue, setSearchValue] = useState("");
-  const [filteredResults, setFilteredResults] = useState([]);
-  const [inputEmpty, setInputEmpty] = useState(true);
-  const [transactionPagination, setTransactionPagination] = useState({
-    pageIndex: 1,
-    pageSize: 10,
-  });
-  const [creditSuccessToast, setCreditSuccessToast] = React.useState(false);
-  const [creditErrorToast, setCreditErrorToast] = React.useState(false);
-  const [debitSuccessToast, setDebitSuccessToast] = React.useState(false);
-  const [debitErrorToast, setDebitErrorToast] = React.useState(false);
   const [lastId, setLastId] = useState(0);
   const [totalResult, setTotalResult] = useState(0);
   const [status, setStatus] = React.useState("");
   const [currency, setCurrency] = React.useState("");
-  const [isVerified, setIsverified] = React.useState("");
-  const [email, setEmail] = React.useState("");
   const [tabValue, setTabValue] = React.useState(0);
   const [result, setResult] = useState([]);
   const [tableData, setTableData] = useState(result);
-  const [creditDetails, setCreditDetails] = useState({
-    amount: "",
-    approvalPin: "",
-  });
-  const [debitDetails, setDebitDetails] = useState({
-    amount: "",
-    approvalPin: "",
-  });
 
   /* ******* onchange functions ********** */
 
@@ -181,23 +132,6 @@ const Users = () => {
       setTotalResult(data?.data?.totalTransactions);
       //console.log((data?.data?.paymentIntents[9].id))
       return data;
-      // const { data, isError, isFetching, isLoading, refetch } = useQuery(
-      //   ["fetchStripeTransfers", pagination, filters],
-      //   async () => {
-      //     const { data } = await axios.get(
-      //       `http://localhost:4000/api/stripe/payment_intents`,
-      //       {
-      //         headers: {
-      //           Authorization: user?.token,
-      //         },
-      //         params: {
-      //           ...pagination,
-      //           ...filters,
-      //         },
-      //       }
-      //     );
-      //     setResult(data.data.transactions);
-      //     return data;
     },
     {
       onError: (err) => {

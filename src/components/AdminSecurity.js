@@ -10,6 +10,10 @@ import {
   TextField,
   Container,
   Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { useMutation } from "@tanstack/react-query";
@@ -18,11 +22,6 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import Slide from "@mui/material/Slide";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import Dialog from "@mui/material/Dialog";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -44,6 +43,11 @@ function AdminSecurity() {
     success: false,
   });
 
+  const [createToast, setCreateToast] = React.useState({
+    error: false,
+    success: false,
+  });
+
   const [password, setPassword] = useState({
     oldPassword: "",
     newPassword: "",
@@ -55,6 +59,32 @@ function AdminSecurity() {
     pin: "",
     confirmPin: "",
   });
+
+  // State variables for user creation
+  const [newUserData, setNewUserData] = useState({
+    username: "",
+    email: "",
+    dob: "",
+    password: "",
+    fullname: "",
+  });
+
+  // State variable for user role
+  const [userRole, setUserRole] = useState("user");
+
+  // Handler for updating user data
+  const handleUserDataChange = (e) => {
+    const { name, value } = e.target;
+    setNewUserData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  // Handler for updating user role
+  const handleUserRoleChange = (e) => {
+    setUserRole(e.target.value);
+  };
 
   const handlePassword = (event) => {
     setPassword({
@@ -72,7 +102,7 @@ function AdminSecurity() {
 
   const updatePin = async ({ pin, oldPin }) => {
     const setpin = await axios.post(
-        // "http://localhost:3001/api/admin/console/approvalpin",
+      // "http://localhost:3001/api/admin/console/approvalpin",
       "https://vigoplace.com/server/api/admin/console/approvalpin",
       { pin, oldPin },
       {
@@ -89,18 +119,18 @@ function AdminSecurity() {
     mutationFn: updatePin,
     onError: async (error) => {
       setPinToast({ ...pinToast, error: true });
-      setOpenModal(false)
+      setOpenModal(false);
     },
     onSuccess: () => {
       setPinToast({ ...pinToast, success: true });
-      setApproval({pin: '', oldPin: '', confirmPin: ''})
+      setApproval({ pin: "", oldPin: "", confirmPin: "" });
       setOpenModal(false);
     },
   });
 
   const changePassword = async ({ oldPassword, newPassword }) => {
     const password = await axios.post(
-        // "http://localhost:3001/api/admin/console/password/update",
+      // "http://localhost:3001/api/admin/console/password/update",
       "https://vigoplace.com/server/api/admin/console/password/update",
       { oldPassword, newPassword },
       {
@@ -117,18 +147,69 @@ function AdminSecurity() {
     mutationFn: changePassword,
     onError: async (error) => {
       setPasswordToast({ ...passwordToast, error: true });
-      setOpenModal2(false)
+      setOpenModal2(false);
     },
     onSuccess: (msg) => {
       setPasswordToast({ ...passwordToast, success: true });
-      setPassword({newPassword: "", oldPassword:"", confirmPassword:""})
-      setOpenModal2(false)
+      setPassword({ newPassword: "", oldPassword: "", confirmPassword: "" });
+      setOpenModal2(false);
     },
   });
+
+  const createUser = async (userData) => {
+    try {
+      const response = await axios.post(
+        //"https://vigoplace.com/server/api/admin/auth/register/user",
+        "http://localhost:4000/api/admin/auth/register/user",
+        userData,
+        {
+          headers: {
+            Authorization: user?.token,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      throw error.response.data;
+    }
+  };
+
+  const createUserMutation = useMutation({
+    mutationKey: ["createUser"],
+    mutationFn: createUser,
+    onError: async (error) => {
+      console.error("Error creating user:", error);
+      setCreateToast({ ...createToast, error: true });
+      // Handle error feedback if needed
+    },
+    onSuccess: (data) => {
+      console.log("User created successfully:", data);
+      setCreateToast({ ...createToast, success: true });
+      // Handle success feedback if needed
+      setNewUserData({
+        username: "",
+        email: "",
+        dob: "",
+        password: "",
+        fullname: "",
+      });
+      setUserRole("user");
+    },
+  });
+
+  const handleCreateUser = () => {
+    // Prepare user data from state
+    const userData = {
+      ...newUserData,
+      role: userRole,
+    };
+    createUserMutation.mutate(userData);
+  };
 
   const handleClose = (event, reason) => {
     setPinToast({ error: false, success: false });
     setPasswordToast({ error: false, success: false });
+    setCreateToast({ error: false, success: false });
   };
 
   return (
@@ -172,6 +253,27 @@ function AdminSecurity() {
       >
         <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
           {updatePasswordMutation?.data?.data?.message}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        TransitionComponent={Slide}
+        open={createToast.error}
+        autoHideDuration={6000}
+        onClose={handleClose}
+      >
+        <Alert onClose={handleClose} severity="warning" sx={{ width: "100%" }}>
+          {createUserMutation.error?.message}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        TransitionComponent={Slide}
+        open={createToast.success}
+        autoHideDuration={6000}
+        onClose={handleClose}
+      >
+        <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
+          {createUserMutation?.data?.message}
         </Alert>
       </Snackbar>
       <Box
@@ -241,41 +343,11 @@ function AdminSecurity() {
                     }
                     onClick={() => {
                       updatePasswordMutation.mutate(password);
-                    // setOpenModal2(true);
+                      // setOpenModal2(true);
                     }}
                   >
                     Change Password
                   </LoadingButton>
-                  {/* <Dialog
-                  open={openModal2}
-                  onClose={() => {
-                    setOpenModal(false);
-                  }}
-                >
-                  <DialogTitle>Confirm Action</DialogTitle>
-                  <DialogContent>
-                    <DialogContentText>Update Password?</DialogContentText>
-                  </DialogContent>
-                  <DialogActions>
-                    <Button
-                      onClick={() => {
-                        setOpenModal2(false);
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                    <LoadingButton
-                  variant="contained"
-                  color="primary"
-                  loading={updatePasswordMutation.isLoading}
-                  onClick={() => {
-                    updatePasswordMutation.mutate(password);
-                  }}
-                >
-                  Update
-                </LoadingButton>
-                  </DialogActions>
-                </Dialog> */}
                 </Box>
               </Card>
             </form>
@@ -283,12 +355,6 @@ function AdminSecurity() {
         </Container>
 
         <Container maxWidth="lg">
-          {/* <Typography
-  sx={{ mb: 3 }}
-  variant="h4"
->
-  Settings
-</Typography> */}
           <Box sx={{ pt: 3 }}>
             {/* <form> */}
             <Card>
@@ -351,45 +417,118 @@ function AdminSecurity() {
                   }
                   onClick={() => {
                     // setOpenModal(true);
-                    updatePinMutation.mutate(approval)
+                    updatePinMutation.mutate(approval);
                   }}
                 >
                   Update
                 </LoadingButton>
-
-                {/* <Dialog
-                  open={openModal}
-                  onClose={() => {
-                    setOpenModal(false);
-                  }}
-                >
-                  <DialogTitle>Confirm Action</DialogTitle>
-                  <DialogContent>
-                    <DialogContentText>Update Approval Pin?</DialogContentText>
-                  </DialogContent>
-                  <DialogActions>
-                    <Button
-                      onClick={() => {
-                        setOpenModal(false);
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                    <LoadingButton
-                  variant="contained"
-                  color="primary"
-                  loading={updatePinMutation.isLoading}
-                  onClick={() => {
-                      updatePinMutation.mutate(approval)
-                  }}
-                >
-                  Update
-                </LoadingButton>
-                  </DialogActions>
-                </Dialog> */}
               </Box>
             </Card>
             {/* </form> */}
+          </Box>
+        </Container>
+
+        <Container maxWidth="lg">
+          <Box sx={{ pt: 3 }}>
+            <Card>
+              <CardHeader title="Create User" />
+              <Divider />
+              <CardContent>
+                {/* Username */}
+                <TextField
+                  fullWidth
+                  label="Username"
+                  margin="normal"
+                  name="username"
+                  onChange={handleUserDataChange}
+                  value={newUserData.username}
+                  variant="outlined"
+                />
+
+                {/* Email */}
+                <TextField
+                  fullWidth
+                  label="Email"
+                  margin="normal"
+                  name="email"
+                  onChange={handleUserDataChange}
+                  value={newUserData.email}
+                  variant="outlined"
+                />
+
+                {/* Date of Birth */}
+                <TextField
+                  fullWidth
+                  label="Date of Birth"
+                  margin="normal"
+                  name="dob"
+                  type="date"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  onChange={handleUserDataChange}
+                  value={newUserData.dob}
+                  variant="outlined"
+                />
+
+                {/* Password */}
+                <TextField
+                  fullWidth
+                  label="Password"
+                  margin="normal"
+                  name="password"
+                  onChange={handleUserDataChange}
+                  type="password"
+                  value={newUserData.password}
+                  variant="outlined"
+                />
+
+                {/* Full Name */}
+                <TextField
+                  fullWidth
+                  label="Full Name"
+                  margin="normal"
+                  name="fullname"
+                  onChange={handleUserDataChange}
+                  value={newUserData.fullname}
+                  variant="outlined"
+                />
+
+                {/* User Role (if applicable) */}
+                {/* If you want to allow the admin to select user role */}
+                <FormControl fullWidth variant="outlined" margin="normal">
+                  <InputLabel>User Role</InputLabel>
+                  <Select
+                    value={userRole}
+                    onChange={handleUserRoleChange}
+                    label="User Role"
+                  >
+                    <MenuItem value="user">User</MenuItem>
+                    <MenuItem value="admin">Admin</MenuItem>
+                    {/* Add other roles as needed */}
+                  </Select>
+                </FormControl>
+
+                <Divider />
+                {/* Button to create user */}
+                <Box sx={{ display: "flex", justifyContent: "flex-end", p: 2 }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleCreateUser}
+                    disabled={
+                      !newUserData.username ||
+                      !newUserData.email ||
+                      !newUserData.dob ||
+                      !newUserData.password ||
+                      !newUserData.fullname
+                    }
+                  >
+                    Create User
+                  </Button>
+                </Box>
+              </CardContent>
+            </Card>
           </Box>
         </Container>
       </Box>
