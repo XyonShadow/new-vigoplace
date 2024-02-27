@@ -381,6 +381,9 @@ function Row({ payout, isPayoutSelected }) {
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const [openEModal, setOpenEModal] = React.useState(false);
   const [modalData, setModalData] = React.useState(null);
+  const [amountValue, setAmountValue] = useState(
+    payout.amount.toLocaleString("en-US")
+  );
 
   const handleOpenModal = async (userId, categoryId) => {
     try {
@@ -431,12 +434,12 @@ function Row({ payout, isPayoutSelected }) {
     return session?.user?.token;
   };
 
-  const approveEarning = async ({ reference, pin }) => {
+  const approveEarning = async ({ reference, pin, amount }) => {
     const token = await getToken();
     const parsed = await axios.patch(
       "https://vigoplace.com/server/api/admin/console/earnings/approve",
       //"http://localhost:4000/api/admin/console/earnings/approve",
-      { reference: reference, approvalPin: pin },
+      { reference: reference, approvalPin: pin, amount: amount },
       {
         headers: {
           Authorization: token,
@@ -827,6 +830,7 @@ function Row({ payout, isPayoutSelected }) {
                               )}
                             </Button>
                           </MenuItem>
+
                           {payout.status !== "onhold" && (
                             <>
                               <MenuItem>
@@ -853,6 +857,7 @@ function Row({ payout, isPayoutSelected }) {
                               </MenuItem>
                             </>
                           )}
+
                           <MenuItem>
                             <Button
                               size="small"
@@ -873,6 +878,22 @@ function Row({ payout, isPayoutSelected }) {
                             </Button>
                           </MenuItem>
 
+                          {payout.status === "onhold" && (
+                            <MenuItem>
+                              <Button
+                                sx={{ margin: 1, bgcolor: yellow[800] }}
+                                size="small"
+                                variant="contained"
+                                color="warning"
+                                onClick={() => {
+                                  // Add your logic for handling the "Edit Earnings" action here
+                                }}
+                              >
+                                Edit Earnings
+                              </Button>
+                            </MenuItem>
+                          )}
+
                           <Dialog
                             open={openModal}
                             onClose={() => {
@@ -884,15 +905,13 @@ function Row({ payout, isPayoutSelected }) {
                             <DialogContent>
                               <DialogContentText>
                                 Please enter your admin approval pin to Approve
-                                this request, if you dont have one yet, head to{" "}
-                                {
-                                  <Link
-                                    style={{ color: "blue" }}
-                                    href="/settings"
-                                  >
-                                    Settings
-                                  </Link>
-                                }{" "}
+                                this request, if you don't have one yet, head to{" "}
+                                <Link
+                                  style={{ color: "blue" }}
+                                  href="/settings"
+                                >
+                                  Settings
+                                </Link>{" "}
                                 to create one now
                               </DialogContentText>
 
@@ -908,29 +927,63 @@ function Row({ payout, isPayoutSelected }) {
                                 onChange={handlePin}
                               />
                             </DialogContent>
-                            <DialogActions>
-                              <Button
-                                onClick={() => {
-                                  setOpenModal(false);
-                                  setPin(null);
+                            <DialogActions
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                marginRight: "1rem",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  marginRight: "auto",
+                                  marginLeft: "1rem",
                                 }}
                               >
-                                Cancel
-                              </Button>
-                              <LoadingButton
-                                variant="contained"
-                                loading={approveEarningMutation.isLoading}
-                                disabled={pin === null || pin?.length <= 5}
-                                onClick={() => {
-                                  approveEarningMutation.mutate({
-                                    reference: payout.reference,
-                                    pin,
-                                  });
-                                  setPin(null);
-                                }}
-                              >
-                                Approve
-                              </LoadingButton>
+                                <TextField
+                                  margin="dense"
+                                  id="additionalField"
+                                  label="Additional Field"
+                                  type="text"
+                                  variant="outlined"
+                                  size="small"
+                                  value={amountValue}
+                                  onChange={(e) =>
+                                    setAmountValue(e.target.value)
+                                  }
+                                  InputProps={{
+                                    readOnly: false,
+                                  }}
+                                />
+                              </div>
+                              <div>
+                                <Button
+                                  onClick={() => {
+                                    setOpenModal(false);
+                                    setPin(null);
+                                    setAmountValue(
+                                      payout.amount.toLocaleString("en-US")
+                                    );
+                                  }}
+                                >
+                                  Cancel
+                                </Button>
+                                <LoadingButton
+                                  variant="contained"
+                                  loading={approveEarningMutation.isLoading}
+                                  disabled={pin === null || pin?.length <= 5}
+                                  onClick={() => {
+                                    approveEarningMutation.mutate({
+                                      reference: payout.reference,
+                                      pin,
+                                      amount: amountValue,
+                                    });
+                                    setPin(null);
+                                  }}
+                                >
+                                  Approve
+                                </LoadingButton>
+                              </div>
                             </DialogActions>
                           </Dialog>
 

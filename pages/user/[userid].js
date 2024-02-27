@@ -332,12 +332,12 @@ const Users = () => {
           },
         }
       );
-      //console.log(data);
+      console.log(data);
       return data;
     },
     {
       onError: (err) => {
-        console.log(err, "err fetching users");
+        console.log(err, "err fetching users trabsactions");
       },
       enabled: !!user?.token,
     },
@@ -697,6 +697,12 @@ const Users = () => {
         accessorFn: (row) => row.transactionNetTotal?.toLocaleString("en-US"),
         enableClickToCopy: false,
         header: "Amount",
+      },
+      {
+        id: "gatewayCharge",
+        accessorKey: "gatewayCharge",
+        enableClickToCopy: false,
+        header: "gateway Charge",
       },
       {
         id: "transactionFee",

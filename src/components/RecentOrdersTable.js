@@ -499,12 +499,13 @@ function Row({ payout, isPayoutSelected }) {
     return session?.user?.token;
   };
 
-  const approvePayOut = async ({ id, pin }) => {
+  const approvePayOut = async ({ id, pin, users }) => {
+    //console.log(users)
     const token = await getToken();
     const parsed = await axios.post(
-      // "http://localhost:3001/api/admin/console/approvepayout",
+      //"http://localhost:4000/api/admin/console/approvepayout",
       "https://vigoplace.com/server/api/admin/console/approvepayout",
-      { payoutRequestId: id, approvalPin: pin },
+      { payoutRequestId: id, approvalPin: pin, users },
       {
         headers: {
           Authorization: token,
@@ -528,7 +529,7 @@ function Row({ payout, isPayoutSelected }) {
     },
   });
 
-  const approveUSDPayOut = async ({ id, pin, deliveryETA }) => {
+  const approveUSDPayOut = async ({ id, pin, deliveryETA, users }) => {
     if (deliveryETA === "") {
       toast.error("Please pick a date");
       return;
@@ -537,7 +538,7 @@ function Row({ payout, isPayoutSelected }) {
     const parsed = await axios.post(
       // "http://localhost:3001/api/admin/console/approvepayout",
       "https://vigoplace.com/server/api/admin/console/approvepayout",
-      { payoutRequestId: id, approvalPin: pin, deliveryETA },
+      { payoutRequestId: id, approvalPin: pin, deliveryETA, users },
       {
         headers: {
           Authorization: token,
@@ -561,12 +562,12 @@ function Row({ payout, isPayoutSelected }) {
     },
   });
 
-  const declinePayOut = async ({ id, pin, reason }) => {
+  const declinePayOut = async ({ id, pin, reason, users }) => {
     const token = await getToken();
     const parsed = await axios.post(
       // "http://localhost:3001/api/admin/console/declinepayout",
       "https://vigoplace.com/server/api/admin/console/declinepayout",
-      { payoutRequestId: id, approvalPin: pin, reason },
+      { payoutRequestId: id, approvalPin: pin, reason, users },
       {
         headers: {
           Authorization: token,
@@ -591,7 +592,7 @@ function Row({ payout, isPayoutSelected }) {
     },
   });
 
-  const splitPayOut = async ({ reference, amount1, amount2, pin, reason }) => {
+  const splitPayOut = async ({ reference, amount1, amount2, pin, reason, users }) => {
     const token = await getToken();
     const parsed = await axios.post(
       //"http://localhost:4000/api/admin/console/split/payment",
@@ -610,6 +611,7 @@ function Row({ payout, isPayoutSelected }) {
         ],
         approvalPin: pin,
         reason,
+        users
       },
       {
         headers: {
@@ -640,12 +642,12 @@ function Row({ payout, isPayoutSelected }) {
     },
   });
 
-  const holdPayOut = async ({ reference, pin, reason }) => {
+  const holdPayOut = async ({ reference, pin, reason, users }) => {
     const token = await getToken();
     const parsed = await axios.put(
       //"http://localhost:4000/api/admin/console/transaction",
       "https://vigoplace.com/server/api/admin/console/transaction",
-      { reference: reference, status: "onHold", approvalPin: pin, reason },
+      { reference: reference, status: "onHold", approvalPin: pin, reason, users },
       {
         headers: {
           Authorization: token,
@@ -1145,11 +1147,13 @@ function Row({ payout, isPayoutSelected }) {
                                       ? {
                                           id: payout.payoutRequestId,
                                           pin,
+                                          users: payout?.payoutRequestUId
                                         }
                                       : {
                                           id: payout.payoutRequestId,
                                           pin,
                                           deliveryETA,
+                                          users: payout?.payoutRequestUId
                                         }
                                   );
                                   setPin(null);
@@ -1272,6 +1276,7 @@ function Row({ payout, isPayoutSelected }) {
                                     amount2: amount.amount2,
                                     pin,
                                     reason,
+                                    users: payout.payoutRequestUId
                                   });
                                   setPin(null);
                                   setAmount({
@@ -1354,6 +1359,7 @@ function Row({ payout, isPayoutSelected }) {
                                     reference: payout.payoutRequestReference,
                                     pin,
                                     reason,
+                                    users: payout.payoutRequestUId
                                   });
                                   setPin(null);
                                 }}
@@ -1427,6 +1433,7 @@ function Row({ payout, isPayoutSelected }) {
                                     id: payout.payoutRequestId,
                                     pin,
                                     reason,
+                                    users: payout.payoutRequestUId
                                   });
                                   setPin(null);
                                 }}

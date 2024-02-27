@@ -2,12 +2,7 @@ import React, { useMemo, useState, useEffect, useRef } from "react";
 import { MaterialReactTable } from "material-react-table";
 import { useRouter } from "next/router";
 import { format } from "date-fns";
-import {
-  Grid,
-  IconButton,
-  Tab,
-  Tooltip,
-} from "@mui/material";
+import { Grid, IconButton, Tab, Tooltip } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import axios from "axios";
 import InputLabel from "@mui/material/InputLabel";
@@ -17,17 +12,10 @@ import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import MuiAlert from "@mui/material/Alert";
 
-import {
-  useQueryClient,
-  useQuery,
-} from "@tanstack/react-query";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { getSession, useSession } from "next-auth/react";
 //Material-UI Imports
-import {
-  Box,
-  MenuItem,
-  Typography,
-} from "@mui/material";
+import { Box, MenuItem, Typography } from "@mui/material";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -106,8 +94,10 @@ const Users = () => {
       status,
     ],
     async () => {
-      const {data} = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/transfers/paystack?perPage=${pagination.pageSize}&page=${pagination.pageIndex + 1}`,
+      const { data } = await axios.get(
+        `https://vigoplace.com/server/api/admin/console/transfers/paystack?perPage=${
+          pagination.pageSize
+        }&page=${pagination.pageIndex + 1}`,
         // `http://localhost:3001/api/admin/console/transfers/paystack?perPage=${pagination.pageSize}&page=${pagination.pageIndex}`,
         {
           headers: {
@@ -134,7 +124,9 @@ const Users = () => {
     setIsLoadingT(true);
     try {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/transactions/paystack?perPage=${transactionPagination.pageSize}&page=${transactionPagination.pageIndex + 1}`,
+        `https://vigoplace.com/server/api/admin/console/transactions/paystack?perPage=${
+          transactionPagination.pageSize
+        }&page=${transactionPagination.pageIndex + 1}`,
         {
           headers: {
             Authorization: user?.token,
@@ -158,7 +150,7 @@ const Users = () => {
     if (tabValue === 1) {
       fetchTransactions();
     }
-  }, [tabValue, userid, status, transactionPagination, globalFilter]);  
+  }, [tabValue, userid, status, transactionPagination, globalFilter]);
 
   // const {
   //   data: transactionData,
@@ -275,25 +267,42 @@ const Users = () => {
         accessorFn: (row) =>
           `${row?.customer?.first_name} ${row?.customer?.last_name}`,
         enableClickToCopy: false,
-        muiTableBodyCellProps: ({ cell }) => ({
-          style: {
-            cursor: "pointer",
-          },
-          onClick: () => {
-            console.log(cell.getValue());
-            console.log(cell.row);
-            const userId = cell.row.original.userId;
-            const url = `/user/${userId}`;
-            window.open(url, "_blank");
-          },
-          onMouseEnter: (e) => {
-            e.target.style.textDecoration = "underline";
-          },
-          onMouseLeave: (e) => {
-            e.target.style.textDecoration = "none";
-          },
-        }),
-        header: "Name",
+        muiTableBodyCellProps: ({ cell }) => {
+          const fullName = `${cell.row?.original?.customer?.first_name} ${cell.row?.original?.customer?.last_name}`;
+          const userId = cell.row.original.userId;
+          const url = `/user/${userId}`;
+        
+          if (fullName.trim() !== "null null") {
+            return {
+              style: {
+                cursor: "pointer",
+              },
+              onClick: () => {
+                window.open(url, "_blank");
+              },
+              onMouseEnter: (e) => {
+                e.target.style.textDecoration = "underline";
+              },
+              onMouseLeave: (e) => {
+                e.target.style.textDecoration = "none";
+              },
+            };
+          } else {
+            // Return default props for users with null names
+            return {
+              style: {
+                cursor: "default",
+              },
+              onMouseEnter: (e) => {
+                e.target.style.textDecoration = "none";
+              },
+              onMouseLeave: (e) => {
+                e.target.style.textDecoration = "none";
+              },
+            };
+          }
+        },
+        header: "Name",        
       },
       {
         accessorKey: "currency",
@@ -405,7 +414,6 @@ const Users = () => {
                         }
                       : undefined
                   }
-
                   renderTopToolbarCustomActions={({ table }) => {
                     return (
                       <div style={{ display: "flex", gap: "0.5rem" }}>
@@ -489,7 +497,6 @@ const Users = () => {
                         }
                       : undefined
                   }
-
                   renderTopToolbarCustomActions={({ table }) => {
                     return (
                       <div style={{ display: "flex", gap: "0.5rem" }}>
