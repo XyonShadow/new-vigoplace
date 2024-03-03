@@ -165,7 +165,6 @@ export default function Index() {
 
   return (
     <>
-      <Sidebar unreadTicketsCount={unreadTicketsCount} />
       <Box
         component="main"
         sx={{
