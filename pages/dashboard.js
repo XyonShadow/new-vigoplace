@@ -3,11 +3,16 @@ import { dehydrate, QueryClient } from "@tanstack/react-query";
 import { Box, Container, Grid } from "@mui/material";
 import BlogCard from "../src/components/dashboard/BlogCard";
 import SalesOverview from "../src/components/dashboard/SalesOverview";
+import ActiveUsers from "../src/components/dashboard/activeUsers";
+import ActiveUserByWeek from "../src/components/dashboard/ActiveUserByWeek";
+import UserGrowth from "../src/components/dashboard/userGrowth";
+import UserGrowthByWeek from "../src/components/dashboard/userGrowthByWeek";
 import DailyActivity from "../src/components/dashboard/DailyActivity";
 import ProductPerfomance from "../src/components/dashboard/ProductPerfomance";
 import { Budget } from "../src/components/dashboard/budget";
 import { LatestOrders } from "../src/components/dashboard/latest-orders";
 import KPI from "../src/components/dashboard/kpi";
+import Sidebar from "../src/layouts/sidebar/Sidebar";
 import { TasksProgress } from "../src/components/dashboard/tasks-progress";
 import { TotalCustomers } from "../src/components/dashboard/total-customers";
 import { TotalProfit } from "../src/components/dashboard/total-profit";
@@ -52,29 +57,29 @@ export default function Index() {
       enabled: !!user?.token,
     }
   );
-  
-  const { data: activeUsers } = useQuery(
-    ["fetchActiveUsersCount"],
-    async () => {
-      const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/users/active/count`,
-        //`https://vigoplace.com/server/api/admin/console/users/active/count`,
-        // `http://localhost:3001/api/admin/console/users/count?status=active`,
-        {
-          headers: {
-            Authorization: user?.token,
-          },
-        }
-      );
-      return data;
-    },
-    {
-      onError: (err) => {
-        console.log(err, "err fetching users");
-      },
-      enabled: !!user?.token,
-    }
-  );
+
+  // const { data: activeUsers } = useQuery(
+  //   ["fetchActiveUsersCount"],
+  //   async () => {
+  //     const { data } = await axios.get(
+  //       `https://vigoplace.com/server/api/admin/console/users/active/count`,
+  //       //`https://vigoplace.com/server/api/admin/console/users/active/count`,
+  //       // `http://localhost:3001/api/admin/console/users/count?status=active`,
+  //       {
+  //         headers: {
+  //           Authorization: user?.token,
+  //         },
+  //       }
+  //     );
+  //     return data;
+  //   },
+  //   {
+  //     onError: (err) => {
+  //       console.log(err, "err fetching users");
+  //     },
+  //     enabled: !!user?.token,
+  //   }
+  // );
 
   const { data: paystackBalance, isLoading } = useQuery(
     ["paystackBalanceOnDashboard"],
@@ -160,6 +165,7 @@ export default function Index() {
 
   return (
     <>
+      <Sidebar unreadTicketsCount={unreadTicketsCount} />
       <Box
         component="main"
         sx={{
@@ -186,12 +192,12 @@ export default function Index() {
               />
             </Grid>
 
-            <Grid item lg={3} sm={6} xl={3} xs={12}>
+            {/* <Grid item lg={3} sm={6} xl={3} xs={12}>
               <TotalCustomers
                 title={"Active Users"}
                 count={activeUsers?.data?.count ?? 0}
               />
-            </Grid>
+            </Grid> */}
             {/* <Grid
             item
             lg={3}
@@ -233,6 +239,23 @@ export default function Index() {
 
               />
             </Grid> */}
+
+            <Grid item lg={6} md={6} xl={6} xs={6}>
+              <ActiveUsers />
+            </Grid>
+
+            <Grid item lg={6} md={6} xl={6} xs={6}>
+              <ActiveUserByWeek />
+            </Grid>
+
+            <Grid item lg={6} md={6} xl={6} xs={6}>
+              <UserGrowth />
+            </Grid>
+
+            <Grid item lg={6} md={6} xl={6} xs={6}>
+              <UserGrowthByWeek />
+            </Grid>
+
             <Grid item lg={12} md={12} xl={12} xs={12}>
               {/* <LatestOrders /> */}
               <KPI />

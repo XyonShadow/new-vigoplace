@@ -133,9 +133,12 @@ const Users = () => {
   const [debitErrorToast, setDebitErrorToast] = React.useState(false);
   const [notifySuccessToast, setNotifySuccessToast] = React.useState(false);
   const [notifyErrorToast, setNotifyErrorToast] = React.useState(false);
+  const [kycSuccessToast, setKycSuccessToast] = React.useState(false);
+  const [kycErrorToast, setKycErrorToast] = React.useState(false);
   const [lienModal, setLienModal] = React.useState(false);
   const [ticketModal, setTicketModal] = React.useState(false);
   const [notifyModal, setNotifyModal] = React.useState(false);
+  const [kycModal, setKycModal] = React.useState(false);
   const [status, setStatus] = React.useState("");
   const [pin, setPin] = React.useState(null);
   const [reason, setReason] = React.useState("");
@@ -292,6 +295,7 @@ const Users = () => {
         }
       );
 
+      //console.log(data);
       return data;
     },
     {
@@ -332,12 +336,12 @@ const Users = () => {
           },
         }
       );
-      console.log(data);
+      //console.log(data);
       return data;
     },
     {
       onError: (err) => {
-        console.log(err, "err fetching users trabsactions");
+        console.log(err, "err fetching users transactions");
       },
       enabled: !!user?.token,
     },
@@ -660,8 +664,40 @@ const Users = () => {
       }, 7000);
     },
     onError: async (error) => {
-      console.log(error)
+      console.log(error);
       setNotifyErrorToast(true);
+    },
+  });
+
+  const verifyKyc = async ({ id, pin }) => {
+    const verifyKycUser = await axios.post(
+      //"http://localhost:4000/api/admin/console/users/kycverify",
+      "https://vigoplace.com/server/api/admin/console/users/kycverify",
+      { userId: id, approvalPin: pin },
+      {
+        headers: {
+          Authorization: user?.token,
+        },
+      }
+    );
+
+    return verifyKycUser;
+  };
+
+  const verifyKycMutation = useMutation({
+    mutationKey: ["verifyKyc"],
+    mutationFn: verifyKyc,
+    onSuccess: () => {
+      setPin(null);
+      setKycSuccessToast(true);
+      queryClient.invalidateQueries("fetchSingleUser");
+      setTimeout(() => {
+        verifyKycMutation.reset();
+      }, 7000);
+    },
+    onError: async (error) => {
+      console.log(error);
+      setKycErrorToast(true);
     },
   });
 
@@ -744,6 +780,13 @@ const Users = () => {
   };
   const handleNotifyErrorToastClose = (event, reason) => {
     setNotifyErrorToast(false);
+  };
+
+  const handleKycSuccessToastClose = (event, reason) => {
+    setKycSuccessToast(false);
+  };
+  const handleKycErrorToastClose = (event, reason) => {
+    setKycErrorToast(false);
   };
 
   const handleClose = (event, reason) => {
@@ -902,6 +945,36 @@ const Users = () => {
         </Alert>
       </Snackbar>
 
+      <Snackbar
+        TransitionComponent={Slide}
+        open={kycSuccessToast}
+        autoHideDuration={6000}
+        onClose={handleKycSuccessToastClose}
+      >
+        <Alert
+          onClose={handleKycSuccessToastClose}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {verifyKycMutation?.data?.data?.message}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        TransitionComponent={Slide}
+        open={kycErrorToast}
+        autoHideDuration={6000}
+        onClose={handleKycErrorToastClose}
+      >
+        <Alert
+          onClose={handleKycErrorToastClose}
+          severity="warning"
+          sx={{ width: "100%" }}
+        >
+          {verifyKycMutation?.error?.response?.data?.message}
+        </Alert>
+      </Snackbar>
+
       <Grid
         container
         spacing={0}
@@ -948,23 +1021,64 @@ const Users = () => {
               alt="user profile picture"
             />
             <CardContent>
-              <Typography variant="body2" color="text.secondary">
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ marginBottom: "5px" }}
+              >
                 <b>Phone:</b> {userDetails?.data?.user?.phone}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ marginBottom: "5px" }}
+              >
                 <b>User name:</b> {userDetails?.data?.user?.username}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ marginBottom: "5px" }}
+              >
                 <b>Address:</b> {userDetails?.data?.user?.address}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ marginBottom: "5px" }}
+              >
                 <b>BIO:</b> {userDetails?.data?.user?.bio}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ marginBottom: "5px" }}
+              >
                 <b>Joined:</b>{" "}
                 {userDetails?.data?.user?.createdAt
                   ? format(new Date(userDetails?.data?.user?.createdAt), "Pp")
                   : ""}
+              </Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ marginBottom: "5px" }}
+              >
+                <b>Email:</b>{" "}
+                {userDetails?.data?.user?.emailVerified
+                  ? "Verified"
+                  : "Not verified"}
+              </Typography>
+
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ marginBottom: "5px" }}
+              >
+                <b>KYC:</b>{" "}
+                {userDetails?.data?.user?.kycVerified === "verified"
+                  ? "Verified"
+                  : "Not Verified"}
               </Typography>
 
               <Divider variant="middle" />
@@ -1462,6 +1576,81 @@ const Users = () => {
                     </DialogActions>
                   </Dialog>
                 </>
+
+                {userDetails?.data?.user?.kycVerified === "unverified" && (
+                  <>
+                    <MenuItem>
+                      <Button
+                        variant="contained"
+                        onClick={() => setKycModal(true)}
+                      >
+                        {verifyKycMutation.isLoading ? (
+                          <CircularProgress size={23} color="inherit" />
+                        ) : verifyKycMutation.isSuccess ? (
+                          <CheckIcon />
+                        ) : (
+                          "Verify Kyc"
+                        )}
+                      </Button>
+                    </MenuItem>
+
+                    <Dialog
+                      open={kycModal}
+                      onClose={() => {
+                        setKycModal(false);
+                      }}
+                    >
+                      <DialogTitle> Verify User's KYC</DialogTitle>
+                      <DialogContent>
+                        <DialogContentText>
+                          Please enter your admin approval pin to Verify this
+                          user's KYC, if you dont have one yet, head to{" "}
+                          {
+                            <Link style={{ color: "blue" }} href="/settings">
+                              Settings
+                            </Link>
+                          }{" "}
+                          to create one now.
+                        </DialogContentText>
+
+                        <TextField
+                          margin="dense"
+                          id="name"
+                          label="Approval Pin"
+                          type="number"
+                          fullWidth
+                          value={pin}
+                          variant="standard"
+                          onChange={handlePin}
+                        />
+                      </DialogContent>
+                      <DialogActions>
+                        <Button
+                          onClick={() => {
+                            setPin(null);
+                            setKycModal(false);
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                        <LoadingButton
+                          variant="contained"
+                          loading={verifyKycMutation.isLoading}
+                          disabled={pin === null || pin?.length <= 5}
+                          onClick={() => {
+                            verifyKycMutation.mutate({
+                              id: userDetails?.data?.user?.id,
+                              pin,
+                            });
+                            setKycModal(false);
+                          }}
+                        >
+                          Notify
+                        </LoadingButton>
+                      </DialogActions>
+                    </Dialog>
+                  </>
+                )}
               </Box>
             </CardContent>
           </Card>

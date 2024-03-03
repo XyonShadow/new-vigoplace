@@ -90,9 +90,9 @@ const SalesOverview = () => {
       lineCap: "butt",
       colors: ["transparent"],
     },
-    tooltip: {
-      theme: "dark",
-    },
+    // tooltip: {
+    //   theme: "dark",
+    // },
   };
   const seriessalesoverview = [
     {

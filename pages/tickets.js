@@ -185,39 +185,6 @@ function Tickets() {
 
   return (
     <>
-      {/* <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          py: 8
-        }}
-      >
-        <Container maxWidth={false}>
-          <Grid container spacing={3}>
-
-            <Grid item xl={3} lg={3} sm={6} xs={12}>
-              <TotalTickets />
-            </Grid>
-
-            <Grid item xl={3} lg={3} sm={6} xs={12}>
-              <SettledTickets />
-            </Grid>
-
-            <Grid item xl={3} lg={3} sm={6} xs={12}>
-              <PendingTickets sx={{ }} />
-            </Grid>
-
-            <Grid item xl={3} lg={3} sm={6} xs={12}>
-              <ResolvedTickets />
-            </Grid>
-          </Grid>
-        </Container>
-      </Box>
-      <Grid container spacing={0}>
-        <Grid item xs={12} lg={12}>
-          <TicketsTable />
-        </Grid>
-      </Grid> */}
 
       <MaterialReactTable
         columns={columns}
@@ -325,27 +292,6 @@ function Tickets() {
                   <MenuItem value={"assigned"}>Assigned</MenuItem>
                 </Select>
               </FormControl>
-
-              {/* <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel id="demo-simple-select-standard-label">Status</InputLabel>
-        <Select
-          labelId="demo-simple-select-standard-label"
-          id="demo-simple-select-standard"
-          value={status}
-          defaultValue="None"
-          onChange={handleStatus}
-          label="Gender"
-        >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          <MenuItem value={'queued'}>Queued</MenuItem>
-          <MenuItem value={'in-progress'}>In-progress</MenuItem>
-          <MenuItem value={'resolved'}>Resolved</MenuItem>
-          <MenuItem value={'closed'}>Closed</MenuItem>
-          <MenuItem value={'permanently-closed'}>Permanently-closed</MenuItem>
-        </Select>
-      </FormControl> */}
             </div>
           );
         }}
