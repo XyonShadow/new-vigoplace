@@ -22,7 +22,7 @@ import LogoIcon from "../logo/LogoIcon";
 import Menuitems from "./MenuItems";
 import Buynow from "./Buynow";
 import { useRouter } from "next/router";
-
+import { useUnreadTickets } from "../../../hooks/useUnreadTickets";
 import { useRouteRoles } from "../../../hooks/useRouteRoles";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import FlashOnIcon from "@mui/icons-material/FlashOn";
@@ -37,6 +37,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
   const [quickStat, setQuickStat] = React.useState({
     right: false,
   });
+  const { unreadTicketsCount } = useUnreadTickets();
   const [storedRoutes, setStoredRoutes] = React.useState([]);
   //console.log(storedRoutes)
 
@@ -159,7 +160,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
       roles: ["admin", "root"],
       SCPCreatedAt: "2024-01-27T10:17:02.000Z",
       SCPUpdatedAt: null,
-    }
+    },
   ];
 
   // useEffect(() => {
@@ -423,8 +424,33 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
                       </ListItemIcon>
 
                       <ListItemText onClick={onSidebarClose}>
-                        {/* {userInfo.user.adminType === "sub-admin" && (item.title === "Tickets" || item.title === "Post categorization") && item.title} */}
-                        {item.title}
+                        {item.href === "/tickets" ? (
+                          <>
+                            {item.title}
+                            {unreadTicketsCount > 0 && (
+                              <span
+                                style={{
+                                  marginLeft: "5px", // Adjust the margin as needed
+                                  //display: "inline-block",
+                                  position: "absolute",
+                                  top: "2px",
+                                  width: "15px",
+                                  height: "15px",
+                                  borderRadius: "50%",
+                                  backgroundColor: "red",
+                                  color: "white",
+                                  textAlign: "center",
+                                  fontSize: "x-small",
+                                  //lineHeight: "20px", // Center the text vertically
+                                }}
+                              >
+                                {unreadTicketsCount}
+                              </span>
+                            )}
+                          </>
+                        ) : (
+                          item.title
+                        )}
                       </ListItemText>
                     </ListItem>
                   </NextLink>
@@ -434,6 +460,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
         </Box>
       </Box>
 
+      {/* {unreadTicketsCount > 0 && <span>{unreadTicketsCount}</span>} */}
       <Box
         sx={{
           marginTop: "auto",

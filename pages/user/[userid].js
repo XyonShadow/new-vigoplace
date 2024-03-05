@@ -735,16 +735,33 @@ const Users = () => {
         header: "Amount",
       },
       {
-        id: "gatewayCharge",
-        accessorKey: "gatewayCharge",
-        enableClickToCopy: false,
-        header: "gateway Charge",
-      },
-      {
         id: "transactionFee",
         accessorKey: "transactionFee",
         enableClickToCopy: false,
-        header: "Transaction Fee",
+        header: "Vigoplace Fee",
+      },
+      {
+        id: "gatewayCharge",
+        accessorKey: "gatewayCharge",
+        enableClickToCopy: false,
+        header: "gateway Fee",
+      },
+      {
+        accessorFn: (row) =>
+          (row.gatewayCharge + row.transactionFee)?.toLocaleString("en-US"),
+        id: "totalFee",
+        enableClickToCopy: false,
+        header: "Total Fee",
+      },
+      {
+        accessorFn: (row) =>
+          (
+            row.transactionNetTotal -
+            (row.gatewayCharge + row.transactionFee)
+          )?.toLocaleString("en-US"),
+        id: "totalAmount",
+        enableClickToCopy: false,
+        header: "User Gets",
       },
       {
         accessorFn: (row) => {

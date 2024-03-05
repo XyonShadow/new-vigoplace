@@ -75,6 +75,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 const API_BASE_URL = "https://vigoplace.com/server";
 //const API_BASE_URL = "http://localhost:4000";
+
 const Users = () => {
   const router = useRouter();
   const { userid } = router.query;
@@ -85,7 +86,7 @@ const Users = () => {
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState([]);
   const [pagination, setPagination] = useState({
-    pageIndex: 0,
+    pageIndex: 1,
     pageSize: 10,
   });
   const [lastId, setLastId] = useState(0);
@@ -94,13 +95,16 @@ const Users = () => {
   const [currency, setCurrency] = React.useState("");
   const [tabValue, setTabValue] = React.useState(0);
   const [result, setResult] = useState([]);
-  const [tableData, setTableData] = useState(result);
 
   /* ******* onchange functions ********** */
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
+
+  useEffect(() => {
+    setPagination({ ...pagination, pageIndex: 0 });
+  }, [columnFilters]);
 
   const { data, isError, isFetching, isLoading, refetch } = useQuery(
     [
@@ -118,60 +122,31 @@ const Users = () => {
       const { data } = await axios.get(
         `${API_BASE_URL}/api/stripe/payment_intents?page=${
           pagination.pageIndex + 1
-        }&pageSize=${pagination.pageSize}`,
-        // `http://localhost:3001/api/admin/console/transfers/paystack?perPage=${pagination.pageSize}&page=${pagination.pageIndex}`,
+        }&pageSize=${pagination.pageSize}${
+          columnFilters?.length >= 1
+            ? `&search=${JSON.stringify(columnFilters)}`
+            : ""
+        }`,
         {
           headers: {
             Authorization: user?.token,
           },
         }
       );
-      //console.log(data);
+      console.log(data);
+
       setResult(data?.data?.transactions ?? []);
-      setTableData(data?.data?.transactions ?? []);
       setTotalResult(data?.data?.totalTransactions);
-      //console.log((data?.data?.paymentIntents[9].id))
       return data;
     },
     {
       onError: (err) => {
-        console.log(err, "err fetching users");
+        console.log(err, "err fetching stripe transactions");
       },
       enabled: !!user?.token,
     },
     { keepPreviousData: true }
   );
-
-  useEffect(() => {
-    // Define a function to fetch and filter data based on the searchValue
-    const fetchAndFilterData = async () => {
-      try {
-        // Make a request to your backend with the searchValue
-        const response = await fetch(
-          `${API_BASE_URL}/api/stripe/payment_intentById?search=${globalFilter}&page=${
-            pagination.pageIndex + 1
-          }&pageSize=${pagination.pageSize}`
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch data");
-        }
-        const data = await response.json();
-        //console.log(data?.data?.totalTransactions);
-
-        // Check if the search input is empty or there are no results
-        if (globalFilter === "" || data?.data?.transactions.length === 0) {
-          setTableData(result);
-        } else {
-          setTableData(data?.data?.transactions ?? []);
-          setTotalResult(data?.data?.totalTransactions);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchAndFilterData();
-  }, [globalFilter, result]);
 
   const columns = useMemo(
     () => [
@@ -181,8 +156,8 @@ const Users = () => {
         header: "Reference",
       },
       {
-        accessorKey: "fullName",
-        header: "Name",
+        accessorKey: "sender",
+        header: "Sender",
         muiTableBodyCellProps: ({ cell }) => ({
           style: {
             cursor: "pointer",
@@ -201,7 +176,7 @@ const Users = () => {
           },
         }),
         enableClickToCopy: false,
-        id: "fullName",
+        id: "sender",
       },
       {
         accessorKey: "description",
@@ -220,26 +195,33 @@ const Users = () => {
         header: "Total Amount",
       },
       {
-        accessorFn: (row) => (row.fees / 100)?.toLocaleString("en-US"),
+        accessorFn: (row) => (row.fees)?.toLocaleString("en-US"),
         enableClickToCopy: false,
         id: "fees",
-        header: "Fee",
+        header: "FC",
       },
       {
-        accessorFn: (row) => (row.net / 100)?.toLocaleString("en-US"),
+        accessorFn: (row) => (row.gatewayCharge)?.toLocaleString("en-US"),
+        enableClickToCopy: false,
+        id: "gateWayCharge",
+        header: "CPF",
+      },
+      {
+        accessorFn: (row) => (row.gatewayCharge + row.fees)?.toLocaleString("en-US"),
+        enableClickToCopy: false,
+        id: "total Charge",
+        header: "Total Fee",
+      },
+      {
+        accessorFn: (row) => (row.net)?.toLocaleString("en-US"),
         enableClickToCopy: false,
         id: "net",
-        header: "Net Amount",
+        header: "User Gets",
       },
       {
         accessorKey: "receiver",
         enableClickToCopy: false,
         header: "Receiver",
-      },
-      {
-        accessorKey: "userId",
-        enableClickToCopy: false,
-        header: "User Id",
       },
       {
         accessorFn: (row) => {
@@ -303,7 +285,7 @@ const Users = () => {
                   enablePinning
                   columns={columns}
                   //data={data?.data?.transactions ?? []}
-                  data={tableData}
+                  data={result}
                   enableStickyHeader
                   //enableStickyFooter
                   enablePagination
@@ -312,6 +294,7 @@ const Users = () => {
                   onPaginationChange={setPagination}
                   rowCount={totalResult}
                   onGlobalFilterChange={setGlobalFilter}
+                  onColumnFiltersChange={setColumnFilters}
                   initialState={{ showColumnFilters: false }}
                   positionToolbarAlertBanner="bottom"
                   muiToolbarAlertBannerProps={
@@ -327,7 +310,7 @@ const Users = () => {
                     return (
                       <div style={{ display: "flex", gap: "0.5rem" }}>
                         <Tooltip arrow title="Refresh Data">
-                          <IconButton>
+                          <IconButton onClick={() => refetch()}>
                             <RefreshIcon />
                           </IconButton>
                         </Tooltip>

@@ -152,46 +152,6 @@ const Users = () => {
     }
   }, [tabValue, userid, status, transactionPagination, globalFilter]);
 
-  // const {
-  //   data: transactionData,
-  //   isError: transactionError,
-  //   isFetching: transactionFetching,
-  //   isLoading: transactionLoading,
-  //   refetch: transactionRefetch,
-  // } = useQuery(
-  //   [
-  //     "fetchpaystackTransactions",
-  //     columnFilters, //refetch when columnFilters changes
-  //     globalFilter, //refetch when globalFilter changes
-  //     transactionPagination.pageIndex, //refetch when pagination.pageIndex changes
-  //     transactionPagination.pageSize, //refetch when pagination.pageSize changes
-  //     sorting, //refetch when sorting changes
-  //     status,
-  //   ],
-  //   async () => {
-  //     const { data } = await axios.get(
-  //       `https://vigoplace.com/server/api/admin/console/transactions/paystack?perPage=${transactionPagination.pageSize}&page=${transactionPagination.pageIndex}`,
-  //       // `http://localhost:3001/api/admin/console/transactions/paystack?perPage=${transactionPagination.pageSize}&page=${transactionPagination.pageIndex}`,
-  //       {
-  //         headers: {
-  //           Authorization: user?.token,
-  //         },
-  //       }
-  //     );
-
-  //     //console.log(data);
-  //     setTransactionCount(transactionData?.meta?.total ?? 0);
-  //     return data;
-  //   },
-  //   {
-  //     onError: (err) => {
-  //       console.log(err, "err fetching users");
-  //     },
-  //     enabled: !!user?.token,
-  //   },
-  //   { keepPreviousData: true }
-  // );
-
   const columns = useMemo(
     () => [
       {
@@ -233,6 +193,24 @@ const Users = () => {
         enableClickToCopy: false,
         id: "amount",
         header: "Amount",
+      },
+      {
+        accessorFn: (row) => (row.fees)?.toLocaleString("en-US"),
+        enableClickToCopy: false,
+        id: "fees",
+        header: "FC",
+      },
+      {
+        accessorFn: (row) => (row.gatewayCharge)?.toLocaleString("en-US"),
+        enableClickToCopy: false,
+        id: "gateWayCharge",
+        header: "CPF",
+      },
+      {
+        accessorFn: (row) => (row.gatewayCharge + row.fees)?.toLocaleString("en-US"),
+        enableClickToCopy: false,
+        id: "total Charge",
+        header: "Total Fee",
       },
       {
         accessorKey: "recipient.details.bank_name",

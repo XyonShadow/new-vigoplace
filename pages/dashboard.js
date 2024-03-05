@@ -12,7 +12,6 @@ import ProductPerfomance from "../src/components/dashboard/ProductPerfomance";
 import { Budget } from "../src/components/dashboard/budget";
 import { LatestOrders } from "../src/components/dashboard/latest-orders";
 import KPI from "../src/components/dashboard/kpi";
-import Sidebar from "../src/layouts/sidebar/Sidebar";
 import { TasksProgress } from "../src/components/dashboard/tasks-progress";
 import { TotalCustomers } from "../src/components/dashboard/total-customers";
 import { TotalProfit } from "../src/components/dashboard/total-profit";

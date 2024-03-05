@@ -58,7 +58,7 @@ function Tickets() {
   const [isVerified, setIsverified] = React.useState("");
   const [ticketType, setTicketType] = React.useState("unassigned");
   const [rowSelection, setRowSelection] = React.useState({});
-  const [datalenght, setDatalenght] = useState(0)
+  const [datalenght, setDatalenght] = useState(0);
 
   //console.log({ rowSelection });
   useEffect(() => {
@@ -71,24 +71,44 @@ function Tickets() {
         accessorKey: "username",
         enableClickToCopy: false,
         header: "Username",
+        muiTableBodyCellProps: ({ cell }) => ({
+          style: {
+            fontWeight: cell.row.original.isRead === 0 ? 700 : "inherit", 
+          },
+        }),
       },
       {
         accessorKey: "categoryName",
         enableClickToCopy: false,
         enableColumnFilter: false,
         header: "Category",
+        muiTableBodyCellProps: ({ cell }) => ({
+          style: {
+            fontWeight: cell.row.original.isRead === 0 ? 700 : "inherit", 
+          },
+        }),
       },
       {
         accessorKey: "subject",
-        enableClickToCopy: true,
+        enableClickToCopy: false,
         enableColumnFilter: false,
         header: "Subject",
+        muiTableBodyCellProps: ({ cell }) => ({
+          style: {
+            fontWeight: cell.row.original.isRead === 0 ? 700 : "inherit",
+          },
+        }),
       },
       {
         accessorKey: "description",
         enableClickToCopy: false,
         enableColumnFilter: false,
         header: "Description",
+        muiTableBodyCellProps: ({ cell }) => ({
+          style: {
+            fontWeight: cell.row.original.isRead === 0 ? 700 : "inherit", 
+          },
+        }),
       },
       {
         accessorKey: "status",
@@ -104,23 +124,37 @@ function Tickets() {
           { text: "permanently-closed", value: "Permanently-closed" },
         ],
         filterVariant: "select",
+        muiTableBodyCellProps: ({ cell }) => ({
+          style: {
+            fontWeight: cell.row.original.isRead === 0 ? 700 : "inherit",
+          },
+        }),
       },
       {
         accessorKey: "ticketReference",
         enableClickToCopy: false,
         enableColumnFilter: false,
         header: "Reference",
+        muiTableBodyCellProps: ({ cell }) => ({
+          style: {
+            fontWeight: cell.row.original.isRead === 0 ? 700 : "inherit",
+          },
+        }),
       },
       {
         accessorFn: (row) => format(new Date(row.date), "Pp"),
         id: "date",
         enableClickToCopy: false,
         header: "Date",
+        muiTableBodyCellProps: ({ cell }) => ({
+          style: {
+            fontWeight: cell.row.original.isRead === 0 ? 700 : "inherit", 
+          },
+        }),
       },
     ],
     []
   );
-
 
   const { data, isError, isFetching, isLoading, refetch } = useQuery(
     [
@@ -137,14 +171,16 @@ function Tickets() {
     ],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/tickets/${ticketType}?limit=${
-          1000
-        }${
+        `https://vigoplace.com/server/api/admin/tickets/${ticketType}?limit=${1000}${
           columnFilters?.length >= 1
             ? `&search=${JSON.stringify(columnFilters)}`
             : ""
         }`,
-        // `http://localhost:3001/api/admin/tickets/${ticketType}?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${columnFilters?.length >=1 ?`&search=${JSON.stringify(columnFilters)}`:''}`,
+        // `http://localhost:4000/api/admin/tickets/${ticketType}?limit=${1000}${
+        //   columnFilters?.length >= 1
+        //     ? `&search=${JSON.stringify(columnFilters)}`
+        //     : ""
+        // }`,
         {
           headers: {
             Authorization: user?.token,
@@ -152,11 +188,11 @@ function Tickets() {
         }
       );
 
-      setDatalenght(data?.count?.total)
+      setDatalenght(data?.count?.total);
 
       const sortedData = data?.data?.results?.sort(
         (a, b) => Date.parse(b.date) - Date.parse(a.date)
-      )
+      );
       const paginatedData = sortedData.slice(
         pagination.pageIndex * pagination.pageSize,
         (pagination.pageIndex + 1) * pagination.pageSize
@@ -185,12 +221,9 @@ function Tickets() {
 
   return (
     <>
-
       <MaterialReactTable
         columns={columns}
-        data={
-          data ?? []
-        }
+        data={data ?? []}
         // enableColumnFilterModes
         // enableColumnOrdering
         // enableGrouping
@@ -202,9 +235,6 @@ function Tickets() {
         manualPagination
         onPaginationChange={setPagination}
         rowCount={datalenght ?? 0}
-        // onColumnFiltersChange={()=>{
-        //   setColumnFilters
-        // }}
         onColumnFiltersChange={setColumnFilters}
         onGlobalFilterChange={setGlobalFilter}
         initialState={{ showColumnFilters: false }}
@@ -219,43 +249,34 @@ function Tickets() {
               }
             : undefined
         }
-        onRowSelectionChange={setRowSelection} //connect internal row selection state to your own
+        onRowSelectionChange={setRowSelection} 
         muiTableBodyRowProps={({ row }) => ({
-          // onClick: () => setRowSelection(row.original),
-          onClick: () => router.push(`/tickets/${row.original.ticketId}`),
+          onClick: async () => {
+            if (row.original.isRead === 0) {
+              try {
+                await axios.put(
+                  `https://vigoplace.com/server/api/admin/ticket/${row.original.ticketId}`,
+                  {
+                    isRead: 1,
+                  },
+                  {
+                    headers: {
+                      Authorization: user?.token,
+                    },
+                  }
+                );
+
+                queryClient.invalidateQueries("fetchTicketss");
+              } catch (error) {
+                console.error("Error updating isRead:", error);
+              }
+            }
+            router.push(`/tickets/${row.original.ticketId}`);
+          },
           sx: { cursor: "pointer" },
         })}
-        // muiTableBodyRowProps={({ row }) => ({
-        //   //implement row selection click events manually
-        //   onClick: () =>
-        //     setRowSelection((prev) => ({
-        //       ...prev,
-        //       [row.id]: !prev[row.id],
-        //     })),
-        //   selected: rowSelection[row.id],
-        //   sx: {
-        //     cursor: 'pointer',
-        //   },
-        // })}
 
         renderTopToolbarCustomActions={({ table }) => {
-          // const handleDeactivate = () => {
-          //   table.getSelectedRowModel().flatRows.map((row) => {
-          //     alert("deactivating " + row.getValue("fullname"));
-          //   });
-          // };
-
-          // const handleActivate = () => {
-          //   table.getSelectedRowModel().flatRows.map((row) => {
-          //     alert("activating " + row.getValue("name"));
-          //   });
-          // };
-
-          // const handleContact = () => {
-          //   table.getSelectedRowModel().flatRows.map((row) => {
-          //     alert("contact " + row.getValue("name"));
-          //   });
-          // };
 
           return (
             <div style={{ display: "flex", gap: "0.5rem" }}>
@@ -264,16 +285,6 @@ function Tickets() {
                   <RefreshIcon />
                 </IconButton>
               </Tooltip>
-
-              {/* <Button
-              color="error"
-              disabled={!table.getIsSomeRowsSelected()}
-              onClick={handleDeactivate}
-              variant="contained"
-              size="small"
-            >
-              Delete
-            </Button> */}
 
               <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
                 <InputLabel id="demo-simple-select-standard-label">
@@ -295,10 +306,6 @@ function Tickets() {
             </div>
           );
         }}
-        // getPaginationRowModel={(props)=> console.log(props, "propppp")}
-        // manualPagination
-        // onPaginationChange={}
-        // muiTablePaginationProps={}
 
         state={{
           isLoading,

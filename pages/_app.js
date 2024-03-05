@@ -20,6 +20,7 @@ import "../styles/style.css";
 import "../styles/app.css";
 import global from "../styles/global.css";
 import Index from "./index";
+import { UnreadTicketsProvider } from "../hooks/useUnreadTickets";
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
@@ -72,13 +73,17 @@ export default function MyApp(props) {
             </Head>
             <ThemeProvider theme={theme}>
               <CssBaseline />
-              {Component.auth
-                ? getLayout(
+              <UnreadTicketsProvider> {/* Wrap UnreadTicketsProvider around your components */}
+                {Component.auth ? (
+                  getLayout(
                     <Auth>
                       <Component {...pageProps} />
                     </Auth>
                   )
-                : getLayout(<Component {...pageProps} />)}
+                ) : (
+                  getLayout(<Component {...pageProps} />)
+                )}
+              </UnreadTicketsProvider>
 
               {/* {getLayout(
           <Auth>

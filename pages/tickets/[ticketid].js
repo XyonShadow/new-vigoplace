@@ -187,7 +187,7 @@ const SingleTicket = () => {
     },
     {
       onError: (err) => {
-        console.log(err, "err fetching users");
+        console.log(err, "err fetching ticket message");
       },
       enabled: !!user?.token,
     },
