@@ -1,4 +1,3 @@
-
 import React, { useMemo, useState } from "react";
 import MaterialReactTable from "material-react-table";
 import { useRouter } from "next/router";
@@ -37,25 +36,39 @@ import MuiAlert from "@mui/material/Alert";
 import Slide from "@mui/material/Slide";
 import Snackbar from "@mui/material/Snackbar";
 import {
-    Box,
-    Button,
-    ListItemIcon,
-    MenuItem,
-    Typography,
-    TextField,
-  } from "@mui/material";
-  
-  //Icons Imports
-  import { AccountCircle, Send } from "@mui/icons-material";
-  import { LoadingButton, TabContext, TabList } from "@mui/lab";
+  Box,
+  Button,
+  ListItemIcon,
+  MenuItem,
+  Typography,
+  TextField,
+} from "@mui/material";
 
-export const MaterialTable = ({columns,data,rowCount,isLoading,isError,isFetching, status, setStatus, handleStatus, pagination, setPagination, globalFilter, setGlobalFilter, refetch, ...props}) =>{
+//Icons Imports
+import { AccountCircle, Send } from "@mui/icons-material";
+import { LoadingButton, TabContext, TabList } from "@mui/lab";
 
-
-
- return(
-  <>
-   <MaterialReactTable
+export const MaterialTable = ({
+  columns,
+  data,
+  rowCount,
+  isLoading,
+  isError,
+  isFetching,
+  status,
+  setStatus,
+  handleStatus,
+  pagination,
+  setPagination,
+  globalFilter,
+  setGlobalFilter,
+  refetch,
+  muiTableBodyRowProps,
+  ...props
+}) => {
+  return (
+    <>
+      <MaterialReactTable
         // enableColumnFilterModes
         // enableColumnOrdering
         // enableGrouping
@@ -74,6 +87,7 @@ export const MaterialTable = ({columns,data,rowCount,isLoading,isError,isFetchin
         initialState={{ showColumnFilters: false }}
         positionToolbarAlertBanner="bottom"
         enableGlobalFilter={false}
+        muiTableBodyRowProps={muiTableBodyRowProps}
         muiToolbarAlertBannerProps={
           isError
             ? {
@@ -118,26 +132,6 @@ export const MaterialTable = ({columns,data,rowCount,isLoading,isError,isFetchin
                   <MenuItem value={"declined"}>Declined</MenuItem>
                 </Select>
               </FormControl>
-
-              {/* <FormControl sx={{ m: 1, width: '25ch' }} variant="standard">
-            <InputLabel htmlFor="standard-adornment-password">Email</InputLabel>
-            <Input
-              id="standard-adornment-password"
-              type={'text'}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-  
-                    aria-label="search"
-                    // onClick={handleClickShowPassword}
-                    // onMouseDown={handleMouseDownPassword}
-                  >
-                   <SearchIcon />
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-            </FormControl> */}
             </div>
           );
         }}
@@ -149,5 +143,6 @@ export const MaterialTable = ({columns,data,rowCount,isLoading,isError,isFetchin
         }}
         muiTableContainerProps={{ sx: { height: "75vh" } }}
       />
-      </>
-)};
+    </>
+  );
+};

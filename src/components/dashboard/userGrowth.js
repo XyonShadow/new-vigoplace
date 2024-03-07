@@ -10,9 +10,6 @@ import { useRouter } from "next/router";
 
 const userGrowth = () => {
   const [userGrowthData, setUserGrowthData] = useState(null);
-  const [cumulativeData, setCumulativeData] = useState([]);
-  const [monthlyData, setMonthlyData] = useState([]);
-  const [maxYValue, setMaxYValue] = useState(0);
   const getUser = useSession();
   const user = getUser?.data?.user;
   const router = useRouter();
@@ -39,60 +36,31 @@ const userGrowth = () => {
     fetchUserGrowthData();
   }, []);
 
-  useEffect(() => {
-    if (userGrowthData) {
-      const { cumulativeData, monthlyData } = generateChartData();
-      setCumulativeData(cumulativeData);
-      setMonthlyData(monthlyData);
-
-      // Find the maximum value among cumulativeData and monthlyData
-      const maxCumulativeValue = Math.max(...cumulativeData);
-      const maxMonthlyValue = Math.max(...monthlyData);
-      const maxYValue = Math.max(maxCumulativeValue, maxMonthlyValue);
-
-      // Round up maxYValue to the nearest hundred
-      const yAxisMaxx = Math.ceil(maxYValue / 100) * 100;
-      setMaxYValue(yAxisMaxx);
-    }
-  }, [userGrowthData]);
-
   const generateChartData = () => {
-    if (!userGrowthData)
-      return {
-        categories: [],
-        cumulativeData: [],
-        monthlyData: [],
-        numObjects: 0,
-      };
+    if (!userGrowthData) return { categories: [], data: [] };
 
     const categories = Object.keys(userGrowthData);
-    const cumulativeData = [];
-    const monthlyData = [];
+    const data = Object.values(userGrowthData);
+    const columnWidthPercentage = calculateColumnWidth(categories.length);
 
-    for (const category of categories) {
-      const monthData = userGrowthData[category];
-      cumulativeData.push(monthData.cumulativeTotal);
-      monthlyData.push(monthData.monthlyTotal);
-    }
-
-    const numObjects = categories.length * 2; // Two objects for each month
-    const columnWidthPercentage = calculateColumnWidth(numObjects);
-
-    return { categories, cumulativeData, monthlyData, columnWidthPercentage };
+    return { categories, data, columnWidthPercentage };
   };
 
-  const calculateColumnWidth = (numObjects) => {
-    // Adjust the column width dynamically based on the number of objects
-    if (numObjects <= 6) {
-      return "80%";
-    } else if (numObjects <= 12) {
-      return "60%";
+  const calculateColumnWidth = (numMonths) => {
+    // Adjust the column width dynamically based on the number of months
+    if (numMonths <= 3) {
+      return "80%"; // Adjust as needed
+    } else if (numMonths <= 6) {
+      return "60%"; // Adjust as needed
     } else {
-      return "42%";
+      return "42%"; // Default width for 12 months
     }
   };
 
-  const { categories, columnWidthPercentage } = generateChartData();
+  const { categories, data, columnWidthPercentage } = generateChartData();
+
+  const maxYValue = data.reduce((max, value) => Math.max(max, value), 0);
+  const yAxisMax = Math.ceil(maxYValue / 100) * 100; // Round up to the nearest hundred
 
   const optionsactiveusers = {
     // grid: {
@@ -109,7 +77,7 @@ const userGrowth = () => {
       bar: {
         horizontal: false,
         columnWidth: columnWidthPercentage,
-        // endingShape: "rounded",
+        //endingShape: "rounded",
         borderRadius: 5,
         borderRadiusApplication: "end",
       },
@@ -152,7 +120,7 @@ const userGrowth = () => {
     yaxis: {
       show: true,
       min: 0,
-      max: maxYValue,
+      max: yAxisMax,
       tickAmount: 3,
       labels: {
         style: {
@@ -173,25 +141,24 @@ const userGrowth = () => {
 
   const seriesactiveusers = [
     {
-      name: "User Cummulative Growth",
-      data: cumulativeData,
-    },
-    {
-      name: "User Growth By Month",
-      data: monthlyData,
+      name: "User Growth By Months",
+      data: data,
     },
   ];
 
-  if (!cumulativeData.some((value) => value !== 0) && !monthlyData.some((value) => value !== 0)) {
+  // Render a message if there is no data available for the current week
+  if (!data.some((value) => value !== 0)) {
     return (
-      <BaseCard title="Daily Users Growth">
-        <Typography variant="body1" style={{ height: "310px" }}>No data available for this year.</Typography>
+      <BaseCard title="Monthly User Growth">
+        <Typography variant="body1" style={{ height: "310px" }}>
+          No data available for this year.
+        </Typography>
       </BaseCard>
     );
   }
 
   return (
-    <BaseCard title="Monthly Users Growth">
+    <BaseCard title="Monthly User Growth">
       <Chart
         options={optionsactiveusers}
         series={seriesactiveusers}

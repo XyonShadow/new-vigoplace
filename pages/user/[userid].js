@@ -2,6 +2,7 @@ import React, { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { format } from "date-fns";
 import axios from "axios";
+import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import {
   Avatar,
   Card,
@@ -149,6 +150,7 @@ const Users = () => {
   const [notificationText, setNotificationText] = useState("");
   const [isVerified, setIsverified] = React.useState("");
   const [tabValue, setTabValue] = React.useState(0);
+  const [rowSelection, setRowSelection] = React.useState({});
   const [creditDetails, setCreditDetails] = useState({
     amount: "",
     approvalPin: "",
@@ -2016,6 +2018,115 @@ const Users = () => {
                         setGlobalFilter={setGlobalFilter}
                         globalFilter={globalFilter}
                         refetch={refetchTransactions}
+                        onRowSelectionChange={setRowSelection}
+                        // Inside your MaterialTable component...
+                        muiTableBodyRowProps={({ row }) => ({
+                          onClick: async () => {
+                            // Extracting data from the clicked row
+                            const {
+                              transactionDate,
+                              transactionDescription,
+                              transactionFee,
+                              transactionFrom,
+                              transactionId,
+                              transactionNetTotal,
+                              transactionReference,
+                              transactionStatus,
+                              transactionTo,
+                              transactionTotal,
+                              transactionType,
+                            } = row.original;
+
+                            const formattedTransactionDate = format(
+                              new Date(transactionDate),
+                              "MMM dd, yyyy h:mm a"
+                            );
+
+                            // Create a new PDFDocument
+                            const pdfDoc = await PDFDocument.create();
+
+                            // Embed the Times Roman font
+                            const timesRomanFont = await pdfDoc.embedFont(
+                              StandardFonts.TimesRoman
+                            );
+
+                            // Add a blank page to the document
+                            const page = pdfDoc.addPage();
+
+                            // Get the width and height of the page
+                            const { width, height } = page.getSize();
+
+                            // Set initial y position for text
+                            let textY = height - 50;
+
+                            // Draw transaction data on the page
+                            const fontSize = 12;
+                            const lineHeight = 15;
+
+                            const drawText = (text, style = {}) => {
+                              page.drawText(text, {
+                                x: 50,
+                                y: textY,
+                                size: fontSize,
+                                font: timesRomanFont,
+                                color: rgb(0, 0, 0),
+                                ...style,
+                              });
+                              textY -= lineHeight;
+                            };
+
+                            // const transactionDateStyle = {
+                            //   size: 14,
+                            //   color: rgb(0, 0, 1),
+                            //   underline: true,
+                            // };
+
+                            drawText(`Total Amount: ${transactionTotal}`);
+
+                            drawText(`Sender Name: ${transactionFrom}`);
+                            drawText(`Beneficiary: ${transactionTo}`);
+                            drawText(`Transaction Type: ${transactionType}`);
+                            drawText(
+                              `Transaction Status: ${transactionStatus}`
+                            );
+                            drawText(
+                              `Transaction Date: ${formattedTransactionDate}`
+                            );
+                            drawText(`Transaction Fee: ${transactionFee}`);
+                            drawText(
+                              `Transaction Details: ${transactionDescription}`
+                            );
+
+                            drawText(
+                              `Transaction Net Total: ${transactionNetTotal}`
+                            );
+                            drawText(`Transaction ID: ${transactionReference}`);
+
+                            // Serialize the PDFDocument to bytes (a Uint8Array)
+                            const pdfBytes = await pdfDoc.save();
+
+                            // Create a Blob from PDF bytes
+                            const blob = new Blob([pdfBytes], {
+                              type: "application/pdf",
+                            });
+
+                            // Create a URL for the Blob
+                            const url = URL.createObjectURL(blob);
+
+                            // Open PDF in a new tab
+                            window.open(url, "_blank");
+
+                            // You can also download the PDF file instead of opening in a new tab
+                            // const a = document.createElement("a");
+                            // a.href = url;
+                            // a.download = "transaction_details.pdf";
+                            // a.click();
+
+                            // Clean up URL object after use to release memory
+                            URL.revokeObjectURL(url);
+                          },
+                          sx: { cursor: "pointer" },
+                        })}
                       />
                     </CardContent>
                   </Card>

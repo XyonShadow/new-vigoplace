@@ -9,9 +9,6 @@ import { useRouter } from "next/router";
 
 const UserGrowthByWeek = () => {
   const [userGrowthData, setUserGrowthData] = useState(null);
-  const [cumulativeData, setCumulativeData] = useState([]);
-  const [dailyData, setDailyData] = useState([]);
-  const [maxYValue, setMaxYValue] = useState(0);
   const getUser = useSession();
   const user = getUser?.data?.user;
   const router = useRouter();
@@ -21,12 +18,14 @@ const UserGrowthByWeek = () => {
       try {
         const response = await axios.get(
           "https://vigoplace.com/server/api/admin/console/users/growth/days",
+          //"http://localhost:4000/api/admin/console/users/growth/days",
           {
             headers: {
               Authorization: user?.token,
             },
           }
         );
+        //console.log(response?.data?.data);
         setUserGrowthData(response?.data?.data);
       } catch (error) {
         console.log("Error fetching daily user growth count:", error);
@@ -36,59 +35,35 @@ const UserGrowthByWeek = () => {
     fetchUserGrowthData();
   }, []);
 
-  useEffect(() => {
-    if (userGrowthData) {
-      const { cumulativeData, dailyData } = generateChartData();
-      setCumulativeData(cumulativeData);
-      setDailyData(dailyData);
-
-      const maxCumulativeValue = Math.max(...cumulativeData);
-      const maxDailyValue = Math.max(...dailyData);
-      const maxYValue = Math.max(maxCumulativeValue, maxDailyValue);
-
-      const yAxisMaxx = Math.ceil(maxYValue / 100) * 100;
-      setMaxYValue(yAxisMaxx);
-    }
-  }, [userGrowthData]);
-
   const generateChartData = () => {
-    if (!userGrowthData)
-      return {
-        categories: [],
-        cumulativeData: [],
-        dailyData: [],
-        numObjects: 0,
-      };
+    if (!userGrowthData) return { categories: [], data: [] };
 
     const categories = Object.keys(userGrowthData);
-    const cumulativeData = [];
-    const dailyData = [];
+    const data = Object.values(userGrowthData);
+    const columnWidthPercentage = calculateColumnWidth(categories.length);
 
-    for (const category of categories) {
-      const dayData = userGrowthData[category];
-      cumulativeData.push(dayData.cumulativeTotal);
-      dailyData.push(dayData.dailyTotal);
-    }
-
-    const numObjects = categories.length * 2; // Two objects for each day
-    const columnWidthPercentage = calculateColumnWidth(numObjects);
-
-    return { categories, cumulativeData, dailyData, columnWidthPercentage };
+    return { categories, data, columnWidthPercentage };
   };
 
-  const calculateColumnWidth = (numObjects) => {
-    if (numObjects <= 14) {
-      return "80%";
-    } else if (numObjects <= 28) {
-      return "60%";
+  const calculateColumnWidth = (numDays) => {
+    // Adjust the column width dynamically based on the number of days
+    if (numDays <= 3) {
+      return "80%"; // Adjust as needed
+    } else if (numDays <= 5) {
+      return "60%"; // Adjust as needed
+    } else if (numDays <= 7) {
+      return "40%"; // Adjust as needed
     } else {
-      return "42%";
+      return "30%"; // Default width for more than 7 days
     }
   };
 
-  const { categories, columnWidthPercentage } = generateChartData();
+  const { categories, data, columnWidthPercentage } = generateChartData();
 
-  const optionsActiveUsers = {
+  const maxYValue = data.reduce((max, value) => Math.max(max, value), 0);
+  const yAxisMax = Math.ceil(maxYValue / 100) * 100; // Round up to the nearest hundred
+
+  const optionsactiveusers = {
     // grid: {
     //   show: true,
     //   borderColor: "transparent",
@@ -103,6 +78,7 @@ const UserGrowthByWeek = () => {
       bar: {
         horizontal: false,
         columnWidth: columnWidthPercentage,
+        //endingShape: "rounded",
         borderRadius: 5,
         borderRadiusApplication: "end",
       },
@@ -145,7 +121,7 @@ const UserGrowthByWeek = () => {
     yaxis: {
       show: true,
       min: 0,
-      max: maxYValue,
+      max: yAxisMax,
       tickAmount: 3,
       labels: {
         style: {
@@ -159,25 +135,22 @@ const UserGrowthByWeek = () => {
       lineCap: "butt",
       colors: ["transparent"],
     },
+    // tooltip: {
+    //   theme: "dark",
+    // },
   };
 
-  const seriesActiveUsers = [
+  const seriesactiveusers = [
     {
-      name: "User Cummulative Growth",
-      data: cumulativeData,
-    },
-    {
-      name: "User Growth By Day",
-      data: dailyData,
+      name: "User Growth",
+      data: data,
     },
   ];
 
-  if (
-    !cumulativeData.some((value) => value !== 0) &&
-    !dailyData.some((value) => value !== 0)
-  ) {
+  // Render a message if there is no data available for the current week
+  if (!data.some((value) => value !== 0)) {
     return (
-      <BaseCard title="Daily Users Growth">
+      <BaseCard title="Daily User Growth">
         <Typography variant="body1" style={{ height: "310px" }}>
           No data available for this week.
         </Typography>
@@ -186,10 +159,10 @@ const UserGrowthByWeek = () => {
   }
 
   return (
-    <BaseCard title="Daily Users Growth">
+    <BaseCard title="Daily User Growth">
       <Chart
-        options={optionsActiveUsers}
-        series={seriesActiveUsers}
+        options={optionsactiveusers}
+        series={seriesactiveusers}
         type="bar"
         height="295px"
       />
