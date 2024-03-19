@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { dehydrate, QueryClient } from "@tanstack/react-query";
-import { Box, Container, Grid } from "@mui/material";
+import { Box, Container, Grid, Tab, Tabs } from "@mui/material";
 import BlogCard from "../src/components/dashboard/BlogCard";
 import SalesOverview from "../src/components/dashboard/SalesOverview";
 import ActiveUsers from "../src/components/dashboard/activeUsers";
@@ -20,18 +20,53 @@ import axios from "axios";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import PropTypes from "prop-types";
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+  };
+}
 
 export default function Index() {
   const queryClient = useQueryClient();
   const getUser = useSession();
   const user = getUser?.data?.user;
   const router = useRouter();
+  const [tabValue, setTabValue] = useState(0);
 
   useEffect(() => {
     if (user?.adminType === "sub-admin") {
       router.push("/tickets");
     }
   }, [user]);
+
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
 
   //console.log(user)
 
@@ -227,6 +262,26 @@ export default function Index() {
                 balance={paypalBalance?.data?.amount ?? 0}
               />
             </Grid>
+
+            <Box
+              display="flex"
+              justifyContent="center"
+              mt={2}
+              sx={{ marginLeft: "auto", marginRight: "auto" }}
+            >
+              <Tabs
+                value={tabValue}
+                onChange={handleTabChange}
+                textColor="inherit"
+                centered
+                scrollButtons="auto"
+                aria-label=""
+              >
+                <Tab label="Active Users" {...a11yProps(0)} />
+                <Tab label="User Growth" {...a11yProps(1)} />
+              </Tabs>
+            </Box>
+
             {/* <Grid item lg={3} sm={6} xl={3} xs={12}>
               <DashBalance
                 header={"Vigo Wallet"}
@@ -238,20 +293,31 @@ export default function Index() {
               />
             </Grid> */}
 
-            <Grid item lg={6} md={6} xl={6} xs={6}>
-              <ActiveUsers />
-            </Grid>
-
-            <Grid item lg={6} md={6} xl={6} xs={6}>
-              <ActiveUserByWeek />
-            </Grid>
-
-            <Grid item lg={6} md={6} xl={6} xs={6}>
-              <UserGrowth />
-            </Grid>
-
-            <Grid item lg={6} md={6} xl={6} xs={6}>
-              <UserGrowthByWeek />
+            <Grid container spacing={3}>
+              <Grid item lg={12} md={12} xl={12} xs={12}>
+                <TabPanel value={tabValue} index={0}>
+                  <Grid container spacing={3}>
+                    <Grid item lg={6} md={6} xl={6} xs={12}>
+                      <ActiveUserByWeek />
+                    </Grid>
+                    <Grid item lg={6} md={6} xl={6} xs={12}>
+                      <ActiveUsers />
+                    </Grid>
+                  </Grid>
+                </TabPanel>
+              </Grid>
+              <Grid item lg={12} md={12} xl={12} xs={12}>
+                <TabPanel value={tabValue} index={1}>
+                  <Grid container spacing={3}>
+                    <Grid item lg={6} md={6} xl={6} xs={12}>
+                      <UserGrowthByWeek />
+                    </Grid>
+                    <Grid item lg={6} md={6} xl={6} xs={12}>
+                      <UserGrowth />
+                    </Grid>
+                  </Grid>
+                </TabPanel>
+              </Grid>
             </Grid>
 
             <Grid item lg={12} md={12} xl={12} xs={12}>

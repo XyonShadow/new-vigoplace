@@ -2,7 +2,10 @@ import React, { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { format } from "date-fns";
 import axios from "axios";
-import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
+import fontkit from "@pdf-lib/fontkit";
+import ReceiptLogoIcon from "../../assets/images/backgrounds/logo_small.png";
+//import ReceiptLogoIcon from "../../src/layouts/logos/ReceiptIcon";
 import {
   Avatar,
   Card,
@@ -49,6 +52,7 @@ import {
   Button,
   ListItemIcon,
   Container,
+  Menu,
   MenuItem,
   Typography,
   TextField,
@@ -57,6 +61,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  useTheme,
 } from "@mui/material";
 import Link from "next/link";
 
@@ -68,6 +73,7 @@ import {
   usePayoutRequests,
   fetchPayoutRequests,
 } from "../../hooks/usePayoutRequests";
+import { useReceiptGeneration } from "../../hooks/useReceiptGeneration";
 import Orders from "./orders";
 import Activities from "./activities";
 import Places from "./places";
@@ -115,6 +121,7 @@ const Users = () => {
   const queryClient = useQueryClient();
   const getUser = useSession();
   const user = getUser?.data?.user;
+  const theme = useTheme();
   const [value, setValue] = React.useState("1");
   const [walletId, setWalletId] = React.useState(null);
 
@@ -151,6 +158,9 @@ const Users = () => {
   const [isVerified, setIsverified] = React.useState("");
   const [tabValue, setTabValue] = React.useState(0);
   const [rowSelection, setRowSelection] = React.useState({});
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const [creditDetails, setCreditDetails] = useState({
     amount: "",
     approvalPin: "",
@@ -210,6 +220,14 @@ const Users = () => {
     });
   };
 
+  const handleStartDateChange = (event) => {
+    setStartDate(event.target.value);
+  };
+
+  const handleEndDateChange = (event) => {
+    setEndDate(event.target.value);
+  };
+
   const handleVerified = (event) => {
     setIsverified(event.target.value);
     setPagination({
@@ -249,6 +267,28 @@ const Users = () => {
   const handleNotificationText = (event) => {
     setNotificationText(event.target.value);
   };
+
+  const handleMenuOpen = (event) => {
+    setMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setMenuAnchorEl(null);
+  };
+
+  const handleGenerateReceipt = async () => {
+    try {
+      const pdfBytes = await generateReceipt();
+      const blob = new Blob([pdfBytes], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+      window.open(url, "_blank");
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error generating receipt:", error);
+    }
+  };
+
+  //onClick={handleGenerateReceipt}
 
   /* ************* Queries *************** */
   const { data: userWallet } = useQuery(
@@ -348,6 +388,17 @@ const Users = () => {
       enabled: !!user?.token,
     },
     { keepPreviousData: true }
+  );
+
+  const walletid = userDetails?.data?.wallet[0]?.WId;
+  const walletids = parseInt(walletid);
+
+  const { generateReceipt } = useReceiptGeneration(
+    userid,
+    walletids,
+    startDate,
+    endDate,
+    user
   );
 
   /* ********** Mutations *************** */
@@ -1026,7 +1077,20 @@ const Users = () => {
                 />
               }
               action={
-                <IconButton aria-label="settings">
+                // <IconButton aria-label="settings">
+
+                // </IconButton>
+                <IconButton
+                  onClick={handleMenuOpen}
+                  id="long-button"
+                  aria-controls={
+                    Boolean(menuAnchorEl) ? "menu-buttons" : undefined
+                  }
+                  aria-expanded={Boolean(menuAnchorEl) ? "true" : undefined}
+                  aria-haspopup="true"
+                  size="small"
+                  sx={{ fontWeight: "bold" }}
+                >
                   <MoreVertIcon />
                 </IconButton>
               }
@@ -1138,530 +1202,607 @@ const Users = () => {
                   ))
                 : null}
 
+              <Divider variant="middle" />
+
               <Box
                 sx={{
-                  width: "100%",
                   display: "flex",
-                  flexWrap: "wrap",
-                  gap: "20px",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  marginBottom: "20px",
+                  marginTop: "20px",
                 }}
               >
-                {userDetails?.data?.user?.status === "blocked" ? (
-                  <Button
-                    color="error"
-                    variant="contained"
-                    onClick={() =>
-                      unblockMutation.mutate(userDetails?.data?.user?.id)
-                    }
+                <Box>
+                  <label
+                    htmlFor="startDate"
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ marginBottom: "5px" }}
                   >
-                    {unblockMutation.isLoading ? (
-                      <CircularProgress size={23} color="inherit" />
-                    ) : (
-                      "Unblock"
-                    )}
-                  </Button>
-                ) : (
-                  <Button
-                    variant="contained"
-                    onClick={() =>
-                      blockMutation.mutate(userDetails?.data?.user?.id)
-                    }
+                    {" "}
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{
+                        marginBottom: "5px",
+                        fontWeight: 500,
+                        fontSize: "14px",
+                        [theme.breakpoints.down("sm")]: {
+                          fontSize: "12px",
+                        },
+                      }}
+                    >
+                      Start date
+                    </Typography>
+                  </label>
+                  <input
+                    className="text-xs"
+                    type="date"
+                    id="startDate"
+                    value={startDate}
+                    onChange={handleStartDateChange}
+                  />
+                </Box>
+                <Box>
+                  <label
+                    htmlFor="endDate"
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ marginBottom: "5px" }}
                   >
-                    {blockMutation.isLoading ? (
-                      <CircularProgress size={23} color="inherit" />
-                    ) : (
-                      "Block"
-                    )}
-                  </Button>
-                )}
+                    {" "}
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{
+                        marginBottom: "5px",
+                        fontWeight: 500,
+                        fontSize: "14px",
+                        [theme.breakpoints.down("sm")]: {
+                          fontSize: "12px",
+                        },
+                      }}
+                    >
+                      End date
+                    </Typography>
+                  </label>
+                  <input
+                    className="text-xs"
+                    type="date"
+                    id="endDate"
+                    value={endDate}
+                    onChange={handleEndDateChange}
+                  />
+                </Box>
+              </Box>
 
-                {userDetails?.data?.user?.flagged === 1 ? (
-                  <Button
-                    color="error"
-                    variant="contained"
-                    onClick={() =>
-                      unflagUserMutation.mutate(userDetails?.data?.user?.id)
-                    }
-                  >
-                    {unflagUserMutation.isLoading ? (
-                      <CircularProgress size={23} color="inherit" />
-                    ) : (
-                      "Unflag"
-                    )}
-                  </Button>
-                ) : (
-                  <Button
-                    variant="contained"
-                    onClick={() =>
-                      flagUserMutation.mutate(userDetails?.data?.user?.id)
-                    }
-                  >
-                    {flagUserMutation.isLoading ? (
-                      <CircularProgress size={23} color="inherit" />
-                    ) : (
-                      "Flag"
-                    )}
-                  </Button>
-                )}
+              <Box sx={{ display: "flex", justifyContent: "center" }}>
+                <Button
+                  sx={{ justifyContent: "center" }}
+                  variant="contained"
+                  onClick={handleGenerateReceipt}
+                >
+                  {/* {createTicketMutation.isLoading ? (
+                    <CircularProgress size={23} color="inherit" />
+                  ) : createTicketMutation.isSuccess ? (
+                    <CheckIcon />
+                  ) : ( */}
+                  {"Generate Transaction Receipt"}
+                  {/* )} */}
+                </Button>
+              </Box>
 
-                {userDetails?.data?.user?.postNoDebit === 1 ? (
-                  <>
-                    <MenuItem>
-                      <Button
-                        variant="contained"
-                        onClick={
-                          () => setLienModal(true)
-                          //postYesDebitMutation.mutate(userDetails?.data?.user?.id)
+              <Menu
+                anchorEl={menuAnchorEl}
+                open={Boolean(menuAnchorEl)}
+                onClose={handleMenuClose}
+                PaperProps={{
+                  elevation: 0,
+                  sx: {
+                    overflow: "visible",
+                    filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                    mt: 1.5,
+                    "& .MuiAvatar-root": {
+                      width: 32,
+                      height: 32,
+                      ml: -0.5,
+                      mr: 1,
+                    },
+                    "&:before": {
+                      content: '""',
+                      display: "block",
+                      position: "absolute",
+                      top: 0,
+                      right: 14,
+                      width: 10,
+                      height: 10,
+                      bgcolor: "background.paper",
+                      transform: "translateY(-50%) rotate(45deg)",
+                      zIndex: 0,
+                    },
+                  },
+                }}
+                transformOrigin={{ horizontal: "right", vertical: "top" }}
+                anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+              >
+                <Box
+                  sx={{
+                    width: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    flexWrap: "wrap",
+                    gap: "15px",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  {userDetails?.data?.user?.status === "blocked" ? (
+                    <MenuItem
+                      sx={{
+                        width: "100%",
+                        marginRight: "auto",
+                        marginTop: "10px",
+                      }}
+                    >
+                      <Typography
+                        sx={{ marginTop: "15px" }}
+                        variant="body2"
+                        color="text.secondary"
+                        onClick={() =>
+                          unblockMutation.mutate(userDetails?.data?.user?.id)
                         }
                       >
-                        {/* {postYesDebitMutation.isLoading ? (
+                        {unblockMutation.isLoading ? (
+                          <CircularProgress size={23} color="inherit" />
+                        ) : (
+                          "Unblock"
+                        )}
+                      </Typography>
+                    </MenuItem>
+                  ) : (
+                    <MenuItem
+                      sx={{
+                        width: "100%",
+                        marginRight: "auto",
+                        marginTop: "10px",
+                      }}
+                    >
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        onClick={() =>
+                          blockMutation.mutate(userDetails?.data?.user?.id)
+                        }
+                      >
+                        {blockMutation.isLoading ? (
+                          <CircularProgress size={23} color="inherit" />
+                        ) : (
+                          "Block"
+                        )}
+                      </Typography>
+                    </MenuItem>
+                  )}
+
+                  {userDetails?.data?.user?.flagged === 1 ? (
+                    <MenuItem sx={{ width: "100%", marginRight: "auto" }}>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        onClick={() =>
+                          unflagUserMutation.mutate(userDetails?.data?.user?.id)
+                        }
+                      >
+                        {unflagUserMutation.isLoading ? (
+                          <CircularProgress size={23} color="inherit" />
+                        ) : (
+                          "Unflag"
+                        )}
+                      </Typography>
+                    </MenuItem>
+                  ) : (
+                    <MenuItem sx={{ width: "100%", marginRight: "auto" }}>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        onClick={() =>
+                          flagUserMutation.mutate(userDetails?.data?.user?.id)
+                        }
+                      >
+                        {flagUserMutation.isLoading ? (
+                          <CircularProgress size={23} color="inherit" />
+                        ) : (
+                          "Flag"
+                        )}
+                      </Typography>
+                    </MenuItem>
+                  )}
+
+                  {userDetails?.data?.user?.postNoDebit === 1 ? (
+                    <>
+                      <MenuItem sx={{ width: "100%", marginRight: "auto" }}>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          onClick={
+                            () => setLienModal(true)
+                            //postYesDebitMutation.mutate(userDetails?.data?.user?.id)
+                          }
+                        >
+                          {/* {postYesDebitMutation.isLoading ? (
                           <CircularProgress size={23} color="inherit" />
                         ) : (
                           "Activate Wallet"
                         )} */}
-                        {postYesDebitMutation.isLoading ? (
+                          {postYesDebitMutation.isLoading ? (
+                            <CircularProgress size={23} color="inherit" />
+                          ) : postYesDebitMutation.isSuccess ? (
+                            <CheckIcon />
+                          ) : (
+                            "Activate Wallet"
+                          )}
+                        </Typography>
+                      </MenuItem>
+
+                      <Dialog
+                        open={lienModal}
+                        onClose={() => {
+                          setLienModal(false);
+                          setPin(null);
+                        }}
+                      >
+                        <DialogTitle>Activate Wallet</DialogTitle>
+                        <DialogContent>
+                          <DialogContentText>
+                            Please enter your admin approval pin to Activate
+                            this user's liened wallet, if you dont have one yet,
+                            head to{" "}
+                            {
+                              <Link style={{ color: "blue" }} href="/settings">
+                                Settings
+                              </Link>
+                            }{" "}
+                            to create one now
+                          </DialogContentText>
+                          <TextField
+                            autoFocus
+                            margin="dense"
+                            id="reason"
+                            label="Reason"
+                            type="text"
+                            fullWidth
+                            value={reason}
+                            variant="standard"
+                            onChange={handleReason}
+                          />
+                          <TextField
+                            margin="dense"
+                            id="name"
+                            label="Approval Pin"
+                            type="number"
+                            fullWidth
+                            value={pin}
+                            variant="standard"
+                            onChange={handlePin}
+                          />
+                        </DialogContent>
+                        <DialogActions>
+                          <Typography
+                            onClick={() => {
+                              setLienModal(false);
+                              setPin(null);
+                              setReason("");
+                            }}
+                          >
+                            Cancel
+                          </Typography>
+                          <LoadingButton
+                            variant="contained"
+                            loading={postYesDebitMutation.isLoading}
+                            disabled={
+                              pin === null || pin?.length <= 5 || reason === ""
+                            }
+                            onClick={() => {
+                              postYesDebitMutation.mutate({
+                                id: userDetails?.data?.user?.id,
+                                pin,
+                                reason,
+                              });
+                              setReason("");
+                              setLienModal(false);
+                              setPin(null);
+                            }}
+                          >
+                            Activate
+                          </LoadingButton>
+                        </DialogActions>
+                      </Dialog>
+                    </>
+                  ) : (
+                    <>
+                      <MenuItem sx={{ width: "100%", marginRight: "auto" }}>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          onClick={
+                            () => setLienModal(true)
+                            //postNoDebitMutation.mutate(userDetails?.data?.user?.id)
+                          }
+                        >
+                          {postNoDebitMutation.isLoading ? (
+                            <CircularProgress size={23} color="inherit" />
+                          ) : postNoDebitMutation.isSuccess ? (
+                            <CheckIcon />
+                          ) : (
+                            "Lien Wallet"
+                          )}
+                        </Typography>
+                      </MenuItem>
+
+                      <Dialog
+                        open={lienModal}
+                        onClose={() => {
+                          setLienModal(false);
+                          setPin(null);
+                        }}
+                      >
+                        <DialogTitle>Lien Wallet</DialogTitle>
+                        <DialogContent>
+                          <DialogContentText>
+                            Please enter your admin approval pin to Lien this
+                            user's wallet, if you dont have one yet, head to{" "}
+                            {
+                              <Link style={{ color: "blue" }} href="/settings">
+                                Settings
+                              </Link>
+                            }{" "}
+                            to create one now. Specify "Indefinite" in the
+                            duration field if you want the user's wallet to be
+                            indefinitely suspended.
+                          </DialogContentText>
+                          <TextField
+                            autoFocus
+                            margin="dense"
+                            id="reason"
+                            label="Reason"
+                            type="text"
+                            fullWidth
+                            value={reason}
+                            variant="standard"
+                            onChange={handleReason}
+                          />
+                          <TextField
+                            margin="dense"
+                            id="duration"
+                            label="Duration"
+                            type="text"
+                            fullWidth
+                            value={duration}
+                            variant="standard"
+                            onChange={handleDuration}
+                          />
+                          <TextField
+                            margin="dense"
+                            id="name"
+                            label="Approval Pin"
+                            type="number"
+                            fullWidth
+                            value={pin}
+                            variant="standard"
+                            onChange={handlePin}
+                          />
+                        </DialogContent>
+                        <DialogActions>
+                          <Typography
+                            onClick={() => {
+                              setLienModal(false);
+                              setPin(null);
+                              setReason("");
+                              setDuration("");
+                            }}
+                          >
+                            Cancel
+                          </Typography>
+                          <LoadingButton
+                            variant="contained"
+                            loading={postNoDebitMutation.isLoading}
+                            disabled={
+                              pin === null ||
+                              pin?.length <= 5 ||
+                              reason === "" ||
+                              duration === ""
+                            }
+                            onClick={() => {
+                              postNoDebitMutation.mutate({
+                                id: userDetails?.data?.user?.id,
+                                pin: pin,
+                                reason: reason,
+                                duration: duration,
+                              });
+                              setPin(null);
+                              setReason("");
+                              setDuration("");
+                              setLienModal(false);
+                            }}
+                          >
+                            Lien
+                          </LoadingButton>
+                        </DialogActions>
+                      </Dialog>
+                    </>
+                  )}
+
+                  <>
+                    <MenuItem sx={{ width: "100%", marginRight: "auto" }}>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        onClick={() => setTicketModal(true)}
+                      >
+                        {createTicketMutation.isLoading ? (
                           <CircularProgress size={23} color="inherit" />
-                        ) : postYesDebitMutation.isSuccess ? (
+                        ) : createTicketMutation.isSuccess ? (
                           <CheckIcon />
                         ) : (
-                          "Activate Wallet"
+                          "Create Ticket"
                         )}
-                      </Button>
+                      </Typography>
                     </MenuItem>
 
                     <Dialog
-                      open={lienModal}
+                      open={ticketModal}
                       onClose={() => {
-                        setLienModal(false);
-                        setPin(null);
+                        setTicketModal(false);
                       }}
                     >
-                      <DialogTitle>Activate Wallet</DialogTitle>
+                      <DialogTitle>Create User Ticket</DialogTitle>
                       <DialogContent>
                         <DialogContentText>
-                          Please enter your admin approval pin to Activate this
-                          user's liened wallet, if you dont have one yet, head
-                          to{" "}
-                          {
-                            <Link style={{ color: "blue" }} href="/settings">
-                              Settings
-                            </Link>
-                          }{" "}
-                          to create one now
+                          Please enter all the necessary details to create a
+                          ticket on this user's account,
                         </DialogContentText>
+                        <FormControl fullWidth>
+                          <InputLabel
+                            id="demo-dialog-select-label"
+                            style={{ marginTop: "18px" }}
+                          >
+                            Select an issue
+                          </InputLabel>
+                          <Select
+                            labelId="demo-dialog-select-label"
+                            id="demo-dialog-select"
+                            value={categoryId}
+                            onChange={handleCategoryId}
+                            input={<OutlinedInput label="Category" />}
+                            fullWidth
+                            style={{ marginTop: "20px" }}
+                          >
+                            <MenuItem value={1}>Authentication</MenuItem>
+                            <MenuItem value={2}>Transaction</MenuItem>
+                            <MenuItem value={3}>Wallet</MenuItem>
+                            <MenuItem value={4}>Voting</MenuItem>
+                          </Select>
+                        </FormControl>
                         <TextField
-                          autoFocus
                           margin="dense"
-                          id="reason"
-                          label="Reason"
+                          id="subject"
+                          label="Subject"
                           type="text"
                           fullWidth
-                          value={reason}
+                          value={subject}
                           variant="standard"
-                          onChange={handleReason}
+                          onChange={handleSubject}
                         />
                         <TextField
                           margin="dense"
-                          id="name"
-                          label="Approval Pin"
-                          type="number"
+                          id="description"
+                          label="Message"
+                          type="text"
                           fullWidth
-                          value={pin}
+                          value={description}
                           variant="standard"
-                          onChange={handlePin}
+                          onChange={handleDescription}
                         />
                       </DialogContent>
                       <DialogActions>
                         <Button
                           onClick={() => {
-                            setLienModal(false);
-                            setPin(null);
-                            setReason("");
+                            setDescription("");
+                            setSubject("");
+                            setCategoryId("");
+                            setTicketModal(false);
                           }}
                         >
                           Cancel
                         </Button>
                         <LoadingButton
                           variant="contained"
-                          loading={postYesDebitMutation.isLoading}
+                          loading={createTicketMutation.isLoading}
                           disabled={
-                            pin === null || pin?.length <= 5 || reason === ""
+                            subject === "" ||
+                            description === "" ||
+                            categoryId === "Category" ||
+                            categoryId === ""
                           }
                           onClick={() => {
-                            postYesDebitMutation.mutate({
+                            createTicketMutation.mutate({
                               id: userDetails?.data?.user?.id,
-                              pin,
-                              reason,
+                              description,
+                              subject,
+                              categoryId,
                             });
-                            setReason("");
-                            setLienModal(false);
-                            setPin(null);
+                            setDescription("");
+                            setSubject("");
+                            setCategoryId("");
+                            setTicketModal(false);
                           }}
                         >
-                          Activate
+                          Create
                         </LoadingButton>
                       </DialogActions>
                     </Dialog>
                   </>
-                ) : (
+
                   <>
-                    <MenuItem>
-                      <Button
-                        color="error"
-                        variant="contained"
-                        onClick={
-                          () => setLienModal(true)
-                          //postNoDebitMutation.mutate(userDetails?.data?.user?.id)
-                        }
+                    <MenuItem sx={{ width: "100%", marginRight: "auto" }}>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        onClick={() => setNotifyModal(true)}
                       >
-                        {postNoDebitMutation.isLoading ? (
+                        {notifyUserMutation.isLoading ? (
                           <CircularProgress size={23} color="inherit" />
-                        ) : postNoDebitMutation.isSuccess ? (
+                        ) : notifyUserMutation.isSuccess ? (
                           <CheckIcon />
                         ) : (
-                          "Lien Wallet"
+                          "Send Notification"
                         )}
-                      </Button>
+                      </Typography>
                     </MenuItem>
 
                     <Dialog
-                      open={lienModal}
+                      open={notifyModal}
                       onClose={() => {
-                        setLienModal(false);
-                        setPin(null);
+                        setNotifyModal(false);
                       }}
                     >
-                      <DialogTitle>Lien Wallet</DialogTitle>
+                      <DialogTitle>Send Notification</DialogTitle>
                       <DialogContent>
                         <DialogContentText>
-                          Please enter your admin approval pin to Lien this
-                          user's wallet, if you dont have one yet, head to{" "}
-                          {
-                            <Link style={{ color: "blue" }} href="/settings">
-                              Settings
-                            </Link>
-                          }{" "}
-                          to create one now. Specify "Indefinite" in the
-                          duration field if you want the user's wallet to be
-                          indefinitely suspended.
+                          Enter Notification Text You Wish To Send To This User
                         </DialogContentText>
+
                         <TextField
                           autoFocus
-                          margin="dense"
-                          id="reason"
-                          label="Reason"
-                          type="text"
-                          fullWidth
-                          value={reason}
-                          variant="standard"
-                          onChange={handleReason}
-                        />
-                        <TextField
-                          margin="dense"
-                          id="duration"
-                          label="Duration"
-                          type="text"
-                          fullWidth
-                          value={duration}
-                          variant="standard"
-                          onChange={handleDuration}
-                        />
-                        <TextField
-                          margin="dense"
+                          margin="normal"
                           id="name"
-                          label="Approval Pin"
-                          type="number"
+                          label="Enter Notification Text"
+                          type="email"
                           fullWidth
-                          value={pin}
                           variant="standard"
-                          onChange={handlePin}
+                          onChange={handleNotificationText}
                         />
                       </DialogContent>
                       <DialogActions>
-                        <Button
+                        <Typography
                           onClick={() => {
-                            setLienModal(false);
-                            setPin(null);
-                            setReason("");
-                            setDuration("");
+                            setNotificationText("");
+                            setNotifyModal(false);
                           }}
                         >
                           Cancel
-                        </Button>
+                        </Typography>
                         <LoadingButton
                           variant="contained"
-                          loading={postNoDebitMutation.isLoading}
-                          disabled={
-                            pin === null ||
-                            pin?.length <= 5 ||
-                            reason === "" ||
-                            duration === ""
-                          }
+                          loading={notifyUserMutation.isLoading}
+                          disabled={notificationText === ""}
                           onClick={() => {
-                            postNoDebitMutation.mutate({
+                            notifyUserMutation.mutate({
                               id: userDetails?.data?.user?.id,
-                              pin: pin,
-                              reason: reason,
-                              duration: duration,
+                              notificationText,
                             });
-                            setPin(null);
-                            setReason("");
-                            setDuration("");
-                            setLienModal(false);
-                          }}
-                        >
-                          Lien
-                        </LoadingButton>
-                      </DialogActions>
-                    </Dialog>
-                  </>
-                )}
-
-                <>
-                  <MenuItem>
-                    <Button
-                      variant="contained"
-                      onClick={() => setTicketModal(true)}
-                    >
-                      {createTicketMutation.isLoading ? (
-                        <CircularProgress size={23} color="inherit" />
-                      ) : createTicketMutation.isSuccess ? (
-                        <CheckIcon />
-                      ) : (
-                        "Create Ticket"
-                      )}
-                    </Button>
-                  </MenuItem>
-
-                  <Dialog
-                    open={ticketModal}
-                    onClose={() => {
-                      setTicketModal(false);
-                    }}
-                  >
-                    <DialogTitle>Create User Ticket</DialogTitle>
-                    <DialogContent>
-                      <DialogContentText>
-                        Please enter all the necessary details to create a
-                        ticket on this user's account,
-                      </DialogContentText>
-                      <FormControl fullWidth>
-                        <InputLabel
-                          id="demo-dialog-select-label"
-                          style={{ marginTop: "18px" }}
-                        >
-                          Select an issue
-                        </InputLabel>
-                        <Select
-                          labelId="demo-dialog-select-label"
-                          id="demo-dialog-select"
-                          value={categoryId}
-                          onChange={handleCategoryId}
-                          input={<OutlinedInput label="Category" />}
-                          fullWidth
-                          style={{ marginTop: "20px" }}
-                        >
-                          <MenuItem value={1}>Authentication</MenuItem>
-                          <MenuItem value={2}>Transaction</MenuItem>
-                          <MenuItem value={3}>Wallet</MenuItem>
-                          <MenuItem value={4}>Voting</MenuItem>
-                        </Select>
-                      </FormControl>
-                      <TextField
-                        margin="dense"
-                        id="subject"
-                        label="Subject"
-                        type="text"
-                        fullWidth
-                        value={subject}
-                        variant="standard"
-                        onChange={handleSubject}
-                      />
-                      <TextField
-                        margin="dense"
-                        id="description"
-                        label="Message"
-                        type="text"
-                        fullWidth
-                        value={description}
-                        variant="standard"
-                        onChange={handleDescription}
-                      />
-                    </DialogContent>
-                    <DialogActions>
-                      <Button
-                        onClick={() => {
-                          setDescription("");
-                          setSubject("");
-                          setCategoryId("");
-                          setTicketModal(false);
-                        }}
-                      >
-                        Cancel
-                      </Button>
-                      <LoadingButton
-                        variant="contained"
-                        loading={createTicketMutation.isLoading}
-                        disabled={
-                          subject === "" ||
-                          description === "" ||
-                          categoryId === "Category" ||
-                          categoryId === ""
-                        }
-                        onClick={() => {
-                          createTicketMutation.mutate({
-                            id: userDetails?.data?.user?.id,
-                            description,
-                            subject,
-                            categoryId,
-                          });
-                          setDescription("");
-                          setSubject("");
-                          setCategoryId("");
-                          setTicketModal(false);
-                        }}
-                      >
-                        Create
-                      </LoadingButton>
-                    </DialogActions>
-                  </Dialog>
-                </>
-
-                <>
-                  <MenuItem>
-                    <Button
-                      variant="contained"
-                      onClick={() => setNotifyModal(true)}
-                    >
-                      {notifyUserMutation.isLoading ? (
-                        <CircularProgress size={23} color="inherit" />
-                      ) : notifyUserMutation.isSuccess ? (
-                        <CheckIcon />
-                      ) : (
-                        "Send Notification"
-                      )}
-                    </Button>
-                  </MenuItem>
-
-                  <Dialog
-                    open={notifyModal}
-                    onClose={() => {
-                      setNotifyModal(false);
-                    }}
-                  >
-                    <DialogTitle>Send Notification</DialogTitle>
-                    <DialogContent>
-                      <DialogContentText>
-                        Enter Notification Text You Wish To Send To This User
-                      </DialogContentText>
-
-                      <TextField
-                        autoFocus
-                        margin="normal"
-                        id="name"
-                        label="Enter Notification Text"
-                        type="email"
-                        fullWidth
-                        variant="standard"
-                        onChange={handleNotificationText}
-                      />
-                    </DialogContent>
-                    <DialogActions>
-                      <Button
-                        onClick={() => {
-                          setNotificationText("");
-                          setNotifyModal(false);
-                        }}
-                      >
-                        Cancel
-                      </Button>
-                      <LoadingButton
-                        variant="contained"
-                        loading={notifyUserMutation.isLoading}
-                        disabled={notificationText === ""}
-                        onClick={() => {
-                          notifyUserMutation.mutate({
-                            id: userDetails?.data?.user?.id,
-                            notificationText,
-                          });
-                          setNotificationText("");
-                          setNotifyModal(false);
-                        }}
-                      >
-                        Notify
-                      </LoadingButton>
-                    </DialogActions>
-                  </Dialog>
-                </>
-
-                {userDetails?.data?.user?.kycVerified === "unverified" && (
-                  <>
-                    <MenuItem>
-                      <Button
-                        variant="contained"
-                        onClick={() => setKycModal(true)}
-                      >
-                        {verifyKycMutation.isLoading ? (
-                          <CircularProgress size={23} color="inherit" />
-                        ) : verifyKycMutation.isSuccess ? (
-                          <CheckIcon />
-                        ) : (
-                          "Verify Kyc"
-                        )}
-                      </Button>
-                    </MenuItem>
-
-                    <Dialog
-                      open={kycModal}
-                      onClose={() => {
-                        setKycModal(false);
-                      }}
-                    >
-                      <DialogTitle> Verify User's KYC</DialogTitle>
-                      <DialogContent>
-                        <DialogContentText>
-                          Please enter your admin approval pin to Verify this
-                          user's KYC, if you dont have one yet, head to{" "}
-                          {
-                            <Link style={{ color: "blue" }} href="/settings">
-                              Settings
-                            </Link>
-                          }{" "}
-                          to create one now.
-                        </DialogContentText>
-
-                        <TextField
-                          margin="dense"
-                          id="name"
-                          label="Approval Pin"
-                          type="number"
-                          fullWidth
-                          value={pin}
-                          variant="standard"
-                          onChange={handlePin}
-                        />
-                      </DialogContent>
-                      <DialogActions>
-                        <Button
-                          onClick={() => {
-                            setPin(null);
-                            setKycModal(false);
-                          }}
-                        >
-                          Cancel
-                        </Button>
-                        <LoadingButton
-                          variant="contained"
-                          loading={verifyKycMutation.isLoading}
-                          disabled={pin === null || pin?.length <= 5}
-                          onClick={() => {
-                            verifyKycMutation.mutate({
-                              id: userDetails?.data?.user?.id,
-                              pin,
-                            });
-                            setKycModal(false);
+                            setNotificationText("");
+                            setNotifyModal(false);
                           }}
                         >
                           Notify
@@ -1669,8 +1810,84 @@ const Users = () => {
                       </DialogActions>
                     </Dialog>
                   </>
-                )}
-              </Box>
+
+                  {userDetails?.data?.user?.kycVerified === "unverified" && (
+                    <>
+                      <MenuItem sx={{ width: "100%", marginRight: "auto" }}>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          onClick={() => setKycModal(true)}
+                        >
+                          {verifyKycMutation.isLoading ? (
+                            <CircularProgress size={23} color="inherit" />
+                          ) : verifyKycMutation.isSuccess ? (
+                            <CheckIcon />
+                          ) : (
+                            "Verify Kyc"
+                          )}
+                        </Typography>
+                      </MenuItem>
+
+                      <Dialog
+                        open={kycModal}
+                        onClose={() => {
+                          setKycModal(false);
+                        }}
+                      >
+                        <DialogTitle> Verify User's KYC</DialogTitle>
+                        <DialogContent>
+                          <DialogContentText>
+                            Please enter your admin approval pin to Verify this
+                            user's KYC, if you dont have one yet, head to{" "}
+                            {
+                              <Link style={{ color: "blue" }} href="/settings">
+                                Settings
+                              </Link>
+                            }{" "}
+                            to create one now.
+                          </DialogContentText>
+
+                          <TextField
+                            margin="dense"
+                            id="name"
+                            label="Approval Pin"
+                            type="number"
+                            fullWidth
+                            value={pin}
+                            variant="standard"
+                            onChange={handlePin}
+                          />
+                        </DialogContent>
+                        <DialogActions>
+                          <Button
+                            onClick={() => {
+                              setPin(null);
+                              setKycModal(false);
+                            }}
+                          >
+                            Cancel
+                          </Button>
+                          <LoadingButton
+                            variant="contained"
+                            loading={verifyKycMutation.isLoading}
+                            disabled={pin === null || pin?.length <= 5}
+                            onClick={() => {
+                              verifyKycMutation.mutate({
+                                id: userDetails?.data?.user?.id,
+                                pin,
+                              });
+                              setKycModal(false);
+                            }}
+                          >
+                            Notify
+                          </LoadingButton>
+                        </DialogActions>
+                      </Dialog>
+                    </>
+                  )}
+                </Box>
+              </Menu>
             </CardContent>
           </Card>
           {/* <Divider orientation="vertical" variant="middle"  /> */}
@@ -2022,7 +2239,6 @@ const Users = () => {
                         // Inside your MaterialTable component...
                         muiTableBodyRowProps={({ row }) => ({
                           onClick: async () => {
-                            // Extracting data from the clicked row
                             const {
                               transactionDate,
                               transactionDescription,
@@ -2035,6 +2251,8 @@ const Users = () => {
                               transactionTo,
                               transactionTotal,
                               transactionType,
+                              currency,
+                              currencySymbol,
                             } = row.original;
 
                             const formattedTransactionDate = format(
@@ -2047,7 +2265,27 @@ const Users = () => {
 
                             // Embed the Times Roman font
                             const timesRomanFont = await pdfDoc.embedFont(
-                              StandardFonts.TimesRoman
+                              StandardFonts.Helvetica
+                            );
+
+                            const imageUrl = ReceiptLogoIcon.src;
+
+                            const fetchImage = async (imageUrl) => {
+                              const response = await fetch(imageUrl);
+                              if (!response.ok) {
+                                throw new Error(
+                                  `Failed to fetch image: ${response.statusText}`
+                                );
+                              }
+                              return await response.arrayBuffer();
+                            };
+
+                            // Usage:
+                            const imageBytes = await fetchImage(imageUrl);
+
+                            // Embed the image into the PDF document
+                            const receiptLogoImage = await pdfDoc.embedPng(
+                              imageBytes
                             );
 
                             // Add a blank page to the document
@@ -2057,52 +2295,301 @@ const Users = () => {
                             const { width, height } = page.getSize();
 
                             // Set initial y position for text
-                            let textY = height - 50;
+                            const marginTop = 40; // Adjust the margin top as needed
+                            let textY = height - 50 - marginTop; // Subtracting the margin from the initial position
+                            const marginLeft = width * 0.1; // 10% of the screen width
+                            const marginRight = width * 0.1;
 
-                            // Draw transaction data on the page
-                            const fontSize = 12;
-                            const lineHeight = 15;
+                            const bodyBackgroundColor = rgb(
+                              243 / 255,
+                              244 / 255,
+                              248 / 255
+                            ); // Hex color  #F3F4F8
 
-                            const drawText = (text, style = {}) => {
-                              page.drawText(text, {
-                                x: 50,
-                                y: textY,
-                                size: fontSize,
-                                font: timesRomanFont,
-                                color: rgb(0, 0, 0),
-                                ...style,
-                              });
-                              textY -= lineHeight;
+                            // Adjust the font size for heading
+                            const fontSize = 20;
+                            const headingFontSize = 16;
+                            const headingValueFontSize = 40;
+                            const bodyFontSize = 14;
+
+                            // Background colors
+                            const headingBackgroundColor = rgb(
+                              129 / 255,
+                              53 / 255,
+                              249 / 255
+                            ); // Hex color #8135F9
+                            const totalAmountValueBackgroundColor = rgb(
+                              141 / 255,
+                              73 / 255,
+                              249 / 255
+                            ); // #8d49f9
+
+                            const receiptTextStyle = {
+                              size: fontSize,
+                              color: rgb(0, 0, 0),
                             };
 
-                            // const transactionDateStyle = {
-                            //   size: 14,
-                            //   color: rgb(0, 0, 1),
-                            //   underline: true,
-                            // };
+                            // Styling for the total amount section
+                            const totalAmountLabelStyle = {
+                              size: headingFontSize,
+                              color: rgb(255 / 255, 255 / 255, 255 / 255), // White color
+                              //bold: true,
+                            };
 
-                            drawText(`Total Amount: ${transactionTotal}`);
+                            const totalAmountValueStyle = {
+                              size: headingValueFontSize,
+                              color: rgb(255 / 255, 255 / 255, 255 / 255),
+                            };
 
-                            drawText(`Sender Name: ${transactionFrom}`);
-                            drawText(`Beneficiary: ${transactionTo}`);
-                            drawText(`Transaction Type: ${transactionType}`);
+                            // Function to draw text with specified style and alignment
+                            const drawText = (text, style, width) => {
+                              // Calculate the x-coordinate to center the text horizontally
+                              const textWidth =
+                                timesRomanFont.widthOfTextAtSize(
+                                  text,
+                                  style.size
+                                );
+                              const x = (width - textWidth) / 2;
+
+                              page.drawText(text, {
+                                x: x,
+                                y: textY + 20,
+                                size: style.size,
+                                font: timesRomanFont,
+                                color: style.color,
+                              });
+
+                              textY -= 20;
+                            };
+
+                            // Draw "Transaction receipt" text
                             drawText(
-                              `Transaction Status: ${transactionStatus}`
-                            );
+                              "Transaction receipt",
+                              receiptTextStyle,
+                              width
+                            ); // Pass the width of the page as an argument
+                            textY -= 20;
+
+                            // Draw the first rectangle (heading background)
+                            page.drawRectangle({
+                              x: marginLeft, // Start from the left edge of the page
+                              y: textY, // Adjust the vertical position as needed
+                              width: width - marginLeft - marginRight, // Set the width to be equal to the width of the page
+                              height: 40, // Adjust the height as needed
+                              color: headingBackgroundColor,
+                            });
+
+                            // Draw the total amount label
                             drawText(
-                              `Transaction Date: ${formattedTransactionDate}`
-                            );
-                            drawText(`Transaction Fee: ${transactionFee}`);
+                              "TOTAL AMOUNT",
+                              totalAmountLabelStyle,
+                              width
+                            ); // Pass the width of the page as an argument
+                            textY -= 40; // Adjust the vertical spacing after the heading
+
+                            // Draw the second rectangle (total amount value background)
+                            page.drawRectangle({
+                              x: marginLeft,
+                              y: textY,
+                              width: width - marginLeft - marginRight,
+                              height: 60,
+                              color: totalAmountValueBackgroundColor,
+                            });
+
+                            // Draw the total amount value
                             drawText(
-                              `Transaction Details: ${transactionDescription}`
+                              `${transactionTotal.toString()} ${currency}`,
+                              totalAmountValueStyle,
+                              width
                             );
 
-                            drawText(
-                              `Transaction Net Total: ${transactionNetTotal}`
-                            );
-                            drawText(`Transaction ID: ${transactionReference}`);
+                            textY -= 40;
 
-                            // Serialize the PDFDocument to bytes (a Uint8Array)
+                            // Draw background for body
+                            let totalDescriptionHeight = 0;
+
+                            page.drawRectangle({
+                              x: marginLeft,
+                              y: textY,
+                              width: width - marginLeft - marginRight,
+                              height: 40,
+                              color: bodyBackgroundColor,
+                            });
+
+                            // Function to draw text with specified style and alignment
+                            const drawTexts = (label, value) => {
+                              // Convert value to string if it's a number
+                              if (typeof value === "number") {
+                                value = value.toString();
+                              }
+
+                              // Draw label text with black color
+                              page.drawText(label, {
+                                x: marginLeft + 20, // Adjust x position to add a left margin
+                                y: textY,
+                                size: bodyFontSize,
+                                font: timesRomanFont,
+                                color: rgb(0, 0, 0), // Black color
+                                textAlign: "left",
+                              });
+
+                              // Calculate the width of the value text
+                              const valueTextWidth =
+                                timesRomanFont.widthOfTextAtSize(
+                                  value,
+                                  bodyFontSize
+                                );
+
+                              // Draw value text aligned to the right
+                              page.drawText(value, {
+                                x: width - marginRight - valueTextWidth - 20, // Adjust x position to add a right margin
+                                y: textY,
+                                size: bodyFontSize,
+                                font: timesRomanFont,
+                                color: rgb(0, 0, 0), // Black color
+                                textAlign: "right",
+                              });
+
+                              textY -= 20 + 30; // Adjust the vertical spacing as needed
+                            };
+
+                            function formatDescription(
+                              description,
+                              maxWidth,
+                              font,
+                              fontSize
+                            ) {
+                              const words = description.split(" ");
+                              let lines = [];
+                              let currentLine = "";
+
+                              for (const word of words) {
+                                const wordWidth = font.widthOfTextAtSize(
+                                  word,
+                                  fontSize
+                                );
+                                const currentLineWidth = font.widthOfTextAtSize(
+                                  currentLine + " " + word,
+                                  fontSize
+                                );
+
+                                if (
+                                  currentLine === "" ||
+                                  currentLineWidth <= maxWidth
+                                ) {
+                                  currentLine +=
+                                    (currentLine === "" ? "" : " ") + word;
+                                } else {
+                                  lines.push(currentLine);
+                                  currentLine = word;
+                                }
+                              }
+                              lines.push(currentLine);
+
+                              return lines; // Return array of lines without joining them
+                            }
+
+                            const widthRatio = 0.5;
+
+                            // Calculate the maximum width available for the description
+                            const maxDescriptionWidth =
+                              (width - marginLeft - marginRight) * widthRatio;
+
+                            function formatAndDrawDescription(description) {
+                              const formattedDescriptionLines =
+                                formatDescription(
+                                  description,
+                                  maxDescriptionWidth,
+                                  timesRomanFont,
+                                  bodyFontSize
+                                );
+
+                              // Draw Transaction Details
+                              if (formattedDescriptionLines.length > 0) {
+                                drawTexts(
+                                  "Transaction Details",
+                                  formattedDescriptionLines[0]
+                                );
+                                totalDescriptionHeight += 20; // Assuming each line has a height of 20
+
+                                // Draw the rest of Transaction Details lines starting from the second line
+                                for (
+                                  let i = 1;
+                                  i < formattedDescriptionLines.length;
+                                  i++
+                                ) {
+                                  drawTexts("", formattedDescriptionLines[i]);
+                                  totalDescriptionHeight += 20; // Assuming each line has a height of 20
+                                }
+
+                                // Increment totalDescriptionHeight for additional lines
+                                if (formattedDescriptionLines.length > 1) {
+                                  totalDescriptionHeight +=
+                                    20 * (formattedDescriptionLines.length - 1);
+                                }
+                              }
+                            }
+
+                            const totalSectionsHeight =
+                              9 * (20 + 40) + totalDescriptionHeight;
+
+                            // Draw background for body
+                            page.drawRectangle({
+                              x: marginLeft,
+                              y: textY - totalSectionsHeight,
+                              width: width - marginLeft - marginRight,
+                              height: totalSectionsHeight,
+                              color: bodyBackgroundColor,
+                            });
+
+                            // Draw other sections with appropriate styles
+                            drawTexts("Sender Name", transactionFrom);
+                            drawTexts("Beneficiary", transactionTo);
+                            drawTexts("Transaction Type", transactionType);
+                            drawTexts("Transaction Status", transactionStatus);
+                            drawTexts(
+                              "Transaction Date",
+                              formattedTransactionDate
+                            );
+                            drawTexts("Transaction Fee", transactionFee);
+                            formatAndDrawDescription(transactionDescription);
+
+                            drawTexts(
+                              "Transaction Net Total",
+                              transactionNetTotal
+                            );
+                            drawTexts("Transaction ID", transactionReference);
+
+                            const poweredByText = "Powered by";
+                            const poweredByTextWidth =
+                              timesRomanFont.widthOfTextAtSize(
+                                poweredByText,
+                                12 // Adjust font size as needed
+                              );
+                            const poweredByTextX =
+                              (width - poweredByTextWidth) / 2; // Centered horizontally
+                            const poweredByTextY = marginTop + 40; // Adjust Y position as needed
+
+                            // Draw "Powered by" text
+                            page.drawText(poweredByText, {
+                              x: poweredByTextX - 30,
+                              y: poweredByTextY,
+                              size: 12, // Adjust font size as needed
+                              font: timesRomanFont,
+                              color: rgb(0, 0, 0), // Adjust color as needed
+                            });
+
+                            const imageX = marginLeft; // Adjust X position as needed
+                            const imageY = marginTop; // Adjust Y position as needed
+
+                            // Draw the logo image on the page
+                            page.drawImage(receiptLogoImage, {
+                              x: poweredByTextX + 40,
+                              y: poweredByTextY - 5,
+                              width: 50,
+                              height: 15,
+                            });
+
                             const pdfBytes = await pdfDoc.save();
 
                             // Create a Blob from PDF bytes
@@ -2116,12 +2603,6 @@ const Users = () => {
                             // Open PDF in a new tab
                             window.open(url, "_blank");
 
-                            // You can also download the PDF file instead of opening in a new tab
-                            // const a = document.createElement("a");
-                            // a.href = url;
-                            // a.download = "transaction_details.pdf";
-                            // a.click();
-
                             // Clean up URL object after use to release memory
                             URL.revokeObjectURL(url);
                           },
@@ -2133,6 +2614,12 @@ const Users = () => {
                 </form>
               </Box>
             </TabPanel>
+
+            {/* // You can also download the PDF file instead of opening in a new tab
+                            // const a = document.createElement("a");
+                            // a.href = url;
+                            // a.download = "transaction_details.pdf";
+                            // a.click(); */}
 
             <TabPanel value={tabValue} index={1}>
               <Box sx={{ pt: 3 }}>

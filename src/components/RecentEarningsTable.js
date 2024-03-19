@@ -527,7 +527,17 @@ function Row({ payout, isPayoutSelected }) {
   let userid = queryClient.getQueryData(["earningRequest", payout.Id])?.data
     ?.userId;
 
-  //console.log(currencyid, userid);
+  function formatDueDate(dateString) {
+    const date = new Date(dateString);
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear().toString();
+
+    return `${month}/${year}`;
+  }
+  let periodid = queryClient.getQueryData(["earningRequest", payout.Id])?.data
+    ?.dueAt;
+
+  const formattedDate = formatDueDate(periodid);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -536,7 +546,7 @@ function Row({ payout, isPayoutSelected }) {
       try {
         const { data } = await axios.get(
           //`http://localhost:4000/api/admin/console/user-earnings/list/${userid}?currencyId=${currencyid}`,
-          `https://vigoplace.com/server/api/admin/console/user-earnings/list/${userid}?currencyId=${currencyid}`,
+          `https://vigoplace.com/server/api/admin/console/user-earnings/list/${userid}?currencyId=${currencyid}&period=${formattedDate}`,
           {
             headers: {
               Authorization: token,
@@ -571,7 +581,7 @@ function Row({ payout, isPayoutSelected }) {
     }
   );
 
-  console.log(listEarning);
+  //console.log(listEarning);
 
   return (
     <>
