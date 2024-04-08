@@ -2,18 +2,14 @@ import { useEffect } from "react";
 import axios from "axios";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import fontkit from "@pdf-lib/fontkit";
-//import fs from "fs-extra";
-//import ReceiptLogoIcon from "../src/layouts/logos/ReceiptIcon";
 import ReceiptLogoIcon from "../assets/images/backgrounds/logo_small.png";
 import Ubuntu from "../public/Ubuntu-R.ttf";
-//console.log(ReceiptLogoIcon);
 
 const useReceiptGeneration = (userid, walletids, startDate, endDate, user) => {
   const generateReceipt = async () => {
     try {
       // Check if walletid is a valid number
       if (isNaN(walletids)) {
-        //console.log("walletid is not a valid number");
         return;
       }
 
@@ -35,12 +31,8 @@ const useReceiptGeneration = (userid, walletids, startDate, endDate, user) => {
       if (data) {
         // Generate PDF document
         const pdfDoc = await PDFDocument.create();
-        //const urls = "https://pdf-lib.js.org/assets/ubuntu/Ubuntu-R.ttf";
         const urls = Ubuntu;
         const fontBytes = await fetch(urls).then((res) => res.arrayBuffer());
-        //console.log(fontBytes)
-        //const fontBytes = fs.readFileSync(Ubuntu);
-        //const fontUrl = `${process.env.PUBLIC_URL}/Ubuntu-R.ttf`;
 
         pdfDoc.registerFontkit(fontkit);
         const ubuntuFont = await pdfDoc.embedFont(fontBytes, {
@@ -50,7 +42,6 @@ const useReceiptGeneration = (userid, walletids, startDate, endDate, user) => {
         const timesRoman = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
         const page = pdfDoc.addPage();
         const { width, height } = page.getSize();
-        //console.log(height);
 
         const bodyBackgroundColor = rgb(243 / 255, 244 / 255, 248 / 255); // Hex color  #F3F4F8
         const marginTop = 40; // Adjust the margin top as needed
@@ -61,27 +52,13 @@ const useReceiptGeneration = (userid, walletids, startDate, endDate, user) => {
         const bodyFontSize = 10;
 
         const formatTransactionDate = (dateString) => {
-          // Convert the string representation of the date to a Date object
           const date = new Date(dateString);
 
-          // Format the date as needed (e.g., "18/03/2024")
           return date.toLocaleDateString("en-GB", {
             day: "2-digit",
             month: "2-digit",
             year: "numeric",
           });
-        };
-
-        const formatTransactionDates = (dateString) => {
-          const date = new Date(dateString);
-          const options = {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-          };
-          return date.toLocaleDateString("en-GB", options);
         };
 
         const imageUrl = ReceiptLogoIcon.src;
@@ -94,10 +71,7 @@ const useReceiptGeneration = (userid, walletids, startDate, endDate, user) => {
           return await response.arrayBuffer();
         };
 
-        // Usage:
         const imageBytes = await fetchImage(imageUrl);
-
-        // Embed the image into the PDF document
         const receiptLogoImage = await pdfDoc.embedPng(imageBytes);
 
         // Calculate the position to place the image, applying margin values
@@ -129,8 +103,8 @@ const useReceiptGeneration = (userid, walletids, startDate, endDate, user) => {
 
         // Draw the "Account Statement" text
         page.drawText("Account Statement", {
-          x: accountStatementX + 10, // Adjust the x-coordinate for text padding
-          y: accountStatementY - 30, // Adjust the y-coordinate for text padding
+          x: accountStatementX + 10,
+          y: accountStatementY - 30,
           size: 10, // Adjust the font size as needed
           font: timesRoman,
           color: rgb(0, 0, 0), // Black color
@@ -138,7 +112,7 @@ const useReceiptGeneration = (userid, walletids, startDate, endDate, user) => {
 
         // Calculate the position and width for "Summary details" text and rectangle
         const summaryDetailsWidth = width * 0.38;
-        const summaryDetailsMargin = 10; // Adjust the margin as needed
+        const summaryDetailsMargin = 10;
         const summaryDetailsX =
           width - marginRight - summaryDetailsWidth - summaryDetailsMargin;
         const summaryDetailsY = accountStatementY;
@@ -155,9 +129,9 @@ const useReceiptGeneration = (userid, walletids, startDate, endDate, user) => {
 
         // Draw the "Summary details" text
         page.drawText("Summary details", {
-          x: summaryDetailsX + 10, // Adjust the x-coordinate for text padding
-          y: summaryDetailsY - 30, // Adjust the y-coordinate for text padding
-          size: 10, // Adjust the font size as needed
+          x: summaryDetailsX + 10,
+          y: summaryDetailsY - 30,
+          size: 10,
           font: timesRoman,
           color: rgb(0, 0, 0), // Black color
         });
@@ -179,10 +153,10 @@ const useReceiptGeneration = (userid, walletids, startDate, endDate, user) => {
             color: rgb(0, 0, 0), // Black color
             textAlign: "left",
           });
-          
+
           // Draw value text aligned to the right
           page.drawText(value, {
-            x: x + 150, // Adjust x position to align the value text to the right
+            x: x + 150,
             y: y - 20,
             size: bodyFontSize,
             font: ubuntuFont,
@@ -209,30 +183,98 @@ const useReceiptGeneration = (userid, walletids, startDate, endDate, user) => {
           marginLeft + 20,
           textY - 50
         );
-        drawTexts("Account Id", "0", marginLeft + 20, textY - 80);
-        drawTexts("Account Name", "N/A", marginLeft + 20, textY - 110);
+
+        //drawTexts("Account Id", data?.data?.user?.customerCode, marginLeft + 20, textY - 80);
+        //drawTexts("Account Name", data?.data?.user?.accountName, marginLeft + 20, textY - 110);
+
+        page.drawText("Account Id", {
+          x: marginLeft + 20 - 15, // Adjust x position to add a left margin
+          y: textY - 80 - 20,
+          size: bodyFontSize,
+          font: timesRomanFont,
+          color: rgb(0, 0, 0), // Black color
+          textAlign: "left",
+        });
+
+        let xCoordinate;
+
+        if (
+          data &&
+          data.data &&
+          data.data.user &&
+          data.data.user.customerCode
+        ) {
+          xCoordinate = marginLeft + 140;
+        } else {
+          xCoordinate = marginLeft + 170;
+        }
+
+        const accountId =
+          data && data.data && data.data.user && data.data.user.customerCode
+            ? data.data.user.customerCode
+            : "0";
+
+        page.drawText(accountId, {
+          x: xCoordinate,
+          y: textY - 80 - 20,
+          size: 9,
+          font: ubuntuFont,
+          color: rgb(0, 0, 0),
+          textAlign: "right",
+        });
+
+        page.drawText("Account Name", {
+          x: marginLeft + 20 - 15, // Adjust x position to add a left margin
+          y: textY - 110 - 20,
+          size: bodyFontSize,
+          font: timesRomanFont,
+          color: rgb(0, 0, 0), // Black color
+          textAlign: "left",
+        });
+
+        let xCoordinate2;
+
+        if (data && data.data && data.data.user && data.data.user.accountName) {
+          xCoordinate2 = marginLeft + 105;
+        } else {
+          xCoordinate2 = marginLeft + 170;
+        }
+
+        const accountName =
+          data && data.data && data.data.user && data.data.user.accountName
+            ? data.data.user.accountName
+            : "N/A";
+
+        page.drawText(accountName, {
+          x: xCoordinate2,
+          y: textY - 110 - 20,
+          size: 9,
+          font: ubuntuFont,
+          color: rgb(0, 0, 0), // Black color
+          textAlign: "right",
+        });
 
         drawTexts(
           "Opening Balance",
-          data?.data?.openingBalance,
+          data?.data?.openingBalance.toLocaleString(),
           summaryDetailsX + 20,
           textY - 20
         );
         drawTexts(
           "Total Debit",
-          data?.data?.totalDebit,
+          data?.data?.totalDebit.toLocaleString(),
           summaryDetailsX + 20,
           textY - 50
         );
         drawTexts(
           "Total Credit",
-          `${data?.data?.totalCredit}`,
+          data?.data?.totalCredit.toLocaleString(),
           summaryDetailsX + 20,
           textY - 80
         );
         drawTexts(
           "Closing Balance",
-          data?.data?.closingBalance,
+          data?.data?.closingBalance.toLocaleString(),
           summaryDetailsX + 20,
           textY - 110
         );
@@ -269,9 +311,6 @@ const useReceiptGeneration = (userid, walletids, startDate, endDate, user) => {
         const debitColumnX = creditColumnX + tableWidth * creditColumnWidth;
         const balanceColumnX = debitColumnX + tableWidth * debitColumnWidth;
 
-        // Define column positions
-        const columnPositions = [100, 300, 100, 100, 100]; // Adjust column positions as needed
-
         page.drawRectangle({
           x: tableX,
           y: tableY - 50,
@@ -283,32 +322,72 @@ const useReceiptGeneration = (userid, walletids, startDate, endDate, user) => {
 
         // Calculate the total number of transactions
         const totalTransactions = data?.data?.transactions.length || 0;
-
         // Calculate the total height required for all transactions
         const totalTransactionHeight = totalTransactions * rowHeight;
+        // Calculate the maximum number of transactions that can fit on the first page
+        let maxTransactionsPerPage = Math.floor(tableY / rowHeight - 2);
+        const imageHeight = receiptLogoImage.height; // Height of the embedded image
+        const summaryHeight = accountStatementHeight; // Height of the rectangle for "Summary
+        const marginHeight = marginTop + marginBottom; // Total height taken by margins
+
+        // Calculate total height taken by all elements
+        const totalHeight = imageHeight + summaryHeight + marginHeight;
+
+        // Now you can use this totalHeight to calculate the remaining space on the page
+        const remainingSpace = height - totalHeight;
 
         // Adjust the tableY value to accommodate all transactions
         const tableYY = height - 270 - totalTransactionHeight;
-        // Draw vertical line before the Date column
-        page.drawLine({
-          start: { x: dateColumnX, y: tableYY - 30 },
-          end: { x: dateColumnX, y: tableYY + totalTransactionHeight },
-          thickness: 0.5,
-          color: rgb(0, 0, 0), // Black color
-        });
 
-        // Draw vertical lines to demarcate columns
-        let currentX = tableX;
-
-        columnWidths.forEach((columnWidth) => {
-          currentX += tableWidth * columnWidth;
+        if (totalTransactions > maxTransactionsPerPage) {
+          // Draw vertical line before the Date column
           page.drawLine({
-            start: { x: currentX, y: tableYY - 30 },
-            end: { x: currentX, y: tableYY + totalTransactionHeight },
+            start: { x: dateColumnX, y: height - remainingSpace - 60 },
+            end: {
+              x: dateColumnX,
+              y: height - remainingSpace + maxTransactionsPerPage * 60 - 60,
+            },
             thickness: 0.5,
             color: rgb(0, 0, 0), // Black color
           });
-        });
+
+          // Draw vertical lines to demarcate columns
+          let currentX = tableX;
+
+          columnWidths.forEach((columnWidth) => {
+            currentX += tableWidth * columnWidth;
+            page.drawLine({
+              start: { x: currentX, y: height - remainingSpace - 60 },
+              end: {
+                x: currentX,
+                y: height - remainingSpace + maxTransactionsPerPage * 60 - 30,
+              },
+              thickness: 0.5,
+              color: rgb(0, 0, 0), // Black color
+            });
+          });
+        } else {
+          // Draw vertical line before the Date column
+          page.drawLine({
+            start: { x: dateColumnX, y: tableYY - 30 },
+            end: { x: dateColumnX, y: tableYY + totalTransactionHeight },
+            thickness: 0.5,
+            color: rgb(0, 0, 0), // Black color
+          });
+
+          // Draw vertical lines to demarcate columns
+          let currentX = tableX;
+
+          columnWidths.forEach((columnWidth) => {
+            currentX += tableWidth * columnWidth;
+            page.drawLine({
+              start: { x: currentX, y: tableYY - 30 },
+              end: { x: currentX, y: tableYY + totalTransactionHeight },
+              thickness: 0.5,
+              color: rgb(0, 0, 0), // Black color
+            });
+          });
+        }
 
         // Draw text in each column with center alignment
         const centerAlignText = (text, x, columnWidth) => {
@@ -422,7 +501,7 @@ const useReceiptGeneration = (userid, walletids, startDate, endDate, user) => {
 
             // Draw Credit
             if (transaction.transactionType === "credit") {
-              page.drawText(transaction.transactionTotal.toString(), {
+              page.drawText(transaction.transactionTotal.toLocaleString(), {
                 x: creditColumnX + 5, // Adjust x position to add a left margin
                 y: currentY - 30,
                 size: 10,
@@ -442,7 +521,7 @@ const useReceiptGeneration = (userid, walletids, startDate, endDate, user) => {
 
             // Draw Debit
             if (transaction.transactionType === "debit") {
-              page.drawText(transaction.transactionTotal.toString(), {
+              page.drawText(transaction.transactionTotal.toLocaleString(), {
                 x: debitColumnX + 5, // Adjust x position to add a left margin
                 y: currentY - 30,
                 size: 10,
@@ -461,13 +540,16 @@ const useReceiptGeneration = (userid, walletids, startDate, endDate, user) => {
             }
 
             // Draw Balance
-            page.drawText(transaction.balanceAfterTransaction.toString(), {
-              x: balanceColumnX + 5, // Adjust x position to add a left margin
-              y: currentY - 30,
-              size: 10,
-              font: ubuntuFont,
-              color: rgb(0, 0, 0),
-            });
+            page.drawText(
+              transaction.balanceAfterTransaction.toLocaleString(),
+              {
+                x: balanceColumnX + 5, // Adjust x position to add a left margin
+                y: currentY - 30,
+                size: 10,
+                font: ubuntuFont,
+                color: rgb(0, 0, 0),
+              }
+            );
 
             // Draw a horizontal line to separate transactions
             page.drawLine({
@@ -493,17 +575,8 @@ const useReceiptGeneration = (userid, walletids, startDate, endDate, user) => {
           currentY -= rowHeight;
         };
 
-        // Calculate the maximum number of transactions that can fit on the first page
-        let maxTransactionsPerPage = Math.floor(tableY / rowHeight - 2);
-
-        //console.log(maxTransactionsPerPage);
-        // console.log(totalTransactions);
-
         // Check if the total number of transactions exceeds what can fit on the first page
         if (totalTransactions > maxTransactionsPerPage) {
-          // If the total number of transactions exceeds what can fit on the first page,
-          // we need to handle pagination
-
           // Slice the transactions array to get transactions for the first page
           const transactionsForFirstPage = data?.data?.transactions.slice(
             0,
@@ -516,8 +589,6 @@ const useReceiptGeneration = (userid, walletids, startDate, endDate, user) => {
           // Subtract the number of transactions drawn on the first page from the total transactions
           let remainingTransactions =
             totalTransactions - maxTransactionsPerPage;
-
-          //console.log(remainingTransactions);
 
           const marginTopss = 40; // Margin at the top of the page
           const marginBottomss = 40; // Margin at the bottom of the page
@@ -535,7 +606,7 @@ const useReceiptGeneration = (userid, walletids, startDate, endDate, user) => {
             remainingTransactions / maxTransactionsPerPages
           );
 
-          //console.log(totalPages);
+          let lastDifference;
 
           // Loop through each subsequent page and draw transactions accordingly
           for (
@@ -561,32 +632,52 @@ const useReceiptGeneration = (userid, walletids, startDate, endDate, user) => {
               endIndex
             );
 
-            //console.log(tableY);
-            // Draw vertical line before the Date column
-            newPage.drawLine({
-              start: { x: dateColumnX, y: tableY - tableY + 80 },
-              end: { x: dateColumnX, y: tableY  },
-              thickness: 0.5,
-              color: rgb(0, 0, 0), // Black color
-            });
+            // Update the lastDifference variable
+            lastDifference = endIndex - startIndex;
 
-            // Draw vertical lines to demarcate columns
-            let currentX = tableX;
-            // console.log(currentX);
-            // console.log(tableWidth);
-            columnWidths.forEach((columnWidth) => {
-              currentX += tableWidth * columnWidth;
-              //console.log((currentX += tableWidth * columnWidth));
+            const check = (maxTransactionsPerPages - lastDifference) * 60;
+
+            if (currentPage === totalPages + 1) {
+              // Draw vertical line before the Date column
               newPage.drawLine({
-                start: { x: currentX, y: tableY - tableY + 80 },
-                end: { x: currentX, y: tableY },
+                start: { x: dateColumnX, y: lastDifference * 60 + check + 80 },
+                end: { x: dateColumnX, y: lastDifference + check + 70 },
+                thickness: 0.5,
+                color: rgb(0, 0, 0),
+              });
+
+              let currentX = tableX;
+              columnWidths.forEach((columnWidth) => {
+                currentX += tableWidth * columnWidth;
+                newPage.drawLine({
+                  start: { x: currentX, y: lastDifference * 60 + check + 80 },
+                  end: { x: currentX, y: lastDifference + check + 70 },
+                  thickness: 0.5,
+                  color: rgb(0, 0, 0), // Black color
+                });
+              });
+            } else {
+              // Draw vertical line before the Date column
+              newPage.drawLine({
+                start: { x: dateColumnX, y: tableY - tableY + 80 },
+                end: { x: dateColumnX, y: tableY },
                 thickness: 0.5,
                 color: rgb(0, 0, 0), // Black color
               });
-            });
 
-            //console.log(transactionsForPage);
-            // console.log(newPage);
+              // Draw vertical lines to demarcate columns
+              let currentX = tableX;
+              columnWidths.forEach((columnWidth) => {
+                currentX += tableWidth * columnWidth;
+                //console.log((currentX += tableWidth * columnWidth));
+                newPage.drawLine({
+                  start: { x: currentX, y: tableY - tableY + 80 },
+                  end: { x: currentX, y: tableY },
+                  thickness: 0.5,
+                  color: rgb(0, 0, 0), // Black color
+                });
+              });
+            }
 
             for (const transaction of transactionsForPage) {
               // Draw Date
@@ -644,14 +735,14 @@ const useReceiptGeneration = (userid, walletids, startDate, endDate, user) => {
 
               // Draw Description
               const descriptionTextOptions = {
-                x: descriptionColumnX + 5, // Adjust x position to add a left margin
+                x: descriptionColumnX + 5,
                 y: tableY, // Adjust
                 size: 10,
                 font: ubuntuFont,
                 color: rgb(0, 0, 0),
               };
               const maxDescriptionWidth =
-                tableWidth * descriptionColumnWidth - 10; // Max width of description column
+                tableWidth * descriptionColumnWidth - 10;
 
               // Format and draw description with text wrapping
               formatAndDrawDescription(
@@ -665,17 +756,20 @@ const useReceiptGeneration = (userid, walletids, startDate, endDate, user) => {
 
               // Draw Credit
               if (transaction.transactionType === "credit") {
-                newPage.drawText(transaction.transactionTotal.toString(), {
-                  x: creditColumnX + 5, // Adjust x position to add a left margin
-                  y: tableY - 20,
-                  size: 10,
-                  font: ubuntuFont,
-                  color: rgb(0, 0, 0),
-                });
+                newPage.drawText(
+                  transaction.transactionTotal.toLocaleString(),
+                  {
+                    x: creditColumnX + 5,
+                    y: tableY - 20,
+                    size: 10,
+                    font: ubuntuFont,
+                    color: rgb(0, 0, 0),
+                  }
+                );
               } else {
                 newPage.drawText("", {
                   // Draw empty text if not a credit transaction
-                  x: creditColumnX + 5, // Adjust x position to add a left margin
+                  x: creditColumnX + 5,
                   y: tableY - 20,
                   size: 10,
                   font: ubuntuFont,
@@ -685,17 +779,19 @@ const useReceiptGeneration = (userid, walletids, startDate, endDate, user) => {
 
               // Draw Debit
               if (transaction.transactionType === "debit") {
-                newPage.drawText(transaction.transactionTotal.toString(), {
-                  x: debitColumnX + 5, // Adjust x position to add a left margin
-                  y: tableY - 20,
-                  size: 10,
-                  font: ubuntuFont,
-                  color: rgb(0, 0, 0),
-                });
+                newPage.drawText(
+                  transaction.transactionTotal.toLocaleString(),
+                  {
+                    x: debitColumnX + 5,
+                    y: tableY - 20,
+                    size: 10,
+                    font: ubuntuFont,
+                    color: rgb(0, 0, 0),
+                  }
+                );
               } else {
                 newPage.drawText("", {
-                  // Draw empty text if not a debit transaction
-                  x: debitColumnX + 5, // Adjust x position to add a left margin
+                  x: debitColumnX + 5,
                   y: tableY - 20,
                   size: 10,
                   font: ubuntuFont,
@@ -704,13 +800,16 @@ const useReceiptGeneration = (userid, walletids, startDate, endDate, user) => {
               }
 
               // Draw Balance
-              newPage.drawText(transaction.balanceAfterTransaction.toString(), {
-                x: balanceColumnX + 5, // Adjust x position to add a left margin
-                y: tableY - 20,
-                size: 10,
-                font: ubuntuFont,
-                color: rgb(0, 0, 0),
-              });
+              newPage.drawText(
+                transaction.balanceAfterTransaction.toLocaleString(),
+                {
+                  x: balanceColumnX + 5,
+                  y: tableY - 20,
+                  size: 10,
+                  font: ubuntuFont,
+                  color: rgb(0, 0, 0),
+                }
+              );
 
               // Draw a horizontal line to separate transactions
               newPage.drawLine({
@@ -726,88 +825,23 @@ const useReceiptGeneration = (userid, walletids, startDate, endDate, user) => {
 
             // Draw a horizontal line to separate transactions
             newPage.drawLine({
-                start: { x: tableX, y: tableY },
-                end: { x: tableX + tableWidth, y: tableY },
-                thickness: 0.5,
-                color: rgb(0, 0, 0), // Black color
-              });
+              start: { x: tableX, y: tableY },
+              end: { x: tableX + tableWidth, y: tableY },
+              thickness: 0.5,
+              color: rgb(0, 0, 0), // Black color
+            });
 
-              // Move to the next row
-              tableY -= rowHeight;
-
-            // Draw transactions for the current page
-            //drawTransactions(newPage, transactionsForPage);
+            // Move to the next row
+            tableY -= rowHeight;
 
             // Subtract the number of transactions drawn on the current page from the remaining transactions
             remainingTransactions -= transactionsPerPage;
-
-            // Optionally, you can add page numbers or other metadata here
           }
         } else {
           // If the total number of transactions does not exceed what can fit on the first page,
           // simply draw all transactions on the first page
           drawTransactions(page, data?.data?.transactions);
         }
-
-        //console.log("Current Y: " + currentY);
-
-        //console.log(height);
-
-        // // Calculate the maximum number of transactions that can fit on the first page
-        // let maxTransactionsPerPage = Math.floor(tableY / rowHeight - 2);
-
-        // console.log(maxTransactionsPerPage);
-
-        // // Check if the total number of transactions exceeds what can fit on the first page
-        // if (totalTransactions > maxTransactionsPerPage) {
-        //   // If the total number of transactions exceeds what can fit on the first page,
-        //   // we need to handle pagination
-
-        //   // Subtract the number of transactions already drawn on the first page
-        //   const remainingTransactions =
-        //     totalTransactions - maxTransactionsPerPage;
-
-        //   // Calculate the maximum number of transactions that can fit on subsequent pages
-        //   maxTransactionsPerPage = Math.floor(
-        //     (height - marginBottom) / rowHeight
-        //   );
-
-        //   console.log(maxTransactionsPerPage);
-
-        //   // Calculate the number of pages needed to accommodate remaining transactions
-        //   const totalPages = Math.ceil(
-        //     remainingTransactions / maxTransactionsPerPage
-        //   );
-
-        //   // Loop through each subsequent page and draw transactions accordingly
-        //   for (
-        //     let currentPage = 2;
-        //     currentPage <= totalPages + 1;
-        //     currentPage++
-        //   ) {
-        //     // Slice the transactions array to get transactions for the current page
-        //     const startIndex =
-        //       (currentPage - 2) * maxTransactionsPerPage +
-        //       maxTransactionsPerPage;
-        //     const endIndex = Math.min(
-        //       (currentPage - 1) * maxTransactionsPerPage +
-        //         maxTransactionsPerPage,
-        //       totalTransactions
-        //     );
-        //     const transactionsForPage = data?.data?.transactions.slice(
-        //       startIndex,
-        //       endIndex
-        //     );
-
-        //     // Add a new page to the PDF document
-        //     const newPage = pdfDoc.addPage();
-
-        // Draw transactions for the current page
-        //drawTransactions(newPage, transactionsForPage);
-
-        // Optionally, you can add page numbers or other metadata here
-        //}
-        //}
 
         // Save PDF to bytes
         const pdfBytes = await pdfDoc.save();
