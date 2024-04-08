@@ -2,10 +2,6 @@ import React, { useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { format } from "date-fns";
 import axios from "axios";
-import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
-import fontkit from "@pdf-lib/fontkit";
-import ReceiptLogoIcon from "../../assets/images/backgrounds/logo_small.png";
-//import ReceiptLogoIcon from "../../src/layouts/logos/ReceiptIcon";
 import {
   Avatar,
   Card,
@@ -79,6 +75,8 @@ import Activities from "./activities";
 import Places from "./places";
 import Followers from "./followers";
 import Notification from "./notification";
+import Kyc from "./kyc";
+import Transaction from "./transaction";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -124,14 +122,6 @@ const Users = () => {
   const theme = useTheme();
   const [value, setValue] = React.useState("1");
   const [walletId, setWalletId] = React.useState(null);
-
-  const [columnFilters, setColumnFilters] = useState([]);
-  const [globalFilter, setGlobalFilter] = useState("");
-  const [sorting, setSorting] = useState([]);
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 10,
-  });
   const [openToast, setOpenToast] = React.useState(false);
   const [ticketErrorToast, setTicketErrorToast] = React.useState(false);
   const [ticketSuccessToast, setTicketSuccessToast] = React.useState(false);
@@ -143,10 +133,13 @@ const Users = () => {
   const [notifyErrorToast, setNotifyErrorToast] = React.useState(false);
   const [kycSuccessToast, setKycSuccessToast] = React.useState(false);
   const [kycErrorToast, setKycErrorToast] = React.useState(false);
+  const [emailSuccessToast, setEmailSuccessToast] = React.useState(false);
+  const [emailErrorToast, setEmailErrorToast] = React.useState(false);
   const [lienModal, setLienModal] = React.useState(false);
   const [ticketModal, setTicketModal] = React.useState(false);
   const [notifyModal, setNotifyModal] = React.useState(false);
   const [kycModal, setKycModal] = React.useState(false);
+  const [emailModal, setEmailModal] = React.useState(false);
   const [status, setStatus] = React.useState("");
   const [pin, setPin] = React.useState(null);
   const [reason, setReason] = React.useState("");
@@ -157,7 +150,6 @@ const Users = () => {
   const [notificationText, setNotificationText] = useState("");
   const [isVerified, setIsverified] = React.useState("");
   const [tabValue, setTabValue] = React.useState(0);
-  const [rowSelection, setRowSelection] = React.useState({});
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
@@ -212,28 +204,12 @@ const Users = () => {
     setWalletId(event.target.value);
   };
 
-  const handleStatus = (event) => {
-    setStatus(event.target.value);
-    setPagination({
-      pageIndex: 0,
-      pageSize: 10,
-    });
-  };
-
   const handleStartDateChange = (event) => {
     setStartDate(event.target.value);
   };
 
   const handleEndDateChange = (event) => {
     setEndDate(event.target.value);
-  };
-
-  const handleVerified = (event) => {
-    setIsverified(event.target.value);
-    setPagination({
-      pageIndex: 0,
-      pageSize: 10,
-    });
   };
 
   const handleChange = (event, newValue) => {
@@ -337,7 +313,7 @@ const Users = () => {
         }
       );
 
-      //console.log(data);
+      console.log(data);
       return data;
     },
     {
@@ -348,48 +324,6 @@ const Users = () => {
     },
     { keepPreviousData: true }
   );
-
-  const {
-    data: userTransactions,
-    isError: fetchTransError,
-    isFetching: fetchingTransactions,
-    isLoading: loadingTransactions,
-    refetch: refetchTransactions,
-  } = useQuery(
-    [
-      "fetchSingleUserTransactions",
-      columnFilters, //refetch when columnFilters changes
-      globalFilter, //refetch when globalFilter changes
-      pagination.pageIndex, //refetch when pagination.pageIndex changes
-      pagination.pageSize, //refetch when pagination.pageSize changes
-      sorting, //refetch when sorting changes
-      status,
-    ],
-    async () => {
-      const { data } = await axios.get(
-        `${API_BASE_URL}/api/admin/console/users/transactions?userId=${userid}&limit=${
-          pagination.pageSize
-        }&offset=${pagination.pageIndex * pagination.pageSize}${
-          status !== "" ? `&status=${status}` : ""
-        }`,
-        {
-          headers: {
-            Authorization: user?.token,
-          },
-        }
-      );
-      //console.log(data);
-      return data;
-    },
-    {
-      onError: (err) => {
-        console.log(err, "err fetching users transactions");
-      },
-      enabled: !!user?.token,
-    },
-    { keepPreviousData: true }
-  );
-
   const walletid = userDetails?.data?.wallet[0]?.WId;
   const walletids = parseInt(walletid);
 
@@ -410,7 +344,7 @@ const Users = () => {
     reasonDescription,
   }) => {
     const credit = await axios.post(
-      // "http://localhost:3001/api/admin/console/users/wallet/credit",
+      //"http://localhost:4000/api/admin/console/users/wallet/credit",
       "https://vigoplace.com/server/api/admin/console/users/wallet/credit",
       { amount, approvalPin, walletId, reasonType, reasonDescription },
       {
@@ -754,82 +688,37 @@ const Users = () => {
     },
   });
 
-  const columns = useMemo(
-    () => [
+  const verifyEmail = async ({ id, pin }) => {
+    const verifyEmailUser = await axios.post(
+      //"http://localhost:4000/api/admin/console/users/kycverify",
+      "https://vigoplace.com/server/api/admin/console/users/emailverify",
+      { userId: id, approvalPin: pin },
       {
-        accessorKey: "transactionType",
-        enableClickToCopy: false,
-        header: "Type",
-      },
-      {
-        accessorKey: "transactionReference",
-        enableClickToCopy: true,
-        header: "Reference",
-      },
-      {
-        accessorKey: "transactionStatus",
-        enableClickToCopy: false,
-        header: "Status",
-      },
-      {
-        accessorKey: "transactionDescription",
-        enableClickToCopy: false,
-        header: "Description",
-      },
-      {
-        accessorKey: "currency",
-        enableClickToCopy: false,
-        header: "Currency",
-      },
-      {
-        id: "transactionTotal",
-        accessorFn: (row) => row.transactionNetTotal?.toLocaleString("en-US"),
-        enableClickToCopy: false,
-        header: "Amount",
-      },
-      {
-        id: "transactionFee",
-        accessorKey: "transactionFee",
-        enableClickToCopy: false,
-        header: "Vigoplace Fee",
-      },
-      {
-        id: "gatewayCharge",
-        accessorKey: "gatewayCharge",
-        enableClickToCopy: false,
-        header: "gateway Fee",
-      },
-      {
-        accessorFn: (row) =>
-          (row.gatewayCharge + row.transactionFee)?.toLocaleString("en-US"),
-        id: "totalFee",
-        enableClickToCopy: false,
-        header: "Total Fee",
-      },
-      {
-        accessorFn: (row) =>
-          (
-            row.transactionNetTotal -
-            (row.gatewayCharge + row.transactionFee)
-          )?.toLocaleString("en-US"),
-        id: "totalAmount",
-        enableClickToCopy: false,
-        header: "User Gets",
-      },
-      {
-        accessorFn: (row) => {
-          if (row?.transactionDate) {
-            return format(new Date(row.transactionDate), "Pp");
-          } else {
-            return "";
-          }
+        headers: {
+          Authorization: user?.token,
         },
-        enableClickToCopy: false,
-        header: "Date",
-      },
-    ],
-    []
-  );
+      }
+    );
+
+    return verifyEmailUser;
+  };
+
+  const verifyEmailMutation = useMutation({
+    mutationKey: ["verifyEmail"],
+    mutationFn: verifyEmail,
+    onSuccess: () => {
+      setPin(null);
+      setEmailSuccessToast(true);
+      queryClient.invalidateQueries("fetchSingleUser");
+      setTimeout(() => {
+        verifyEmailMutation.reset();
+      }, 7000);
+    },
+    onError: async (error) => {
+      console.log(error);
+      setEmailErrorToast(true);
+    },
+  });
 
   const handleCreditSuccessToastClose = (event, reason) => {
     setCreditSuccessToast(false);
@@ -857,6 +746,13 @@ const Users = () => {
   };
   const handleKycErrorToastClose = (event, reason) => {
     setKycErrorToast(false);
+  };
+
+  const handleEmailSuccessToastClose = (event, reason) => {
+    setEmailSuccessToast(false);
+  };
+  const handleEmailErrorToastClose = (event, reason) => {
+    setEmailErrorToast(false);
   };
 
   const handleClose = (event, reason) => {
@@ -1042,6 +938,37 @@ const Users = () => {
           sx={{ width: "100%" }}
         >
           {verifyKycMutation?.error?.response?.data?.message}
+        </Alert>
+      </Snackbar>
+
+
+      <Snackbar
+        TransitionComponent={Slide}
+        open={emailSuccessToast}
+        autoHideDuration={6000}
+        onClose={handleEmailSuccessToastClose}
+      >
+        <Alert
+          onClose={handleEmailSuccessToastClose}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {verifyEmailMutation?.data?.data?.message}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        TransitionComponent={Slide}
+        open={emailErrorToast}
+        autoHideDuration={6000}
+        onClose={handleEmailErrorToastClose}
+      >
+        <Alert
+          onClose={handleEmailErrorToastClose}
+          severity="warning"
+          sx={{ width: "100%" }}
+        >
+          {verifyEmailMutation?.error?.response?.data?.message}
         </Alert>
       </Snackbar>
 
@@ -1880,7 +1807,84 @@ const Users = () => {
                               setKycModal(false);
                             }}
                           >
-                            Notify
+                            Verify
+                          </LoadingButton>
+                        </DialogActions>
+                      </Dialog>
+                    </>
+                  )}
+
+                            
+                  {userDetails?.data?.user?.emailVerified === 0 && (
+                    <>
+                      <MenuItem sx={{ width: "100%", marginRight: "auto" }}>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          onClick={() => setEmailModal(true)}
+                        >
+                          {verifyEmailMutation.isLoading ? (
+                            <CircularProgress size={23} color="inherit" />
+                          ) : verifyEmailMutation.isSuccess ? (
+                            <CheckIcon />
+                          ) : (
+                            "Verify Email"
+                          )}
+                        </Typography>
+                      </MenuItem>
+
+                      <Dialog
+                        open={emailModal}
+                        onClose={() => {
+                          setEmailModal(false);
+                        }}
+                      >
+                        <DialogTitle> Verify User's Email</DialogTitle>
+                        <DialogContent>
+                          <DialogContentText>
+                            Please enter your admin approval pin to Verify this
+                            user's Email, if you dont have one yet, head to{" "}
+                            {
+                              <Link style={{ color: "blue" }} href="/settings">
+                                Settings
+                              </Link>
+                            }{" "}
+                            to create one now.
+                          </DialogContentText>
+
+                          <TextField
+                            margin="dense"
+                            id="name"
+                            label="Approval Pin"
+                            type="number"
+                            fullWidth
+                            value={pin}
+                            variant="standard"
+                            onChange={handlePin}
+                          />
+                        </DialogContent>
+                        <DialogActions>
+                          <Button
+                            onClick={() => {
+                              setPin(null);
+                              setEmailModal(false);
+                            }}
+                          >
+                            Cancel
+                          </Button>
+                          <LoadingButton
+                            variant="contained"
+                            loading={verifyEmailMutation.isLoading}
+                            disabled={pin === null || pin?.length <= 5}
+                            onClick={() => {
+                              verifyEmailMutation.mutate({
+                                id: userDetails?.data?.user?.id,
+                                pin,
+                              });
+                              setEmailModal(false);
+                            }}
+                          >
+                            Verify
                           </LoadingButton>
                         </DialogActions>
                       </Dialog>
@@ -2210,9 +2214,15 @@ const Users = () => {
                 <Tab label="Orders" {...a11yProps(4)} />
                 <Tab label="Followers" {...a11yProps(5)} />
                 <Tab label="Notifications" {...a11yProps(6)} />
+                <Tab label="Kyc" {...a11yProps(7)} />
               </Tabs>
             </Box>
 
+            {/* // You can also download the PDF file instead of opening in a new tab
+                            // const a = document.createElement("a");
+                            // a.href = url;
+                            // a.download = "transaction_details.pdf";
+                            // a.click(); */}
             <TabPanel value={tabValue} index={0}>
               <Box sx={{ pt: 3 }}>
                 <form>
@@ -2220,406 +2230,12 @@ const Users = () => {
                     <CardHeader subheader="" title="User Transactions" />
                     <Divider />
                     <CardContent>
-                      <MaterialTable
-                        columns={columns}
-                        data={userTransactions?.data ?? []}
-                        rowCount={userTransactions?.count?.total ?? 0}
-                        isLoading={isLoading}
-                        isError={isError}
-                        isFetching={isFetching}
-                        status={status}
-                        setStatus={setStatus}
-                        handleStatus={handleStatus}
-                        pagination={pagination}
-                        setPagination={setPagination}
-                        setGlobalFilter={setGlobalFilter}
-                        globalFilter={globalFilter}
-                        refetch={refetchTransactions}
-                        onRowSelectionChange={setRowSelection}
-                        // Inside your MaterialTable component...
-                        muiTableBodyRowProps={({ row }) => ({
-                          onClick: async () => {
-                            const {
-                              transactionDate,
-                              transactionDescription,
-                              transactionFee,
-                              transactionFrom,
-                              transactionId,
-                              transactionNetTotal,
-                              transactionReference,
-                              transactionStatus,
-                              transactionTo,
-                              transactionTotal,
-                              transactionType,
-                              currency,
-                              currencySymbol,
-                            } = row.original;
-
-                            const formattedTransactionDate = format(
-                              new Date(transactionDate),
-                              "MMM dd, yyyy h:mm a"
-                            );
-
-                            // Create a new PDFDocument
-                            const pdfDoc = await PDFDocument.create();
-
-                            // Embed the Times Roman font
-                            const timesRomanFont = await pdfDoc.embedFont(
-                              StandardFonts.Helvetica
-                            );
-
-                            const imageUrl = ReceiptLogoIcon.src;
-
-                            const fetchImage = async (imageUrl) => {
-                              const response = await fetch(imageUrl);
-                              if (!response.ok) {
-                                throw new Error(
-                                  `Failed to fetch image: ${response.statusText}`
-                                );
-                              }
-                              return await response.arrayBuffer();
-                            };
-
-                            // Usage:
-                            const imageBytes = await fetchImage(imageUrl);
-
-                            // Embed the image into the PDF document
-                            const receiptLogoImage = await pdfDoc.embedPng(
-                              imageBytes
-                            );
-
-                            // Add a blank page to the document
-                            const page = pdfDoc.addPage();
-
-                            // Get the width and height of the page
-                            const { width, height } = page.getSize();
-
-                            // Set initial y position for text
-                            const marginTop = 40; // Adjust the margin top as needed
-                            let textY = height - 50 - marginTop; // Subtracting the margin from the initial position
-                            const marginLeft = width * 0.1; // 10% of the screen width
-                            const marginRight = width * 0.1;
-
-                            const bodyBackgroundColor = rgb(
-                              243 / 255,
-                              244 / 255,
-                              248 / 255
-                            ); // Hex color  #F3F4F8
-
-                            // Adjust the font size for heading
-                            const fontSize = 20;
-                            const headingFontSize = 16;
-                            const headingValueFontSize = 40;
-                            const bodyFontSize = 14;
-
-                            // Background colors
-                            const headingBackgroundColor = rgb(
-                              129 / 255,
-                              53 / 255,
-                              249 / 255
-                            ); // Hex color #8135F9
-                            const totalAmountValueBackgroundColor = rgb(
-                              141 / 255,
-                              73 / 255,
-                              249 / 255
-                            ); // #8d49f9
-
-                            const receiptTextStyle = {
-                              size: fontSize,
-                              color: rgb(0, 0, 0),
-                            };
-
-                            // Styling for the total amount section
-                            const totalAmountLabelStyle = {
-                              size: headingFontSize,
-                              color: rgb(255 / 255, 255 / 255, 255 / 255), // White color
-                              //bold: true,
-                            };
-
-                            const totalAmountValueStyle = {
-                              size: headingValueFontSize,
-                              color: rgb(255 / 255, 255 / 255, 255 / 255),
-                            };
-
-                            // Function to draw text with specified style and alignment
-                            const drawText = (text, style, width) => {
-                              // Calculate the x-coordinate to center the text horizontally
-                              const textWidth =
-                                timesRomanFont.widthOfTextAtSize(
-                                  text,
-                                  style.size
-                                );
-                              const x = (width - textWidth) / 2;
-
-                              page.drawText(text, {
-                                x: x,
-                                y: textY + 20,
-                                size: style.size,
-                                font: timesRomanFont,
-                                color: style.color,
-                              });
-
-                              textY -= 20;
-                            };
-
-                            // Draw "Transaction receipt" text
-                            drawText(
-                              "Transaction receipt",
-                              receiptTextStyle,
-                              width
-                            ); // Pass the width of the page as an argument
-                            textY -= 20;
-
-                            // Draw the first rectangle (heading background)
-                            page.drawRectangle({
-                              x: marginLeft, // Start from the left edge of the page
-                              y: textY, // Adjust the vertical position as needed
-                              width: width - marginLeft - marginRight, // Set the width to be equal to the width of the page
-                              height: 40, // Adjust the height as needed
-                              color: headingBackgroundColor,
-                            });
-
-                            // Draw the total amount label
-                            drawText(
-                              "TOTAL AMOUNT",
-                              totalAmountLabelStyle,
-                              width
-                            ); // Pass the width of the page as an argument
-                            textY -= 40; // Adjust the vertical spacing after the heading
-
-                            // Draw the second rectangle (total amount value background)
-                            page.drawRectangle({
-                              x: marginLeft,
-                              y: textY,
-                              width: width - marginLeft - marginRight,
-                              height: 60,
-                              color: totalAmountValueBackgroundColor,
-                            });
-
-                            // Draw the total amount value
-                            drawText(
-                              `${transactionTotal.toString()} ${currency}`,
-                              totalAmountValueStyle,
-                              width
-                            );
-
-                            textY -= 40;
-
-                            // Draw background for body
-                            let totalDescriptionHeight = 0;
-
-                            page.drawRectangle({
-                              x: marginLeft,
-                              y: textY,
-                              width: width - marginLeft - marginRight,
-                              height: 40,
-                              color: bodyBackgroundColor,
-                            });
-
-                            // Function to draw text with specified style and alignment
-                            const drawTexts = (label, value) => {
-                              // Convert value to string if it's a number
-                              if (typeof value === "number") {
-                                value = value.toString();
-                              }
-
-                              // Draw label text with black color
-                              page.drawText(label, {
-                                x: marginLeft + 20, // Adjust x position to add a left margin
-                                y: textY,
-                                size: bodyFontSize,
-                                font: timesRomanFont,
-                                color: rgb(0, 0, 0), // Black color
-                                textAlign: "left",
-                              });
-
-                              // Calculate the width of the value text
-                              const valueTextWidth =
-                                timesRomanFont.widthOfTextAtSize(
-                                  value,
-                                  bodyFontSize
-                                );
-
-                              // Draw value text aligned to the right
-                              page.drawText(value, {
-                                x: width - marginRight - valueTextWidth - 20, // Adjust x position to add a right margin
-                                y: textY,
-                                size: bodyFontSize,
-                                font: timesRomanFont,
-                                color: rgb(0, 0, 0), // Black color
-                                textAlign: "right",
-                              });
-
-                              textY -= 20 + 30; // Adjust the vertical spacing as needed
-                            };
-
-                            function formatDescription(
-                              description,
-                              maxWidth,
-                              font,
-                              fontSize
-                            ) {
-                              const words = description.split(" ");
-                              let lines = [];
-                              let currentLine = "";
-
-                              for (const word of words) {
-                                const wordWidth = font.widthOfTextAtSize(
-                                  word,
-                                  fontSize
-                                );
-                                const currentLineWidth = font.widthOfTextAtSize(
-                                  currentLine + " " + word,
-                                  fontSize
-                                );
-
-                                if (
-                                  currentLine === "" ||
-                                  currentLineWidth <= maxWidth
-                                ) {
-                                  currentLine +=
-                                    (currentLine === "" ? "" : " ") + word;
-                                } else {
-                                  lines.push(currentLine);
-                                  currentLine = word;
-                                }
-                              }
-                              lines.push(currentLine);
-
-                              return lines; // Return array of lines without joining them
-                            }
-
-                            const widthRatio = 0.5;
-
-                            // Calculate the maximum width available for the description
-                            const maxDescriptionWidth =
-                              (width - marginLeft - marginRight) * widthRatio;
-
-                            function formatAndDrawDescription(description) {
-                              const formattedDescriptionLines =
-                                formatDescription(
-                                  description,
-                                  maxDescriptionWidth,
-                                  timesRomanFont,
-                                  bodyFontSize
-                                );
-
-                              // Draw Transaction Details
-                              if (formattedDescriptionLines.length > 0) {
-                                drawTexts(
-                                  "Transaction Details",
-                                  formattedDescriptionLines[0]
-                                );
-                                totalDescriptionHeight += 20; // Assuming each line has a height of 20
-
-                                // Draw the rest of Transaction Details lines starting from the second line
-                                for (
-                                  let i = 1;
-                                  i < formattedDescriptionLines.length;
-                                  i++
-                                ) {
-                                  drawTexts("", formattedDescriptionLines[i]);
-                                  totalDescriptionHeight += 20; // Assuming each line has a height of 20
-                                }
-
-                                // Increment totalDescriptionHeight for additional lines
-                                if (formattedDescriptionLines.length > 1) {
-                                  totalDescriptionHeight +=
-                                    20 * (formattedDescriptionLines.length - 1);
-                                }
-                              }
-                            }
-
-                            const totalSectionsHeight =
-                              9 * (20 + 40) + totalDescriptionHeight;
-
-                            // Draw background for body
-                            page.drawRectangle({
-                              x: marginLeft,
-                              y: textY - totalSectionsHeight,
-                              width: width - marginLeft - marginRight,
-                              height: totalSectionsHeight,
-                              color: bodyBackgroundColor,
-                            });
-
-                            // Draw other sections with appropriate styles
-                            drawTexts("Sender Name", transactionFrom);
-                            drawTexts("Beneficiary", transactionTo);
-                            drawTexts("Transaction Type", transactionType);
-                            drawTexts("Transaction Status", transactionStatus);
-                            drawTexts(
-                              "Transaction Date",
-                              formattedTransactionDate
-                            );
-                            drawTexts("Transaction Fee", transactionFee);
-                            formatAndDrawDescription(transactionDescription);
-
-                            drawTexts(
-                              "Transaction Net Total",
-                              transactionNetTotal
-                            );
-                            drawTexts("Transaction ID", transactionReference);
-
-                            const poweredByText = "Powered by";
-                            const poweredByTextWidth =
-                              timesRomanFont.widthOfTextAtSize(
-                                poweredByText,
-                                12 // Adjust font size as needed
-                              );
-                            const poweredByTextX =
-                              (width - poweredByTextWidth) / 2; // Centered horizontally
-                            const poweredByTextY = marginTop + 40; // Adjust Y position as needed
-
-                            // Draw "Powered by" text
-                            page.drawText(poweredByText, {
-                              x: poweredByTextX - 30,
-                              y: poweredByTextY,
-                              size: 12, // Adjust font size as needed
-                              font: timesRomanFont,
-                              color: rgb(0, 0, 0), // Adjust color as needed
-                            });
-
-                            const imageX = marginLeft; // Adjust X position as needed
-                            const imageY = marginTop; // Adjust Y position as needed
-
-                            // Draw the logo image on the page
-                            page.drawImage(receiptLogoImage, {
-                              x: poweredByTextX + 40,
-                              y: poweredByTextY - 5,
-                              width: 50,
-                              height: 15,
-                            });
-
-                            const pdfBytes = await pdfDoc.save();
-
-                            // Create a Blob from PDF bytes
-                            const blob = new Blob([pdfBytes], {
-                              type: "application/pdf",
-                            });
-
-                            // Create a URL for the Blob
-                            const url = URL.createObjectURL(blob);
-
-                            // Open PDF in a new tab
-                            window.open(url, "_blank");
-
-                            // Clean up URL object after use to release memory
-                            URL.revokeObjectURL(url);
-                          },
-                          sx: { cursor: "pointer" },
-                        })}
-                      />
+                      <Transaction />
                     </CardContent>
                   </Card>
                 </form>
               </Box>
             </TabPanel>
-
-            {/* // You can also download the PDF file instead of opening in a new tab
-                            // const a = document.createElement("a");
-                            // a.href = url;
-                            // a.download = "transaction_details.pdf";
-                            // a.click(); */}
 
             <TabPanel value={tabValue} index={1}>
               <Box sx={{ pt: 3 }}>
@@ -2689,6 +2305,20 @@ const Users = () => {
                     <Divider />
                     <CardContent>
                       <Notification />
+                    </CardContent>
+                  </Card>
+                </form>
+              </Box>
+            </TabPanel>
+
+            <TabPanel value={tabValue} index={7}>
+              <Box sx={{ pt: 3 }}>
+                <form>
+                  <Card>
+                    <CardHeader subheader="" title="User Kyc Details" />
+                    <Divider />
+                    <CardContent>
+                      <Kyc />
                     </CardContent>
                   </Card>
                 </form>
