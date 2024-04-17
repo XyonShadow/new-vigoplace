@@ -5,8 +5,6 @@ import axios from "axios";
 import { format } from "date-fns";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import Ubuntu from "../../public/Ubuntu-R.ttf";
-import fontkit from "@pdf-lib/fontkit";
 //Material UI Imports
 import {
   IconButton,
@@ -43,6 +41,8 @@ export default function Kyc() {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
+  const [showData, setShowData] = useState(false);
+  const [showData2, setShowData2] = useState(false);
 
   const fetchUserKycDetails = async () => {
     setIsFetching(true);
@@ -80,13 +80,6 @@ export default function Kyc() {
       // Embed the Times Roman font
       const timesRomanFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
       const timesRoman = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-      //   const urls = Ubuntu;
-      //   const fontBytes = await fetch(urls).then((res) => res.arrayBuffer());
-      //   pdfDoc.registerFontkit(fontkit);
-
-      //   const ubuntuFont = await pdfDoc.embedFont(fontBytes, {
-      //     subset: true,
-      //   });
 
       const formatTransactionDate = (dateString) => {
         // Convert the string representation of the date to a Date object
@@ -102,13 +95,9 @@ export default function Kyc() {
 
       const page = pdfDoc.addPage();
       const { width, height } = page.getSize();
-      //console.log(height);
 
       // Calculate the width of the text
-      const textSize = timesRomanFont.widthOfTextAtSize(
-        "KYC Details Receipt",
-        14
-      );
+      const textSize = timesRomanFont.widthOfTextAtSize("KYC Details", 14);
 
       // Calculate the y-coordinate for the data
       const dataYCoordinate = page.getHeight() - 80; // Adjust as needed
@@ -277,196 +266,120 @@ export default function Kyc() {
     }
   };
 
-  const kycColumns = useMemo(
-    () => [
-      {
-        accessorFn: (row) => {
-          const surname = row?.metadata?.governmentData?.surname || "";
-          const firstname = row?.metadata?.governmentData?.firstname || "";
-          const middlename = row?.metadata?.governmentData?.middlename || "";
+  // Function to toggle between showing actual data and asterisks
+  const toggleDataVisibility = () => {
+    setShowData((prevState) => !prevState);
+  };
 
-          return `${surname} ${firstname} ${middlename}`.trim();
-        },
-        enableClickToCopy: false,
-        header: "Name",
-      },
-      {
-        accessorFn: (row) => row?.metadata?.governmentData?.image_url,
-        id: "image",
-        header: "Image",
-        Cell: ({ cell, row }) => (
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: "1rem",
-            }}
-          >
-            {row?.original?.metadata?.governmentData?.image_url ? (
-              <img
-                alt="User Image"
-                height={30}
-                src={row?.original?.metadata?.governmentData?.image_url}
-                loading="lazy"
-                style={{ borderRadius: "50%" }}
-              />
-            ) : (
-              <AccountCircleIcon sx={{ fontSize: "33px" }} />
-            )}
+  const toggleDataVisibility2 = () => {
+    setShowData2((prevState) => !prevState);
+  };
 
-            <Typography>
-              {row?.original?.metadata?.governmentData?.image_url
-                ? "Image Available"
-                : "No Image"}
-            </Typography>
-          </Box>
-        ),
-      },
-      {
-        accessorKey: "metadata.governmentData.telephoneno",
-        enableClickToCopy: false,
-        header: "Phone Number",
-      },
-      {
-        accessorKey: "bvn",
-        enableClickToCopy: false,
-        header: "BVN",
-        Cell: ({ cell, row }) => {
-          const [showData1, setShowData1] = React.useState(false);
+  const renderData = (data) => {
+    if (showData) {
+      return data;
+    } else {
+      return "*".repeat(data.length);
+    }
+  };
 
-          const handleClick = () => {
-            setShowData1(!showData1);
-          };
-
-          return (
-            <span onClick={handleClick} style={{ cursor: "pointer" }}>
-              {showData1 ? row.original.bvn : "**********"}
-            </span>
-          );
-        },
-      },
-      {
-        accessorKey: "nin",
-        enableClickToCopy: false,
-        header: "NIN",
-        Cell: ({ cell, row }) => {
-          const [showData, setShowData] = React.useState(false);
-
-          const handleClick = () => {
-            setShowData(!showData);
-          };
-
-          return (
-            <span onClick={handleClick} style={{ cursor: "pointer" }}>
-              {showData ? row.original.nin : "**********"}
-            </span>
-          );
-        },
-      },
-      {
-        accessorKey: "passport",
-        enableClickToCopy: false,
-        header: "Passport",
-      },
-      {
-        accessorKey: "drivers license",
-        enableClickToCopy: false,
-        header: "Driver's License",
-      },
-      {
-        accessorKey: "metadata.governmentData.birthdate",
-        enableClickToCopy: false,
-        header: "Birthday",
-      },
-      {
-        accessorKey: "metadata.governmentData.profession",
-        enableClickToCopy: false,
-        header: "Profession",
-      },
-      {
-        accessorKey: "metadata.governmentData.residence_AddressLine1",
-        enableClickToCopy: false,
-        header: "Address",
-      },
-      {
-        accessorFn: (row) => {
-          if (row?.createdAt) {
-            return format(new Date(row.createdAt), "MM/dd/yyyy hh:mm a");
-          } else {
-            return "";
-          }
-        },
-        enableClickToCopy: false,
-        header: "Date",
-      },
-    ],
-    []
-  );
+  const renderData2 = (data) => {
+    if (showData2) {
+      return data;
+    } else {
+      return "*".repeat(data.length);
+    }
+  };
 
   return (
     <>
-      <MaterialReactTable
-        enableColumnFilterModes
-        enableColumnOrdering
-        enablePinning
-        columns={kycColumns}
-        data={kyc}
-        enableStickyHeader
-        enablePagination
-        manualPagination
-        manualFiltering
-        initialState={{ showColumnFilters: false }}
-        positionToolbarAlertBanner="bottom"
-        muiToolbarAlertBannerProps={
-          isError
-            ? {
-                color: "error",
-                children:
-                  "Error loading data, Please use the refresh button on the table to retry",
-              }
-            : undefined
-        }
-        renderTopToolbarCustomActions={({ table }) => {
-          return (
-            <div style={{ display: "flex", gap: "0.5rem" }}>
-              <Tooltip arrow title="Refresh Data">
-                <IconButton onClick={() => fetchUserKycDetails()}>
-                  <RefreshIcon />
-                </IconButton>
-              </Tooltip>
-            </div>
-          );
-        }}
-        renderBottomToolbarCustomActions={({ table }) => {
-          if (kyc.length > 0) {
-            return (
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  gap: "0.5rem",
-                }}
-              >
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => generatePDFReceipt(kyc)}
-                >
-                  Generate PDF Receipt
-                </Button>
-              </Box>
-            );
-          } else {
-            return null; // Don't render anything if KYC data is not present
-          }
-        }}
-        state={{
-          isLoading,
-          showAlertBanner: isError,
-          showProgressBars: isFetching,
-        }}
-        muiTableContainerProps={{ sx: { height: "75vh" } }}
-      />
+      {kyc.map((row, index) => (
+        <Box
+          key={index}
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "auto 1fr",
+            gap: "1rem",
+            alignItems: "center",
+          }}
+        >
+          <Box
+            style={{ height: "60vh", marginTop: "20px", marginRight: "30px" }}
+          >
+            {row?.metadata?.governmentData?.image_url ? (
+              <img
+                alt="User Image"
+                style={{ height: "100%", borderRadius: "4%" }}
+                src={row?.metadata?.governmentData?.image_url}
+                loading="lazy"
+              />
+            ) : (
+              <AccountCircleIcon sx={{ fontSize: "100px" }} />
+            )}
+          </Box>
+
+          <Box>
+            <Typography
+              variant="h5"
+              style={{ marginBottom: "15px", fontSize: "30px" }}
+            >
+              {`${row?.metadata?.governmentData?.surname || ""} ${
+                row?.metadata?.governmentData?.firstname || ""
+              } ${row?.metadata?.governmentData?.middlename || ""}`.trim()}
+            </Typography>
+            <Typography style={{ marginBottom: "10px" }}>
+              Phone Number: {row?.metadata?.governmentData?.telephoneno}
+            </Typography>
+            <Typography
+              style={{ marginBottom: "10px" }}
+              onClick={toggleDataVisibility}
+            >
+              BVN: {renderData(row?.bvn)}
+            </Typography>
+            <Typography
+              style={{ marginBottom: "10px" }}
+              onClick={toggleDataVisibility2}
+            >
+              NIN: {renderData2(row?.nin)}
+            </Typography>
+            <Typography style={{ marginBottom: "10px" }}>
+              Passport: {row?.passport || ""}
+            </Typography>
+            <Typography style={{ marginBottom: "10px" }}>
+              Driver's License: {row?.drivers_license || ""}
+            </Typography>
+            <Typography style={{ marginBottom: "10px" }}>
+              Birthday: {row?.metadata?.governmentData?.birthdate || ""}
+            </Typography>
+            <Typography style={{ marginBottom: "10px" }}>
+              Profession: {row?.metadata?.governmentData?.profession || ""}
+            </Typography>
+            <Typography style={{ marginBottom: "10px" }}>
+              Address:{" "}
+              {row?.metadata?.governmentData?.residence_AddressLine1 || ""}
+            </Typography>
+            <Typography style={{ marginBottom: "10px" }}>
+              Date:{" "}
+              {row?.createdAt
+                ? format(new Date(row.createdAt), "MM/dd/yyyy hh:mm a")
+                : ""}
+            </Typography>
+          </Box>
+        </Box>
+      ))}
+      {isLoading && <Typography>Loading...</Typography>}
+      {isFetching && <Typography>Fetching data...</Typography>}
+      {kyc.length > 0 && (
+        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => generatePDFReceipt(kyc)}
+          >
+            Download report
+          </Button>
+        </Box>
+      )}
     </>
   );
 }

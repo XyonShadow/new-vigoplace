@@ -382,7 +382,7 @@ function Row({ payout, isPayoutSelected }) {
   const [openEModal, setOpenEModal] = React.useState(false);
   const [modalData, setModalData] = React.useState(null);
   const [amountValue, setAmountValue] = useState(
-    payout.amount.toLocaleString("en-US")
+    payout.amount
   );
 
   const handleOpenModal = async (userId, categoryId) => {
@@ -972,7 +972,7 @@ function Row({ payout, isPayoutSelected }) {
                                     setOpenModal(false);
                                     setPin(null);
                                     setAmountValue(
-                                      payout.amount.toLocaleString("en-US")
+                                      payout.amount
                                     );
                                   }}
                                 >

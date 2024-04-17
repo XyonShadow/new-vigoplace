@@ -1,18 +1,4 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Box, Container, Grid } from "@mui/material";
-import BlogCard from "../src/components/dashboard/BlogCard";
-import SalesOverview from "../src/components/dashboard/SalesOverview";
-import DailyActivity from "../src/components/dashboard/DailyActivity";
-import TicketsTable from "../src/components/dashboard/ticketsTable";
-import { Budget } from "../src/components/dashboard/budget";
-import { LatestOrders } from "../src/components/dashboard/latest-orders";
-import { TasksProgress } from "../src/components/dashboard/tasks-progress";
-import { TotalCustomers } from "../src/components/dashboard/total-customers";
-import { TotalProfit } from "../src/components/dashboard/total-profit";
-import { TotalTickets } from "../src/components/dashboard/total-tickets";
-import { ResolvedTickets } from "../src/components/dashboard/resolved-tickets";
-import { SettledTickets } from "../src/components/dashboard/settled-tickets";
-import { PendingTickets } from "../src/components/dashboard/pending-tickets";
 import MaterialReactTable from "material-react-table";
 import {
   CircularProgress,
@@ -73,7 +59,7 @@ function Tickets() {
         header: "Username",
         muiTableBodyCellProps: ({ cell }) => ({
           style: {
-            fontWeight: cell.row.original.isRead === 0 ? 700 : "inherit", 
+            fontWeight: cell.row.original.isRead === 0 ? 700 : "inherit",
           },
         }),
       },
@@ -84,7 +70,7 @@ function Tickets() {
         header: "Category",
         muiTableBodyCellProps: ({ cell }) => ({
           style: {
-            fontWeight: cell.row.original.isRead === 0 ? 700 : "inherit", 
+            fontWeight: cell.row.original.isRead === 0 ? 700 : "inherit",
           },
         }),
       },
@@ -93,6 +79,23 @@ function Tickets() {
         enableClickToCopy: false,
         enableColumnFilter: false,
         header: "Subject",
+        Cell: ({ cell }) => {
+          const subject = cell?.row?.original?.subject || "";
+
+          // Define the maximum number of words to display
+          const maxWords = 7;
+
+          // Split the description into words
+          const words = subject.split(" ");
+
+          // Truncate the description if it exceeds the maximum number of words
+          const truncatedSubject =
+            words.length > maxWords
+              ? words.slice(0, maxWords).join(" ") + "..."
+              : subject;
+
+          return <div>{truncatedSubject}</div>;
+        },
         muiTableBodyCellProps: ({ cell }) => ({
           style: {
             fontWeight: cell.row.original.isRead === 0 ? 700 : "inherit",
@@ -100,13 +103,40 @@ function Tickets() {
         }),
       },
       {
-        accessorKey: "description",
+        accessorKey: "message",
+        Cell: ({ cell }) => {
+          const message = cell?.row?.original?.message || "";
+
+          let words;
+          if (message.includes("||")) {
+            // Split the message into sentences
+            const sentences = message.split("||");
+            // Get the last sentence
+            const lastSentence =
+              sentences.length > 0 ? sentences[sentences.length - 1] : "";
+            // Split the last sentence into words
+            words = lastSentence.split(" ");
+          } else {
+            words = message.split(" ");
+          }
+
+          // Define the maximum number of words to display
+          const maxWords = 7;
+
+          // Truncate the last sentence if it exceeds the maximum number of words
+          const truncatedMessage =
+            words.length > maxWords
+              ? words.slice(0, maxWords).join(" ") + "..."
+              : words.join(" ");
+
+          return <div>{truncatedMessage}</div>;
+        },
         enableClickToCopy: false,
         enableColumnFilter: false,
         header: "Description",
         muiTableBodyCellProps: ({ cell }) => ({
           style: {
-            fontWeight: cell.row.original.isRead === 0 ? 700 : "inherit", 
+            fontWeight: cell.row.original.isRead === 0 ? 700 : "inherit",
           },
         }),
       },
@@ -148,7 +178,7 @@ function Tickets() {
         header: "Date",
         muiTableBodyCellProps: ({ cell }) => ({
           style: {
-            fontWeight: cell.row.original.isRead === 0 ? 700 : "inherit", 
+            fontWeight: cell.row.original.isRead === 0 ? 700 : "inherit",
           },
         }),
       },
@@ -181,12 +211,15 @@ function Tickets() {
         //     ? `&search=${JSON.stringify(columnFilters)}`
         //     : ""
         // }`,
+
         {
           headers: {
             Authorization: user?.token,
           },
         }
       );
+
+      //console.log(data);
 
       setDatalenght(data?.count?.total);
 
@@ -201,7 +234,7 @@ function Tickets() {
     },
     {
       onError: (err) => {
-        console.log(err, "err fetching users");
+        console.log(err, "err fetching users tickets");
       },
       enabled: !!user?.token,
     }
@@ -249,7 +282,7 @@ function Tickets() {
               }
             : undefined
         }
-        onRowSelectionChange={setRowSelection} 
+        onRowSelectionChange={setRowSelection}
         muiTableBodyRowProps={({ row }) => ({
           onClick: async () => {
             if (row.original.isRead === 0) {
@@ -275,9 +308,7 @@ function Tickets() {
           },
           sx: { cursor: "pointer" },
         })}
-
         renderTopToolbarCustomActions={({ table }) => {
-
           return (
             <div style={{ display: "flex", gap: "0.5rem" }}>
               <Tooltip arrow title="Refresh Data">
@@ -306,7 +337,6 @@ function Tickets() {
             </div>
           );
         }}
-
         state={{
           isLoading,
           showAlertBanner: isError,

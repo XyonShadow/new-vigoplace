@@ -407,7 +407,7 @@ const SingleTicket = () => {
           sm={12}
           lg={4}
         >
-          <Container sx={{}}>
+          <Container sx={{}} xs={6} sm={6} lg={6}>
             <Typography variant="h5" marginBottom={2}>
               <b>Category:</b> {ticket?.data.categoryName}
             </Typography>
@@ -479,10 +479,10 @@ export const Chat = ({ messages, ticket, userDetails }) => {
     <Grid
       xs={12}
       sm={12}
-      lg={8}
+      lg={12}
       container
       component={Paper}
-      sx={{ width: "100%", height: "100%" }}
+      sx={{ width: "50%", height: "100%" }}
     >
       <Grid padding={"15px"} xs={12}>
         <Grid
@@ -530,14 +530,14 @@ export const Chat = ({ messages, ticket, userDetails }) => {
               <ListItem key={index}>
                 <Grid container>
                   <Grid item xs={12} display={"flex"}>
-                    {message.type === "sent" ? (
+                    {/* {message.type === "sent" ? (
                       <>
                         {" "}
                         <Avatar alt="" src={message.userphoto} />
                         <ListItemText
                           align={message.type === "sent" ? "left" : "right"}
                           sx={{
-                            maxWidth: "50%",
+                            width: "50%",
                             paddingLeft: "20px",
                             whiteSpace: "normal",
                           }}
@@ -548,13 +548,41 @@ export const Chat = ({ messages, ticket, userDetails }) => {
                     ) : (
                       <ListItemText
                         align="right"
-                        sx={{ whiteSpace: "normal" }}
+                        sx={{ whiteSpace: "normal", width: "50%" }}
                         primary={message.message}
                       ></ListItemText>
+                    )} */}
+                    {message.type === "sent" ? (
+                      <>
+                        <Avatar alt="" src={message.userphoto} />
+                        <div
+                          style={{
+                            width: "50%",
+                            paddingLeft: "20px",
+                            marginRight: "auto",
+                          }}
+                        >
+                          <ListItemText
+                            align="left"
+                            primary={message.message}
+                          />
+                        </div>
+                      </>
+                    ) : (
+                      <div
+                        style={{
+                          width: "50%",
+                          textAlign: "right",
+                          marginLeft: "auto",
+                        }}
+                      >
+                        <ListItemText align="right" primary={message.message} />
+                      </div>
                     )}
                   </Grid>
                   <Grid item xs={12}>
                     <ListItemText
+                      sx={{ marginLeft: "60px" }}
                       align={message.type === "sent" ? "left" : "right"}
                       secondary={format(new Date(message.date), "Pp")}
                     ></ListItemText>
@@ -568,6 +596,7 @@ export const Chat = ({ messages, ticket, userDetails }) => {
           <Grid item xs={10.5}>
             <TextField
               id="chat"
+              multiline
               value={chatMessage}
               onChange={handleChat}
               label="..."
