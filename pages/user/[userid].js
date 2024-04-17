@@ -313,7 +313,7 @@ const Users = () => {
         }
       );
 
-      console.log(data);
+      //console.log(data);
       return data;
     },
     {
@@ -477,7 +477,7 @@ const Users = () => {
       queryClient.invalidateQueries("fetchSingleUser");
     },
     onError: async (error) => {
-      // setOpenToast(true);
+      setOpenToast(true);
     },
   });
 
@@ -941,7 +941,6 @@ const Users = () => {
         </Alert>
       </Snackbar>
 
-
       <Snackbar
         TransitionComponent={Slide}
         open={emailSuccessToast}
@@ -1396,7 +1395,7 @@ const Users = () => {
                             margin="dense"
                             id="reason"
                             label="Reason"
-                            type="text"
+                            multiline
                             fullWidth
                             value={reason}
                             variant="standard"
@@ -1414,7 +1413,7 @@ const Users = () => {
                           />
                         </DialogContent>
                         <DialogActions>
-                          <Typography
+                          <Button
                             onClick={() => {
                               setLienModal(false);
                               setPin(null);
@@ -1422,7 +1421,7 @@ const Users = () => {
                             }}
                           >
                             Cancel
-                          </Typography>
+                          </Button>
                           <LoadingButton
                             variant="contained"
                             loading={postYesDebitMutation.isLoading}
@@ -1492,7 +1491,7 @@ const Users = () => {
                             margin="dense"
                             id="reason"
                             label="Reason"
-                            type="text"
+                            multiline
                             fullWidth
                             value={reason}
                             variant="standard"
@@ -1520,7 +1519,7 @@ const Users = () => {
                           />
                         </DialogContent>
                         <DialogActions>
-                          <Typography
+                          <Button
                             onClick={() => {
                               setLienModal(false);
                               setPin(null);
@@ -1529,7 +1528,7 @@ const Users = () => {
                             }}
                           >
                             Cancel
-                          </Typography>
+                          </Button>
                           <LoadingButton
                             variant="contained"
                             loading={postNoDebitMutation.isLoading}
@@ -1614,7 +1613,7 @@ const Users = () => {
                           margin="dense"
                           id="subject"
                           label="Subject"
-                          type="text"
+                          multiline
                           fullWidth
                           value={subject}
                           variant="standard"
@@ -1624,7 +1623,7 @@ const Users = () => {
                           margin="dense"
                           id="description"
                           label="Message"
-                          type="text"
+                          multiline
                           fullWidth
                           value={description}
                           variant="standard"
@@ -1704,21 +1703,21 @@ const Users = () => {
                           margin="normal"
                           id="name"
                           label="Enter Notification Text"
-                          type="email"
+                          multiline
                           fullWidth
                           variant="standard"
                           onChange={handleNotificationText}
                         />
                       </DialogContent>
                       <DialogActions>
-                        <Typography
+                        <Button
                           onClick={() => {
                             setNotificationText("");
                             setNotifyModal(false);
                           }}
                         >
                           Cancel
-                        </Typography>
+                        </Button>
                         <LoadingButton
                           variant="contained"
                           loading={notifyUserMutation.isLoading}
@@ -1814,7 +1813,6 @@ const Users = () => {
                     </>
                   )}
 
-                            
                   {userDetails?.data?.user?.emailVerified === 0 && (
                     <>
                       <MenuItem sx={{ width: "100%", marginRight: "auto" }}>
