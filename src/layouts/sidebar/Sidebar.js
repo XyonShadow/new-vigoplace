@@ -91,6 +91,15 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
     },
     {
       id: 6,
+      title: "Admin-Users",
+      icon: "users",
+      href: "/admin-users",
+      roles: ["admin", "root"],
+      SCPCreatedAt: "2024-04-17T10:17:02.000Z",
+      SCPUpdatedAt: null,
+    },
+    {
+      id: 7,
       title: "Activity Logs",
       icon: "activity",
       href: "/logs",
@@ -99,7 +108,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
       SCPUpdatedAt: null,
     },
     {
-      id: 7,
+      id: 8,
       title: "Paystack",
       icon: "dollar-sign",
       href: "/paystack",
@@ -108,7 +117,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
       SCPUpdatedAt: null,
     },
     {
-      id: 8,
+      id: 9,
       title: "Promo",
       icon: "dollar-sign",
       href: "promo",
@@ -117,7 +126,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
       SCPUpdatedAt: null,
     },
     {
-      id: 9,
+      id: 10,
       title: "Post categorization",
       icon: "file-plus",
       href: "/post-categorization",
@@ -126,7 +135,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
       SCPUpdatedAt: null,
     },
     {
-      id: 10,
+      id: 11,
       title: "Stripe",
       icon: "dollar-sign",
       href: "/stripe",
@@ -135,7 +144,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
       SCPUpdatedAt: null,
     },
     {
-      id: 11,
+      id: 12,
       title: "Earnings",
       icon: "credit-card",
       href: "/earnings",
@@ -144,7 +153,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
       SCPUpdatedAt: null,
     },
     {
-      id: 12,
+      id: 13,
       title: "Orders",
       icon: "shopping-cart",
       href: "/orders",
@@ -153,7 +162,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
       SCPUpdatedAt: null,
     },
     {
-      id: 13,
+      id: 14,
       title: "Users-Statistics",
       icon: "activity",
       href: "/user-statistics",
@@ -350,7 +359,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
   const handleClick = (index) => {
     //console.log(index);
     if (open === index) {
-      console.log(open);
+      //console.log(open);
       setOpen((prevopen) => !prevopen);
     } else {
       setOpen(index);

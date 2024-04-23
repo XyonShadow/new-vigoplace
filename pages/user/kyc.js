@@ -1,10 +1,12 @@
 import React, { useMemo, useState, useEffect } from "react";
-import MaterialReactTable from "material-react-table";
+//import fetch from 'node-fetch';
 import { useRouter } from "next/router";
 import axios from "axios";
 import { format } from "date-fns";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { CloudinaryContext, Image } from "@cloudinary/react";
+import { Cloudinary } from "@cloudinary/url-gen";
 //Material UI Imports
 import {
   IconButton,
@@ -61,7 +63,7 @@ export default function Kyc() {
       setKyc(data?.data ?? []);
     } catch (err) {
       setIsError(true);
-      console.log(err, "err fetching user kyc deatils");
+      console.log(err, "err fetching user kyc details");
     } finally {
       setIsLoading(false);
       setIsFetching(false);
@@ -76,6 +78,8 @@ export default function Kyc() {
     try {
       // Create a new PDF document
       const pdfDoc = await PDFDocument.create();
+
+      const imageUrl = kycData[0]?.metadata?.governmentData?.image_url;
 
       // Embed the Times Roman font
       const timesRomanFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
@@ -106,13 +110,74 @@ export default function Kyc() {
       const xCoordinate = (page.getWidth() - textSize) / 2;
 
       // Add content to the page
-      page.drawText("KYC Details Receipt", {
+      page.drawText("KYC Details", {
         x: xCoordinate,
         y: page.getHeight() - 20, // Adjust y-coordinate as needed
         size: 12,
         font: timesRoman,
         color: rgb(0, 0, 0),
       });
+
+      ///////////////////IMAGE MANIPULATION////////////////
+
+      if (imageUrl) {
+        // Function to upload image to Cloudinary
+        async function uploadImageToCloudinary(imageUrl) {
+          try {
+            const uploadPreset = "j5zyq30j"; // Replace with your Cloudinary upload preset
+            const formData = new FormData();
+            formData.append("file", imageUrl);
+            formData.append("upload_preset", uploadPreset);
+
+            const response = await axios.post(
+              `https://api.cloudinary.com/v1_1/dnhu3eqn5/image/upload`,
+              formData,
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            );
+
+            return response.data.secure_url; // URL of the uploaded image on Cloudinary
+          } catch (error) {
+            console.error("Error uploading image to Cloudinary:", error);
+            throw error;
+          }
+        }
+
+        // Function to download the image from Cloudinary
+        async function downloadImageFromCloudinary(imageUrl) {
+          try {
+            const response = await axios.get(imageUrl, {
+              responseType: "arraybuffer",
+            });
+
+            return response.data; // Image data buffer
+          } catch (error) {
+            console.error("Error downloading image from Cloudinary:", error);
+            throw error;
+          }
+        }
+
+        // Upload image to Cloudinary
+        const cloudinaryUrl = await uploadImageToCloudinary(imageUrl);
+
+        // Download the image from Cloudinary
+        const imageData = await downloadImageFromCloudinary(cloudinaryUrl);
+
+        // Embed the image into the PDF document
+        const kycImage = await pdfDoc.embedPng(imageData);
+
+        page.drawImage(kycImage, {
+          x: xCoordinate - 20,
+          y: page.getHeight() - 135,
+          width: 100,
+          height: 100,
+        });
+      }
+
+      //////////////IMAGE MANIPULATION END//////////////////////////
 
       const drawTexts = (label, value, x, y) => {
         // Convert value to string if it's a number or a function
@@ -181,8 +246,11 @@ export default function Kyc() {
       };
 
       page.drawLine({
-        start: { x: 50, y: height - 55 },
-        end: { x: 50 + page.getWidth() - 120, y: height - 55 },
+        start: { x: 50, y: imageUrl ? height - 170 : height - 55 },
+        end: {
+          x: 50 + page.getWidth() - 120,
+          y: imageUrl ? height - 170 : height - 55,
+        },
         thickness: 0.5,
         color: rgb(0, 0, 0), // Black color
       });
@@ -190,66 +258,89 @@ export default function Kyc() {
       // Example: Add name
       drawTexts(
         "Name",
-        `${kycData[0]?.metadata?.governmentData?.surname} ${kycData[0]?.metadata?.governmentData?.firstname} ${kycData[0]?.metadata?.governmentData?.middlename}`,
+        `${
+          kycData[0]?.metadata?.governmentData?.surname ||
+          kycData[0]?.verifiedData?.entity?.last_name ||
+          ""
+        } ${
+          kycData[0]?.metadata?.governmentData?.firstname ||
+          kycData[0]?.verifiedData?.entity?.first_name ||
+          ""
+        } ${
+          kycData[0]?.metadata?.governmentData?.middlename ||
+          kycData[0]?.verifiedData?.entity?.middle_name ||
+          ""
+        }`,
         50, // Calculate the y-coordinate for the data
-        dataYCoordinate
+        imageUrl ? dataYCoordinate - 115 : dataYCoordinate
       );
 
       drawTexts(
         "Phone Number",
-        `${kycData[0]?.metadata?.governmentData?.telephoneno}`,
+        `${
+          kycData[0]?.metadata?.governmentData?.telephoneno ||
+          kycData[0]?.verifiedData?.entity?.phone_number1
+        }`,
         50, // Calculate the y-coordinate for the data
-        dataYCoordinate - 40
+        imageUrl ? dataYCoordinate - 155 : dataYCoordinate - 40
       );
       drawTexts(
         "BVN",
-        `${kycData[0]?.bvn}`,
+        `${kycData[0]?.bvn || "Not applicable"}`,
         50, // Calculate the y-coordinate for the data
-        dataYCoordinate - 80
+        imageUrl ? dataYCoordinate - 195 : dataYCoordinate - 80
       );
       drawTexts(
         "NIN",
-        `${kycData[0]?.nin}`,
+        `${kycData[0]?.nin || "Not applicable"}`,
         50, // Calculate the y-coordinate for the data
-        dataYCoordinate - 120
+        imageUrl ? dataYCoordinate - 235 : dataYCoordinate - 120
       );
       drawTexts(
         "Passport",
-        `${kycData[0]?.passport}`,
+        `${kycData[0]?.passport || "Not applicable"}`,
         50, // Calculate the y-coordinate for the data
-        dataYCoordinate - 160
+        imageUrl ? dataYCoordinate - 275 : dataYCoordinate - 160
       );
       drawTexts(
         "Driver's Licence",
-        `${kycData[0]?.driversLicense}`,
+        `${kycData[0]?.driversLicense || "Not applicable"}`,
         50, // Calculate the y-coordinate for the data
-        dataYCoordinate - 200
+        imageUrl ? dataYCoordinate - 315 : dataYCoordinate - 200
       );
       drawTexts(
         "Birthday",
         formatTransactionDate(
-          `${kycData[0]?.metadata?.governmentData?.birthdate}`
+          `${
+            kycData[0]?.metadata?.governmentData?.birthdate ||
+            kycData[0]?.verifiedData?.entity?.date_of_birth
+          }`
         ),
         50, // Calculate the y-coordinate for the data
-        dataYCoordinate - 240
+        imageUrl ? dataYCoordinate - 355 : dataYCoordinate - 240
       );
       drawTexts(
         "Profession",
-        `${kycData[0]?.metadata?.governmentData?.profession}`,
+        `${
+          kycData[0]?.metadata?.governmentData?.profession || "Not applicable"
+        }`,
         50, // Calculate the y-coordinate for the data
-        dataYCoordinate - 280
+        imageUrl ? dataYCoordinate - 395 : dataYCoordinate - 280
       );
       drawTexts(
         "Address",
-        `${kycData[0]?.metadata?.governmentData?.residence_AddressLine1}`,
+        `${
+          kycData[0]?.metadata?.governmentData?.residence_AddressLine1 ||
+          "Not applicable"
+        }`,
         50, // Calculate the y-coordinate for the data
-        dataYCoordinate - 320
+        imageUrl ? dataYCoordinate - 435 : dataYCoordinate - 320
       );
       drawTexts(
         "Date",
         formatTransactionDate(kycData[0]?.kycDate),
         50, // Calculate the y-coordinate for the data
-        dataYCoordinate - 360
+        imageUrl ? dataYCoordinate - 475 : dataYCoordinate - 360
       );
 
       // Add more KYC data as needed
@@ -279,7 +370,7 @@ export default function Kyc() {
     if (showData) {
       return data;
     } else {
-      return "*".repeat(data.length);
+      return "*".repeat(data?.length);
     }
   };
 
@@ -287,7 +378,7 @@ export default function Kyc() {
     if (showData2) {
       return data;
     } else {
-      return "*".repeat(data.length);
+      return "*".repeat(data?.length);
     }
   };
 
@@ -323,40 +414,60 @@ export default function Kyc() {
               variant="h5"
               style={{ marginBottom: "15px", fontSize: "30px" }}
             >
-              {`${row?.metadata?.governmentData?.surname || ""} ${
-                row?.metadata?.governmentData?.firstname || ""
-              } ${row?.metadata?.governmentData?.middlename || ""}`.trim()}
+              {`${
+                row?.metadata?.governmentData?.surname ||
+                row?.verifiedData?.entity?.last_name ||
+                "Not applicable"
+              } 
+             ${
+               row?.metadata?.governmentData?.firstname ||
+               row?.verifiedData?.entity?.first_name ||
+               "Not applicable"
+             } 
+            ${
+              row?.metadata?.governmentData?.middlename ||
+              row?.verifiedData?.entity?.middle_name ||
+              "Not applicable"
+            }`.trim()}
             </Typography>
+
             <Typography style={{ marginBottom: "10px" }}>
-              Phone Number: {row?.metadata?.governmentData?.telephoneno}
+              Phone Number:{" "}
+              {row?.metadata?.governmentData?.telephoneno ||
+                row?.verifiedData?.entity?.phone_number1}
             </Typography>
             <Typography
               style={{ marginBottom: "10px" }}
               onClick={toggleDataVisibility}
             >
-              BVN: {renderData(row?.bvn)}
+              BVN: {renderData(row?.bvn) || "Not applicable"}
             </Typography>
             <Typography
               style={{ marginBottom: "10px" }}
               onClick={toggleDataVisibility2}
             >
-              NIN: {renderData2(row?.nin)}
+              NIN: {renderData2(row?.nin) || "Not applicable"}
             </Typography>
             <Typography style={{ marginBottom: "10px" }}>
-              Passport: {row?.passport || ""}
+              Passport: {row?.passport || "Not applicable"}
             </Typography>
             <Typography style={{ marginBottom: "10px" }}>
-              Driver's License: {row?.drivers_license || ""}
+              Driver's License: {row?.drivers_license || "Not applicable"}
             </Typography>
             <Typography style={{ marginBottom: "10px" }}>
-              Birthday: {row?.metadata?.governmentData?.birthdate || ""}
+              Birthday:{" "}
+              {row?.metadata?.governmentData?.birthdate ||
+                row?.verifiedData?.entity?.date_of_birth ||
+                "Not applicable"}
             </Typography>
             <Typography style={{ marginBottom: "10px" }}>
-              Profession: {row?.metadata?.governmentData?.profession || ""}
+              Profession:{" "}
+              {row?.metadata?.governmentData?.profession || "Not applicable"}
             </Typography>
             <Typography style={{ marginBottom: "10px" }}>
               Address:{" "}
-              {row?.metadata?.governmentData?.residence_AddressLine1 || ""}
+              {row?.metadata?.governmentData?.residence_AddressLine1 ||
+                "Not applicable"}
             </Typography>
             <Typography style={{ marginBottom: "10px" }}>
               Date:{" "}
