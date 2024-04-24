@@ -3,6 +3,8 @@
   "version": "5.0.0",
   "private": true,
   "dependencies": {
+    "@cloudinary/react": "^1.13.0",
+    "@cloudinary/url-gen": "^1.19.0",
     "@emotion/cache": "11.6.0",
     "@emotion/react": "11.7.0",
     "@emotion/server": "11.4.0",
@@ -37,6 +39,7 @@
     "next": "^13.0.6",
     "next-auth": "^4.24.5",
     "next-redux-wrapper": "^8.0.0",
+    "node-fetch": "^3.3.2",
     "numeral": "^2.0.6",
     "pdf-lib": "^1.17.1",
     "prop-types": "15.7.2",

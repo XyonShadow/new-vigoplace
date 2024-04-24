@@ -60,32 +60,6 @@ function AdminSecurity() {
     confirmPin: "",
   });
 
-  // State variables for user creation
-  const [newUserData, setNewUserData] = useState({
-    username: "",
-    email: "",
-    dob: "",
-    password: "",
-    fullname: "",
-  });
-
-  // State variable for user role
-  const [userRole, setUserRole] = useState("user");
-
-  // Handler for updating user data
-  const handleUserDataChange = (e) => {
-    const { name, value } = e.target;
-    setNewUserData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  // Handler for updating user role
-  const handleUserRoleChange = (e) => {
-    setUserRole(e.target.value);
-  };
-
   const handlePassword = (event) => {
     setPassword({
       ...password,
@@ -156,56 +130,6 @@ function AdminSecurity() {
     },
   });
 
-  const createUser = async (userData) => {
-    try {
-      const response = await axios.post(
-        //"https://vigoplace.com/server/api/admin/auth/register/user",
-        "http://localhost:4000/api/admin/auth/register/user",
-        userData,
-        {
-          headers: {
-            Authorization: user?.token,
-          },
-        }
-      );
-      return response.data;
-    } catch (error) {
-      throw error.response.data;
-    }
-  };
-
-  const createUserMutation = useMutation({
-    mutationKey: ["createUser"],
-    mutationFn: createUser,
-    onError: async (error) => {
-      console.error("Error creating user:", error);
-      setCreateToast({ ...createToast, error: true });
-      // Handle error feedback if needed
-    },
-    onSuccess: (data) => {
-      console.log("User created successfully:", data);
-      setCreateToast({ ...createToast, success: true });
-      // Handle success feedback if needed
-      setNewUserData({
-        username: "",
-        email: "",
-        dob: "",
-        password: "",
-        fullname: "",
-      });
-      setUserRole("user");
-    },
-  });
-
-  const handleCreateUser = () => {
-    // Prepare user data from state
-    const userData = {
-      ...newUserData,
-      role: userRole,
-    };
-    createUserMutation.mutate(userData);
-  };
-
   const handleClose = (event, reason) => {
     setPinToast({ error: false, success: false });
     setPasswordToast({ error: false, success: false });
@@ -253,27 +177,6 @@ function AdminSecurity() {
       >
         <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
           {updatePasswordMutation?.data?.data?.message}
-        </Alert>
-      </Snackbar>
-
-      <Snackbar
-        TransitionComponent={Slide}
-        open={createToast.error}
-        autoHideDuration={6000}
-        onClose={handleClose}
-      >
-        <Alert onClose={handleClose} severity="warning" sx={{ width: "100%" }}>
-          {createUserMutation.error?.message}
-        </Alert>
-      </Snackbar>
-      <Snackbar
-        TransitionComponent={Slide}
-        open={createToast.success}
-        autoHideDuration={6000}
-        onClose={handleClose}
-      >
-        <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
-          {createUserMutation?.data?.message}
         </Alert>
       </Snackbar>
       <Box
@@ -420,115 +323,11 @@ function AdminSecurity() {
                     updatePinMutation.mutate(approval);
                   }}
                 >
-                  Update
+                  Create
                 </LoadingButton>
               </Box>
             </Card>
             {/* </form> */}
-          </Box>
-        </Container>
-
-        <Container maxWidth="lg">
-          <Box sx={{ pt: 3 }}>
-            <Card>
-              <CardHeader title="Create User" />
-              <Divider />
-              <CardContent>
-                {/* Username */}
-                <TextField
-                  fullWidth
-                  label="Username"
-                  margin="normal"
-                  name="username"
-                  onChange={handleUserDataChange}
-                  value={newUserData.username}
-                  variant="outlined"
-                />
-
-                {/* Email */}
-                <TextField
-                  fullWidth
-                  label="Email"
-                  margin="normal"
-                  name="email"
-                  onChange={handleUserDataChange}
-                  value={newUserData.email}
-                  variant="outlined"
-                />
-
-                {/* Date of Birth */}
-                <TextField
-                  fullWidth
-                  label="Date of Birth"
-                  margin="normal"
-                  name="dob"
-                  type="date"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  onChange={handleUserDataChange}
-                  value={newUserData.dob}
-                  variant="outlined"
-                />
-
-                {/* Password */}
-                <TextField
-                  fullWidth
-                  label="Password"
-                  margin="normal"
-                  name="password"
-                  onChange={handleUserDataChange}
-                  type="password"
-                  value={newUserData.password}
-                  variant="outlined"
-                />
-
-                {/* Full Name */}
-                <TextField
-                  fullWidth
-                  label="Full Name"
-                  margin="normal"
-                  name="fullname"
-                  onChange={handleUserDataChange}
-                  value={newUserData.fullname}
-                  variant="outlined"
-                />
-
-                {/* User Role (if applicable) */}
-                {/* If you want to allow the admin to select user role */}
-                <FormControl fullWidth variant="outlined" margin="normal">
-                  <InputLabel>User Role</InputLabel>
-                  <Select
-                    value={userRole}
-                    onChange={handleUserRoleChange}
-                    label="User Role"
-                  >
-                    <MenuItem value="user">User</MenuItem>
-                    <MenuItem value="admin">Admin</MenuItem>
-                    {/* Add other roles as needed */}
-                  </Select>
-                </FormControl>
-
-                <Divider />
-                {/* Button to create user */}
-                <Box sx={{ display: "flex", justifyContent: "flex-end", p: 2 }}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleCreateUser}
-                    disabled={
-                      !newUserData.username ||
-                      !newUserData.email ||
-                      !newUserData.dob ||
-                      !newUserData.password ||
-                      !newUserData.fullname
-                    }
-                  >
-                    Create User
-                  </Button>
-                </Box>
-              </CardContent>
-            </Card>
           </Box>
         </Container>
       </Box>

@@ -116,7 +116,7 @@ const Users = () => {
         }
       );
 
-      console.log(data);
+      //console.log(data);
       setData({
         followerCount: data?.data?.followerCount || [],
         postCount: data?.data?.postCount || [],
