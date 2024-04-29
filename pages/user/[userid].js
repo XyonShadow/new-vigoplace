@@ -77,6 +77,7 @@ import Followers from "./followers";
 import Notification from "./notification";
 import Kyc from "./kyc";
 import Transaction from "./transaction";
+import Tickets from "./ticket";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -2213,6 +2214,7 @@ const Users = () => {
                 <Tab label="Followers" {...a11yProps(5)} />
                 <Tab label="Notifications" {...a11yProps(6)} />
                 <Tab label="Kyc" {...a11yProps(7)} />
+                <Tab label="Tickets" {...a11yProps(8)} />
               </Tabs>
             </Box>
 
@@ -2317,6 +2319,20 @@ const Users = () => {
                     <Divider />
                     <CardContent>
                       <Kyc />
+                    </CardContent>
+                  </Card>
+                </form>
+              </Box>
+            </TabPanel>
+
+            <TabPanel value={tabValue} index={8}>
+              <Box sx={{ pt: 3 }}>
+                <form>
+                  <Card>
+                    <CardHeader subheader="" title="User Tickets" />
+                    <Divider />
+                    <CardContent>
+                      <Tickets />
                     </CardContent>
                   </Card>
                 </form>

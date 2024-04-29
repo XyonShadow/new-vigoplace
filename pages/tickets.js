@@ -7,6 +7,9 @@ import {
   Paper,
   Tab,
   Tooltip,
+  Box,
+  Tabs,
+  Grid,
 } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import axios from "axios";
@@ -14,6 +17,7 @@ import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { format } from "date-fns";
+import PropTypes from "prop-types";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import {
   QueryClient,
@@ -25,6 +29,39 @@ import {
 import { useSession } from "next-auth/react";
 import { Button, MenuItem, Typography } from "@mui/material";
 import { useRouter } from "next/router";
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+  };
+}
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 function Tickets() {
   const router = useRouter();
@@ -39,17 +76,32 @@ function Tickets() {
     pageIndex: 0,
     pageSize: 10,
   });
+  const [pagination1, setPagination1] = React.useState({
+    pageIndex: 0,
+    pageSize: 10,
+  });
   const [gender, setGender] = React.useState("");
   const [status, setStatus] = React.useState("");
   const [isVerified, setIsverified] = React.useState("");
   const [ticketType, setTicketType] = React.useState("unassigned");
+  const [ticketType1, setTicketType1] = React.useState("unassigned");
   const [rowSelection, setRowSelection] = React.useState({});
   const [datalenght, setDatalenght] = useState(0);
+  const [datalenght1, setDatalenght1] = useState(0);
+  const [tabValue, setTabValue] = React.useState(0);
 
   //console.log({ rowSelection });
   useEffect(() => {
     setPagination({ ...pagination, pageIndex: 0 });
   }, [columnFilters]);
+
+  useEffect(() => {
+    setPagination1({ ...pagination1, pageIndex: 0 });
+  }, [columnFilters]);
+
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
 
   const columns = useMemo(
     () => [
@@ -105,7 +157,8 @@ function Tickets() {
       {
         accessorKey: "message",
         Cell: ({ cell }) => {
-          const message = cell?.row?.original?.message || "";
+          const message =
+            cell?.row?.original?.message || cell?.row?.original?.description;
 
           let words;
           if (message.includes("||")) {
@@ -240,6 +293,67 @@ function Tickets() {
     }
   );
 
+  const {
+    data: data1,
+    isError: isError1,
+    isFetching: isFetching1,
+    isLoading: isLoading1,
+    refetch: refetch1,
+  } = useQuery(
+    [
+      "fetchClosedTickets",
+      columnFilters, //refetch when columnFilters changes
+      globalFilter, //refetch when globalFilter changes
+      pagination1.pageIndex, //refetch when pagination.pageIndex changes
+      pagination1.pageSize, //refetch when pagination.pageSize changes
+      sorting, //refetch when sorting changes
+      gender,
+      status,
+      isVerified,
+      ticketType1,
+    ],
+    async () => {
+      const { data } = await axios.get(
+        `https://vigoplace.com/server/api/admin/tickets/${ticketType1}/close?limit=${1000}${
+          columnFilters?.length >= 1
+            ? `&search=${JSON.stringify(columnFilters)}`
+            : ""
+        }`,
+        // `http://localhost:4000/api/admin/tickets/${ticketType}?limit=${1000}${
+        //   columnFilters?.length >= 1
+        //     ? `&search=${JSON.stringify(columnFilters)}`
+        //     : ""
+        // }`,
+
+        {
+          headers: {
+            Authorization: user?.token,
+          },
+        }
+      );
+
+      //console.log(data);
+
+      setDatalenght1(data?.count?.total);
+
+      const sortedData = data?.data?.results?.sort(
+        (a, b) => Date.parse(b.date) - Date.parse(a.date)
+      );
+      const paginatedData = sortedData.slice(
+        pagination1.pageIndex * pagination1.pageSize,
+        (pagination1.pageIndex + 1) * pagination1.pageSize
+      );
+
+      return paginatedData;
+    },
+    {
+      onError: (err) => {
+        console.log(err, "err fetching closed users tickets");
+      },
+      enabled: !!user?.token,
+    }
+  );
+
   const handleTicketType = (event) => {
     setTicketType(event.target.value);
   };
@@ -254,98 +368,236 @@ function Tickets() {
 
   return (
     <>
-      <MaterialReactTable
-        columns={columns}
-        data={data ?? []}
-        // enableColumnFilterModes
-        // enableColumnOrdering
-        // enableGrouping
-        // enablePinning
+      <Grid
+        container
+        spacing={0}
+        // xs={12}
+        // lg={12}
+        sx={{
+          display: "flex",
+          background: "",
+          justifyContent: "center",
+          flexWrap: "wrap",
+        }}
+      >
+        <Grid item sm={12} xs={12} lg={12}>
+          <Box sx={{ width: "100%" }}>
+            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+              <Tabs
+                value={tabValue}
+                onChange={handleTabChange}
+                textColor="inherit"
+                centered
+                scrollButtons="auto"
+                aria-label=""
+              >
+                <Tab label="Open Tickets" {...a11yProps(0)} />
+                <Tab label="Closed Tickets" {...a11yProps(1)} />
+              </Tabs>
+            </Box>
 
-        // enableRowActions
-        enableStickyHeader
-        enableStickyFooter
-        manualPagination
-        onPaginationChange={setPagination}
-        rowCount={datalenght ?? 0}
-        onColumnFiltersChange={setColumnFilters}
-        onGlobalFilterChange={setGlobalFilter}
-        initialState={{ showColumnFilters: false }}
-        positionToolbarAlertBanner="bottom"
-        enableGlobalFilter={false}
-        muiToolbarAlertBannerProps={
-          isError
-            ? {
-                color: "error",
-                children:
-                  "Error loading data, Please use the refresh button on the table to retry",
-              }
-            : undefined
-        }
-        onRowSelectionChange={setRowSelection}
-        muiTableBodyRowProps={({ row }) => ({
-          onClick: async () => {
-            if (row.original.isRead === 0) {
-              try {
-                await axios.put(
-                  `https://vigoplace.com/server/api/admin/ticket/${row.original.ticketId}`,
-                  {
-                    isRead: 1,
-                  },
-                  {
-                    headers: {
-                      Authorization: user?.token,
-                    },
+            <TabPanel value={tabValue} index={0}>
+              <Box sx={{ pt: 3 }}>
+                <MaterialReactTable
+                  columns={columns}
+                  data={data ?? []}
+                  // enableColumnFilterModes
+                  // enableColumnOrdering
+                  // enableGrouping
+                  // enablePinning
+
+                  // enableRowActions
+                  enableStickyHeader
+                  enableStickyFooter
+                  manualPagination
+                  onPaginationChange={setPagination}
+                  rowCount={datalenght ?? 0}
+                  onColumnFiltersChange={setColumnFilters}
+                  onGlobalFilterChange={setGlobalFilter}
+                  initialState={{ showColumnFilters: false }}
+                  positionToolbarAlertBanner="bottom"
+                  enableGlobalFilter={false}
+                  muiToolbarAlertBannerProps={
+                    isError
+                      ? {
+                          color: "error",
+                          children:
+                            "Error loading data, Please use the refresh button on the table to retry",
+                        }
+                      : undefined
                   }
-                );
+                  onRowSelectionChange={setRowSelection}
+                  muiTableBodyRowProps={({ row }) => ({
+                    onClick: async () => {
+                      if (row.original.isRead === 0) {
+                        try {
+                          await axios.put(
+                            `https://vigoplace.com/server/api/admin/ticket/${row.original.ticketId}`,
+                            {
+                              isRead: 1,
+                            },
+                            {
+                              headers: {
+                                Authorization: user?.token,
+                              },
+                            }
+                          );
 
-                queryClient.invalidateQueries("fetchTicketss");
-              } catch (error) {
-                console.error("Error updating isRead:", error);
-              }
-            }
-            router.push(`/tickets/${row.original.ticketId}`);
-          },
-          sx: { cursor: "pointer" },
-        })}
-        renderTopToolbarCustomActions={({ table }) => {
-          return (
-            <div style={{ display: "flex", gap: "0.5rem" }}>
-              <Tooltip arrow title="Refresh Data">
-                <IconButton onClick={() => refetch()}>
-                  <RefreshIcon />
-                </IconButton>
-              </Tooltip>
+                          queryClient.invalidateQueries("fetchTicketss");
+                        } catch (error) {
+                          console.error("Error updating isRead:", error);
+                        }
+                      }
+                      router.push(`/tickets/${row.original.ticketId}`);
+                    },
+                    sx: { cursor: "pointer" },
+                  })}
+                  renderTopToolbarCustomActions={({ table }) => {
+                    return (
+                      <div style={{ display: "flex", gap: "0.5rem" }}>
+                        <Tooltip arrow title="Refresh Data">
+                          <IconButton onClick={() => refetch()}>
+                            <RefreshIcon />
+                          </IconButton>
+                        </Tooltip>
 
-              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                <InputLabel id="demo-simple-select-standard-label">
-                  Ticket State
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-standard-label"
-                  id="demo-simple-select-standard"
-                  value={ticketType}
-                  defaultValue="unassigned"
-                  onChange={handleTicketType}
-                  label="Ticket State"
-                >
-                  <MenuItem value=""></MenuItem>
-                  <MenuItem value={"unassigned"}>Unassigned</MenuItem>
-                  <MenuItem value={"assigned"}>Assigned</MenuItem>
-                </Select>
-              </FormControl>
-            </div>
-          );
-        }}
-        state={{
-          isLoading,
-          showAlertBanner: isError,
-          showProgressBars: isFetching,
-          pagination,
-          rowSelection,
-        }}
-        muiTableContainerProps={{ sx: { height: "75vh" } }}
-      />
+                        <FormControl
+                          variant="standard"
+                          sx={{ m: 1, minWidth: 120 }}
+                        >
+                          <InputLabel id="demo-simple-select-standard-label">
+                            Ticket State
+                          </InputLabel>
+                          <Select
+                            labelId="demo-simple-select-standard-label"
+                            id="demo-simple-select-standard"
+                            value={ticketType}
+                            defaultValue="unassigned"
+                            onChange={handleTicketType}
+                            label="Ticket State"
+                          >
+                            <MenuItem value=""></MenuItem>
+                            <MenuItem value={"unassigned"}>Unassigned</MenuItem>
+                            <MenuItem value={"assigned"}>Assigned</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </div>
+                    );
+                  }}
+                  state={{
+                    isLoading,
+                    showAlertBanner: isError,
+                    showProgressBars: isFetching,
+                    pagination,
+                    rowSelection,
+                  }}
+                  muiTableContainerProps={{ sx: { height: "75vh" } }}
+                />
+              </Box>
+            </TabPanel>
+
+            <TabPanel value={tabValue} index={1}>
+              <Box sx={{ pt: 3 }}>
+                <MaterialReactTable
+                  columns={columns}
+                  data={data1 ?? []}
+                  // enableColumnFilterModes
+                  // enableColumnOrdering
+                  // enableGrouping
+                  // enablePinning
+
+                  // enableRowActions
+                  enableStickyHeader
+                  enableStickyFooter
+                  manualPagination
+                  onPaginationChange={setPagination1}
+                  rowCount={datalenght1 ?? 0}
+                  onColumnFiltersChange={setColumnFilters}
+                  onGlobalFilterChange={setGlobalFilter}
+                  initialState={{ showColumnFilters: false }}
+                  positionToolbarAlertBanner="bottom"
+                  enableGlobalFilter={false}
+                  muiToolbarAlertBannerProps={
+                    isError
+                      ? {
+                          color: "error",
+                          children:
+                            "Error loading data, Please use the refresh button on the table to retry",
+                        }
+                      : undefined
+                  }
+                  onRowSelectionChange={setRowSelection}
+                  muiTableBodyRowProps={({ row }) => ({
+                    onClick: async () => {
+                      if (row.original.isRead === 0) {
+                        try {
+                          await axios.put(
+                            `https://vigoplace.com/server/api/admin/ticket/${row.original.ticketId}`,
+                            {
+                              isRead: 1,
+                            },
+                            {
+                              headers: {
+                                Authorization: user?.token,
+                              },
+                            }
+                          );
+
+                          queryClient.invalidateQueries("fetchTicketss");
+                        } catch (error) {
+                          console.error("Error updating isRead:", error);
+                        }
+                      }
+                      router.push(`/tickets/${row.original.ticketId}`);
+                    },
+                    sx: { cursor: "pointer" },
+                  })}
+                  renderTopToolbarCustomActions={({ table }) => {
+                    return (
+                      <div style={{ display: "flex", gap: "0.5rem" }}>
+                        <Tooltip arrow title="Refresh Data">
+                          <IconButton onClick={() => refetch1()}>
+                            <RefreshIcon />
+                          </IconButton>
+                        </Tooltip>
+
+                        <FormControl
+                          variant="standard"
+                          sx={{ m: 1, minWidth: 120 }}
+                        >
+                          <InputLabel id="demo-simple-select-standard-label">
+                            Ticket State
+                          </InputLabel>
+                          <Select
+                            labelId="demo-simple-select-standard-label"
+                            id="demo-simple-select-standard"
+                            value={ticketType}
+                            defaultValue="unassigned"
+                            onChange={handleTicketType}
+                            label="Ticket State"
+                          >
+                            <MenuItem value=""></MenuItem>
+                            <MenuItem value={"unassigned"}>Unassigned</MenuItem>
+                            <MenuItem value={"assigned"}>Assigned</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </div>
+                    );
+                  }}
+                  state={{
+                    isLoading1,
+                    showAlertBanner: isError1,
+                    showProgressBars: isFetching1,
+                    pagination1,
+                    rowSelection,
+                  }}
+                  muiTableContainerProps={{ sx: { height: "75vh" } }}
+                />
+              </Box>
+            </TabPanel>
+          </Box>
+        </Grid>
+      </Grid>
     </>
   );
 }
