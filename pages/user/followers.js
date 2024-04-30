@@ -83,7 +83,7 @@ export default function Followers() {
       const url = `${API_BASE_URL}/api/admin/console/followers?userId=${userid}&perPage=${
         pagination.pageSize
       }&page=${
-        pagination.pageIndex
+        pagination.pageIndex + 1
       }&followRequestStart=${startFollowerDate}&followRequestEnd=${endFollowerDate}&userCreatedAtStart=${startUserDate}&userCreatedAtEnd=${endUserDate}&search=${globalFilter}`;
 
       const { data } = await axios.get(url, {
@@ -92,7 +92,7 @@ export default function Followers() {
         },
       });
 
-      console.log(data);
+      //console.log(data);
       setFollowers(data?.data?.followers);
       setFollowerCount(data?.data?.totalFollowers);
     } catch (err) {
@@ -240,7 +240,9 @@ export default function Followers() {
     if (allInputsCleared) {
       fetchUserFollowers();
     }
-  }, [startUserDate, endUserDate, startFollowerDate, endFollowerDate]);  
+  }, [startUserDate, endUserDate, startFollowerDate, endFollowerDate, pagination]); 
+  
+  console.log(pagination)
   
 
   const columns = useMemo(

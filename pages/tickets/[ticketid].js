@@ -459,6 +459,29 @@ export const Chat = ({ messages, ticket, userDetails }) => {
     },
   });
 
+  const close = async ({ ticketId }) => {
+    const closeTicket = await axios.post(
+      //"http://localhost:4000/api/admin/ticket/close",
+      "https://vigoplace.com/server/api/admin/ticket/close",
+      { ticketId },
+      {
+        headers: {
+          Authorization: user?.token,
+        },
+      }
+    );
+    return closeTicket;
+  };
+
+  const closeMutation = useMutation({
+    mutationKey: ["closeTicket"],
+    mutationFn: close,
+    onSuccess: () => {
+      queryClient.invalidateQueries("fetchTicket");
+    },
+    onError: async (error) => {},
+  });
+
   const handleChat = (event) => {
     setChatMessage(event.target.value);
   };
@@ -495,7 +518,7 @@ export const Chat = ({ messages, ticket, userDetails }) => {
           <Avatar
             alt=""
             src={ticket?.data?.userphoto}
-            sx={{ marginRight: "40px" }}
+            sx={{ marginRight: "20px" }}
           />
           <a
             href={`/user/${ticket?.data?.userId}`}
@@ -507,6 +530,7 @@ export const Chat = ({ messages, ticket, userDetails }) => {
               textDecoration: "none",
               fontWeight: "bold",
               cursor: "pointer",
+              marginRight: "auto",
             }}
           >
             <Typography
@@ -519,6 +543,19 @@ export const Chat = ({ messages, ticket, userDetails }) => {
               {userDetails?.data?.user?.fullname}
             </Typography>
           </a>
+          {ticket?.data?.status !== "closed" && (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                closeMutation.mutate({
+                  ticketId: ticket.data.ticketId,
+                });
+              }}
+            >
+              Close Ticket
+            </Button>
+          )}
         </Grid>
         <Divider variant="fullWidth" orientation="horizontal" />
       </Grid>

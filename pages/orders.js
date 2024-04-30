@@ -57,7 +57,7 @@ export default function Orders() {
     setIsLoading(true);
     try {
       const { data } = await axios.get(
-        `${API_BASE_URL}/api/admin/console/users/orders?status=${status}&perPage=${pagination.pageSize}&page=${pagination.pageIndex}&search=${globalFilter}`,
+        `${API_BASE_URL}/api/admin/console/users/orders?status=${status}&perPage=${pagination.pageSize}&page=${pagination.pageIndex + 1}&search=${globalFilter}`,
         {
           headers: {
             Authorization: user?.token,

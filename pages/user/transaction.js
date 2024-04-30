@@ -41,7 +41,7 @@ export default function Transaction() {
     setIsLoading(true);
     try {
       const { data } = await axios.get(
-        `${API_BASE_URL}/api/admin/console/users/transactions?userId=${userid}&perPage=${pagination.pageSize}&page=${pagination.pageIndex}&search=${globalFilter}`,
+        `${API_BASE_URL}/api/admin/console/users/transactions?userId=${userid}&perPage=${pagination.pageSize}&page=${pagination.pageIndex + 1}&search=${globalFilter}`,
         {
           headers: {
             Authorization: user?.token,

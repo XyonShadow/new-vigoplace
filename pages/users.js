@@ -844,7 +844,7 @@ const Users = () => {
               >
                 <Link
                   target="_blank"
-                  href={`https://web.vigoplace.com/profile/${row.original.id}?adt=${user?.token}`}
+                  href={`https://web.vigoplace.com/visited_profile?userPlaceId=1&userId=${row.original.id}`}
                 >
                   vigoplace web profile
                 </Link>

@@ -19,6 +19,8 @@ import {
 import { useSession } from "next-auth/react";
 import FeatherIcon from "feather-icons-react";
 import LogoIcon from "../logo/LogoIcon";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Menuitems from "./MenuItems";
 import Buynow from "./Buynow";
 import { useRouter } from "next/router";
@@ -39,10 +41,16 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
   });
   const { unreadTicketsCount } = useUnreadTickets();
   const [storedRoutes, setStoredRoutes] = React.useState([]);
-  //console.log(storedRoutes)
+  const [openDropdown, setOpenDropdown] = React.useState(null);
 
+  //console.log(storedRoutes)
   //const { data: fetchedRoles, isLoading, isFetching } = useRouteRoles();
   //console.log(fetchedRoles);
+
+  const handleClicks = (itemId) => {
+    setOpenDropdown((prevOpen) => (prevOpen === itemId ? null : itemId));
+  };
+
   const fetchedRoles = [
     {
       id: 1,
@@ -64,24 +72,91 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
     },
     {
       id: 3,
-      title: "Payouts",
-      icon: "dollar-sign",
-      href: "/payouts",
+      title: "Transactions",
+      icon: "dollar-sign", 
+      href: "", 
       roles: ["admin", "root"],
-      SCPCreatedAt: "2022-12-19T06:46:44.000Z",
+      SCPCreatedAt: "2024-04-29T00:00:00.000Z",
       SCPUpdatedAt: null,
+      subLinks: [
+        {
+          id: 4,
+          title: "Payouts",
+          icon: "dollar-sign",
+          href: "/payouts",
+          roles: ["admin", "root"],
+          SCPCreatedAt: "2022-12-19T06:46:44.000Z",
+          SCPUpdatedAt: null,
+        },
+        {
+          id: 5,
+          title: "Earnings",
+          icon: "credit-card",
+          href: "/earnings",
+          roles: ["admin", "root"],
+          SCPCreatedAt: "2023-11-28T10:16:47.000Z",
+          SCPUpdatedAt: null,
+        },
+      ],
     },
+    // {
+    //   id: 3,
+    //   title: "Payouts",
+    //   icon: "dollar-sign",
+    //   href: "/payouts",
+    //   roles: ["admin", "root"],
+    //   SCPCreatedAt: "2022-12-19T06:46:44.000Z",
+    //   SCPUpdatedAt: null,
+    // },
     {
-      id: 4,
+      id: 6, 
       title: "Users",
       icon: "users",
-      href: "/users",
+      href: "", 
       roles: ["admin", "root"],
-      SCPCreatedAt: "2022-12-19T06:46:44.000Z",
+      SCPCreatedAt: "2024-04-29T00:00:00.000Z",
       SCPUpdatedAt: null,
+      subLinks: [
+        {
+          id: 7,
+          title: "Users",
+          icon: "users",
+          href: "/users",
+          roles: ["admin", "root"],
+          SCPCreatedAt: "2022-12-19T06:46:44.000Z",
+          SCPUpdatedAt: null,
+        },
+        {
+          id: 8,
+          title: "Admin-Users",
+          icon: "users",
+          href: "/admin-users",
+          roles: ["admin", "root"],
+          SCPCreatedAt: "2024-04-17T10:17:02.000Z",
+          SCPUpdatedAt: null,
+        },
+        {
+          id: 9,
+          title: "Users-Statistics",
+          icon: "activity",
+          href: "/user-statistics",
+          roles: ["admin", "root"],
+          SCPCreatedAt: "2024-01-27T10:17:02.000Z",
+          SCPUpdatedAt: null,
+        },
+      ],
     },
+    // {
+    //   id: 4,
+    //   title: "Users",
+    //   icon: "users",
+    //   href: "/users",
+    //   roles: ["admin", "root"],
+    //   SCPCreatedAt: "2022-12-19T06:46:44.000Z",
+    //   SCPUpdatedAt: null,
+    // },
     {
-      id: 5,
+      id: 10,
       title: "Settings",
       icon: "settings",
       href: "/settings",
@@ -89,17 +164,17 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
       SCPCreatedAt: "2022-12-19T06:46:44.000Z",
       SCPUpdatedAt: null,
     },
+    // {
+    //   id: 6,
+    //   title: "Admin-Users",
+    //   icon: "users",
+    //   href: "/admin-users",
+    //   roles: ["admin", "root"],
+    //   SCPCreatedAt: "2024-04-17T10:17:02.000Z",
+    //   SCPUpdatedAt: null,
+    // },
     {
-      id: 6,
-      title: "Admin-Users",
-      icon: "users",
-      href: "/admin-users",
-      roles: ["admin", "root"],
-      SCPCreatedAt: "2024-04-17T10:17:02.000Z",
-      SCPUpdatedAt: null,
-    },
-    {
-      id: 7,
+      id: 11,
       title: "Activity Logs",
       icon: "activity",
       href: "/logs",
@@ -108,16 +183,45 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
       SCPUpdatedAt: null,
     },
     {
-      id: 8,
-      title: "Paystack",
-      icon: "dollar-sign",
-      href: "/paystack",
-      roles: ["admin", "superAdmin", "root"],
-      SCPCreatedAt: "2023-02-03T11:21:15.000Z",
+      id: 12, 
+      title: "Payments",
+      icon: "dollar-sign", 
+      href: "", 
+      roles: ["admin", "root"],
+      SCPCreatedAt: "2024-04-29T00:00:00.000Z", 
       SCPUpdatedAt: null,
+      subLinks: [
+        {
+          id: 13,
+          title: "Paystack",
+          icon: "dollar-sign",
+          href: "/paystack",
+          roles: ["admin", "superAdmin", "root"],
+          SCPCreatedAt: "2023-02-03T11:21:15.000Z",
+          SCPUpdatedAt: null,
+        },
+        {
+          id: 14,
+          title: "Stripe",
+          icon: "dollar-sign",
+          href: "/stripe",
+          roles: ["admin", "root"],
+          SCPCreatedAt: "2023-08-24T12:35:04.000Z",
+          SCPUpdatedAt: null,
+        },
+      ],
     },
+    // {
+    //   id: 8,
+    //   title: "Paystack",
+    //   icon: "dollar-sign",
+    //   href: "/paystack",
+    //   roles: ["admin", "superAdmin", "root"],
+    //   SCPCreatedAt: "2023-02-03T11:21:15.000Z",
+    //   SCPUpdatedAt: null,
+    // },
     {
-      id: 9,
+      id: 15,
       title: "Promo",
       icon: "dollar-sign",
       href: "promo",
@@ -126,7 +230,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
       SCPUpdatedAt: null,
     },
     {
-      id: 10,
+      id: 16,
       title: "Post categorization",
       icon: "file-plus",
       href: "/post-categorization",
@@ -134,26 +238,26 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
       SCPCreatedAt: "2023-07-11T06:35:41.000Z",
       SCPUpdatedAt: null,
     },
+    // {
+    //   id: 11,
+    //   title: "Stripe",
+    //   icon: "dollar-sign",
+    //   href: "/stripe",
+    //   roles: ["admin", "root"],
+    //   SCPCreatedAt: "2023-08-24T12:35:04.000Z",
+    //   SCPUpdatedAt: null,
+    // },
+    // {
+    //   id: 12,
+    //   title: "Earnings",
+    //   icon: "credit-card",
+    //   href: "/earnings",
+    //   roles: ["admin", "root"],
+    //   SCPCreatedAt: "2023-11-28T10:16:47.000Z",
+    //   SCPUpdatedAt: null,
+    // },
     {
-      id: 11,
-      title: "Stripe",
-      icon: "dollar-sign",
-      href: "/stripe",
-      roles: ["admin", "root"],
-      SCPCreatedAt: "2023-08-24T12:35:04.000Z",
-      SCPUpdatedAt: null,
-    },
-    {
-      id: 12,
-      title: "Earnings",
-      icon: "credit-card",
-      href: "/earnings",
-      roles: ["admin", "root"],
-      SCPCreatedAt: "2023-11-28T10:16:47.000Z",
-      SCPUpdatedAt: null,
-    },
-    {
-      id: 13,
+      id: 17,
       title: "Orders",
       icon: "shopping-cart",
       href: "/orders",
@@ -161,15 +265,16 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
       SCPCreatedAt: "2023-11-28T10:17:02.000Z",
       SCPUpdatedAt: null,
     },
-    {
-      id: 14,
-      title: "Users-Statistics",
-      icon: "activity",
-      href: "/user-statistics",
-      roles: ["admin", "root"],
-      SCPCreatedAt: "2024-01-27T10:17:02.000Z",
-      SCPUpdatedAt: null,
-    },
+
+    // {
+    //   id: 14,
+    //   title: "Users-Statistics",
+    //   icon: "activity",
+    //   href: "/user-statistics",
+    //   roles: ["admin", "root"],
+    //   SCPCreatedAt: "2024-01-27T10:17:02.000Z",
+    //   SCPUpdatedAt: null,
+    // },
   ];
 
   // useEffect(() => {
@@ -396,7 +501,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
         </Box>
 
         <Box mt={2}>
-          <List>
+          {/* <List>
             {sidebarMenu
               ?.filter((item) => item.roles.includes(userInfo?.user.role))
               .map((item, index) => (
@@ -465,6 +570,144 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
                   </NextLink>
                 </List>
               ))}
+          </List> */}
+          <List>
+            {fetchedRoles.map((item, index) => (
+              <React.Fragment key={item.id}>
+                {item.subLinks ? (
+                  <React.Fragment>
+                    <ListItem
+                      button
+                      onClick={() => handleClicks(item.id)}
+                      selected={location === item.href}
+                      sx={{
+                        mb: 1,
+                        color: "white",
+                        textDecoration: "none",
+                        ...(location === item.href && {
+                          color: "white",
+                          backgroundColor: (theme) =>
+                            `${theme.palette.primary.main}!important`,
+                        }),
+                      }}
+                    >
+                      <ListItemIcon>
+                        <FeatherIcon
+                          style={{
+                            color: `${
+                              location === item.href ? "white" : "white"
+                            } `,
+                          }}
+                          icon={item.icon}
+                          width="20"
+                          height="20"
+                        />
+                      </ListItemIcon>
+                      <ListItemText>
+                        {item.title}
+                        {item.href === "/tickets" && unreadTicketsCount > 0 && (
+                          <span
+                            style={{
+                              marginLeft: "5px",
+                              position: "absolute",
+                              top: "2px",
+                              width: "15px",
+                              height: "15px",
+                              borderRadius: "50%",
+                              backgroundColor: "red",
+                              color: "white",
+                              textAlign: "center",
+                              fontSize: "x-small",
+                            }}
+                          >
+                            {unreadTicketsCount}
+                          </span>
+                        )}
+                      </ListItemText>
+                      {openDropdown === item.id ? (
+                        <ExpandLessIcon />
+                      ) : (
+                        <ExpandMoreIcon />
+                      )}
+                    </ListItem>
+                    <Collapse
+                      in={openDropdown === item.id}
+                      timeout="auto"
+                      unmountOnExit
+                    >
+                      <List component="div" disablePadding>
+                        {item.subLinks.map((subItem) => (
+                          <NextLink href={subItem.href} key={subItem.id}>
+                            <ListItem
+                              button
+                              onClick={onSidebarClose}
+                              selected={location === subItem.href}
+                              sx={{
+                                mb: 1,
+                                marginLeft: "35px",
+                                color: "white",
+                                textDecoration: "none",
+                                ...(location === item.href && {
+                                  color: "white",
+                                  backgroundColor: (theme) =>
+                                    `${theme.palette.primary.main}!important`,
+                                }),
+                              }}
+                            >
+                              <ListItemIcon>
+                                <FeatherIcon
+                                  style={{
+                                    color: `${
+                                      location === item.href ? "white" : "white"
+                                    } `,
+                                  }}
+                                  icon={subItem.icon}
+                                  width="20"
+                                  height="20"
+                                />
+                              </ListItemIcon>
+                              <ListItemText>{subItem.title}</ListItemText>
+                            </ListItem>
+                          </NextLink>
+                        ))}
+                      </List>
+                    </Collapse>
+                  </React.Fragment>
+                ) : (
+                  <NextLink href={item.href} key={item.id}>
+                    <ListItem
+                      button
+                      onClick={onSidebarClose}
+                      selected={location === item.href}
+                      sx={{
+                        mb: 1,
+                        color: "white",
+                        textDecoration: "none",
+                        ...(location === item.href && {
+                          color: "white",
+                          backgroundColor: (theme) =>
+                            `${theme.palette.primary.main}!important`,
+                        }),
+                      }}
+                    >
+                      <ListItemIcon>
+                        <FeatherIcon
+                          icon={item.icon}
+                          width="20"
+                          height="20"
+                          style={{
+                            color: `${
+                              location === item.href ? "white" : "white"
+                            } `,
+                          }}
+                        />
+                      </ListItemIcon>
+                      <ListItemText>{item.title}</ListItemText>
+                    </ListItem>
+                  </NextLink>
+                )}
+              </React.Fragment>
+            ))}
           </List>
         </Box>
       </Box>

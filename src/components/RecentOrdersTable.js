@@ -247,12 +247,14 @@ export default function RecentOrdersTable() {
   };
 
   const handlePageChange = (event, newPage) => {
+    console.log(newPage)
     // setPage(newPage);
     setPagination({ ...pagination, pageIndex: newPage });
   };
 
   const handleLimitChange = (event) => {
     // setLimit(parseInt(event.target.value));
+    console.log(event.target.value)
     setPagination({ ...pagination, pageSize: event.target.value });
   };
 
@@ -314,13 +316,17 @@ export default function RecentOrdersTable() {
       // columnFilters, //refetch when columnFilters changes
       // globalFilter, //refetch when globalFilter changes
       // sorting, //refetch when sorting changes
+      pagination.pageIndex, //refetch when pagination.pageIndex changes
+      pagination.pageSize, //refetch when pagination.pageSize changes
       status,
       page,
       limit,
     ],
     async () => {
       const { data } = await axios.get(
-        `${API_BASE_URL}/api/admin/console/payouts/user/${userid}`,
+        `${API_BASE_URL}/api/admin/console/payouts/user/${userid}?perPage=${pagination.pageSize}&page=${pagination.pageIndex}${
+          status !== undefined && status !== null ? `&status=${status}` : ""
+        }`,
         // `http://localhost:3001/api/admin/console/payouts?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${status !== undefined && status !== null ? `&status=${status}` : '' }`,
         {
           headers: {
