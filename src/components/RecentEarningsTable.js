@@ -216,7 +216,7 @@ export default function RecentEarningsTable() {
       const { data } = await axios.get(
         `${API_BASE_URL}/api/admin/console/earnings?perPage=${
           pagination.pageSize
-        }&page=${pagination.pageIndex * pagination.pageSize}${
+        }&page=${pagination.pageIndex + 1}${
           status !== undefined && status !== null ? `&status=${status}` : ""
         }`,
         {
@@ -249,7 +249,9 @@ export default function RecentEarningsTable() {
     ["earningUserRequest", status, page, limit],
     async () => {
       const { data } = await axios.get(
-        `${API_BASE_URL}/api/admin/console/earning/user/${userid}`,
+        `${API_BASE_URL}/api/admin/console/earning/user/${userid}?perPage=${pagination.pageSize}&page=${pagination.pageIndex}${
+          status !== undefined && status !== null ? `&status=${status}` : ""
+        }`,
         // `http://localhost:3001/api/admin/console/payouts?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${status !== undefined && status !== null ? `&status=${status}` : '' }`,
         {
           headers: {
@@ -437,7 +439,7 @@ function Row({ payout, isPayoutSelected }) {
   const approveEarning = async ({ reference, pin, amount }) => {
     const token = await getToken();
     const parsed = await axios.patch(
-      "https://vigoplace.com/server/api/admin/console/earnings/approve",
+      //"https://vigoplace.com/server/api/admin/console/earnings/approve",
       //"http://localhost:4000/api/admin/console/earnings/approve",
       { reference: reference, approvalPin: pin, amount: amount },
       {
@@ -456,6 +458,7 @@ function Row({ payout, isPayoutSelected }) {
       queryClient.invalidateQueries("earningsRequests");
       setPin(null);
       setOpenModal(false);
+      setAmountValue(payout.amount);
     },
     onError: async (error) => {
       setOpenToast(true);
