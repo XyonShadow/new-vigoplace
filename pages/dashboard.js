@@ -218,7 +218,7 @@ export default function Index() {
             <Budget />
           </Grid> */}
 
-            <Grid item lg={3} sm={6} xl={3} xs={12}>
+            <Grid item lg={6} sm={6} xl={6} xs={12}>
               <TotalCustomers
                 title={"Total Users"}
                 count={users?.data?.count ?? 0}
@@ -240,21 +240,21 @@ export default function Index() {
           >
             <TasksProgress />
           </Grid> */}
-            <Grid item xl={3} lg={3} sm={6} xs={12}>
+            <Grid item xl={6} lg={6} sm={6} xs={12}>
               <TotalProfit
                 header={"Paystack"}
                 isLoading={isLoading}
                 balance={paystackBalance?.data?.balance ?? 0}
               />
             </Grid>
-            <Grid item xl={3} lg={3} sm={6} xs={12}>
+            {/* <Grid item xl={3} lg={3} sm={6} xs={12}>
               <TotalProfit
                 header={"Vigo Wallet"}
                 isLoading={vigoWalletLoading}
                 balance={vigoWalletBalance?.data?.amount ?? 0}
               />
-            </Grid>
-            <Grid item xl={3} lg={3} sm={6} xs={12}>
+            </Grid> */}
+            <Grid item xl={12} lg={12} sm={12} xs={12}>
               <TotalProfit
                 header={"Paypal"}
                 currency="usd"
@@ -266,7 +266,7 @@ export default function Index() {
             <Box
               display="flex"
               justifyContent="center"
-              mt={2}
+              mt={5}
               sx={{ marginLeft: "auto", marginRight: "auto" }}
             >
               <Tabs
@@ -329,16 +329,16 @@ export default function Index() {
       </Box>
 
       <Grid container spacing={0}>
-        <Grid item xs={12} lg={12}>
+        {/* <Grid item xs={12} lg={12}>
           <SalesOverview />
-        </Grid>
+        </Grid> */}
         {/* ------------------------- row 1 ------------------------- */}
-        <Grid item xs={12} lg={4}>
+        {/* <Grid item xs={12} lg={4}>
           <DailyActivity />
         </Grid>
         <Grid item xs={12} lg={8}>
           <ProductPerfomance />
-        </Grid>
+        </Grid> */}
         {/* <Grid item xs={12} lg={12}>
         <BlogCard />
       </Grid> */}
