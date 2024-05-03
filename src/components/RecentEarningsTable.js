@@ -439,8 +439,8 @@ function Row({ payout, isPayoutSelected }) {
   const approveEarning = async ({ reference, pin, amount }) => {
     const token = await getToken();
     const parsed = await axios.patch(
-      //"https://vigoplace.com/server/api/admin/console/earnings/approve",
-      "http://localhost:4000/api/admin/console/earnings/approve",
+      "https://vigoplace.com/server/api/admin/console/earnings/approve",
+      //"http://localhost:4000/api/admin/console/earnings/approve",
       { reference: reference, approvalPin: pin, amount: amount },
       {
         headers: {
