@@ -73,8 +73,8 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
     {
       id: 3,
       title: "Transactions",
-      icon: "dollar-sign", 
-      href: "", 
+      icon: "dollar-sign",
+      href: "",
       roles: ["admin", "root"],
       SCPCreatedAt: "2024-04-29T00:00:00.000Z",
       SCPUpdatedAt: null,
@@ -109,10 +109,10 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
     //   SCPUpdatedAt: null,
     // },
     {
-      id: 6, 
+      id: 6,
       title: "Users",
       icon: "users",
-      href: "", 
+      href: "",
       roles: ["admin", "root"],
       SCPCreatedAt: "2024-04-29T00:00:00.000Z",
       SCPUpdatedAt: null,
@@ -183,12 +183,12 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
       SCPUpdatedAt: null,
     },
     {
-      id: 12, 
+      id: 12,
       title: "Payments",
-      icon: "dollar-sign", 
-      href: "", 
+      icon: "dollar-sign",
+      href: "",
       roles: ["admin", "root"],
-      SCPCreatedAt: "2024-04-29T00:00:00.000Z", 
+      SCPCreatedAt: "2024-04-29T00:00:00.000Z",
       SCPUpdatedAt: null,
       subLinks: [
         {
@@ -211,17 +211,17 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
         },
       ],
     },
-    // {
-    //   id: 8,
-    //   title: "Paystack",
-    //   icon: "dollar-sign",
-    //   href: "/paystack",
-    //   roles: ["admin", "superAdmin", "root"],
-    //   SCPCreatedAt: "2023-02-03T11:21:15.000Z",
-    //   SCPUpdatedAt: null,
-    // },
     {
       id: 15,
+      title: "Wallet-Statistics",
+      icon: "activity",
+      href: "/wallet-statistics",
+      roles: ["admin", "superAdmin", "root"],
+      SCPCreatedAt: "2024-05-03T11:21:15.000Z",
+      SCPUpdatedAt: null,
+    },
+    {
+      id: 16,
       title: "Promo",
       icon: "dollar-sign",
       href: "promo",
@@ -230,7 +230,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
       SCPUpdatedAt: null,
     },
     {
-      id: 16,
+      id: 17,
       title: "Post categorization",
       icon: "file-plus",
       href: "/post-categorization",
@@ -257,7 +257,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
     //   SCPUpdatedAt: null,
     // },
     {
-      id: 17,
+      id: 18,
       title: "Orders",
       icon: "shopping-cart",
       href: "/orders",
@@ -645,9 +645,10 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
                               sx={{
                                 mb: 1,
                                 marginLeft: "35px",
+                                width: "80%",
                                 color: "white",
                                 textDecoration: "none",
-                                ...(location === item.href && {
+                                ...(location === subItem.href && {
                                   color: "white",
                                   backgroundColor: (theme) =>
                                     `${theme.palette.primary.main}!important`,
@@ -811,13 +812,9 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
 
       <Drawer
         anchor="right"
-        // open={open}
         open={quickStat.right}
         onClose={toggleDrawer("right", false)}
         variant="temporary"
-        // ModalProps={{
-        //   keepMounted: false,
-        // }}
         PaperProps={{
           sx: {
             width: "265px",

@@ -249,7 +249,9 @@ export default function RecentEarningsTable() {
     ["earningUserRequest", status, page, limit],
     async () => {
       const { data } = await axios.get(
-        `${API_BASE_URL}/api/admin/console/earning/user/${userid}?perPage=${pagination.pageSize}&page=${pagination.pageIndex}${
+        `${API_BASE_URL}/api/admin/console/earning/user/${userid}?perPage=${
+          pagination.pageSize
+        }&page=${pagination.pageIndex}${
           status !== undefined && status !== null ? `&status=${status}` : ""
         }`,
         // `http://localhost:3001/api/admin/console/payouts?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${status !== undefined && status !== null ? `&status=${status}` : '' }`,
@@ -383,9 +385,7 @@ function Row({ payout, isPayoutSelected }) {
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const [openEModal, setOpenEModal] = React.useState(false);
   const [modalData, setModalData] = React.useState(null);
-  const [amountValue, setAmountValue] = useState(
-    payout.amount
-  );
+  const [amountValue, setAmountValue] = useState(payout.amount);
 
   const handleOpenModal = async (userId, categoryId) => {
     try {
@@ -917,6 +917,22 @@ function Row({ payout, isPayoutSelected }) {
                             <DialogTitle>Approve User Earnings</DialogTitle>
                             <DialogContent>
                               <DialogContentText>
+                                You are about to approve the earning amount of{" "}
+                                <span style={{ fontWeight: "bold" }}>
+                                  {amountValue}
+                                  {""}
+                                </span>{" "}
+                                out of {" "}
+                                <span style={{ fontWeight: "bold" }}>
+                                  {
+                                    queryClient.getQueryData([
+                                      "earningRequest",
+                                      payout.Id,
+                                    ])?.data?.earningRequestAmount
+                                  }
+                                  {""}
+                                </span>{" "}.
+                                <br></br>
                                 Please enter your admin approval pin to Approve
                                 this request, if you don't have one yet, head to{" "}
                                 <Link
@@ -974,9 +990,7 @@ function Row({ payout, isPayoutSelected }) {
                                   onClick={() => {
                                     setOpenModal(false);
                                     setPin(null);
-                                    setAmountValue(
-                                      payout.amount
-                                    );
+                                    setAmountValue(payout.amount);
                                   }}
                                 >
                                   Cancel

@@ -45,6 +45,7 @@ export default function Kyc() {
   const [isFetching, setIsFetching] = useState(false);
   const [showData, setShowData] = useState(false);
   const [showData2, setShowData2] = useState(false);
+  const [imageSrc, setImageSrc] = useState("");
 
   const fetchUserKycDetails = async () => {
     setIsFetching(true);
@@ -59,7 +60,7 @@ export default function Kyc() {
         }
       );
 
-      //console.log(data);
+      console.log(data);
       setKyc(data?.data ?? []);
     } catch (err) {
       setIsError(true);
@@ -73,6 +74,29 @@ export default function Kyc() {
   useEffect(() => {
     fetchUserKycDetails();
   }, [userid]);
+
+  const decodeBase64Image = (base64String) => {
+    if (base64String) {
+      const base64Image = base64String.replace(
+        /^data:image\/(png|jpeg|jpg);base64,/,
+        ""
+      );
+      const binaryString = atob(base64Image);
+      const byteArray = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        byteArray[i] = binaryString.charCodeAt(i);
+      }
+      const blob = new Blob([byteArray], { type: "image/jpeg" });
+      const imageUrl = URL.createObjectURL(blob);
+      setImageSrc(imageUrl);
+    }
+  };
+
+  useEffect(() => {
+    if (kyc.length > 0) {
+      decodeBase64Image(kyc[0]?.verifiedData?.entity?.image);
+    }
+  }, [kyc]); 
 
   const generatePDFReceipt = async (kycData) => {
     try {
@@ -397,11 +421,11 @@ export default function Kyc() {
           <Box
             style={{ height: "60vh", marginTop: "20px", marginRight: "30px" }}
           >
-            {row?.metadata?.governmentData?.image_url ? (
+            {imageSrc ? (
               <img
                 alt="User Image"
                 style={{ height: "100%", borderRadius: "4%" }}
-                src={row?.metadata?.governmentData?.image_url}
+                src={imageSrc}
                 loading="lazy"
               />
             ) : (
