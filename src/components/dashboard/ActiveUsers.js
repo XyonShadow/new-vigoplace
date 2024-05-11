@@ -99,9 +99,9 @@ const ActiveUsers = () => {
         enabled: false,
       },
     },
-    dataLabels: {
-      enabled: false,
-    },
+    // dataLabels: {
+    //   enabled: false,
+    // },
     markers: {
       size: 0,
     },
