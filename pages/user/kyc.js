@@ -60,7 +60,7 @@ export default function Kyc() {
         }
       );
 
-      console.log(data);
+      //console.log(data);
       setKyc(data?.data ?? []);
     } catch (err) {
       setIsError(true);

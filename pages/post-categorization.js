@@ -12,7 +12,11 @@ const PostCategorization = () => {
   const [categorizedData, setCategorizedData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isError, setIsError] = useState(null);
-
+  const currentPage2 = useRef(1);
+  const pageSize2 = useRef(10);
+  const [unCategorizedData, setUncategorizedData] = useState([]);
+  // const [uncategorizedDataLoading, setUncategorizedDataLoading] = useState(true);
+  // const [uncategorizedDataError, setaUncategorizedDataError] = useState(true);
 
   // fetch categorized data
   const fetchCatgorizedData = async () => {
@@ -23,8 +27,6 @@ const PostCategorization = () => {
       throw new Error("Failed to fetch data");
     }
     const data = await response.json();
-    //console.log(...data?.data);
-    //setCategorizedData((prev) => [...prev, ...data?.data?.[0]]);
     setCategorizedData((prev) => [...prev, ...data?.data]);
     setLoading(false);
   };
@@ -33,7 +35,26 @@ const PostCategorization = () => {
     fetchCatgorizedData();
   }, []);
 
-   return (
+  const fetchUnCategorizedData = async () => {
+    const response = await fetch(
+      `${API_BASE_URL}/api/admin/uncategorized?page=${currentPage2.current}&PerPage=${pageSize2.current}`
+    );
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error("Failed to fetch data");
+    }
+
+    setUncategorizedData((prev) => [...prev, ...data?.data]);
+    return data.data;
+  };
+
+  const {
+    data: unCatgorizedData,
+    isLoading: uncategorizedDataLoading,
+    error: uncategorizedDataError,
+  } = useQuery(["uncategorizedData"], fetchUnCategorizedData, {});
+
+  return (
     <div>
       <ToastContainer position="top-center" />
       <Postcategorization1
@@ -43,6 +64,12 @@ const PostCategorization = () => {
         currentPage={currentPage}
         fetchCatgorizedData={fetchCatgorizedData}
         setCategorizedData={setCategorizedData}
+        unCategorizedData={unCategorizedData}
+        uncategorizedDataLoading={uncategorizedDataLoading}
+        uncategorizedDataError={uncategorizedDataError}
+        currentPage2={currentPage2}
+        fetchUnCategorizedData={fetchUnCategorizedData}
+        setUncategorizedData={setUncategorizedData}
       />
     </div>
   );

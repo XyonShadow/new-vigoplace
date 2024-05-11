@@ -42,7 +42,11 @@ import {
   CardHeader,
   Button,
 } from "@mui/material";
-
+import { Search as SearchIcon } from "@mui/icons-material";
+import FirstPageIcon from "@mui/icons-material/FirstPage";
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import LastPageIcon from "@mui/icons-material/LastPage";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -84,7 +88,7 @@ const getStatusLabel = (cryptoOrderStatus) => {
     },
     declined: {
       text: "Declined",
-      color: yellow[800],
+      color: red[800],
     },
     cancelled: {
       text: "Cancelled",
@@ -146,26 +150,11 @@ export default function RecentOrdersTable() {
     pageIndex: 0,
     pageSize: 10,
   });
+  const [searchQuery, setSearchQuery] = useState("");
 
-  // const mutation = useApprovePayOut().
-  // const [payoutRId, setPayoutRId] = React.useState(null);
-  // console.log(payoutRId, 'payoutRId');
-
-  // const { isLoading } = useSinglePayoutRequest(payoutRId)
-  // const ab = queryClient.getQueryData(["payoutRequest", 10])
-  // console.log(queryClient.getQueryData(["payoutRequest", 10]).data);
-
-  const fetchSingle = () => {
-    const { data, error, isFetching, isLoading } =
-      useSinglePayoutRequest(payoutRId);
-    // console.log(data, "abc");
-    return data;
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
   };
-
-  // console.log(fetchSingle(), "abc")
-
-  // console.log( {data, error, isFetching, isLoading});
-  // const [open, setOpen] = React.useState(false);
 
   const statusOptions = [
     {
@@ -225,38 +214,15 @@ export default function RecentOrdersTable() {
     });
   };
 
-  const handleSelectAllCryptoOrders = (event) => {
-    // setSelectedCryptoOrders(
-    //   event.target.checked
-    //     ? cryptoOrders.map((cryptoOrder) => cryptoOrder.id)
-    //     : []
-    // );
-  };
-
-  const handleSelectOneCryptoOrder = (event, cryptoOrderId) => {
-    if (!selectedCryptoOrders.includes(cryptoOrderId)) {
-      setSelectedCryptoOrders((prevSelected) => [
-        ...prevSelected,
-        cryptoOrderId,
-      ]);
-    } else {
-      setSelectedCryptoOrders((prevSelected) =>
-        prevSelected.filter((id) => id !== cryptoOrderId)
-      );
-    }
-  };
-
-  const handlePageChange = (event, newPage) => {
-    console.log(newPage)
-    // setPage(newPage);
+  const handlePageChange = (newPage) => {
     setPagination({ ...pagination, pageIndex: newPage });
   };
 
   const handleLimitChange = (event) => {
-    // setLimit(parseInt(event.target.value));
-    console.log(event.target.value)
     setPagination({ ...pagination, pageSize: event.target.value });
   };
+
+  const isUserRoute = router.pathname.startsWith("/user/"); // Check if it's a user route
 
   const {
     data: payouts,
@@ -275,12 +241,13 @@ export default function RecentOrdersTable() {
       status,
       page,
       limit,
+      searchQuery,
     ],
     async () => {
       const { data } = await axios.get(
-        `${API_BASE_URL}/api/admin/console/payouts?limit=${
+        `${API_BASE_URL}/api/admin/console/payouts?perPage=${
           pagination.pageSize
-        }&offset=${pagination.pageIndex * pagination.pageSize}${
+        }&page=${pagination.pageIndex}&search=${searchQuery}${
           status !== undefined && status !== null ? `&status=${status}` : ""
         }`,
         // `http://localhost:3001/api/admin/console/payouts?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${status !== undefined && status !== null ? `&status=${status}` : '' }`,
@@ -304,73 +271,84 @@ export default function RecentOrdersTable() {
     { keepPreviousData: true }
   );
 
-  const {
-    data: userPayouts,
-    isError: userPayoutError,
-    isFetching: userPayoutFetching,
-    isLoading: userPayoutLoading,
-    refetch: userRefetch,
-  } = useQuery(
-    [
-      "payoutUserRequest",
-      // columnFilters, //refetch when columnFilters changes
-      // globalFilter, //refetch when globalFilter changes
-      // sorting, //refetch when sorting changes
-      pagination.pageIndex, //refetch when pagination.pageIndex changes
-      pagination.pageSize, //refetch when pagination.pageSize changes
-      status,
-      page,
-      limit,
-    ],
-    async () => {
-      const { data } = await axios.get(
-        `${API_BASE_URL}/api/admin/console/payouts/user/${userid}?perPage=${pagination.pageSize}&page=${pagination.pageIndex}${
-          status !== undefined && status !== null ? `&status=${status}` : ""
-        }`,
-        // `http://localhost:3001/api/admin/console/payouts?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${status !== undefined && status !== null ? `&status=${status}` : '' }`,
-        {
-          headers: {
-            Authorization: user?.token,
-          },
-        }
-      );
+  let userPayoutsData;
+  if (isUserRoute) {
+    const {
+      data: userPayouts,
+      isError: userPayoutError,
+      isFetching: userPayoutFetching,
+      isLoading: userPayoutLoading,
+      refetch: userRefetch,
+    } = useQuery(
+      [
+        "payoutUserRequest",
+        // columnFilters, //refetch when columnFilters changes
+        // globalFilter, //refetch when globalFilter changes
+        // sorting, //refetch when sorting changes
+        pagination.pageIndex, //refetch when pagination.pageIndex changes
+        pagination.pageSize, //refetch when pagination.pageSize changes
+        status,
+        page,
+        limit,
+        searchQuery,
+      ],
+      async () => {
+        const { data } = await axios.get(
+          `${API_BASE_URL}/api/admin/console/payouts/user/${userid}?perPage=${
+            pagination.pageSize
+          }&page=${pagination.pageIndex}&search=${searchQuery}${
+            status !== undefined && status !== null ? `&status=${status}` : ""
+          }`,
+          // `http://localhost:3001/api/admin/console/payouts?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${status !== undefined && status !== null ? `&status=${status}` : '' }`,
+          {
+            headers: {
+              Authorization: user?.token,
+            },
+          }
+        );
 
-      //console.log(data);
+        //console.log(data);
 
-      return data;
-    },
-    {
-      onError: (err) => {
-        console.log(err, "err fetching this user's payout details");
+        return data;
       },
-      enabled: !!user?.token,
-    },
-    { keepPreviousData: true }
-  );
+      {
+        onError: (err) => {
+          console.log(err, "err fetching this user's payout details");
+        },
+        enabled: !!user?.token,
+      },
+      { keepPreviousData: true }
+    );
 
-  const isUserRoute = router.pathname.startsWith("/user/"); // Check if it's a user route
+    userPayoutsData = userPayouts?.data;
+  }
 
   const dataToUse = isUserRoute
-    ? userPayouts?.data?.payoutRequests
+    ? userPayoutsData?.payoutRequests
     : payouts?.data?.payoutRequests;
 
   const filteredCryptoOrders = applyFilters(dataToUse, filters);
 
-  // const filteredCryptoOrders = applyFilters(
-  //   payouts?.data?.payoutRequests,
-  //   filters
-  // );
-  const paginatedCryptoOrders = applyPagination(
-    filteredCryptoOrders,
-    pagination.pageIndex,
-    pagination.pageSize
+  const handleFirstPage = () => {
+    setPagination({ ...pagination, pageIndex: 0 });
+  };
+
+  // Calculate total pages based on the count of data and rows per page
+  const totalPages = Math.ceil(
+    (isUserRoute ? userPayoutsData?.count ?? 0 : payouts?.data?.count ?? 0) /
+      pagination.pageSize
   );
 
-  const selectedSomeCryptoOrders =
-    selectedCryptoOrders.length > 0 &&
-    selectedCryptoOrders.length < cryptoOrders.length;
-  const selectedAllCryptoOrders =
-    selectedCryptoOrders?.length === payouts?.length;
+  const handleLastPage = () => {
+    setPagination({ ...pagination, pageIndex: totalPages - 1 });
+  };
+
+  const filteredPayouts = filteredCryptoOrders?.filter((payout) =>
+    payout?.payoutRequestReference
+      ?.toLowerCase()
+      .includes(searchQuery?.toLowerCase())
+  );
+
   const theme = useTheme();
 
   return (
@@ -383,15 +361,30 @@ export default function RecentOrdersTable() {
       {!selectedBulkActions && (
         <CardHeader
           action={
-            <Box width={150}>
+            <Box display="flex" alignItems="center" gap={1}>
+              <TextField
+                label="Search"
+                variant="outlined"
+                size="small"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                InputProps={{
+                  endAdornment: (
+                    <IconButton size="small">
+                      <SearchIcon />
+                    </IconButton>
+                  ),
+                }}
+                sx={{ height: "100%", width: "100%" }}
+              />
               <FormControl fullWidth variant="outlined">
                 <InputLabel>Status</InputLabel>
                 <Select
-                  // value={filters.status || "all"}
                   value={status || "all"}
                   onChange={handleStatus}
                   label="Status"
                   autoWidth
+                  sx={{ height: "40px" }}
                 >
                   {statusOptions.map((statusOption) => (
                     <MenuItem key={statusOption.id} value={statusOption.id}>
@@ -420,19 +413,23 @@ export default function RecentOrdersTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredCryptoOrders && filteredCryptoOrders.length > 0 ? (
-              filteredCryptoOrders.map((payout, index) => {
-                const isPayoutSelected = selectedCryptoOrders.includes(
-                  payout.payoutRequestId
-                );
-                return (
-                  <Row
-                    key={index}
-                    payout={payout}
-                    isPayoutSelected={isPayoutSelected}
-                  />
-                );
-              })
+            {(searchQuery ? filteredPayouts : filteredCryptoOrders) &&
+            (searchQuery ? filteredPayouts : filteredCryptoOrders).length >
+              0 ? (
+              (searchQuery ? filteredPayouts : filteredCryptoOrders).map(
+                (payout, index) => {
+                  const isPayoutSelected = selectedCryptoOrders.includes(
+                    payout.payoutRequestId
+                  );
+                  return (
+                    <Row
+                      key={index}
+                      payout={payout}
+                      isPayoutSelected={isPayoutSelected}
+                    />
+                  );
+                }
+              )
             ) : (
               <TableRow>
                 <TableCell colSpan={5}>No records to display</TableCell>
@@ -446,7 +443,7 @@ export default function RecentOrdersTable() {
           component="div"
           count={
             isUserRoute
-              ? userPayouts?.data?.count ?? 0
+              ? userPayoutsData?.count ?? 0
               : payouts?.data?.count ?? 0
           }
           onPageChange={handlePageChange}
@@ -454,6 +451,34 @@ export default function RecentOrdersTable() {
           page={pagination.pageIndex}
           rowsPerPage={pagination.pageSize}
           rowsPerPageOptions={[5, 10, 25, 30]}
+          ActionsComponent={(props) => (
+            <div style={{ display: "flex" }}>
+              <IconButton
+                onClick={handleFirstPage}
+                disabled={pagination.pageIndex === 0}
+              >
+                <FirstPageIcon />
+              </IconButton>
+              <IconButton
+                onClick={() => handlePageChange(pagination.pageIndex - 1)}
+                disabled={pagination.pageIndex === 0}
+              >
+                <NavigateBeforeIcon />
+              </IconButton>
+              <IconButton
+                onClick={() => handlePageChange(pagination.pageIndex + 1)}
+                disabled={pagination.pageIndex >= totalPages - 1}
+              >
+                <NavigateNextIcon />
+              </IconButton>
+              <IconButton
+                onClick={handleLastPage}
+                disabled={pagination.pageIndex >= totalPages - 1}
+              >
+                <LastPageIcon />
+              </IconButton>
+            </div>
+          )}
         />
       </Box>
     </Card>
@@ -598,7 +623,14 @@ function Row({ payout, isPayoutSelected }) {
     },
   });
 
-  const splitPayOut = async ({ reference, amount1, amount2, pin, reason, users }) => {
+  const splitPayOut = async ({
+    reference,
+    amount1,
+    amount2,
+    pin,
+    reason,
+    users,
+  }) => {
     const token = await getToken();
     const parsed = await axios.post(
       //"http://localhost:4000/api/admin/console/split/payment",
@@ -617,7 +649,7 @@ function Row({ payout, isPayoutSelected }) {
         ],
         approvalPin: pin,
         reason,
-        users
+        users,
       },
       {
         headers: {
@@ -653,7 +685,13 @@ function Row({ payout, isPayoutSelected }) {
     const parsed = await axios.put(
       //"http://localhost:4000/api/admin/console/transaction",
       "https://vigoplace.com/server/api/admin/console/transaction",
-      { reference: reference, status: "onHold", approvalPin: pin, reason, users },
+      {
+        reference: reference,
+        status: "onHold",
+        approvalPin: pin,
+        reason,
+        users,
+      },
       {
         headers: {
           Authorization: token,
@@ -1022,13 +1060,14 @@ function Row({ payout, isPayoutSelected }) {
                                       "payoutRequest",
                                       payout.payoutRequestId,
                                     ])?.data?.currencySymbol
-                                  }{""}
-                                  {
-                                    queryClient.getQueryData([
+                                  }
+                                  {""}
+                                  {queryClient
+                                    .getQueryData([
                                       "payoutRequest",
                                       payout.payoutRequestId,
-                                    ])?.data?.payoutRequestAmount.toLocaleString()
-                                  }
+                                    ])
+                                    ?.data?.payoutRequestAmount.toLocaleString()}
                                 </span>{" "}
                                 to <br />
                                 <span style={{ fontWeight: "bold" }}>
@@ -1153,13 +1192,13 @@ function Row({ payout, isPayoutSelected }) {
                                       ? {
                                           id: payout.payoutRequestId,
                                           pin,
-                                          users: payout?.payoutRequestUId
+                                          users: payout?.payoutRequestUId,
                                         }
                                       : {
                                           id: payout.payoutRequestId,
                                           pin,
                                           deliveryETA,
-                                          users: payout?.payoutRequestUId
+                                          users: payout?.payoutRequestUId,
                                         }
                                   );
                                   setPin(null);
@@ -1282,7 +1321,7 @@ function Row({ payout, isPayoutSelected }) {
                                     amount2: amount.amount2,
                                     pin,
                                     reason,
-                                    users: payout.payoutRequestUId
+                                    users: payout.payoutRequestUId,
                                   });
                                   setPin(null);
                                   setAmount({
@@ -1365,7 +1404,7 @@ function Row({ payout, isPayoutSelected }) {
                                     reference: payout.payoutRequestReference,
                                     pin,
                                     reason,
-                                    users: payout.payoutRequestUId
+                                    users: payout.payoutRequestUId,
                                   });
                                   setPin(null);
                                 }}
@@ -1439,7 +1478,7 @@ function Row({ payout, isPayoutSelected }) {
                                     id: payout.payoutRequestId,
                                     pin,
                                     reason,
-                                    users: payout.payoutRequestUId
+                                    users: payout.payoutRequestUId,
                                   });
                                   setPin(null);
                                 }}

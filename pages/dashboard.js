@@ -254,14 +254,14 @@ export default function Index() {
                 balance={vigoWalletBalance?.data?.amount ?? 0}
               />
             </Grid> */}
-            <Grid item xl={12} lg={12} sm={12} xs={12}>
+            {/* <Grid item xl={12} lg={12} sm={12} xs={12}>
               <TotalProfit
                 header={"Paypal"}
                 currency="usd"
                 isLoading={paypalLoading}
                 balance={paypalBalance?.data?.amount ?? 0}
               />
-            </Grid>
+            </Grid> */}
 
             <Box
               display="flex"
