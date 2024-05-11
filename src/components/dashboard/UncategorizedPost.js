@@ -1,22 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Postmodal } from "./Postmodal";
 import { MdOutlineArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
-import {
-  MdOutlineKeyboardArrowRight,
-  MdOutlineKeyboardArrowLeft,
-} from "react-icons/md";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  LazyLoadImage,
-  LazyLoadComponent,
-} from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { GrFormClose } from "react-icons/gr";
 import "video.js/dist/video-js.css";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ReactPlayer from "react-player";
-import { Height } from "@mui/icons-material";
 import CarouselMini from "./Carousel";
 import Image from "next/image";
 
@@ -25,7 +14,7 @@ export const UncategorizedPost = ({
   updateCurrentPost,
   setSelectedCategories,
   categorizedPost,
-  // category,
+  fetchUnCategorizedData,
   images,
   filteredResults,
   selectedCategories,
@@ -35,6 +24,12 @@ export const UncategorizedPost = ({
   handlePostClick,
   filteredPost,
   setFilteredPost,
+  currentPage2,
+  originalIndex2,
+  setOriginalIndex2,
+  postFetched2,
+  setPostFetched2,
+  setUncategorizedData,
 }) => {
   const [openModal, setOpenModal] = useState(false);
 
@@ -56,109 +51,10 @@ export const UncategorizedPost = ({
       };
     });
   };
-  //console.log(images);
-  // useEffect(() => {
-  //   //fix rerendering issue
-  //   if (categorizedPost[0].POId === images[currentIndex]?.POId) {
-  //     setCurrentIndex(currentIndex + 1);
-  //     console.log(images[nextIndex]?.PMMedia);
-  //   }
-
-  //   // update the current image
-  //   const alreadyAdded = selectedCategories[currentPostId];
-  //   if (alreadyAdded) return;
-  //   setSelectedCategories((prev) => ({
-  //     ...prev,
-  //     [currentPostId]: [],
-  //   }));
-  // }, [currentPostId]);
-
-  const API_BASE_URL = "https://vigoplace.com/server/";
-  //const API_BASE_URL = "http://localhost:4000";
-
-  // const fetchData = async () => {
-  //   const response = await fetch(`${API_BASE_URL}/api/admin/uncategorized`);
-  //   const data = await response.json();
-  //   console.log(data.data.length, "Yh I dey");
-  //   return data;
-  // };
-
-  // const { data, isLoading, error } = useQuery(["uncategorizedData"], fetchData);
-
-  // if (isLoading) {
-  //   return <div>Loading...</div>;
-  // }
-
-  // if (error) {
-  //   return <div>Error: {error.message}</div>;
-  // }
-
-  // const fetchCategory = async () => {
-  //   const response = await fetch(`${API_BASE_URL}/api/admin/categorized`);
-  //   const data = await response.json();
-  //   return data;
-  // };
-
-  // const {
-  //   data: categorizedItem,
-  //   categorizedItemisLoading,
-  //   categorizedItemisError,
-  // } = useQuery(["categorizedPost"], fetchCategory, {
-  //   onSuccess: (data) => {
-  //     setCategorizedData(data?.data || []);
-  //   },
-  // });
-
-  // if (categorizedItemisLoading) {
-  //   return <div>Loading...</div>;
-  // }
-
-  // if (categorizedItemisError) {
-  //   return <div>Error: {categoryListError?.message?.message}</div>;
-  // }
 
   const handleDelete = () => {
-    // setDeletedIndex(currentIndex);
     setOpenModal(false);
   };
-
-  const deletePost = async (postId) => {
-    try {
-      const response = await fetch(
-        `${API_BASE_URL}/api/admin/categorization/${postId}`,
-        {
-          method: "DELETE",
-        }
-      );
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error);
-      }
-
-      return data;
-    } catch (error) {
-      throw new Error(`Error deleting post: ${error.message}`);
-    }
-  };
-
-  // const queryClient = useQueryClient();
-
-  const mutation = useMutation(deletePost, {
-    onSuccess: (data, postId) => {
-      console.log("Mutation onSuccess called");
-      console.log("Data:", data);
-      console.log("postId:", postId);
-      setCategorizedData((prevData) =>
-        prevData.filter((post) => post.OPCPostId !== postId)
-      );
-      toast.success("Successfully deleted the category!");
-    },
-    onError: (error) => {
-      console.error("Error deleting post:", error);
-      toast.error("Error deleting the category!");
-    },
-  });
 
   const prevSlide = () => {
     setFilteredPost([]);
@@ -173,26 +69,60 @@ export const UncategorizedPost = ({
 
   const nextSlide = async () => {
     setFilteredPost([]);
-    //console.log(currentIndex)
-    const isLastSlide = currentIndex === images.length - 1;
+    // //console.log(currentIndex)
+    // const isLastSlide = currentIndex === images.length - 1;
 
-    const newIndex = isLastSlide ? 0 : currentIndex + 1;
-    // const currentImage = data.data[currentIndex];
-    // const category = currentImage.category;
+    // const newIndex = isLastSlide ? 0 : currentIndex + 1;
+    // // const currentImage = data.data[currentIndex];
+    // // const category = currentImage.category;
+    // if (selectedCategories[currentPostId]?.length > 0) {
+    //   const data = await selectedCategories[currentPostId]?.map(
+    //     (category) => category.OCName
+    //   );
+
+    //   await handlePostClick(data);
+    // } else {
+    //   setCurrentIndex((prevIndex) => (prevIndex + 1) % images?.length);
+    //   const newPostId = images[newIndex]?.POId;
+    //   updateCurrentPost(newPostId);
+    // }
+
+    // Check if a post was fetched
+    if (postFetched2) {
+      setOriginalIndex2(0);
+      setPostFetched2(false);
+      // Remove foundPost from uncategorizedData
+      setUncategorizedData((prev) =>
+        prev.filter((post) => post.POId !== currentPostId.POId)
+      );
+      if (selectedCategories[currentPostId]?.length > 0) {
+        const data = await selectedCategories[currentPostId]?.map(
+          (category) => category.OCName
+        );
+
+        await handlePostClick(data);
+      }
+    } else {
+      if (images?.[currentIndex]?.POId === images[images.length - 11]?.POId) {
+        currentPage2.current += 1;
+        fetchUnCategorizedData();
+      }
+    }
+    // Increment the index and ensure it wraps around correctly
+    const newIndex = currentIndex >= images.length - 1 ? 0 : currentIndex + 1;
+    setCurrentIndex(newIndex);
+    setOriginalIndex2(newIndex);
+    const newPostId = images[newIndex]?.POId;
+    updateCurrentPost(newPostId);
+
     if (selectedCategories[currentPostId]?.length > 0) {
       const data = await selectedCategories[currentPostId]?.map(
         (category) => category.OCName
       );
 
       await handlePostClick(data);
-    } else {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % images?.length);
-      const newPostId = images[newIndex]?.POId;
-      updateCurrentPost(newPostId);
     }
   };
-
-  //console.log(filteredPost);
 
   return (
     <>

@@ -42,7 +42,11 @@ import {
   CardHeader,
   Button,
 } from "@mui/material";
-
+import { Search as SearchIcon } from "@mui/icons-material";
+import FirstPageIcon from "@mui/icons-material/FirstPage";
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import LastPageIcon from "@mui/icons-material/LastPage";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -57,8 +61,7 @@ import {
   fetchSingleEarningRequest,
   useSingleEarningRequest,
 } from "../../hooks/useSingleEarningRequest";
-import { toast } from "react-toast";
-import { LensTwoTone } from "@mui/icons-material";
+
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -141,6 +144,11 @@ export default function RecentEarningsTable() {
     pageIndex: 0,
     pageSize: 10,
   });
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
 
   const statusOptions = [
     {
@@ -187,13 +195,11 @@ export default function RecentEarningsTable() {
     });
   };
 
-  const handlePageChange = (event, newPage) => {
-    // setPage(newPage);
+  const handlePageChange = (newPage) => {
     setPagination({ ...pagination, pageIndex: newPage });
   };
 
   const handleLimitChange = (event) => {
-    // setLimit(parseInt(event.target.value));
     setPagination({ ...pagination, pageSize: event.target.value });
   };
 
@@ -211,12 +217,13 @@ export default function RecentEarningsTable() {
       status,
       page,
       limit,
+      searchQuery,
     ],
     async () => {
       const { data } = await axios.get(
         `${API_BASE_URL}/api/admin/console/earnings?perPage=${
           pagination.pageSize
-        }&page=${pagination.pageIndex + 1}${
+        }&page=${pagination.pageIndex + 1}&search=${searchQuery}${
           status !== undefined && status !== null ? `&status=${status}` : ""
         }`,
         {
@@ -246,12 +253,12 @@ export default function RecentEarningsTable() {
     isLoading: userPayoutLoading,
     refetch: userRefetch,
   } = useQuery(
-    ["earningUserRequest", status, page, limit],
+    ["earningUserRequest", status, page, limit, searchQuery],
     async () => {
       const { data } = await axios.get(
         `${API_BASE_URL}/api/admin/console/earning/user/${userid}?perPage=${
           pagination.pageSize
-        }&page=${pagination.pageIndex}${
+        }&page=${pagination.pageIndex}&search=${searchQuery}${
           status !== undefined && status !== null ? `&status=${status}` : ""
         }`,
         // `http://localhost:3001/api/admin/console/payouts?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${status !== undefined && status !== null ? `&status=${status}` : '' }`,
@@ -268,7 +275,7 @@ export default function RecentEarningsTable() {
     },
     {
       onError: (err) => {
-        console.log(err, "err fetching this user's earning details");
+        //console.log(err, "err fetching this user's earning details");
       },
       enabled: !!user?.token,
     },
@@ -283,6 +290,25 @@ export default function RecentEarningsTable() {
 
   const filteredCryptoOrders = applyFilters(dataToUse, filters);
 
+  const handleFirstPage = () => {
+    setPagination({ ...pagination, pageIndex: 0 });
+  };
+
+  // Calculate total pages based on the count of data and rows per page
+  const totalPages = Math.ceil(
+    (isUserRoute ? userPayouts?.data?.count ?? 0 : payouts?.data?.count ?? 0) /
+      pagination.pageSize
+  );
+
+  const handleLastPage = () => {
+    setPagination({ ...pagination, pageIndex: totalPages - 1 });
+  };
+
+  const filteredPayouts = filteredCryptoOrders?.filter((payout) =>
+    //payout?.userFullName?.toLowerCase().includes(searchQuery?.toLowerCase())
+    console.log(payout)
+  );
+
   const theme = useTheme();
 
   return (
@@ -291,15 +317,30 @@ export default function RecentEarningsTable() {
       {!selectedBulkActions && (
         <CardHeader
           action={
-            <Box width={150}>
+            <Box display="flex" alignItems="center" gap={1}>
+              <TextField
+                label="Search"
+                variant="outlined"
+                size="small"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                InputProps={{
+                  endAdornment: (
+                    <IconButton size="small">
+                      <SearchIcon />
+                    </IconButton>
+                  ),
+                }}
+                sx={{ height: "100%", width: "100%" }}
+              />
               <FormControl fullWidth variant="outlined">
                 <InputLabel>Status</InputLabel>
                 <Select
-                  // value={filters.status || "all"}
                   value={status || "all"}
                   onChange={handleStatus}
                   label="Status"
                   autoWidth
+                  sx={{ height: "40px" }}
                 >
                   {statusOptions.map((statusOption) => (
                     <MenuItem key={statusOption.id} value={statusOption.id}>
@@ -328,19 +369,23 @@ export default function RecentEarningsTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredCryptoOrders && filteredCryptoOrders.length > 0 ? (
-              filteredCryptoOrders.map((payout, index) => {
-                const isPayoutSelected = selectedCryptoOrders.includes(
-                  payout.payoutRequestId
-                );
-                return (
-                  <Row
-                    key={index}
-                    payout={payout}
-                    isPayoutSelected={isPayoutSelected}
-                  />
-                );
-              })
+            {(searchQuery ? filteredPayouts : filteredCryptoOrders) &&
+            (searchQuery ? filteredPayouts : filteredCryptoOrders).length >
+              0 ? (
+              (searchQuery ? filteredPayouts : filteredCryptoOrders).map(
+                (payout, index) => {
+                  const isPayoutSelected = selectedCryptoOrders.includes(
+                    payout.payoutRequestId
+                  );
+                  return (
+                    <Row
+                      key={index}
+                      payout={payout}
+                      isPayoutSelected={isPayoutSelected}
+                    />
+                  );
+                }
+              )
             ) : (
               <TableRow>
                 <TableCell colSpan={5}>No records to display</TableCell>
@@ -362,6 +407,34 @@ export default function RecentEarningsTable() {
           page={pagination.pageIndex}
           rowsPerPage={pagination.pageSize}
           rowsPerPageOptions={[5, 10, 25, 30]}
+          ActionsComponent={(props) => (
+            <div style={{ display: "flex" }}>
+              <IconButton
+                onClick={handleFirstPage}
+                disabled={pagination.pageIndex === 0}
+              >
+                <FirstPageIcon />
+              </IconButton>
+              <IconButton
+                onClick={() => handlePageChange(pagination.pageIndex - 1)}
+                disabled={pagination.pageIndex === 0}
+              >
+                <NavigateBeforeIcon />
+              </IconButton>
+              <IconButton
+                onClick={() => handlePageChange(pagination.pageIndex + 1)}
+                disabled={pagination.pageIndex >= totalPages - 1}
+              >
+                <NavigateNextIcon />
+              </IconButton>
+              <IconButton
+                onClick={handleLastPage}
+                disabled={pagination.pageIndex >= totalPages - 1}
+              >
+                <LastPageIcon />
+              </IconButton>
+            </div>
+          )}
         />
       </Box>
     </Card>
@@ -530,6 +603,7 @@ function Row({ payout, isPayoutSelected }) {
   let userid = queryClient.getQueryData(["earningRequest", payout.Id])?.data
     ?.userId;
 
+  //'2024-04-01 05:54:59'
   function formatDueDate(dateString) {
     const date = new Date(dateString);
     const month = (date.getMonth() + 1).toString().padStart(2, "0");
@@ -571,7 +645,7 @@ function Row({ payout, isPayoutSelected }) {
     }
   }, [userid, queryClient]);
 
-  const { data: listEarning } = useQuery(
+  const { data: listEarning, isLoading: isLoading1 } = useQuery(
     ["listUserEarnings", { userid, currencyid, payoutId: payout.Id }],
     () => {
       // This function can be empty, as the data will be set using queryClient.setQueryData
@@ -730,7 +804,7 @@ function Row({ payout, isPayoutSelected }) {
               </Typography>
             </Typography>
 
-            {isLoading ? (
+            {isLoading1 ? (
               <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <CircularProgress />
               </Box>
@@ -837,7 +911,7 @@ function Row({ payout, isPayoutSelected }) {
                               {approveEarningMutation.isLoading ? (
                                 <CircularProgress size={23} color="inherit" />
                               ) : approveEarningMutation.isSuccess ? (
-                                <CheckIcon />
+                                ""
                               ) : (
                                 "Approve"
                               )}
@@ -862,7 +936,7 @@ function Row({ payout, isPayoutSelected }) {
                                       color="inherit"
                                     />
                                   ) : holdEarningMutation.isSuccess ? (
-                                    <CheckIcon />
+                                    ""
                                   ) : (
                                     "Hold"
                                   )}
@@ -884,28 +958,12 @@ function Row({ payout, isPayoutSelected }) {
                               {declineEarningMutation.isLoading ? (
                                 <CircularProgress size={23} color="inherit" />
                               ) : approveEarningMutation.isSuccess ? (
-                                <CheckIcon />
+                                ""
                               ) : (
                                 "Decline"
                               )}
                             </Button>
                           </MenuItem>
-
-                          {payout.status === "onhold" && (
-                            <MenuItem>
-                              <Button
-                                sx={{ margin: 1, bgcolor: yellow[800] }}
-                                size="small"
-                                variant="contained"
-                                color="warning"
-                                onClick={() => {
-                                  // Add your logic for handling the "Edit Earnings" action here
-                                }}
-                              >
-                                Edit Earnings
-                              </Button>
-                            </MenuItem>
-                          )}
 
                           <Dialog
                             open={openModal}
@@ -922,7 +980,7 @@ function Row({ payout, isPayoutSelected }) {
                                   {amountValue}
                                   {""}
                                 </span>{" "}
-                                out of {" "}
+                                out of{" "}
                                 <span style={{ fontWeight: "bold" }}>
                                   {
                                     queryClient.getQueryData([
@@ -931,8 +989,8 @@ function Row({ payout, isPayoutSelected }) {
                                     ])?.data?.earningRequestAmount
                                   }
                                   {""}
-                                </span>{" "}.
-                                <br></br>
+                                </span>{" "}
+                                .<br></br>
                                 Please enter your admin approval pin to Approve
                                 this request, if you don't have one yet, head to{" "}
                                 <Link

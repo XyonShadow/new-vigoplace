@@ -2203,8 +2203,9 @@ const Users = () => {
                 value={tabValue}
                 onChange={handleTabChange}
                 textColor="inherit"
-                scrollButtons="auto"
-                aria-label=""
+                variant="scrollable"
+                scrollButtons={false}
+                aria-label="scrollable prevent tabs example"
               >
                 <Tab label="Transactions" {...a11yProps(0)} />
                 <Tab label="Activities" {...a11yProps(1)} />

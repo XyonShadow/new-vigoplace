@@ -3,17 +3,9 @@ import { MdOutlineArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Postmodal } from "./Postmodal";
 import { GrFormClose } from "react-icons/gr";
-import {
-  LazyLoadImage,
-  LazyLoadComponent,
-} from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {
-  MdOutlineKeyboardArrowRight,
-  MdOutlineKeyboardArrowLeft,
-} from "react-icons/md";
 import "video.js/dist/video-js.css";
 import ReactPlayer from "react-player";
 import CarouselMini from "./Carousel";
@@ -189,8 +181,8 @@ export const CategorizedPost = ({
       // Set the categorizedIndex to the originalIndex
       setCategoryResults([images[originalIndex]]);
       updateCategorizedIndex(originalIndex);
-      setOriginalIndex(0); 
-      setPostFetched(false); 
+      setOriginalIndex(0);
+      setPostFetched(false);
     } else {
       if (
         images?.[categorizedIndex]?.POId === images[images.length - 11]?.POId
@@ -372,20 +364,6 @@ export const CategorizedPost = ({
         postId={images?.[categorizedIndex]?.POId}
         onDelete={handleDelete}
       />
-
-      {/* <div className="relative text-white">
-        <MdOutlineKeyboardArrowLeft
-          size={18}
-          className={`rounded-xl bg-[#8135F9] p-1 cursor-pointer absolute sm:-top-[430px] -top-[720px] left-3`}
-          // onClick={ }
-        />
-
-        <MdOutlineKeyboardArrowRight
-          size={18}
-          className={`rounded-xl bg-[#8135F9] p-1 cursor-pointer absolute sm:-top-[430px] -top-[720px] lg:right-[300px] xl:right-[310px] 2xl:right[310px] md:right-[240px] right-[15px]`}
-          // onClick={}
-        />
-      </div> */}
 
       <div className="flex justify-between items-center -mt-[120vh] lg:-mt-[40vh] px-[1vw] text-white z-20">
         <div>

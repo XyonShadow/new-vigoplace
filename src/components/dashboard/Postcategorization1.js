@@ -17,6 +17,12 @@ export function Postcategorization1({
   fetchCatgorizedData,
   isLoading,
   setCategorizedData,
+  fetchUnCategorizedData,
+  unCategorizedData,
+  uncategorizedDataLoading,
+  uncategorizedDataError,
+  currentPage2,
+  setUncategorizedData,
 }) {
   const [tab, setTab] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
@@ -35,23 +41,13 @@ export function Postcategorization1({
   const [categorizedIndex, setCategorizedIndex] = useState(0);
   const [originalIndex, setOriginalIndex] = useState(0);
   const [postFetched, setPostFetched] = useState(false);
+  const [originalIndex2, setOriginalIndex2] = useState(0);
+  const [postFetched2, setPostFetched2] = useState(false);
 
   const queryClient = useQueryClient();
 
   const API_BASE_URL = "https://vigoplace.com/server";
   //const API_BASE_URL = "http://localhost:4000";
-
-  const fetchUncategorizedData = async () => {
-    const response = await fetch(`${API_BASE_URL}/api/admin/uncategorized`);
-    const data = await response.json();
-    return data.data;
-  };
-
-  const {
-    data: unCategorizedData,
-    isLoading: uncategorizedDataLoading,
-    error: uncategorizedDataError,
-  } = useQuery(["uncategorizedData"], fetchUncategorizedData, {});
 
   const getToken = async () => {
     const session = await getSession();
@@ -169,54 +165,60 @@ export function Postcategorization1({
   };
 
   const handleUncategorizedSearch = async (searchInput) => {
-    const filteredPosts = unCategorizedData.filter(
-      (post) => post.POId === Number(searchInput)
-    );
-    //console.log(filteredPosts);
+    const postid = Number(searchInput);
 
-    if (filteredPosts.length !== 0 && tab === 0) {
-      // console.log("Inside the if block");
-      //console.log("filteredPosts length:", filteredPosts.length);
-      // console.log("tab value:", tab);
+    const indexOfFoundPost = unCategorizedData.findIndex(
+      (post) => post.POId === postid
+    );
+
+    if (indexOfFoundPost !== -1) {
+      setCurrentIndex(indexOfFoundPost);
+    } else {
       try {
         const response = await fetch(
           `${API_BASE_URL}/api/admin/uncategorized/${searchInput}`
         );
-        const data = await response.json();
-        //console.log(data);
+        const responseData = await response.json();
+        //console.log(responseData)
 
-        if (data) {
-          const foundPost = data.data;
+        if (tab === 0) {
+          if (
+            responseData.flag === false &&
+            responseData.message === "UnCategorized post not found"
+          ) {
+            // Handle the case where the post is not found
+            toast.error("UnCategorized post not found");
+          } else if (
+            responseData.data &&
+            Object.keys(responseData.data).length === 0
+          ) {
+            // Handle the case where data object is empty
+            toast.error("UnCategorized post not found");
+          } else if (responseData.data) {
+            const foundPost = responseData.data;
 
-          updateCurrentPost(foundPost.POId);
-          //console.log(currentPost);
-          setCurrentIndex(0);
-          setFilteredPost([foundPost]);
-        } else {
-          //toast.error("Post not found");
+            // Update categorized data with the fetched post
+            updateCurrentPost(foundPost);
+
+            const newIndexOfFoundPost = unCategorizedData.length; // Find the last index
+            setCurrentIndex(newIndexOfFoundPost);
+
+            setUncategorizedData((prev) => [...prev, foundPost]);
+
+            //setOriginalIndex2(categorizedIndex);
+
+            setPostFetched2(true);
+          } else {
+            // Handle other cases or error scenarios
+            toast.error("Error fetching post");
+          }
         }
       } catch (error) {
         console.error("Error fetching post:", error);
         toast.error("Error fetching post");
       }
-      return;
-    }
-
-    const indexOfFilteredData = unCategorizedData.findIndex(
-      (post) => post.POId === Number(searchInput)
-    );
-    //console.log("Index of Filtered Data:", indexOfFilteredData);
-
-    if (indexOfFilteredData !== -1) {
-      setCurrentIndex(indexOfFilteredData);
-      const newPostId = unCategorizedData[indexOfFilteredData]?.POId;
-      updateCurrentPost(newPostId);
-      setFilteredPost([unCategorizedData[indexOfFilteredData]]);
-    } else {
-      //toast.error("Post not found");
     }
   };
-
 
   const handleCategorizedSearch = async (searchInput) => {
     const postid = Number(searchInput);
@@ -264,7 +266,7 @@ export function Postcategorization1({
 
             setCategoryResults([foundPost]);
 
-            setOriginalIndex(categorizedIndex);  
+            setOriginalIndex(categorizedIndex);
 
             setPostFetched(true);
           } else {
@@ -347,18 +349,12 @@ export function Postcategorization1({
         return response.json();
       })
       .then((data) => {
-        // setData((prevData) => {
-        //   const updatedData = [...prevData];
-        //   updatedData[currentIndex] = {
-        //     ...updatedData[currentIndex],
-        //     category: category,
-        //   };
-        //   return updatedData;
-        // });
-        queryClient.invalidateQueries("uncategorizedData");
-        queryClient.invalidateQueries("categorizedData");
         toast.success("Post successfully categorized!");
         setSelectedCategories([]);
+        setUncategorizedData((prev) =>
+          prev.filter((post) => post.POId !== data?.data[0]?.POId)
+        );
+        setCurrentIndex(currentIndex);
       })
       .catch((error) => {
         console.error("Error adding category:", error);
@@ -479,10 +475,11 @@ export function Postcategorization1({
         {tab === 0 && (
           <UncategorizedPost
             categorizedPost={categorizedPost}
+            fetchUnCategorizedData={fetchUnCategorizedData}
             currentPostId={currentPostId}
             updateCurrentPost={updateCurrentPost}
             setSelectedCategories={setSelectedCategories}
-            // category={category}
+            currentPage2={currentPage2}
             images={unCategorizedData}
             filteredResults={filteredResults}
             selectedCategories={selectedCategories}
@@ -492,6 +489,11 @@ export function Postcategorization1({
             setCurrentIndex={setCurrentIndex}
             filteredPost={filteredPost}
             setFilteredPost={setFilteredPost}
+            setOriginalIndex2={setOriginalIndex2}
+            originalIndex2={originalIndex2}
+            postFetched2={postFetched2}
+            setPostFetched2={setPostFetched2}
+            setUncategorizedData={setUncategorizedData}
           />
         )}
 
