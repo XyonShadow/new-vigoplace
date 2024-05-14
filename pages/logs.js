@@ -115,7 +115,7 @@ function ActivityLogs() {
     ],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/logs?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}`,
+        `https://api.vigoplace.com/api/admin/console/logs?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}`,
         // `http://localhost:3001/api/admin/console/logs?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}`,
         {
           headers: {

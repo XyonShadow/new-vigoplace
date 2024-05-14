@@ -54,7 +54,7 @@ export default function Wallet() {
     ["fetchWalletBalance", currency, pagination],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/wallet/balances?currency=${currency}&pageSize=${
+        `https://api.vigoplace.com/api/admin/console/wallet/balances?currency=${currency}&pageSize=${
           pagination.pageSize
         }&page=${pagination.pageIndex + 1}`,
         //`http://localhost:4000/api/admin/console/wallet/balances?currency=${currency}&pageSize=${pagination.pageSize}&page=${pagination.pageIndex}`,

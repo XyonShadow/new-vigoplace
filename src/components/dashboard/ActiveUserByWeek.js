@@ -18,7 +18,7 @@ const ActiveUserByWeek = () => {
     const fetchActiveUsersData = async () => {
       try {
         const response = await axios.get(
-          "https://vigoplace.com/server/api/admin/console/users/activitycountdays",
+          "https://api.vigoplace.com/api/admin/console/users/activitycountdays",
           //"http://localhost:4000/api/admin/console/users/activitycount",
           {
             headers: {

@@ -24,7 +24,7 @@ import {
 } from "@tanstack/react-query";
 import { getSession, useSession } from "next-auth/react";
 
-const API_BASE_URL = "https://vigoplace.com/server";
+const API_BASE_URL = "https://api.vigoplace.com";
 //const API_BASE_URL = "http://localhost:4000";
 export default function Tickets() {
   const router = useRouter();
@@ -65,7 +65,7 @@ export default function Tickets() {
     setIsLoading(true);
     try {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/tickets/${ticketType}/user?id=${userid}limit=${1000}${
+        `https://api.vigoplace.com/api/admin/tickets/${ticketType}/user?id=${userid}limit=${1000}${
           columnFilters?.length >= 1
             ? `&search=${JSON.stringify(columnFilters)}`
             : ""
@@ -270,7 +270,7 @@ export default function Tickets() {
             if (row.original.isRead === 0) {
               try {
                 await axios.put(
-                  `https://vigoplace.com/server/api/admin/ticket/${row.original.ticketId}`,
+                  `https://api.vigoplace.com/api/admin/ticket/${row.original.ticketId}`,
                   {
                     isRead: 1,
                   },

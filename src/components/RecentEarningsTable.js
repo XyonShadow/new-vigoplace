@@ -124,7 +124,7 @@ const applyPagination = (cryptoOrders, page, limit) => {
   return cryptoOrders?.slice(page * limit, page * limit + limit);
 };
 
-const API_BASE_URL = "https://vigoplace.com/server";
+const API_BASE_URL = "https://api.vigoplace.com";
 //const API_BASE_URL = "http://localhost:4000";
 export default function RecentEarningsTable() {
   const queryClient = useQueryClient();
@@ -305,8 +305,8 @@ export default function RecentEarningsTable() {
   };
 
   const filteredPayouts = filteredCryptoOrders?.filter((payout) =>
-    //payout?.userFullName?.toLowerCase().includes(searchQuery?.toLowerCase())
-    console.log(payout)
+    payout?.userFullName?.toLowerCase().includes(searchQuery?.toLowerCase())
+    //console.log(payout)
   );
 
   const theme = useTheme();
@@ -463,7 +463,7 @@ function Row({ payout, isPayoutSelected }) {
   const handleOpenModal = async (userId, categoryId) => {
     try {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/earning/initiators/${userId}/${categoryId}`,
+        `https://api.vigoplace.com/api/admin/console/earning/initiators/${userId}/${categoryId}`,
         {
           headers: {
             Authorization: user?.token,
@@ -512,7 +512,7 @@ function Row({ payout, isPayoutSelected }) {
   const approveEarning = async ({ reference, pin, amount }) => {
     const token = await getToken();
     const parsed = await axios.patch(
-      "https://vigoplace.com/server/api/admin/console/earnings/approve",
+      "https://api.vigoplace.com/api/admin/console/earnings/approve",
       //"http://localhost:4000/api/admin/console/earnings/approve",
       { reference: reference, approvalPin: pin, amount: amount },
       {
@@ -542,7 +542,7 @@ function Row({ payout, isPayoutSelected }) {
   const declineEarning = async ({ reference, pin }) => {
     const token = await getToken();
     const parsed = await axios.patch(
-      "https://vigoplace.com/server/api/admin/console/earnings/reject",
+      "https://api.vigoplace.com/api/admin/console/earnings/reject",
       //"http://localhost:4000/api/admin/console/earnings/reject",
       { reference: reference, approvalPin: pin },
       {
@@ -572,7 +572,7 @@ function Row({ payout, isPayoutSelected }) {
     const token = await getToken();
     const parsed = await axios.patch(
       //"http://localhost:4000/api/admin/console/earnings/hold",
-      "https://vigoplace.com/server/api/admin/console/earnings/hold",
+      "https://api.vigoplace.com/api/admin/console/earnings/hold",
       { reference: reference, approvalPin: pin, reason },
       {
         headers: {
@@ -623,7 +623,7 @@ function Row({ payout, isPayoutSelected }) {
       try {
         const { data } = await axios.get(
           //`http://localhost:4000/api/admin/console/user-earnings/list/${userid}?currencyId=${currencyid}`,
-          `https://vigoplace.com/server/api/admin/console/user-earnings/list/${userid}?currencyId=${currencyid}&period=${formattedDate}`,
+          `https://api.vigoplace.com/api/admin/console/user-earnings/list/${userid}?currencyId=${currencyid}&period=${formattedDate}`,
           {
             headers: {
               Authorization: token,

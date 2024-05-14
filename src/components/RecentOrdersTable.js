@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { getSession, useSession } from "next-auth/react";
 import Snackbar from "@mui/material/Snackbar";
@@ -17,7 +17,8 @@ import PropTypes from "prop-types";
 import LinearProgress from "@mui/material/LinearProgress";
 import Link from "next/link";
 import { useRouter } from "next/router";
-// import ColoredLinearProgress from './LinearLoader';
+import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
+import ReceiptLogoIcon from "../../assets/images/backgrounds/logo_small.png";
 import {
   Tooltip,
   Divider,
@@ -130,7 +131,7 @@ const applyPagination = (cryptoOrders, page, limit) => {
   return cryptoOrders?.slice(page * limit, page * limit + limit);
 };
 
-const API_BASE_URL = "https://vigoplace.com/server";
+const API_BASE_URL = "https://api.vigoplace.com";
 //const API_BASE_URL = "http://localhost:4000";
 export default function RecentOrdersTable() {
   const queryClient = useQueryClient();
@@ -504,6 +505,15 @@ function Row({ payout, isPayoutSelected }) {
   const [deliveryETA, setDeliveryETA] = React.useState("");
   const [reason, setReason] = React.useState("");
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const { userid } = router.query;
+  const getUser = useSession();
+  const user = getUser?.data?.user;
+  const [transaction, setTransaction] = useState([]);
+  const [isLoading1, setIsLoading1] = useState(false);
+  const [pagination, setPagination] = useState({
+    pageIndex: 1,
+    pageSize: 1,
+  });
 
   const handleMenuOpen = (event) => {
     setMenuAnchorEl(event.currentTarget);
@@ -530,12 +540,46 @@ function Row({ payout, isPayoutSelected }) {
     return session?.user?.token;
   };
 
+  const reference = queryClient.getQueryData([
+    "payoutRequest",
+    payout.payoutRequestId,
+  ])?.data?.payoutRequestReference;
+  const userids = queryClient.getQueryData([
+    "payoutRequest",
+    payout.payoutRequestId,
+  ])?.data?.userId;
+
+  const fetchUserTransactions = async () => {
+    try {
+      const { data } = await axios.get(
+        `https://vigoplace.com/server/api/admin/console/users/transaction?userId=${userids}&reference=${reference}`,
+        {
+          headers: {
+            Authorization: user?.token,
+          },
+        }
+      );
+
+      //console.log(data);
+      setTransaction(data?.data ?? []);
+    } catch (err) {
+      setIsError(true);
+      console.log(err, "err fetching user transactions");
+    }
+  };
+
+  useEffect(() => {
+    if (reference && userids) {
+      fetchUserTransactions();
+    }
+  }, [reference, userids]);
+
   const approvePayOut = async ({ id, pin, users }) => {
     //console.log(users)
     const token = await getToken();
     const parsed = await axios.post(
       //"http://localhost:4000/api/admin/console/approvepayout",
-      "https://vigoplace.com/server/api/admin/console/approvepayout",
+      "https://api.vigoplace.com/api/admin/console/approvepayout",
       { payoutRequestId: id, approvalPin: pin, users },
       {
         headers: {
@@ -568,7 +612,7 @@ function Row({ payout, isPayoutSelected }) {
     const token = await getToken();
     const parsed = await axios.post(
       // "http://localhost:3001/api/admin/console/approvepayout",
-      "https://vigoplace.com/server/api/admin/console/approvepayout",
+      "https://api.vigoplace.com/api/admin/console/approvepayout",
       { payoutRequestId: id, approvalPin: pin, deliveryETA, users },
       {
         headers: {
@@ -597,7 +641,7 @@ function Row({ payout, isPayoutSelected }) {
     const token = await getToken();
     const parsed = await axios.post(
       // "http://localhost:3001/api/admin/console/declinepayout",
-      "https://vigoplace.com/server/api/admin/console/declinepayout",
+      "https://api.vigoplace.com/api/admin/console/declinepayout",
       { payoutRequestId: id, approvalPin: pin, reason, users },
       {
         headers: {
@@ -634,7 +678,7 @@ function Row({ payout, isPayoutSelected }) {
     const token = await getToken();
     const parsed = await axios.post(
       //"http://localhost:4000/api/admin/console/split/payment",
-      "https://vigoplace.com/server/api/admin/console/split/payment",
+      "https://api.vigoplace.com/api/admin/console/split/payment",
       {
         reference: reference,
         split: [
@@ -684,7 +728,7 @@ function Row({ payout, isPayoutSelected }) {
     const token = await getToken();
     const parsed = await axios.put(
       //"http://localhost:4000/api/admin/console/transaction",
-      "https://vigoplace.com/server/api/admin/console/transaction",
+      "https://api.vigoplace.com/api/api/admin/console/transaction",
       {
         reference: reference,
         status: "onHold",
@@ -715,6 +759,317 @@ function Row({ payout, isPayoutSelected }) {
       setPin(null);
     },
   });
+
+  const handleReceiptGeneration = async () => {
+    const {
+      transactionDate,
+      transactionDescription,
+      transactionFee,
+      transactionFrom,
+      transactionId,
+      transactionNetTotal,
+      transactionReference,
+      transactionStatus,
+      transactionTo,
+      transactionTotal,
+      transactionType,
+      currency,
+      currencySymbol,
+    } = transaction[0];
+
+    const formattedTransactionDate = format(
+      new Date(transactionDate),
+      "MMM dd, yyyy h:mm a"
+    );
+
+    // Create a new PDFDocument
+    const pdfDoc = await PDFDocument.create();
+
+    // Embed the Times Roman font
+    const timesRomanFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+    const imageUrl = ReceiptLogoIcon.src;
+
+    const fetchImage = async (imageUrl) => {
+      const response = await fetch(imageUrl);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch image: ${response.statusText}`);
+      }
+      return await response.arrayBuffer();
+    };
+
+    // Usage:
+    const imageBytes = await fetchImage(imageUrl);
+
+    // Embed the image into the PDF document
+    const receiptLogoImage = await pdfDoc.embedPng(imageBytes);
+
+    // Add a blank page to the document
+    const page = pdfDoc.addPage();
+
+    // Get the width and height of the page
+    const { width, height } = page.getSize();
+
+    // Set initial y position for text
+    const marginTop = 40; // Adjust the margin top as needed
+    let textY = height - 50 - marginTop; // Subtracting the margin from the initial position
+    const marginLeft = width * 0.1; // 10% of the screen width
+    const marginRight = width * 0.1;
+
+    const bodyBackgroundColor = rgb(243 / 255, 244 / 255, 248 / 255); // Hex color  #F3F4F8
+
+    // Adjust the font size for heading
+    const fontSize = 20;
+    const headingFontSize = 16;
+    const headingValueFontSize = 40;
+    const bodyFontSize = 14;
+
+    // Background colors
+    const headingBackgroundColor = rgb(129 / 255, 53 / 255, 249 / 255); // Hex color #8135F9
+    const totalAmountValueBackgroundColor = rgb(141 / 255, 73 / 255, 249 / 255); // #8d49f9
+
+    const receiptTextStyle = {
+      size: fontSize,
+      color: rgb(0, 0, 0),
+    };
+
+    // Styling for the total amount section
+    const totalAmountLabelStyle = {
+      size: headingFontSize,
+      color: rgb(255 / 255, 255 / 255, 255 / 255), // White color
+      //bold: true,
+    };
+
+    const totalAmountValueStyle = {
+      size: headingValueFontSize,
+      color: rgb(255 / 255, 255 / 255, 255 / 255),
+    };
+
+    // Function to draw text with specified style and alignment
+    const drawText = (text, style, width) => {
+      // Calculate the x-coordinate to center the text horizontally
+      const textWidth = timesRomanFont.widthOfTextAtSize(text, style.size);
+      const x = (width - textWidth) / 2;
+
+      page.drawText(text, {
+        x: x,
+        y: textY + 20,
+        size: style.size,
+        font: timesRomanFont,
+        color: style.color,
+      });
+
+      textY -= 20;
+    };
+
+    // Draw "Transaction receipt" text
+    drawText("Transaction receipt", receiptTextStyle, width); // Pass the width of the page as an argument
+    textY -= 20;
+
+    // Draw the first rectangle (heading background)
+    page.drawRectangle({
+      x: marginLeft, // Start from the left edge of the page
+      y: textY, // Adjust the vertical position as needed
+      width: width - marginLeft - marginRight, // Set the width to be equal to the width of the page
+      height: 40, // Adjust the height as needed
+      color: headingBackgroundColor,
+    });
+
+    // Draw the total amount label
+    drawText("TOTAL AMOUNT", totalAmountLabelStyle, width); // Pass the width of the page as an argument
+    textY -= 40; // Adjust the vertical spacing after the heading
+
+    // Draw the second rectangle (total amount value background)
+    page.drawRectangle({
+      x: marginLeft,
+      y: textY,
+      width: width - marginLeft - marginRight,
+      height: 60,
+      color: totalAmountValueBackgroundColor,
+    });
+
+    // Draw the total amount value
+    drawText(
+      `${transactionTotal.toString()} ${currency}`,
+      totalAmountValueStyle,
+      width
+    );
+
+    textY -= 40;
+
+    // Draw background for body
+    let totalDescriptionHeight = 0;
+
+    page.drawRectangle({
+      x: marginLeft,
+      y: textY,
+      width: width - marginLeft - marginRight,
+      height: 40,
+      color: bodyBackgroundColor,
+    });
+
+    // Function to draw text with specified style and alignment
+    const drawTexts = (label, value) => {
+      // Convert value to string if it's a number
+      if (typeof value === "number") {
+        value = value.toString();
+      }
+
+      // Draw label text with black color
+      page.drawText(label, {
+        x: marginLeft + 20, // Adjust x position to add a left margin
+        y: textY,
+        size: bodyFontSize,
+        font: timesRomanFont,
+        color: rgb(0, 0, 0), // Black color
+        textAlign: "left",
+      });
+
+      // Calculate the width of the value text
+      const valueTextWidth = timesRomanFont.widthOfTextAtSize(
+        value,
+        bodyFontSize
+      );
+
+      // Draw value text aligned to the right
+      page.drawText(value, {
+        x: width - marginRight - valueTextWidth - 20, // Adjust x position to add a right margin
+        y: textY,
+        size: bodyFontSize,
+        font: timesRomanFont,
+        color: rgb(0, 0, 0), // Black color
+        textAlign: "right",
+      });
+
+      textY -= 20 + 30; // Adjust the vertical spacing as needed
+    };
+
+    function formatDescription(description, maxWidth, font, fontSize) {
+      const words = description.split(" ");
+      let lines = [];
+      let currentLine = "";
+
+      for (const word of words) {
+        const wordWidth = font.widthOfTextAtSize(word, fontSize);
+        const currentLineWidth = font.widthOfTextAtSize(
+          currentLine + " " + word,
+          fontSize
+        );
+
+        if (currentLine === "" || currentLineWidth <= maxWidth) {
+          currentLine += (currentLine === "" ? "" : " ") + word;
+        } else {
+          lines.push(currentLine);
+          currentLine = word;
+        }
+      }
+      lines.push(currentLine);
+
+      return lines; // Return array of lines without joining them
+    }
+
+    const widthRatio = 0.5;
+
+    // Calculate the maximum width available for the description
+    const maxDescriptionWidth = (width - marginLeft - marginRight) * widthRatio;
+
+    function formatAndDrawDescription(description) {
+      const formattedDescriptionLines = formatDescription(
+        description,
+        maxDescriptionWidth,
+        timesRomanFont,
+        bodyFontSize
+      );
+
+      // Draw Transaction Details
+      if (formattedDescriptionLines.length > 0) {
+        drawTexts("Transaction Details", formattedDescriptionLines[0]);
+        totalDescriptionHeight += 20; // Assuming each line has a height of 20
+
+        // Draw the rest of Transaction Details lines starting from the second line
+        for (let i = 1; i < formattedDescriptionLines.length; i++) {
+          drawTexts("", formattedDescriptionLines[i]);
+          totalDescriptionHeight += 20; // Assuming each line has a height of 20
+        }
+
+        // Increment totalDescriptionHeight for additional lines
+        if (formattedDescriptionLines.length > 1) {
+          totalDescriptionHeight += 20 * (formattedDescriptionLines.length - 1);
+        }
+      }
+    }
+
+    const totalSectionsHeight = 9 * (20 + 40) + totalDescriptionHeight;
+
+    // Draw background for body
+    page.drawRectangle({
+      x: marginLeft,
+      y: textY - totalSectionsHeight,
+      width: width - marginLeft - marginRight,
+      height: totalSectionsHeight,
+      color: bodyBackgroundColor,
+    });
+
+    // Draw other sections with appropriate styles
+    drawTexts("Sender Name", transactionFrom);
+    drawTexts("Beneficiary", transactionTo);
+    drawTexts("Transaction Type", transactionType);
+    drawTexts("Transaction Status", transactionStatus);
+    drawTexts("Transaction Date", formattedTransactionDate);
+    drawTexts("Transaction Fee", transactionFee);
+    formatAndDrawDescription(transactionDescription);
+
+    drawTexts("Transaction Net Total", transactionNetTotal);
+    drawTexts("Transaction ID", transactionReference);
+
+    const poweredByText = "Powered by";
+    const poweredByTextWidth = timesRomanFont.widthOfTextAtSize(
+      poweredByText,
+      12 // Adjust font size as needed
+    );
+    const poweredByTextX = (width - poweredByTextWidth) / 2; // Centered horizontally
+    const poweredByTextY = marginTop + 40; // Adjust Y position as needed
+
+    // Draw "Powered by" text
+    page.drawText(poweredByText, {
+      x: poweredByTextX - 30,
+      y: poweredByTextY,
+      size: 12, // Adjust font size as needed
+      font: timesRomanFont,
+      color: rgb(0, 0, 0), // Adjust color as needed
+    });
+
+    const imageX = marginLeft; // Adjust X position as needed
+    const imageY = marginTop; // Adjust Y position as needed
+
+    // Draw the logo image on the page
+    page.drawImage(receiptLogoImage, {
+      x: poweredByTextX + 40,
+      y: poweredByTextY - 5,
+      width: 50,
+      height: 15,
+    });
+
+    const pdfBytes = await pdfDoc.save();
+
+    // Create a Blob from PDF bytes
+    const blob = new Blob([pdfBytes], {
+      type: "application/pdf",
+    });
+
+    // Create a URL for the Blob
+    const url = URL.createObjectURL(blob);
+
+    // Open PDF in a new tab
+    window.open(url, "_blank");
+
+    // Clean up URL object after use to release memory
+    URL.revokeObjectURL(url);
+
+    sx: {
+      cursor: "pointer";
+    }
+  };
 
   return (
     <>
@@ -1549,7 +1904,7 @@ function Row({ payout, isPayoutSelected }) {
                               Approved <CheckIcon />
                             </Button>
                           </MenuItem>
-                          {/* <MenuItem>
+                          <MenuItem>
                             <Button
                               sx={{ margin: 1, bgcolor: green["A700"] }}
                               size="small"
@@ -1557,12 +1912,12 @@ function Row({ payout, isPayoutSelected }) {
                               color="success"
                               onClick={() => {
                                 // setOpenModal(true);
-                                router.push(`/user/${payout.payoutRequestUId}`);
+                                handleReceiptGeneration();
                               }}
                             >
-                              Profile
+                              Report
                             </Button>
-                          </MenuItem> */}
+                          </MenuItem>
                         </div>
                       )}
                     </Menu>

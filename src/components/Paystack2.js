@@ -89,9 +89,9 @@ const Paystack2 = () => {
       status,
     ],
     async () => {
-      console.log("index", transactionPagination.pageIndex);
+      //console.log("index", transactionPagination.pageIndex);
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/transactions/paystack?perPage=${transactionPagination.pageSize}&page=${transactionPagination.pageIndex}`,
+        `https://api.vigoplace.com/api/admin/console/transactions/paystack?perPage=${transactionPagination.pageSize}&page=${transactionPagination.pageIndex}`,
         {
           headers: {
             Authorization: user?.token,

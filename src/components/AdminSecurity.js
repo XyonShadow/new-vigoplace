@@ -77,7 +77,7 @@ function AdminSecurity() {
   const updatePin = async ({ pin, oldPin }) => {
     const setpin = await axios.post(
       // "http://localhost:3001/api/admin/console/approvalpin",
-      "https://vigoplace.com/server/api/admin/console/approvalpin",
+      "https://api.vigoplace.com/api/admin/console/approvalpin",
       { pin, oldPin },
       {
         headers: {
@@ -105,7 +105,7 @@ function AdminSecurity() {
   const changePassword = async ({ oldPassword, newPassword }) => {
     const password = await axios.post(
       // "http://localhost:3001/api/admin/console/password/update",
-      "https://vigoplace.com/server/api/admin/console/password/update",
+      "https://api.vigoplace.com/api/admin/console/password/update",
       { oldPassword, newPassword },
       {
         headers: {

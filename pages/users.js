@@ -144,7 +144,7 @@ const Users = () => {
   const blockUser = async (id) => {
     const blockedUser = await axios.post(
       // "http://localhost:3001/api/admin/console/users/block",
-      "https://vigoplace.com/server/api/admin/console/users/block",
+      "https://api.vigoplace.com/api/admin/console/users/block",
       { userId: id },
       {
         headers: {
@@ -169,7 +169,7 @@ const Users = () => {
   const unblockUser = async (id) => {
     const unblockedUser = await axios.post(
       // "http://localhost:3001/api/admin/console/users/unblock",
-      "https://vigoplace.com/server/api/admin/console/users/unblock",
+      "https://api.vigoplace.com/api/admin/console/users/unblock",
       { userId: id },
       {
         headers: {
@@ -194,7 +194,7 @@ const Users = () => {
   const flagUser = async (id) => {
     const flaggedUser = await axios.post(
       // "http://localhost:3001/api/admin/console/users/flag",
-      "https://vigoplace.com/server/api/admin/console/users/flag",
+      "https://api.vigoplace.com/api/admin/console/users/flag",
       { userId: id },
       {
         headers: {
@@ -219,7 +219,7 @@ const Users = () => {
   const unflagUser = async (id) => {
     const unflaggedUser = await axios.post(
       // "http://localhost:3001/api/admin/console/users/unflag",
-      "https://vigoplace.com/server/api/admin/console/users/unflag",
+      "https://api.vigoplace.com/api/admin/console/users/unflag",
       { userId: id },
       {
         headers: {
@@ -244,7 +244,7 @@ const Users = () => {
   const notifyUser = async ({ users, message }) => {
     const notification = await axios.post(
       // "http://localhost:3001/api/notifications",
-      "https://vigoplace.com/server/api/notifications",
+      "https://api.vigoplace.com/api/notifications",
       { users, message },
       {
         headers: {
@@ -275,7 +275,7 @@ const Users = () => {
   const postNoDebit = async (id) => {
     const postNoDebitUser = await axios.post(
       // "http://localhost:3001/api/admin/console/users/block",
-      "https://vigoplace.com/server/api/admin/console/post-no-debit",
+      "https://api.vigoplace.com/api/admin/console/post-no-debit",
       { userId: id.toString(), status: "suspend" },
       {
         headers: {
@@ -303,7 +303,7 @@ const Users = () => {
   const postYesDebit = async (id) => {
     const postYesDebitUser = await axios.post(
       // "http://localhost:3001/api/admin/console/users/block",
-      "https://vigoplace.com/server/api/admin/console/post-no-debit",
+      "https://api.vigoplace.com/api/admin/console/post-no-debit",
       { userId: id.toString(), status: "activate" },
       {
         headers: {
@@ -376,7 +376,7 @@ const Users = () => {
         // `http://localhost:4000/api/admin/console/users?perPage=${
         //   pagination.pageSize
         // }&page=${pagination.pageIndex + 1}&walletCurrencyId=${wallet}${
-        `https://vigoplace.com/server/api/admin/console/users?perPage=${
+        `https://api.vigoplace.com/api/admin/console/users?perPage=${
           pagination.pageSize
         }&page=${pagination.pageIndex}&walletCurrencyId=${wallet}${
           gender !== "" ? `&gender=${gender}` : ""

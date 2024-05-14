@@ -65,7 +65,7 @@ export const ReferralsComponet = ({ user }) => {
   const rechargeReferral = async ({ userId }) => {
     const notification = await axios.post(
       // "http://localhost:3001/api/admin/console/users/referral-recharge",
-      "https://vigoplace.com/server/api/admin/console/users/referral-recharge",
+      "https://api.vigoplace.com/api/admin/console/users/referral-recharge",
       { userId },
       {
         headers: {
@@ -109,7 +109,7 @@ export const ReferralsComponet = ({ user }) => {
     async () => {
       const { data } = await axios.get(
         // `http://localhost:3001/api/admin/console/users/referrals?limit=${
-        `https://vigoplace.com/server/api/admin/console/users/referrals?limit=${
+        `https://api.vigoplace.com/api/admin/console/users/referrals?limit=${
           pagination.pageSize
         }&offset=${
           pagination.pageIndex * pagination.pageSize
@@ -141,7 +141,7 @@ export const ReferralsComponet = ({ user }) => {
     async () => {
       const { data } = await axios.get(
         // `http://localhost:3001/api/admin/console/users/referrals/${userId}?status=${userReferralstatus}`,
-        `https://vigoplace.com/server/api/admin/console/users/referrals/${userId}?status=${userReferralstatus}`,
+        `https://api.vigoplace.com/api/admin/console/users/referrals/${userId}?status=${userReferralstatus}`,
         {
           headers: {
             Authorization: user?.token,

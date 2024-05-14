@@ -61,7 +61,7 @@ export const UncategorizedPost = ({
     updateCurrentPost(images[currentIndex]?.POId);
   }, [currentIndex]);
 
-  const API_BASE_URL = "https://vigoplace.com/server/";
+  const API_BASE_URL = "https://api.vigoplace.com/";
 
   const fetchData = async () => {
     const response = await fetch(`${API_BASE_URL}/api/admin/uncategorized`);
@@ -555,7 +555,7 @@ export function Postcategorization1({ data, categorizedData }) {
   //   }
   // }, [selectedCategories]);
 
-  const API_BASE_URL = "https://vigoplace.com/server/";
+  const API_BASE_URL = "https://api.vigoplace.com/";
 
   const fetchData = async () => {
     const response = await fetch(`${API_BASE_URL}/api/admin/categories`);
@@ -644,8 +644,8 @@ export function Postcategorization1({ data, categorizedData }) {
   };
 
   const handleClick = () => {
-    console.log(newCategories);
-    fetch("https://vigoplace.com/server/api/admin/categories", {
+    //console.log(newCategories);
+    fetch("https://api.vigoplace.com/api/admin/categories", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -673,7 +673,7 @@ export function Postcategorization1({ data, categorizedData }) {
     const postId = uncategorizedData?.data[currentIndex]?.POId;
     setSelectedCategory(category);
 
-    fetch("https://vigoplace.com/server/api/admin/categorization", {
+    fetch("https://api.vigoplace.com/api/admin/categorization", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

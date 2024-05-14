@@ -2,12 +2,18 @@ import React, { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 
-export function Postmodal({ open, onClose, postId, onDelete }) {
-  const API_BASE_URL = "https://vigoplace.com/server";
+export function Postmodal({
+  open,
+  onClose,
+  postId,
+  onDelete,
+  setUncategorizedData,
+}) {
+  //console.log(postId)
+  const API_BASE_URL = "https://api.vigoplace.com";
   const queryClient = useQueryClient();
 
   const deletePost = async (postId) => {
-    //console.log(postId)
     const response = await fetch(
       `${API_BASE_URL}/api/admin/categorization/${postId}/post`,
       {
@@ -21,6 +27,7 @@ export function Postmodal({ open, onClose, postId, onDelete }) {
       return;
     }
     toast.success("Post successfully deleted");
+    setUncategorizedData((prev) => prev.filter((post) => post.POId !== postId));
     queryClient.invalidateQueries("uncategorizedData");
     queryClient.invalidateQueries("categorizedPost");
     return data;
