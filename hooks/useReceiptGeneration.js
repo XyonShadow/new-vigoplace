@@ -14,7 +14,7 @@ const useReceiptGeneration = (userid, walletids, startDate, endDate, user) => {
       }
 
       // Construct the URL only if walletid is a valid number
-      let url = `https://vigoplace.com/server/api/admin/console/receipt?walletId=${walletids}&id=${userid}`;
+      let url = `https://api.vigoplace.com/api/admin/console/receipt?walletId=${walletids}&id=${userid}`;
 
       if (startDate && endDate) {
         url += `&startDate=${startDate}&endDate=${endDate}`;

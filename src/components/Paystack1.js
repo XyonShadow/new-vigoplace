@@ -82,7 +82,7 @@ const Paystack1 = () => {
     ],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/transfers/paystack?perPage=${pagination.pageSize}&page=${pagination.pageIndex}`,
+        `https://api.vigoplace.com/api/console/transfers/paystack?perPage=${pagination.pageSize}&page=${pagination.pageIndex}`,
         // `http://localhost:3001/api/admin/console/transfers/paystack?perPage=${pagination.pageSize}&page=${pagination.pageIndex}`,
         {
           headers: {

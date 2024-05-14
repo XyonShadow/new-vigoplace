@@ -18,7 +18,7 @@ const userGrowth = () => {
     const fetchUserGrowthData = async () => {
       try {
         const response = await axios.get(
-          "https://vigoplace.com/server/api/admin/console/users/growth",
+          "https://api.vigoplace.com/api/admin/console/users/growth",
           //"http://localhost:4000/api/admin/console/users/activitycount",
           {
             headers: {

@@ -74,7 +74,7 @@ export default function Index() {
     ["fetchUsersCount"],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/users/count`,
+        `https://api.vigoplace.com/api/admin/console/users/count`,
         // `http://localhost:3001/api/admin/console/users/count`,
         {
           headers: {
@@ -119,7 +119,7 @@ export default function Index() {
     ["paystackBalanceOnDashboard"],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/balance/paystack`,
+        `https://api.vigoplace.com/api/admin/console/balance/paystack`,
         // `http://localhost:3001/api/admin/console/balance/paystack`,
         {
           headers: {
@@ -139,53 +139,53 @@ export default function Index() {
     { keepPreviousData: true }
   );
 
-  const { data: vigoWalletBalance, isLoading: vigoWalletLoading } = useQuery(
-    ["vigoWalletBalance"],
-    async () => {
-      const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/balance/vigowallet`,
-        // `http://localhost:3001/api/admin/console/balance/vigowallet`,
-        {
-          headers: {
-            Authorization: user?.token,
-          },
-        }
-      );
+  // const { data: vigoWalletBalance, isLoading: vigoWalletLoading } = useQuery(
+  //   ["vigoWalletBalance"],
+  //   async () => {
+  //     const { data } = await axios.get(
+  //       `https://api.vigoplace.com/api/admin/console/balance/vigowallet`,
+  //       // `http://localhost:3001/api/admin/console/balance/vigowallet`,
+  //       {
+  //         headers: {
+  //           Authorization: user?.token,
+  //         },
+  //       }
+  //     );
 
-      return data;
-    },
-    {
-      onError: (err) => {
-        console.log(err, "err fetching vigo place balance");
-      },
-      enabled: !!user?.token,
-    },
-    { keepPreviousData: true }
-  );
+  //     return data;
+  //   },
+  //   {
+  //     onError: (err) => {
+  //       console.log(err, "err fetching vigo place balance");
+  //     },
+  //     enabled: !!user?.token,
+  //   },
+  //   { keepPreviousData: true }
+  // );
 
-  const { data: paypalBalance, isLoading: paypalLoading } = useQuery(
-    ["paypalBalance"],
-    async () => {
-      const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/balance/paypal`,
-        // `http://localhost:3001/api/admin/console/balance/paypal`,
-        {
-          headers: {
-            Authorization: user?.token,
-          },
-        }
-      );
+  // const { data: paypalBalance, isLoading: paypalLoading } = useQuery(
+  //   ["paypalBalance"],
+  //   async () => {
+  //     const { data } = await axios.get(
+  //       `https://api.vigoplace.com/api/admin/console/balance/paypal`,
+  //       // `http://localhost:3001/api/admin/console/balance/paypal`,
+  //       {
+  //         headers: {
+  //           Authorization: user?.token,
+  //         },
+  //       }
+  //     );
 
-      return data;
-    },
-    {
-      onError: (err) => {
-        console.log(err, "err fetching vigo place balance");
-      },
-      enabled: !!user?.token,
-    },
-    { keepPreviousData: true }
-  );
+  //     return data;
+  //   },
+  //   {
+  //     onError: (err) => {
+  //       console.log(err, "err fetching vigo place balance");
+  //     },
+  //     enabled: !!user?.token,
+  //   },
+  //   { keepPreviousData: true }
+  // );
 
   if (user?.adminType === "sub-admin") {
     return (

@@ -19,7 +19,7 @@ const fetchRouteRoles = async () => {
     //   }).json()
 
     const parsed = await ky(
-      "https://vigoplace.com/server/api/admin/console/routeroles",
+      "https://api.vigoplace.com/api/admin/console/routeroles",
       //"http://localhost:4000/api/admin/console/routeroles",
       {
         headers: {

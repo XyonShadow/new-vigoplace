@@ -100,7 +100,7 @@ export default function Admin() {
     ["fetchAdminUsers"],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/admin-users`,
+        `https://api.vigoplace.com/api/admin/console/admin-users`,
         //`http://localhost:4000/api/admin/console/admin-users`,
         {
           headers: {
@@ -124,7 +124,7 @@ export default function Admin() {
   const createUser = async (userData) => {
     try {
       const response = await axios.post(
-        "https://vigoplace.com/server/api/admin/auth/register/user",
+        "https://api.vigoplace.com/api/admin/auth/register/user",
         //"http://localhost:4000/api/admin/auth/register/user",
         userData,
         {
@@ -180,7 +180,7 @@ export default function Admin() {
   const promoteUser = async (userId) => {
     try {
       const response = await axios.post(
-        "https://vigoplace.com/server/api/admin/console/promote-users",
+        "https://api.vigoplace.com/api/admin/console/promote-users",
         //"http://localhost:4000/api/admin/console/demote-users",
         userId,
         {
@@ -211,7 +211,7 @@ export default function Admin() {
   const demoteUser = async (userId) => {
     try {
       const response = await axios.post(
-        "https://vigoplace.com/server/api/admin/console/demote-users",
+        "https://api.vigoplace.com/api/admin/console/demote-users",
         //"http://localhost:4000/api/admin/console/demote-users",
         userId,
         {

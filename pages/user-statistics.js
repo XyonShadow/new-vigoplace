@@ -23,7 +23,7 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import axios from "axios";
 
 //const API_BASE_URL = "http://localhost:4000";
-const API_BASE_URL = "https://vigoplace.com/server";
+const API_BASE_URL = "https://api.vigoplace.com";
 
 const Users = () => {
   const [tabValue, setTabValue] = useState(0);

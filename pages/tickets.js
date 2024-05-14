@@ -254,7 +254,7 @@ function Tickets() {
     ],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/tickets/${ticketType}?limit=${1000}${
+        `https://api.vigoplace.com/api/admin/tickets/${ticketType}?limit=${1000}${
           columnFilters?.length >= 1
             ? `&search=${JSON.stringify(columnFilters)}`
             : ""
@@ -314,7 +314,7 @@ function Tickets() {
     ],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/tickets/${ticketType1}/close?limit=${1000}${
+        `https://api.vigoplace.com/api/admin/tickets/${ticketType1}/close?limit=${1000}${
           columnFilters?.length >= 1
             ? `&search=${JSON.stringify(columnFilters)}`
             : ""
@@ -432,7 +432,7 @@ function Tickets() {
                       if (row.original.isRead === 0) {
                         try {
                           await axios.put(
-                            `https://vigoplace.com/server/api/admin/ticket/${row.original.ticketId}`,
+                            `https://api.vigoplace.com/api/admin/ticket/${row.original.ticketId}`,
                             {
                               isRead: 1,
                             },
@@ -532,7 +532,7 @@ function Tickets() {
                       if (row.original.isRead === 0) {
                         try {
                           await axios.put(
-                            `https://vigoplace.com/server/api/admin/ticket/${row.original.ticketId}`,
+                            `https://api.vigoplace.com/api/admin/ticket/${row.original.ticketId}`,
                             {
                               isRead: 1,
                             },

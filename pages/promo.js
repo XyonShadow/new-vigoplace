@@ -178,7 +178,7 @@ const Promo = () => {
   const rechargeReferral = async ({ userId }) => {
     const notification = await axios.post(
       // "http://localhost:3001/api/admin/console/users/referral-recharge",
-      "https://vigoplace.com/server/api/admin/console/users/referral-recharge",
+      "https://api.vigoplace.com/api/admin/console/users/referral-recharge",
       { userId },
       {
         headers: {
@@ -208,7 +208,7 @@ const Promo = () => {
   const rechargeNewSignup = async ({ userId, creditNewUserId }) => {
     const notification = await axios.post(
       // "http://localhost:3001/api/admin/console/users/signup-recharge",
-      "https://vigoplace.com/server/api/admin/console/users/signup-recharge",
+      "https://api.vigoplace.com/api/admin/console/users/signup-recharge",
       { userId, creditNewUserId },
       {
         headers: {
@@ -779,7 +779,7 @@ const NewUsersComponets = ({ user }) => {
     async () => {
       const { data } = await axios.get(
         // `http://localhost:3001/api/admin/console/users/new-signups?limit=${
-        `https://vigoplace.com/server/api/admin/console/users/new-signups?limit=${
+        `https://api.vigoplace.com/api/admin/console/users/new-signups?limit=${
           pagination.pageSize
         }&offset=${
           pagination.pageIndex * pagination.pageSize

@@ -18,7 +18,7 @@ const ActiveUsers = () => {
     const fetchActiveUsersData = async () => {
       try {
         const response = await axios.get(
-          "https://vigoplace.com/server/api/admin/console/users/activitycount",
+          "https://api.vigoplace.com/api/admin/console/users/activitycount",
           //"http://localhost:4000/api/admin/console/users/activitycount",
           {
             headers: {

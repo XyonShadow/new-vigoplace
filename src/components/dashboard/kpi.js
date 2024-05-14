@@ -40,7 +40,7 @@ const KPI = (props) => {
   const { data: kpis, refetch } = useQuery(
     ["fetchkpi"],
     async () => {
-      let url = "https://vigoplace.com/server/api/admin/statistics/dashboard";
+      let url = "https://api.vigoplace.com/api/admin/statistics/dashboard";
       //let url = "http://localhost:4000/api/admin/statistics/dashboard";
 
       const queryParams = checkedCheckboxes.reduce((acc, checkbox) => {

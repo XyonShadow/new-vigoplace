@@ -311,7 +311,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
     ["paystackBalance"],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/balance/paystack`,
+        `https://api.vigoplace.com/api/admin/console/balance/paystack`,
         // `http://localhost:3001/api/admin/console/balance/paystack`,
         {
           headers: {
@@ -334,7 +334,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
     ["usersBalance"],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/balance/userswallet`,
+        `https://api.vigoplace.com/api/admin/console/balance/userswallet`,
         // `http://localhost:3001/api/admin/console/balance/userswallet`,
         {
           headers: {
@@ -358,7 +358,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
     ["payoutsBalance"],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/payouts/requests/total`,
+        `https://api.vigoplace.com/api/admin/console/payouts/requests/total`,
         // `http://localhost:3001/api/admin/console/payouts/requests/total`,
         {
           headers: {
@@ -382,7 +382,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
     ["vigoWalletBalance"],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/balance/vigowallet`,
+        `https://api.vigoplace.com/api/admin/console/balance/vigowallet`,
         // `http://localhost:3001/api/admin/console/balance/vigowallet`,
         {
           headers: {
@@ -405,7 +405,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
     ["paypalBalance"],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/balance/paypal`,
+        `https://api.vigoplace.com/api/admin/console/balance/paypal`,
         // `http://localhost:3001/api/admin/console/balance/paypal`,
         {
           headers: {

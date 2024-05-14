@@ -174,7 +174,7 @@ const SingleTicket = () => {
     ["fetchTicketMessages"],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/ticket/messages/${ticketid}`,
+        `https://api.vigoplace.com/api/admin/ticket/messages/${ticketid}`,
         // `http://localhost:4000/api/admin/ticket/messages/${ticketid}`,
         {
           headers: {
@@ -204,7 +204,7 @@ const SingleTicket = () => {
     ["fetchTicket"],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/ticket/${ticketid}`,
+        `https://api.vigoplace.com/api/admin/ticket/${ticketid}`,
         //`http://localhost:4000/api/admin/ticket/${ticketid}`,
         {
           headers: {
@@ -253,7 +253,7 @@ const SingleTicket = () => {
       const fetchData = async () => {
         try {
           const response = await axios.get(
-            `https://vigoplace.com/server/api/admin/console/user?userId=${ticket.data.userId}`,
+            `https://api.vigoplace.com/api/admin/console/user?userId=${ticket.data.userId}`,
             //`http://localhost:4000/api/admin/console/user?userId=${ticket.data.userId}`,
             {
               headers: {
@@ -276,7 +276,7 @@ const SingleTicket = () => {
   const chat = async (id) => {
     const unblockedUser = await axios.post(
       // "http://localhost:3001/api/admin/console/users/unblock",
-      "https://vigoplace.com/server/api/admin/console/users/unblock",
+      "https://api.vigoplace.com/api/admin/console/users/unblock",
       { userId: id },
       {
         headers: {
@@ -436,7 +436,7 @@ export const Chat = ({ messages, ticket, userDetails }) => {
   const chat = async ({ ticketid, message }) => {
     const sendmessage = await axios.post(
       //"http://localhost:4000/api/admin/ticket/message",
-      "https://vigoplace.com/server/api/admin/ticket/message",
+      "https://api.vigoplace.com/api/admin/ticket/message",
       { ticketid, message },
       {
         headers: {
@@ -462,7 +462,7 @@ export const Chat = ({ messages, ticket, userDetails }) => {
   const close = async ({ ticketId }) => {
     const closeTicket = await axios.post(
       //"http://localhost:4000/api/admin/ticket/close",
-      "https://vigoplace.com/server/api/admin/ticket/close",
+      "https://api.vigoplace.com/api/admin/ticket/close",
       { ticketId },
       {
         headers: {

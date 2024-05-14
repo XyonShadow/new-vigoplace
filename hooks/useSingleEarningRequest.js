@@ -12,7 +12,7 @@ const fetchSingleEarningRequest = async (id) => {
     const token = await getToken();
 
     const parsed = await ky(
-      `https://vigoplace.com/server/api/admin/console/earnings/${id}`,
+      `https://api.vigoplace.com/api/admin/console/earnings/${id}`,
       //`http://localhost:4000/api/admin/console/earnings/${id}`,
       {
         headers: {

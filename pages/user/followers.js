@@ -26,7 +26,7 @@ import {
 } from "@tanstack/react-query";
 import { getSession, useSession } from "next-auth/react";
 
-const API_BASE_URL = "https://vigoplace.com/server";
+const API_BASE_URL = "https://api.vigoplace.com";
 //const API_BASE_URL = "http://localhost:4000";
 
 let prevUserId = null;

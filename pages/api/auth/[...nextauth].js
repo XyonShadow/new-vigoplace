@@ -43,7 +43,7 @@ export const authOptions = {
         //   headers: { "Content-Type": "application/json" }
         // })
         
-        const res = await axios.post('https://vigoplace.com/server/api/admin/auth/login', 
+        const res = await axios.post('https://api.vigoplace.com/api/admin/auth/login', 
         // const res = await axios.post('http://localhost:3001/api/admin/auth/login', 
         // credentials
         {

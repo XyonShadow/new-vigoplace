@@ -8,7 +8,7 @@ const Footer = () => {
   return (
     <Box sx={{ p: 3, textAlign: "center" }}>
       <Typography>
-        © {currentYear} <Link href="https://vigoplace.com">Vigoplace</Link>{" "}
+        © {currentYear} <Link href="https://api.vigoplace.com">Vigoplace</Link>{" "}
       </Typography>
     </Box>
   );

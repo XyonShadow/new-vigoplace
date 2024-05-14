@@ -95,7 +95,7 @@ const Users = () => {
     ],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/transfers/paystack?perPage=${
+        `https://api.vigoplace.com/api/admin/console/transfers/paystack?perPage=${
           pagination.pageSize
         }&page=${pagination.pageIndex + 1}`,
         // `http://localhost:3001/api/admin/console/transfers/paystack?perPage=${pagination.pageSize}&page=${pagination.pageIndex}`,
@@ -124,7 +124,7 @@ const Users = () => {
     setIsLoadingT(true);
     try {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/transactions/paystack?perPage=${
+        `https://api.vigoplace.com/api/admin/console/transactions/paystack?perPage=${
           transactionPagination.pageSize
         }&page=${transactionPagination.pageIndex + 1}`,
         {

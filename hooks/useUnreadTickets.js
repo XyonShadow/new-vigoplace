@@ -19,7 +19,7 @@ export const UnreadTicketsProvider = ({ children }) => {
     ["fetchTicketss"],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/tickets/unassigned?limit=${1000}`,
+        `https://api.vigoplace.com/api/admin/tickets/unassigned?limit=${1000}`,
         //`http://localhost:4000/api/admin/tickets/unassigned?limit=${1000}`,
         {
           headers: {
