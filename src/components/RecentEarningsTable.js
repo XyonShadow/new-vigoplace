@@ -124,7 +124,7 @@ const applyPagination = (cryptoOrders, page, limit) => {
   return cryptoOrders?.slice(page * limit, page * limit + limit);
 };
 
-const API_BASE_URL = "https://api.vigoplace.com";
+const API_BASE_URL = "https://vigoplace.com/server";
 //const API_BASE_URL = "http://localhost:4000";
 export default function RecentEarningsTable() {
   const queryClient = useQueryClient();
@@ -304,8 +304,18 @@ export default function RecentEarningsTable() {
     setPagination({ ...pagination, pageIndex: totalPages - 1 });
   };
 
-  const filteredPayouts = filteredCryptoOrders?.filter((payout) =>
-    payout?.userFullName?.toLowerCase().includes(searchQuery?.toLowerCase())
+  const filteredPayouts = filteredCryptoOrders?.filter(
+    (payout) =>
+      payout?.reference?.toLowerCase().includes(searchQuery?.toLowerCase()) ||
+      payout?.userFullName
+        ?.toLowerCase()
+        .includes(searchQuery?.toLowerCase()) ||
+      payout?.status?.toLowerCase().includes(searchQuery?.toLowerCase()) ||
+      payout?.amount
+        ?.toString()
+        .toLowerCase()
+        .includes(searchQuery?.toLowerCase()) ||
+      payout?.Id?.toString().toLowerCase().includes(searchQuery?.toLowerCase())
     //console.log(payout)
   );
 
@@ -512,7 +522,7 @@ function Row({ payout, isPayoutSelected }) {
   const approveEarning = async ({ reference, pin, amount }) => {
     const token = await getToken();
     const parsed = await axios.patch(
-      "https://api.vigoplace.com/api/admin/console/earnings/approve",
+      "https://vigoplace.com/server/api/admin/console/earnings/approve",
       //"http://localhost:4000/api/admin/console/earnings/approve",
       { reference: reference, approvalPin: pin, amount: amount },
       {
@@ -534,6 +544,7 @@ function Row({ payout, isPayoutSelected }) {
       setAmountValue(payout.amount);
     },
     onError: async (error) => {
+      console.log(error);
       setOpenToast(true);
       setPin(null);
     },
@@ -542,7 +553,7 @@ function Row({ payout, isPayoutSelected }) {
   const declineEarning = async ({ reference, pin }) => {
     const token = await getToken();
     const parsed = await axios.patch(
-      "https://api.vigoplace.com/api/admin/console/earnings/reject",
+      "https://vigoplace.com/server/api/admin/console/earnings/reject",
       //"http://localhost:4000/api/admin/console/earnings/reject",
       { reference: reference, approvalPin: pin },
       {
@@ -622,8 +633,8 @@ function Row({ payout, isPayoutSelected }) {
 
       try {
         const { data } = await axios.get(
-          //`http://localhost:4000/api/admin/console/user-earnings/list/${userid}?currencyId=${currencyid}`,
-          `https://api.vigoplace.com/api/admin/console/user-earnings/list/${userid}?currencyId=${currencyid}&period=${formattedDate}`,
+          //`http://localhost:4000/api/admin/console/user-earnings/list/${userid}?currencyId=${currencyid}&period=${formattedDate}`,
+          `https://vigoplace.com/server/api/admin/console/user-earnings/list/${userid}?currencyId=${currencyid}&period=${formattedDate}`,
           {
             headers: {
               Authorization: token,

@@ -131,7 +131,7 @@ const applyPagination = (cryptoOrders, page, limit) => {
   return cryptoOrders?.slice(page * limit, page * limit + limit);
 };
 
-const API_BASE_URL = "https://api.vigoplace.com";
+const API_BASE_URL = "https://vigoplace.com/server";
 //const API_BASE_URL = "http://localhost:4000";
 export default function RecentOrdersTable() {
   const queryClient = useQueryClient();
@@ -344,10 +344,26 @@ export default function RecentOrdersTable() {
     setPagination({ ...pagination, pageIndex: totalPages - 1 });
   };
 
-  const filteredPayouts = filteredCryptoOrders?.filter((payout) =>
-    payout?.payoutRequestReference
-      ?.toLowerCase()
-      .includes(searchQuery?.toLowerCase())
+  const filteredPayouts = filteredCryptoOrders?.filter(
+    (payout) =>
+      payout?.payoutRequestReference
+        ?.toLowerCase()
+        .includes(searchQuery?.toLowerCase()) ||
+      payout?.userFullName
+        ?.toLowerCase()
+        .includes(searchQuery?.toLowerCase()) ||
+      payout?.payoutRequestStatus
+        ?.toLowerCase()
+        .includes(searchQuery?.toLowerCase()) ||
+      payout?.payoutRequestAmount
+        ?.toString()
+        .toLowerCase()
+        .includes(searchQuery?.toLowerCase()) ||
+      payout?.payoutRequestId
+        ?.toString()
+        .toLowerCase()
+        .includes(searchQuery?.toLowerCase())
+    //console.log(payout)
   );
 
   const theme = useTheme();
@@ -579,7 +595,7 @@ function Row({ payout, isPayoutSelected }) {
     const token = await getToken();
     const parsed = await axios.post(
       //"http://localhost:4000/api/admin/console/approvepayout",
-      "https://api.vigoplace.com/api/admin/console/approvepayout",
+      "https://vigoplace.com/server/api/admin/console/approvepayout",
       { payoutRequestId: id, approvalPin: pin, users },
       {
         headers: {
@@ -612,7 +628,7 @@ function Row({ payout, isPayoutSelected }) {
     const token = await getToken();
     const parsed = await axios.post(
       // "http://localhost:3001/api/admin/console/approvepayout",
-      "https://api.vigoplace.com/api/admin/console/approvepayout",
+      "https://vigoplace.com/server/api/admin/console/approvepayout",
       { payoutRequestId: id, approvalPin: pin, deliveryETA, users },
       {
         headers: {
@@ -641,7 +657,7 @@ function Row({ payout, isPayoutSelected }) {
     const token = await getToken();
     const parsed = await axios.post(
       // "http://localhost:3001/api/admin/console/declinepayout",
-      "https://api.vigoplace.com/api/admin/console/declinepayout",
+      "https://vigoplace.com/server/api/admin/console/declinepayout",
       { payoutRequestId: id, approvalPin: pin, reason, users },
       {
         headers: {
@@ -678,7 +694,7 @@ function Row({ payout, isPayoutSelected }) {
     const token = await getToken();
     const parsed = await axios.post(
       //"http://localhost:4000/api/admin/console/split/payment",
-      "https://api.vigoplace.com/api/admin/console/split/payment",
+      "https://vigoplace.com/server/api/admin/console/split/payment",
       {
         reference: reference,
         split: [
@@ -728,7 +744,7 @@ function Row({ payout, isPayoutSelected }) {
     const token = await getToken();
     const parsed = await axios.put(
       //"http://localhost:4000/api/admin/console/transaction",
-      "https://api.vigoplace.com/api/api/admin/console/transaction",
+      "https://vigoplace.com/server/api/api/admin/console/transaction",
       {
         reference: reference,
         status: "onHold",

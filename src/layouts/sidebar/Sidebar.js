@@ -265,6 +265,15 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
       SCPCreatedAt: "2023-11-28T10:17:02.000Z",
       SCPUpdatedAt: null,
     },
+    {
+      id: 19,
+      title: "Reports",
+      icon: "file-plus",
+      href: "/report",
+      roles: ["admin", "root"],
+      SCPCreatedAt: "2024-05-18T10:17:02.000Z",
+      SCPUpdatedAt: null,
+    },
 
     // {
     //   id: 14,
@@ -603,27 +612,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
                           height="20"
                         />
                       </ListItemIcon>
-                      <ListItemText>
-                        {item.title}
-                        {item.href === "/tickets" && unreadTicketsCount > 0 && (
-                          <span
-                            style={{
-                              marginLeft: "5px",
-                              position: "absolute",
-                              top: "2px",
-                              width: "15px",
-                              height: "15px",
-                              borderRadius: "50%",
-                              backgroundColor: "red",
-                              color: "white",
-                              textAlign: "center",
-                              fontSize: "x-small",
-                            }}
-                          >
-                            {unreadTicketsCount}
-                          </span>
-                        )}
-                      </ListItemText>
+                      <ListItemText>{item.title}</ListItemText>
                       {openDropdown === item.id ? (
                         <ExpandLessIcon />
                       ) : (
@@ -703,7 +692,36 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
                           }}
                         />
                       </ListItemIcon>
-                      <ListItemText>{item.title}</ListItemText>
+
+                      <ListItemText>
+                        {item.href === "/tickets" ? (
+                          <>
+                            {item.title}
+                            {unreadTicketsCount > 0 && (
+                              <span
+                                style={{
+                                  marginLeft: "5px", // Adjust the margin as needed
+                                  //display: "inline-block",
+                                  position: "absolute",
+                                  top: "2px",
+                                  width: "15px",
+                                  height: "15px",
+                                  borderRadius: "50%",
+                                  backgroundColor: "red",
+                                  color: "white",
+                                  textAlign: "center",
+                                  fontSize: "x-small",
+                                  //lineHeight: "20px", // Center the text vertically
+                                }}
+                              >
+                                {unreadTicketsCount}
+                              </span>
+                            )}
+                          </>
+                        ) : (
+                          item.title
+                        )}
+                      </ListItemText>
                     </ListItem>
                   </NextLink>
                 )}
