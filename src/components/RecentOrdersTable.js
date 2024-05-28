@@ -1032,9 +1032,19 @@ function Row({ payout, isPayoutSelected }) {
     drawTexts("Transaction Type", transactionType);
     drawTexts("Transaction Status", transactionStatus);
     drawTexts("Transaction Date", formattedTransactionDate);
-    drawTexts("Transaction Fee", transactionFee);
     formatAndDrawDescription(transactionDescription);
-
+    drawTexts(
+      "Account Number",
+      queryClient.getQueryData([
+        "payoutRequest",
+        payout.payoutRequestId,
+      ])?.data?.accountNumber
+    );
+    drawTexts(
+      "Bank Name",
+      queryClient.getQueryData(["payoutRequest", payout.payoutRequestId])?.data
+        ?.acountBankName
+    );
     drawTexts("Transaction Net Total", transactionNetTotal);
     drawTexts("Transaction ID", transactionReference);
 

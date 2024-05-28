@@ -139,9 +139,14 @@ const Users = () => {
   const [autoPayoutSuccessToast, setAutoPayoutSuccessToast] =
     React.useState(false);
   const [autoPayoutErrorToast, setAutoPayoutErrorToast] = React.useState(false);
+  const [offAutoPayoutSuccessToast, setoffAutoPayoutSuccessToast] =
+    React.useState(false);
+  const [offAutoPayoutErrorToast, setoffAutoPayoutErrorToast] =
+    React.useState(false);
   const [lienModal, setLienModal] = React.useState(false);
   const [ticketModal, setTicketModal] = React.useState(false);
   const [autoPayoutModal, setAutoPayoutModal] = React.useState(false);
+  const [offAutoPayoutModal, setOffAutoPayoutModal] = React.useState(false);
   const [notifyModal, setNotifyModal] = React.useState(false);
   const [kycModal, setKycModal] = React.useState(false);
   const [emailModal, setEmailModal] = React.useState(false);
@@ -323,7 +328,7 @@ const Users = () => {
     },
     {
       onError: (err) => {
-        console.log(err, "err fetching users");
+        console.log(err, "err fetching user detailsa");
       },
       enabled: !!user?.token,
     },
@@ -726,7 +731,7 @@ const Users = () => {
   });
 
   const autoPayout = async ({ id, pin }) => {
-    const verifyAutoPayout = await axios.post(
+    const verifyAutoPayout = await axios.patch(
       //"http://localhost:4000/api/admin/console/users/kycverify",
       "https://api.vigoplace.com/api/admin/console/users/update",
       { userId: id, approvalPin: pin, autoPayout: true },
@@ -754,6 +759,40 @@ const Users = () => {
     onError: async (error) => {
       console.log(error);
       setAutoPayoutErrorToast(true);
+      setPin(null);
+    },
+  });
+
+  const offAutoPayout = async ({ id, pin }) => {
+    const unVerifyAutoPayout = await axios.patch(
+      //"http://localhost:4000/api/admin/console/users/kycverify",
+      "https://api.vigoplace.com/api/admin/console/users/update",
+      { userId: id, approvalPin: pin, autoPayout: false },
+      {
+        headers: {
+          Authorization: user?.token,
+        },
+      }
+    );
+
+    return unVerifyAutoPayout;
+  };
+
+  const offAutoPayoutMutation = useMutation({
+    mutationKey: ["offAutoPayout"],
+    mutationFn: offAutoPayout,
+    onSuccess: () => {
+      setPin(null);
+      setoffAutoPayoutSuccessToast(true);
+      queryClient.invalidateQueries("fetchSingleUser");
+      setTimeout(() => {
+        offAutoPayoutMutation.reset();
+      }, 7000);
+    },
+    onError: async (error) => {
+      console.log(error);
+      setoffAutoPayoutErrorToast(true);
+      setPin(null);
     },
   });
 
@@ -797,6 +836,13 @@ const Users = () => {
   };
   const handleAutoPayoutErrorToastClose = (event, reason) => {
     setAutoPayoutErrorToast(false);
+  };
+
+  const handleoffAutoPayoutSuccessToastClose = (event, reason) => {
+    setoffAutoPayoutSuccessToast(false);
+  };
+  const handleoffAutoPayoutErrorToastClose = (event, reason) => {
+    setoffAutoPayoutErrorToast(false);
   };
 
   const handleClose = (event, reason) => {
@@ -1042,6 +1088,36 @@ const Users = () => {
           sx={{ width: "100%" }}
         >
           {autoPayoutMutation?.error?.response?.data?.message}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        TransitionComponent={Slide}
+        open={offAutoPayoutSuccessToast}
+        autoHideDuration={6000}
+        onClose={handleoffAutoPayoutSuccessToastClose}
+      >
+        <Alert
+          onClose={handleoffAutoPayoutSuccessToastClose}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {offAutoPayoutMutation?.data?.data?.message}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        TransitionComponent={Slide}
+        open={offAutoPayoutErrorToast}
+        autoHideDuration={6000}
+        onClose={handleoffAutoPayoutErrorToastClose}
+      >
+        <Alert
+          onClose={handleoffAutoPayoutErrorToastClose}
+          severity="warning"
+          sx={{ width: "100%" }}
+        >
+          {offAutoPayoutMutation?.error?.response?.data?.message}
         </Alert>
       </Snackbar>
 
@@ -1632,79 +1708,155 @@ const Users = () => {
                     </>
                   )}
 
-                  <>
-                    <MenuItem sx={{ width: "100%", marginRight: "auto" }}>
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        onClick={() => setAutoPayoutModal(true)}
+                  {userDetails?.data?.user?.autoPayout === 0 ? (
+                    <>
+                      <MenuItem sx={{ width: "100%", marginRight: "auto" }}>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          onClick={() => setAutoPayoutModal(true)}
+                        >
+                          {autoPayoutMutation.isLoading ? (
+                            <CircularProgress size={23} color="inherit" />
+                          ) : autoPayoutMutation.isSuccess ? (
+                            <CheckIcon />
+                          ) : (
+                            "Verify Auto Payout"
+                          )}
+                        </Typography>
+                      </MenuItem>
+
+                      <Dialog
+                        open={autoPayoutModal}
+                        onClose={() => {
+                          setAutoPayoutModal(false);
+                        }}
                       >
-                        {autoPayoutMutation.isLoading ? (
-                          <CircularProgress size={23} color="inherit" />
-                        ) : autoPayoutMutation.isSuccess ? (
-                          <CheckIcon />
-                        ) : (
-                          "Verify Auto Payout"
-                        )}
-                      </Typography>
-                    </MenuItem>
+                        <DialogTitle>Verify User's Auto Payout</DialogTitle>
+                        <DialogContent>
+                          <DialogContentText>
+                            Please enter your admin approval pin to verify auto
+                            payout for this user's wallet, if you dont have one
+                            yet, head to{" "}
+                            {
+                              <Link style={{ color: "blue" }} href="/settings">
+                                Settings
+                              </Link>
+                            }{" "}
+                          </DialogContentText>
 
-                    <Dialog
-                      open={autoPayoutModal}
-                      onClose={() => {
-                        setAutoPayoutModal(false);
-                      }}
-                    >
-                      <DialogTitle>Verify User's Auto Payout</DialogTitle>
-                      <DialogContent>
-                        <DialogContentText>
-                          Please enter your admin approval pin to Lien this
-                          user's wallet, if you dont have one yet, head to{" "}
-                          {
-                            <Link style={{ color: "blue" }} href="/settings">
-                              Settings
-                            </Link>
-                          }{" "}
-                        </DialogContentText>
-
-                        <TextField
-                          margin="dense"
-                          id="name"
-                          label="Approval Pin"
-                          type="number"
-                          fullWidth
-                          value={pin}
-                          variant="standard"
-                          onChange={handlePin}
-                        />
-                      </DialogContent>
-                      <DialogActions>
-                        <Button
-                          onClick={() => {
-                            setPin(null);
-                            setAutoPayoutModal(false);
-                          }}
+                          <TextField
+                            margin="dense"
+                            id="name"
+                            label="Approval Pin"
+                            type="number"
+                            fullWidth
+                            value={pin}
+                            variant="standard"
+                            onChange={handlePin}
+                          />
+                        </DialogContent>
+                        <DialogActions>
+                          <Button
+                            onClick={() => {
+                              setPin(null);
+                              setAutoPayoutModal(false);
+                            }}
+                          >
+                            Cancel
+                          </Button>
+                          <LoadingButton
+                            variant="contained"
+                            loading={autoPayoutMutation.isLoading}
+                            disabled={pin === null || pin?.length <= 5}
+                            onClick={() => {
+                              autoPayoutMutation.mutate({
+                                id: userDetails?.data?.user?.id,
+                                pin,
+                              });
+                              setAutoPayoutModal(false);
+                            }}
+                          >
+                            Verify
+                          </LoadingButton>
+                        </DialogActions>
+                      </Dialog>
+                    </>
+                  ) : (
+                    <>
+                      <MenuItem sx={{ width: "100%", marginRight: "auto" }}>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          onClick={() => setOffAutoPayoutModal(true)}
                         >
-                          Cancel
-                        </Button>
-                        <LoadingButton
-                          variant="contained"
-                          loading={autoPayoutMutation.isLoading}
-                          disabled={pin === null || pin?.length <= 5}
-                          onClick={() => {
-                            autoPayoutMutation.mutate({
-                              id: userDetails?.data?.user?.id,
-                              pin,
-                            });
-                            setAutoPayoutModal(false);
-                          }}
-                        >
-                          Verify
-                        </LoadingButton>
-                      </DialogActions>
-                    </Dialog>
-                  </>
+                          {offAutoPayoutMutation.isLoading ? (
+                            <CircularProgress size={23} color="inherit" />
+                          ) : offAutoPayoutMutation.isSuccess ? (
+                            <CheckIcon />
+                          ) : (
+                            "UnVerify Auto Payout"
+                          )}
+                        </Typography>
+                      </MenuItem>
 
+                      <Dialog
+                        open={offAutoPayoutModal}
+                        onClose={() => {
+                          setOffAutoPayoutModal(false);
+                        }}
+                      >
+                        <DialogTitle>UnVerify User's Auto Payout</DialogTitle>
+                        <DialogContent>
+                          <DialogContentText>
+                            Please enter your admin approval pin to unverify
+                            auto payout for this user's wallet, if you dont have
+                            one yet, head to{" "}
+                            {
+                              <Link style={{ color: "blue" }} href="/settings">
+                                Settings
+                              </Link>
+                            }{" "}
+                          </DialogContentText>
+
+                          <TextField
+                            margin="dense"
+                            id="name"
+                            label="Approval Pin"
+                            type="number"
+                            fullWidth
+                            value={pin}
+                            variant="standard"
+                            onChange={handlePin}
+                          />
+                        </DialogContent>
+                        <DialogActions>
+                          <Button
+                            onClick={() => {
+                              setPin(null);
+                              setOffAutoPayoutModal(false);
+                            }}
+                          >
+                            Cancel
+                          </Button>
+                          <LoadingButton
+                            variant="contained"
+                            loading={offAutoPayoutMutation.isLoading}
+                            disabled={pin === null || pin?.length <= 5}
+                            onClick={() => {
+                              offAutoPayoutMutation.mutate({
+                                id: userDetails?.data?.user?.id,
+                                pin,
+                              });
+                              setOffAutoPayoutModal(false);
+                            }}
+                          >
+                            UnVerify
+                          </LoadingButton>
+                        </DialogActions>
+                      </Dialog>
+                    </>
+                  )}
                   <>
                     <MenuItem sx={{ width: "100%", marginRight: "auto" }}>
                       <Typography
