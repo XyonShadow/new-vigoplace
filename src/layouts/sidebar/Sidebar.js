@@ -100,7 +100,44 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
         },
       ],
     },
-
+    {
+      id: 12,
+      title: "Users",
+      icon: "users",
+      href: "",
+      roles: ["admin", "root"],
+      SCPCreatedAt: "2024-04-29T00:00:00.000Z",
+      SCPUpdatedAt: null,
+      subLinks: [
+        {
+          id: 13,
+          title: "Users",
+          icon: "users",
+          href: "/users",
+          roles: ["admin", "root"],
+          SCPCreatedAt: "2022-12-19T06:46:44.000Z",
+          SCPUpdatedAt: null,
+        },
+        {
+          id: 14,
+          title: "Admin-Users",
+          icon: "users",
+          href: "/admin-users",
+          roles: ["admin", "root"],
+          SCPCreatedAt: "2024-04-17T10:17:02.000Z",
+          SCPUpdatedAt: null,
+        },
+        {
+          id: 15,
+          title: "Users-Statistics",
+          icon: "activity",
+          href: "/user-statistics",
+          roles: ["admin", "root"],
+          SCPCreatedAt: "2024-01-27T10:17:02.000Z",
+          SCPUpdatedAt: null,
+        },
+      ],
+    },
     {
       id: 6,
       title: "Customer Reps",
@@ -146,43 +183,13 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
           SCPCreatedAt: "2024-05-18T10:17:02.000Z",
           SCPUpdatedAt: null,
         },
-      ],
-    },
-
-    {
-      id: 12,
-      title: "Users",
-      icon: "users",
-      href: "",
-      roles: ["admin", "root"],
-      SCPCreatedAt: "2024-04-29T00:00:00.000Z",
-      SCPUpdatedAt: null,
-      subLinks: [
         {
-          id: 13,
-          title: "Users",
-          icon: "users",
-          href: "/users",
+          id: 11,
+          title: "Daily Readings",
+          icon: "file-plus",
+          href: "/daily-readings",
           roles: ["admin", "root"],
-          SCPCreatedAt: "2022-12-19T06:46:44.000Z",
-          SCPUpdatedAt: null,
-        },
-        {
-          id: 14,
-          title: "Admin-Users",
-          icon: "users",
-          href: "/admin-users",
-          roles: ["admin", "root"],
-          SCPCreatedAt: "2024-04-17T10:17:02.000Z",
-          SCPUpdatedAt: null,
-        },
-        {
-          id: 15,
-          title: "Users-Statistics",
-          icon: "activity",
-          href: "/user-statistics",
-          roles: ["admin", "root"],
-          SCPCreatedAt: "2024-01-27T10:17:02.000Z",
+          SCPCreatedAt: "2024-05-24T10:17:02.000Z",
           SCPUpdatedAt: null,
         },
       ],
@@ -225,7 +232,6 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
         },
       ],
     },
-    
     {
       id: 20,
       title: "Payments",
@@ -255,17 +261,6 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
         },
       ],
     },
-
-    {
-      id: 23,
-      title: "Daily Readings",
-      icon: "file-plus",
-      href: "/daily-readings",
-      roles: ["admin", "root"],
-      SCPCreatedAt: "2024-05-24T10:17:02.000Z",
-      SCPUpdatedAt: null,
-    },
-
   ];
 
   // useEffect(() => {
