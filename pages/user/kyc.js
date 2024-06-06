@@ -5,8 +5,8 @@ import axios from "axios";
 import { format } from "date-fns";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { CloudinaryContext, Image } from "@cloudinary/react";
-import { Cloudinary } from "@cloudinary/url-gen";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 //Material UI Imports
 import {
   IconButton,
@@ -18,6 +18,7 @@ import {
   Typography,
   Box,
   Button,
+  Grid,
 } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 
@@ -43,8 +44,7 @@ export default function Kyc() {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
-  const [showData, setShowData] = useState(false);
-  const [showData2, setShowData2] = useState(false);
+  const [showData, setShowData] = useState({ bvn: false, nin: false });
   const [imageSrc, setImageSrc] = useState("");
 
   const fetchUserKycDetails = async () => {
@@ -96,7 +96,7 @@ export default function Kyc() {
     if (kyc.length > 0) {
       decodeBase64Image(kyc[0]?.verifiedData?.entity?.image);
     }
-  }, [kyc]); 
+  }, [kyc]);
 
   const generatePDFReceipt = async (kycData) => {
     try {
@@ -382,24 +382,15 @@ export default function Kyc() {
   };
 
   // Function to toggle between showing actual data and asterisks
-  const toggleDataVisibility = () => {
-    setShowData((prevState) => !prevState);
+  const toggleDataVisibility = (key) => {
+    setShowData((prevState) => ({
+      ...prevState,
+      [key]: !prevState[key],
+    }));
   };
 
-  const toggleDataVisibility2 = () => {
-    setShowData2((prevState) => !prevState);
-  };
-
-  const renderData = (data) => {
-    if (showData) {
-      return data;
-    } else {
-      return "*".repeat(data?.length);
-    }
-  };
-
-  const renderData2 = (data) => {
-    if (showData2) {
+  const renderData = (data, key) => {
+    if (showData[key]) {
       return data;
     } else {
       return "*".repeat(data?.length);
@@ -460,18 +451,46 @@ export default function Kyc() {
               {row?.metadata?.governmentData?.telephoneno ||
                 row?.verifiedData?.entity?.phone_number1}
             </Typography>
-            <Typography
+            <Grid
+              container
+              alignItems="center"
               style={{ marginBottom: "10px" }}
-              onClick={toggleDataVisibility}
             >
-              BVN: {renderData(row?.bvn) || "Not applicable"}
-            </Typography>
-            <Typography
+              <Grid item>
+                <Typography>
+                  BVN: {renderData(row?.bvn, "bvn") || "Not applicable"}
+                </Typography>
+              </Grid>
+              <Grid item>
+                <IconButton onClick={() => toggleDataVisibility("bvn")}>
+                  {showData.bvn ? (
+                    <VisibilityOff fontSize="small" />
+                  ) : (
+                    <Visibility fontSize="small" />
+                  )}
+                </IconButton>
+              </Grid>
+            </Grid>
+            <Grid
+              container
+              alignItems="center"
               style={{ marginBottom: "10px" }}
-              onClick={toggleDataVisibility2}
             >
-              NIN: {renderData2(row?.nin) || "Not applicable"}
-            </Typography>
+              <Grid item>
+                <Typography>
+                  NIN: {renderData(row?.nin, "nin") || "Not applicable"}
+                </Typography>
+              </Grid>
+              <Grid item>
+                <IconButton onClick={() => toggleDataVisibility("nin")}>
+                  {showData.nin ? (
+                    <VisibilityOff fontSize="small" />
+                  ) : (
+                    <Visibility fontSize="small" />
+                  )}
+                </IconButton>
+              </Grid>
+            </Grid>
             <Typography style={{ marginBottom: "10px" }}>
               Passport: {row?.passport || "Not applicable"}
             </Typography>

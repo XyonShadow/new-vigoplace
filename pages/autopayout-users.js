@@ -26,38 +26,42 @@ import {
   useTheme,
   IconButton,
   Tooltip,
+  TextField,
+  InputAdornment,
 } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import FirstPageIcon from "@mui/icons-material/FirstPage";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import LastPageIcon from "@mui/icons-material/LastPage";
+import SearchIcon from "@mui/icons-material/Search";
 
-export default function Wallet() {
+export default function AutoPayout() {
   const queryClient = useQueryClient();
   const getUser = useSession();
   const users = getUser?.data?.user;
   const theme = useTheme();
-  const [currency, setCurrency] = useState("Naira");
   const [pagination, setPagination] = useState({
     pageSize: 10,
     pageIndex: 0,
   });
+  const [globalFilter, setGlobalFilter] = React.useState("");
 
   const {
-    data: balance,
+    data: data,
     isError,
     isFetching,
     isLoading,
     refetch,
   } = useQuery(
-    ["fetchWalletBalance", currency, pagination],
+    ["AutoPayoutUsers", globalFilter, pagination],
     async () => {
       const { data } = await axios.get(
-        `https://api.vigoplace.com/api/admin/console/wallet/balances?currency=${currency}&perPage=${
+        `https://api.vigoplace.com/api/admin/console/auto-payout?pageSize=${
           pagination.pageSize
-        }&page=${pagination.pageIndex + 1}`,
-        //`http://localhost:4000/api/admin/console/wallet/balances?currency=${currency}&pageSize=${pagination.pageSize}&page=${pagination.pageIndex}`,
+        }&page=${pagination.pageIndex + 1}&search=${globalFilter}`,
+        //`http://localhost:4000/api/admin/console/auto-payout?pageSize=${pagination.pageSize}&page=${pagination.pageIndex}&search=${globalFilter}`,
         {
           headers: {
             Authorization: users?.token,
@@ -65,22 +69,17 @@ export default function Wallet() {
         }
       );
 
-      //console.log(data);
+      console.log(data);
       return data;
     },
     {
       onError: (err) => {
-        console.log(err, "err fetching wallet balances");
+        console.log(err, "err fetching auto payout users");
       },
       enabled: !!users?.token,
     },
     { keepPreviousData: true }
   );
-
-  const handleCurrencyChange = (event) => {
-    setCurrency(event.target.value);
-    setPagination({ ...pagination, pageIndex: 0 });
-  };
 
   const handlePageChange = (newPage) => {
     setPagination({ ...pagination, pageIndex: newPage });
@@ -96,78 +95,79 @@ export default function Wallet() {
     refetch();
   };
 
-  const formatCurrency = (value, currency) => {
-    if (typeof value === "number") {
-      if (currency === "Naira") {
-        return `₦${value.toFixed(2)}`;
-      } else if (currency === "USD") {
-        return `$${value.toFixed(2)}`;
-      }
-    }
-    return value;
+  const handleSearchChange = (event) => {
+    setGlobalFilter(event.target.value);
+    refetch();
   };
 
   return (
     <>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "8px",
-          marginLeft: 5,
-        }}
-      >
-        <InputLabel htmlFor="currency">
-          <Typography
-            sx={{
-              fontWeight: 500,
-              fontSize: "14px",
-              [theme.breakpoints.down("sm")]: {
-                fontSize: "12px",
-              },
-            }}
-          >
-            Currency
-          </Typography>
-        </InputLabel>
-        <Select
-          label=""
-          id="currency"
-          value={currency}
-          onChange={handleCurrencyChange}
-          sx={{
-            height: "30px",
-            width: "100px",
-            "& .MuiSelect-select": {
-              minHeight: "30px",
-              lineHeight: "30px",
-            },
-            "& .MuiInputBase-input": {
-              fontSize: "12px",
-            },
-            "& .MuiListItem-root": {
-              minHeight: "30px",
-            },
-            "& .MuiMenuItem-root": {
-              fontSize: "10px",
-            },
-          }}
-        >
-          <MenuItem value="USD">USD</MenuItem>
-          <MenuItem value="Naira">Naira</MenuItem>
-        </Select>
-      </Box>
-      <Box sx={{ padding: 5 }}>
+      <Box sx={{ padding: 3 }}>
         <Grid container spacing={0}>
           <Grid item sm={12} xs={12} lg={12}>
-            <Typography
-              variant="h4"
-              color="text.primary"
-              marginBottom={2}
-              sx={{ fontWeight: "bold" }}
-            >
-              Users
-            </Typography>
+            <Grid container spacing={2} alignItems="center" marginBottom={2}>
+              <Grid item xs={12} sm={6}>
+                <Typography
+                  variant="h4"
+                  color="text.primary"
+                  sx={{ fontWeight: "bold" }}
+                >
+                  Auto Payout Users
+                </Typography>
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                container
+                justifyContent="flex-end"
+                alignItems="center"
+                spacing={1}
+              >
+                <Grid item>
+                  <TextField
+                    label="Search"
+                    variant="outlined"
+                    value={globalFilter}
+                    onChange={handleSearchChange}
+                    InputLabelProps={{
+                      sx: {
+                        lineHeight: "0.8em",
+                        "&.Mui-focused": {
+                          lineHeight: "0.8em",
+                        },
+                      },
+                    }}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <SearchIcon />
+                        </InputAdornment>
+                      ),
+                      sx: {
+                        height: "36px",
+                        "& .MuiOutlinedInput-input": {
+                          py: "8px",
+                        },
+                      },
+                    }}
+                    sx={{
+                      height: "36px",
+                      "& .MuiOutlinedInput-root": {
+                        height: "36px",
+                      },
+                    }}
+                  />
+                </Grid>
+                <Grid item>
+                  <Tooltip arrow title="Refresh Data">
+                    <IconButton onClick={() => refetch()}>
+                      <RefreshIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Grid>
+              </Grid>
+            </Grid>
 
             <TableContainer
               component={Paper}
@@ -181,22 +181,46 @@ export default function Wallet() {
                         borderRight: 1,
                         borderColor: "divider",
                         fontWeight: "bold",
-                        marginLeft: "10px",
-                        display: "flex",
-                        alignContent: "center",
-                        justifyContent: "center",
+                        textAlign: "center",
                       }}
                     >
-                      Users
+                      FullName
                     </TableCell>
-                    <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
-                      {currency === "Naira" ? "Naira" : "Dollar"} Wallet Balance
+                    <TableCell
+                      sx={{
+                        borderRight: 1,
+                        borderColor: "divider",
+                        fontWeight: "bold",
+                        textAlign: "center",
+                      }}
+                    >
+                      Email
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        borderRight: 1,
+                        borderColor: "divider",
+                        fontWeight: "bold",
+                        textAlign: "center",
+                      }}
+                    >
+                      UserName
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        borderRight: 1,
+                        borderColor: "divider",
+                        fontWeight: "bold",
+                        textAlign: "center",
+                      }}
+                    >
+                      Phone
                     </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {balance?.data?.result?.map((user, index) => (
-                    <TableRow key={user.userId}>
+                  {data?.data?.AutoPayoutUsers?.map((user, index) => (
+                    <TableRow key={user.id}>
                       <TableCell
                         sx={{
                           borderRight: 1,
@@ -221,7 +245,7 @@ export default function Wallet() {
                           }}
                           onClick={(e) => {
                             e.preventDefault();
-                            const userId = user.userId;
+                            const userId = user.id;
                             const url = `/user/${userId}`;
                             window.open(url, "_blank");
                           }}
@@ -235,12 +259,36 @@ export default function Wallet() {
                           {pagination.pageIndex * pagination.pageSize +
                             index +
                             1}
-                          . {user.fullName}
+                          . {user.fullname}
                         </a>
                       </TableCell>
 
-                      <TableCell sx={{ textAlign: "center" }}>
-                        {formatCurrency(user.balance, currency)}
+                      <TableCell
+                        sx={{
+                          borderRight: 1,
+                          borderColor: "divider",
+                          //textAlign: "center",
+                        }}
+                      >
+                        {user.email}
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          borderRight: 1,
+                          borderColor: "divider",
+                          //textAlign: "center",
+                        }}
+                      >
+                        {user.username}
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          borderRight: 1,
+                          borderColor: "divider",
+                          //textAlign: "center",
+                        }}
+                      >
+                        {user.phone === null ? "Not Applicable" : user.phone}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -251,7 +299,7 @@ export default function Wallet() {
             <TablePagination
               rowsPerPageOptions={[10, 25, 50]}
               component="div"
-              count={balance?.data?.count || 0}
+              count={data?.data?.count || 0}
               rowsPerPage={pagination.pageSize}
               page={pagination.pageIndex}
               onPageChange={handlePageChange}
@@ -279,7 +327,7 @@ export default function Wallet() {
                     disabled={
                       pagination.pageIndex >=
                       Math.ceil(
-                        (balance?.data?.count || 0) / pagination.pageSize
+                        (data?.data?.count || 0) / pagination.pageSize
                       ) -
                         1
                     }
@@ -291,14 +339,14 @@ export default function Wallet() {
                       handlePageChange(
                         null,
                         Math.ceil(
-                          (balance?.data?.count || 0) / pagination.pageSize
+                          (data?.data?.count || 0) / pagination.pageSize
                         ) - 1
                       )
                     }
                     disabled={
                       pagination.pageIndex >=
                       Math.ceil(
-                        (balance?.data?.count || 0) / pagination.pageSize
+                        (data?.data?.count || 0) / pagination.pageSize
                       ) -
                         1
                     }
@@ -323,7 +371,7 @@ export default function Wallet() {
               variant="h3"
               color="text.secondary"
             >
-              <b>Users Wallet Statistics</b>
+              <b>Auto Payout Users</b>
             </Typography>
           </Grid>
         </Grid>
@@ -332,4 +380,4 @@ export default function Wallet() {
   );
 }
 
-Wallet.auth = true;
+AutoPayout.auth = true;

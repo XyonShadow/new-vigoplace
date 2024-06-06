@@ -421,6 +421,5 @@ function Reports() {
 }
 
 Reports.auth = true;
-Reports.role = ["admin", "subadmin", "administrator"];
 
 export default Reports;
