@@ -1,5 +1,5 @@
 "use-client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import NextLink from "next/link";
 import PropTypes from "prop-types";
 import {
@@ -34,6 +34,8 @@ import axios from "axios";
 
 function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
   const { status, data: userInfo } = useSession({ required: true });
+  const getUser = useSession();
+  const user = getUser?.data?.user;
   const [open, setOpen] = React.useState(true);
   const [roles, setRoles] = React.useState({});
   const [quickStat, setQuickStat] = React.useState({
@@ -42,14 +44,154 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
   const { unreadTicketsCount } = useUnreadTickets();
   const [storedRoutes, setStoredRoutes] = React.useState([]);
   const [openDropdown, setOpenDropdown] = React.useState(null);
-
-  //console.log(storedRoutes)
   //const { data: fetchedRoles, isLoading, isFetching } = useRouteRoles();
   //console.log(fetchedRoles);
+  const [screenHeight, setScreenHeight] = useState(0);
 
-  const handleClicks = (itemId) => {
-    setOpenDropdown((prevOpen) => (prevOpen === itemId ? null : itemId));
+  const queryClient = useQueryClient();
+
+  const dataFromAbove = queryClient.getQueryData(["routeRoles"]);
+
+  // useEffect(() => {
+  //   // Load storedRoutes from localStorage
+  //   const storedRoutesData = JSON.parse(localStorage.getItem("parse"));
+
+  //   if (storedRoutesData) {
+  //     setStoredRoutes(storedRoutesData);
+  //   } else {
+  //     setStoredRoutes(fetchedRoles);
+  //   }
+  // }, []);
+
+  const toggleDrawer = (anchor, open) => (event) => {
+    //console.log({ anchor, open });
+    if (
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
+    }
+
+    setQuickStat({ ...quickStat, [anchor]: open });
   };
+
+  const { data: paystackBalance, isError } = useQuery(
+    ["paystackBalance"],
+    async () => {
+      const { data } = await axios.get(
+        `https://api.vigoplace.com/api/admin/console/balance/paystack`,
+        // `http://localhost:3001/api/admin/console/balance/paystack`,
+        {
+          headers: {
+            Authorization: userInfo?.user?.token,
+          },
+        }
+      );
+
+      return data;
+    },
+    {
+      onError: (err) => {
+        console.log(err, "err fetching users");
+      },
+      enabled: !!userInfo?.user?.token,
+    },
+    { keepPreviousData: true }
+  );
+  const { data: usersBalance } = useQuery(
+    ["usersBalance"],
+    async () => {
+      const { data } = await axios.get(
+        `https://api.vigoplace.com/api/admin/console/balance/userswallet`,
+        // `http://localhost:3001/api/admin/console/balance/userswallet`,
+        {
+          headers: {
+            Authorization: userInfo?.user?.token,
+          },
+        }
+      );
+
+      return data;
+    },
+    {
+      onError: (err) => {
+        console.log(err, "err fetching users");
+      },
+      enabled: !!userInfo?.user?.token,
+    },
+    { keepPreviousData: true }
+  );
+
+  const { data: payoutsBalance } = useQuery(
+    ["payoutsBalance"],
+    async () => {
+      const { data } = await axios.get(
+        `https://api.vigoplace.com/api/admin/console/payouts/requests/total`,
+        // `http://localhost:3001/api/admin/console/payouts/requests/total`,
+        {
+          headers: {
+            Authorization: userInfo?.user?.token,
+          },
+        }
+      );
+
+      return data;
+    },
+    {
+      onError: (err) => {
+        console.log(err, "err fetching payouts balance");
+      },
+      enabled: !!userInfo?.user?.token,
+    },
+    { keepPreviousData: true }
+  );
+
+  const { data: vigoWalletBalance } = useQuery(
+    ["vigoWalletBalance"],
+    async () => {
+      const { data } = await axios.get(
+        `https://api.vigoplace.com/api/admin/console/balance/vigowallet`,
+        // `http://localhost:3001/api/admin/console/balance/vigowallet`,
+        {
+          headers: {
+            Authorization: userInfo?.user?.token,
+          },
+        }
+      );
+
+      return data;
+    },
+    {
+      onError: (err) => {
+        console.log(err, "err fetching vigo place balance");
+      },
+      enabled: !!userInfo?.user?.token,
+    },
+    { keepPreviousData: true }
+  );
+  const { data: paypalBalance } = useQuery(
+    ["paypalBalance"],
+    async () => {
+      const { data } = await axios.get(
+        `https://api.vigoplace.com/api/admin/console/balance/paypal`,
+        // `http://localhost:3001/api/admin/console/balance/paypal`,
+        {
+          headers: {
+            Authorization: userInfo?.user?.token,
+          },
+        }
+      );
+
+      return data;
+    },
+    {
+      onError: (err) => {
+        console.log(err, "err fetching vigo place balance");
+      },
+      enabled: !!userInfo?.user?.token,
+    },
+    { keepPreviousData: true }
+  );
 
   const fetchedRoles = [
     {
@@ -134,6 +276,24 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
           href: "/user-statistics",
           roles: ["admin", "root"],
           SCPCreatedAt: "2024-01-27T10:17:02.000Z",
+          SCPUpdatedAt: null,
+        },
+        {
+          id: 23,
+          title: "Kyc-Users",
+          icon: "user",
+          href: "/kyc-users",
+          roles: ["admin", "root"],
+          SCPCreatedAt: "2023-08-24T12:35:04.000Z",
+          SCPUpdatedAt: null,
+        },
+        {
+          id: 24,
+          title: "Auto-Payout-Users",
+          icon: "user",
+          href: "/autopayout-users",
+          roles: ["admin", "root"],
+          SCPCreatedAt: "2023-08-24T12:35:04.000Z",
           SCPUpdatedAt: null,
         },
       ],
@@ -263,154 +423,6 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
     },
   ];
 
-  // useEffect(() => {
-  //   // Load storedRoutes from localStorage
-  //   const storedRoutesData = JSON.parse(localStorage.getItem("parse"));
-
-  //   if (storedRoutesData) {
-  //     setStoredRoutes(storedRoutesData);
-  //   } else {
-  //     setStoredRoutes(fetchedRoles);
-  //   }
-  // }, []);
-  const getUser = useSession();
-  const user = getUser?.data?.user;
-  //console.log(user);
-
-  const toggleDrawer = (anchor, open) => (event) => {
-    //console.log({ anchor, open });
-    if (
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
-      return;
-    }
-
-    setQuickStat({ ...quickStat, [anchor]: open });
-  };
-
-  const queryClient = useQueryClient();
-
-  const dataFromAbove = queryClient.getQueryData(["routeRoles"]);
-
-  const { data: paystackBalance, isError } = useQuery(
-    ["paystackBalance"],
-    async () => {
-      const { data } = await axios.get(
-        `https://api.vigoplace.com/api/admin/console/balance/paystack`,
-        // `http://localhost:3001/api/admin/console/balance/paystack`,
-        {
-          headers: {
-            Authorization: userInfo?.user?.token,
-          },
-        }
-      );
-
-      return data;
-    },
-    {
-      onError: (err) => {
-        console.log(err, "err fetching users");
-      },
-      enabled: !!userInfo?.user?.token,
-    },
-    { keepPreviousData: true }
-  );
-  const { data: usersBalance } = useQuery(
-    ["usersBalance"],
-    async () => {
-      const { data } = await axios.get(
-        `https://api.vigoplace.com/api/admin/console/balance/userswallet`,
-        // `http://localhost:3001/api/admin/console/balance/userswallet`,
-        {
-          headers: {
-            Authorization: userInfo?.user?.token,
-          },
-        }
-      );
-
-      return data;
-    },
-    {
-      onError: (err) => {
-        console.log(err, "err fetching users");
-      },
-      enabled: !!userInfo?.user?.token,
-    },
-    { keepPreviousData: true }
-  );
-
-  const { data: payoutsBalance } = useQuery(
-    ["payoutsBalance"],
-    async () => {
-      const { data } = await axios.get(
-        `https://api.vigoplace.com/api/admin/console/payouts/requests/total`,
-        // `http://localhost:3001/api/admin/console/payouts/requests/total`,
-        {
-          headers: {
-            Authorization: userInfo?.user?.token,
-          },
-        }
-      );
-
-      return data;
-    },
-    {
-      onError: (err) => {
-        console.log(err, "err fetching payouts balance");
-      },
-      enabled: !!userInfo?.user?.token,
-    },
-    { keepPreviousData: true }
-  );
-
-  const { data: vigoWalletBalance } = useQuery(
-    ["vigoWalletBalance"],
-    async () => {
-      const { data } = await axios.get(
-        `https://api.vigoplace.com/api/admin/console/balance/vigowallet`,
-        // `http://localhost:3001/api/admin/console/balance/vigowallet`,
-        {
-          headers: {
-            Authorization: userInfo?.user?.token,
-          },
-        }
-      );
-
-      return data;
-    },
-    {
-      onError: (err) => {
-        console.log(err, "err fetching vigo place balance");
-      },
-      enabled: !!userInfo?.user?.token,
-    },
-    { keepPreviousData: true }
-  );
-  const { data: paypalBalance } = useQuery(
-    ["paypalBalance"],
-    async () => {
-      const { data } = await axios.get(
-        `https://api.vigoplace.com/api/admin/console/balance/paypal`,
-        // `http://localhost:3001/api/admin/console/balance/paypal`,
-        {
-          headers: {
-            Authorization: userInfo?.user?.token,
-          },
-        }
-      );
-
-      return data;
-    },
-    {
-      onError: (err) => {
-        console.log(err, "err fetching vigo place balance");
-      },
-      enabled: !!userInfo?.user?.token,
-    },
-    { keepPreviousData: true }
-  );
-
   const subAdminRoutes = [
     {
       title: "Tickets",
@@ -425,6 +437,50 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
       roles: ["admin", "root"],
     },
   ];
+
+  useEffect(() => {
+    // Function to update screen height
+    const updateScreenHeight = () => {
+      setScreenHeight(window.innerHeight);
+    };
+
+    // Set initial screen height
+    updateScreenHeight();
+
+    // Add event listener to update height on window resize
+    window.addEventListener("resize", updateScreenHeight);
+
+    // Clean up event listener on component unmount
+    return () => {
+      window.removeEventListener("resize", updateScreenHeight);
+    };
+  }, []);
+
+  //console.log(openDropdown);
+  const handleClicks = (itemId) => {
+    setOpenDropdown((prevOpen) => (prevOpen === itemId ? null : itemId));
+  };
+
+  const countSubLinksById = (roles, id) => {
+    for (const role of roles) {
+      if (role.id === id) {
+        return role.subLinks ? role.subLinks.length : 0;
+      }
+      if (role.subLinks) {
+        const subLinkCount = countSubLinksById(role.subLinks, id);
+        if (subLinkCount !== null) {
+          return subLinkCount;
+        }
+      }
+    }
+    return null;
+  };
+
+  const roleIdToFind = openDropdown;
+  const subLinksCount = countSubLinksById(fetchedRoles, roleIdToFind);
+
+  const dynamicHeight =
+    openDropdown !== null ? subLinksCount * 64 + screenHeight : screenHeight;
 
   //const sidebarMenu = fetchedRoles
   const sidebarMenu = fetchedRoles
@@ -462,13 +518,13 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
   const SidebarContent = (
     <Box
       p={2}
-      //height="100%"
+      //height="598px"
       sx={{
         backgroundColor: "rgb(28,34,47)",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
-        //height: "100vh",
+        height: dynamicHeight,
       }}
     >
       <Box
