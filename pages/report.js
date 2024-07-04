@@ -219,7 +219,7 @@ function Reports() {
     ],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/account-reports?perPage=${pagination.pageSize}&page=${pagination.pageIndex}`,
+        `https://api.vigoplace.com/api/admin/console/account-reports?perPage=${pagination.pageSize}&page=${pagination.pageIndex}`,
         //`http://localhost:4000/api/admin/console/account-reports?perPage=${pagination.pageSize}&page=${pagination.pageIndex}`,
         {
           headers: {
@@ -254,7 +254,7 @@ function Reports() {
     ],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/post-reports?perPage=${pagination1.pageSize}&page=${pagination1.pageIndex}`,
+        `https://api.vigoplace.com/api/admin/console/post-reports?perPage=${pagination1.pageSize}&page=${pagination1.pageIndex}`,
         // `http://localhost:4000/api/admin/console/post-reports?perPage=${pagination1.pageSize}&page=${pagination1.pageIndex}`,
         {
           headers: {
