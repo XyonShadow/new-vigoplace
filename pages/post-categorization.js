@@ -4,7 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect, useRef } from "react";
 
-const API_BASE_URL = "https://vigoplace.com/server";
+const API_BASE_URL = "https://api.vigoplace.com";
 //const API_BASE_URL = "http://localhost:4000";
 const PostCategorization = () => {
   const currentPage = useRef(1);

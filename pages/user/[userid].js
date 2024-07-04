@@ -2517,23 +2517,8 @@ const Users = () => {
               </Tabs>
             </Box>
 
-            {/* // You can also download the PDF file instead of opening in a new tab
-                            // const a = document.createElement("a");
-                            // a.href = url;
-                            // a.download = "transaction_details.pdf";
-                            // a.click(); */}
             <TabPanel value={tabValue} index={0}>
-              <Box sx={{ pt: 3 }}>
-                <form>
-                  <Card>
-                    <CardHeader subheader="" title="User Transactions" />
-                    <Divider />
-                    <CardContent>
-                      <Transaction />
-                    </CardContent>
-                  </Card>
-                </form>
-              </Box>
+              <Transaction />
             </TabPanel>
 
             <TabPanel value={tabValue} index={1}>

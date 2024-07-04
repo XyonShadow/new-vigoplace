@@ -42,6 +42,8 @@ import {
   useTheme,
   CardHeader,
   Button,
+  Tabs,
+  Tab,
 } from "@mui/material";
 import { Search as SearchIcon } from "@mui/icons-material";
 import FirstPageIcon from "@mui/icons-material/FirstPage";
@@ -67,6 +69,35 @@ import {
 } from "../../hooks/useSinglePayoutRequest";
 import { toast } from "react-toast";
 // import BulkActions from './BulkActions';
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+  };
+}
 
 // const CryptoOrderStatus = {completed' | 'pending' | 'failed}
 const Alert = React.forwardRef(function Alert(props, ref) {
@@ -131,7 +162,7 @@ const applyPagination = (cryptoOrders, page, limit) => {
   return cryptoOrders?.slice(page * limit, page * limit + limit);
 };
 
-const API_BASE_URL = "https://vigoplace.com/server";
+const API_BASE_URL = "https://api.vigoplace.com";
 //const API_BASE_URL = "http://localhost:4000";
 export default function RecentOrdersTable() {
   const queryClient = useQueryClient();
@@ -143,9 +174,11 @@ export default function RecentOrdersTable() {
   const selectedBulkActions = selectedCryptoOrders.length > 0;
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(5);
+  const [tabValue, setTabValue] = React.useState(0);
   const [filters, setFilters] = useState({
     status: null,
   });
+  const [currency, setCurrency] = useState(175);
   const [status, setStatus] = React.useState(null);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -187,6 +220,11 @@ export default function RecentOrdersTable() {
       name: "On Hold",
     },
   ];
+
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
+    setCurrency(newValue === 0 ? 175 : 251); // Update currency based on tab value
+  };
 
   const handleStatusChange = (e) => {
     let value = null;
@@ -248,7 +286,7 @@ export default function RecentOrdersTable() {
       const { data } = await axios.get(
         `${API_BASE_URL}/api/admin/console/payouts?perPage=${
           pagination.pageSize
-        }&page=${pagination.pageIndex}&search=${searchQuery}${
+        }&page=${pagination.pageIndex + 1}&search=${searchQuery}${
           status !== undefined && status !== null ? `&status=${status}` : ""
         }`,
         // `http://localhost:3001/api/admin/console/payouts?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${status !== undefined && status !== null ? `&status=${status}` : '' }`,
@@ -292,14 +330,15 @@ export default function RecentOrdersTable() {
         page,
         limit,
         searchQuery,
+        currency
       ],
       async () => {
         const { data } = await axios.get(
           `${API_BASE_URL}/api/admin/console/payouts/user/${userid}?perPage=${
             pagination.pageSize
-          }&page=${pagination.pageIndex}&search=${searchQuery}${
+          }&page=${pagination.pageIndex + 1}&search=${searchQuery}${
             status !== undefined && status !== null ? `&status=${status}` : ""
-          }`,
+          }&currency=${currency}`,
           // `http://localhost:3001/api/admin/console/payouts?limit=${pagination.pageSize}&offset=${pagination.pageIndex * pagination.pageSize}${status !== undefined && status !== null ? `&status=${status}` : '' }`,
           {
             headers: {
@@ -375,131 +414,392 @@ export default function RecentOrdersTable() {
           {/* <BulkActions /> */}
         </Box>
       )}
-      {!selectedBulkActions && (
-        <CardHeader
-          action={
-            <Box display="flex" alignItems="center" gap={1}>
-              <TextField
-                label="Search"
-                variant="outlined"
-                size="small"
-                value={searchQuery}
-                onChange={handleSearchChange}
-                InputProps={{
-                  endAdornment: (
-                    <IconButton size="small">
-                      <SearchIcon />
-                    </IconButton>
-                  ),
-                }}
-                sx={{ height: "100%", width: "100%" }}
-              />
-              <FormControl fullWidth variant="outlined">
-                <InputLabel>Status</InputLabel>
-                <Select
-                  value={status || "all"}
-                  onChange={handleStatus}
-                  label="Status"
-                  autoWidth
-                  sx={{ height: "40px" }}
-                >
-                  {statusOptions.map((statusOption) => (
-                    <MenuItem key={statusOption.id} value={statusOption.id}>
-                      {statusOption.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Box>
-          }
-          title="Payout Requests"
-        />
-      )}
-      <Divider />
-      <TableContainer sx={{ maxHeight: 650 }}>
-        <Table stickyHeader>
-          <TableHead>
-            <TableRow>
-              <TableCell padding="checkbox"></TableCell>
-
-              <TableCell>Request ID</TableCell>
-              <TableCell>Reference</TableCell>
-              <TableCell align="center">Full Name</TableCell>
-              <TableCell align="right">Amount</TableCell>
-              <TableCell align="right">Status</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {(searchQuery ? filteredPayouts : filteredCryptoOrders) &&
-            (searchQuery ? filteredPayouts : filteredCryptoOrders).length >
-              0 ? (
-              (searchQuery ? filteredPayouts : filteredCryptoOrders).map(
-                (payout, index) => {
-                  const isPayoutSelected = selectedCryptoOrders.includes(
-                    payout.payoutRequestId
-                  );
-                  return (
-                    <Row
-                      key={index}
-                      payout={payout}
-                      isPayoutSelected={isPayoutSelected}
+  
+      {isUserRoute ? (
+        <Box sx={{ width: "100%" }}>
+          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+            <Tabs
+              value={tabValue}
+              onChange={handleTabChange}
+              textColor="inherit"
+              centered
+              scrollButtons="auto"
+              aria-label=""
+            >
+              <Tab label="Naira" {...a11yProps(0)} />
+              <Tab label="USD" {...a11yProps(1)} />
+            </Tabs>
+          </Box>
+          <TabPanel value={tabValue} index={0}>
+            {!selectedBulkActions && (
+              <CardHeader
+                action={
+                  <Box display="flex" alignItems="center" gap={1}>
+                    <TextField
+                      label="Search"
+                      variant="outlined"
+                      size="small"
+                      value={searchQuery}
+                      onChange={handleSearchChange}
+                      InputProps={{
+                        endAdornment: (
+                          <IconButton size="small">
+                            <SearchIcon />
+                          </IconButton>
+                        ),
+                      }}
+                      sx={{ height: "100%", width: "100%" }}
                     />
-                  );
+                    <FormControl fullWidth variant="outlined">
+                      <InputLabel>Status</InputLabel>
+                      <Select
+                        value={status || "all"}
+                        onChange={handleStatus}
+                        label="Status"
+                        autoWidth
+                        sx={{ height: "40px" }}
+                      >
+                        {statusOptions.map((statusOption) => (
+                          <MenuItem key={statusOption.id} value={statusOption.id}>
+                            {statusOption.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Box>
                 }
-              )
-            ) : (
-              <TableRow>
-                <TableCell colSpan={5}>No records to display</TableCell>
-              </TableRow>
+                title="Payout Requests"
+              />
             )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <Box p={2}>
-        <TablePagination
-          component="div"
-          count={
-            isUserRoute
-              ? userPayoutsData?.count ?? 0
-              : payouts?.data?.count ?? 0
-          }
-          onPageChange={handlePageChange}
-          onRowsPerPageChange={handleLimitChange}
-          page={pagination.pageIndex}
-          rowsPerPage={pagination.pageSize}
-          rowsPerPageOptions={[5, 10, 25, 30]}
-          ActionsComponent={(props) => (
-            <div style={{ display: "flex" }}>
-              <IconButton
-                onClick={handleFirstPage}
-                disabled={pagination.pageIndex === 0}
-              >
-                <FirstPageIcon />
-              </IconButton>
-              <IconButton
-                onClick={() => handlePageChange(pagination.pageIndex - 1)}
-                disabled={pagination.pageIndex === 0}
-              >
-                <NavigateBeforeIcon />
-              </IconButton>
-              <IconButton
-                onClick={() => handlePageChange(pagination.pageIndex + 1)}
-                disabled={pagination.pageIndex >= totalPages - 1}
-              >
-                <NavigateNextIcon />
-              </IconButton>
-              <IconButton
-                onClick={handleLastPage}
-                disabled={pagination.pageIndex >= totalPages - 1}
-              >
-                <LastPageIcon />
-              </IconButton>
-            </div>
+            <Divider />
+            <TableContainer sx={{ maxHeight: 650 }}>
+              <Table stickyHeader>
+                <TableHead>
+                  <TableRow>
+                    <TableCell padding="checkbox"></TableCell>
+                    <TableCell>Request ID</TableCell>
+                    <TableCell>Reference</TableCell>
+                    <TableCell align="center">Full Name</TableCell>
+                    <TableCell align="right">Amount</TableCell>
+                    <TableCell align="right">Status</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {(searchQuery ? filteredPayouts : filteredCryptoOrders) &&
+                  (searchQuery ? filteredPayouts : filteredCryptoOrders).length > 0 ? (
+                    (searchQuery ? filteredPayouts : filteredCryptoOrders).map(
+                      (payout, index) => {
+                        const isPayoutSelected = selectedCryptoOrders.includes(
+                          payout.payoutRequestId
+                        );
+                        return (
+                          <Row
+                            key={index}
+                            payout={payout}
+                            isPayoutSelected={isPayoutSelected}
+                          />
+                        );
+                      }
+                    )
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={5}>No records to display</TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <Box p={2}>
+              <TablePagination
+                component="div"
+                count={
+                  isUserRoute ? userPayoutsData?.count ?? 0 : payouts?.data?.count ?? 0
+                }
+                onPageChange={handlePageChange}
+                onRowsPerPageChange={handleLimitChange}
+                page={pagination.pageIndex}
+                rowsPerPage={pagination.pageSize}
+                rowsPerPageOptions={[5, 10, 25, 30]}
+                ActionsComponent={(props) => (
+                  <div style={{ display: "flex" }}>
+                    <IconButton
+                      onClick={handleFirstPage}
+                      disabled={pagination.pageIndex === 0}
+                    >
+                      <FirstPageIcon />
+                    </IconButton>
+                    <IconButton
+                      onClick={() => handlePageChange(pagination.pageIndex - 1)}
+                      disabled={pagination.pageIndex === 0}
+                    >
+                      <NavigateBeforeIcon />
+                    </IconButton>
+                    <IconButton
+                      onClick={() => handlePageChange(pagination.pageIndex + 1)}
+                      disabled={pagination.pageIndex >= totalPages - 1}
+                    >
+                      <NavigateNextIcon />
+                    </IconButton>
+                    <IconButton
+                      onClick={handleLastPage}
+                      disabled={pagination.pageIndex >= totalPages - 1}
+                    >
+                      <LastPageIcon />
+                    </IconButton>
+                  </div>
+                )}
+              />
+            </Box>
+          </TabPanel>
+          <TabPanel value={tabValue} index={1}>
+            {/* Repeat the content for the second tab if necessary */}
+            {!selectedBulkActions && (
+              <CardHeader
+                action={
+                  <Box display="flex" alignItems="center" gap={1}>
+                    <TextField
+                      label="Search"
+                      variant="outlined"
+                      size="small"
+                      value={searchQuery}
+                      onChange={handleSearchChange}
+                      InputProps={{
+                        endAdornment: (
+                          <IconButton size="small">
+                            <SearchIcon />
+                          </IconButton>
+                        ),
+                      }}
+                      sx={{ height: "100%", width: "100%" }}
+                    />
+                    <FormControl fullWidth variant="outlined">
+                      <InputLabel>Status</InputLabel>
+                      <Select
+                        value={status || "all"}
+                        onChange={handleStatus}
+                        label="Status"
+                        autoWidth
+                        sx={{ height: "40px" }}
+                      >
+                        {statusOptions.map((statusOption) => (
+                          <MenuItem key={statusOption.id} value={statusOption.id}>
+                            {statusOption.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Box>
+                }
+                title="Payout Requests"
+              />
+            )}
+            <Divider />
+            <TableContainer sx={{ maxHeight: 650 }}>
+              <Table stickyHeader>
+                <TableHead>
+                  <TableRow>
+                    <TableCell padding="checkbox"></TableCell>
+                    <TableCell>Request ID</TableCell>
+                    <TableCell>Reference</TableCell>
+                    <TableCell align="center">Full Name</TableCell>
+                    <TableCell align="right">Amount</TableCell>
+                    <TableCell align="right">Status</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {(searchQuery ? filteredPayouts : filteredCryptoOrders) &&
+                  (searchQuery ? filteredPayouts : filteredCryptoOrders).length > 0 ? (
+                    (searchQuery ? filteredPayouts : filteredCryptoOrders).map(
+                      (payout, index) => {
+                        const isPayoutSelected = selectedCryptoOrders.includes(
+                          payout.payoutRequestId
+                        );
+                        return (
+                          <Row
+                            key={index}
+                            payout={payout}
+                            isPayoutSelected={isPayoutSelected}
+                          />
+                        );
+                      }
+                    )
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={5}>No records to display</TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <Box p={2}>
+              <TablePagination
+                component="div"
+                count={
+                  isUserRoute ? userPayoutsData?.count ?? 0 : payouts?.data?.count ?? 0
+                }
+                onPageChange={handlePageChange}
+                onRowsPerPageChange={handleLimitChange}
+                page={pagination.pageIndex}
+                rowsPerPage={pagination.pageSize}
+                rowsPerPageOptions={[5, 10, 25, 30]}
+                ActionsComponent={(props) => (
+                  <div style={{ display: "flex" }}>
+                    <IconButton
+                      onClick={handleFirstPage}
+                      disabled={pagination.pageIndex === 0}
+                    >
+                      <FirstPageIcon />
+                    </IconButton>
+                    <IconButton
+                      onClick={() => handlePageChange(pagination.pageIndex - 1)}
+                      disabled={pagination.pageIndex === 0}
+                    >
+                      <NavigateBeforeIcon />
+                    </IconButton>
+                    <IconButton
+                      onClick={() => handlePageChange(pagination.pageIndex + 1)}
+                      disabled={pagination.pageIndex >= totalPages - 1}
+                    >
+                      <NavigateNextIcon />
+                    </IconButton>
+                    <IconButton
+                      onClick={handleLastPage}
+                      disabled={pagination.pageIndex >= totalPages - 1}
+                    >
+                      <LastPageIcon />
+                    </IconButton>
+                  </div>
+                )}
+              />
+            </Box>
+          </TabPanel>
+        </Box>
+      ) : (
+        <>
+          {!selectedBulkActions && (
+            <CardHeader
+              action={
+                <Box display="flex" alignItems="center" gap={1}>
+                  <TextField
+                    label="Search"
+                    variant="outlined"
+                    size="small"
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    InputProps={{
+                      endAdornment: (
+                        <IconButton size="small">
+                          <SearchIcon />
+                        </IconButton>
+                      ),
+                    }}
+                    sx={{ height: "100%", width: "100%" }}
+                  />
+                  <FormControl fullWidth variant="outlined">
+                    <InputLabel>Status</InputLabel>
+                    <Select
+                      value={status || "all"}
+                      onChange={handleStatus}
+                      label="Status"
+                      autoWidth
+                      sx={{ height: "40px" }}
+                    >
+                      {statusOptions.map((statusOption) => (
+                        <MenuItem key={statusOption.id} value={statusOption.id}>
+                          {statusOption.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Box>
+              }
+              title="Payout Requests"
+            />
           )}
-        />
-      </Box>
+          <Divider />
+          <TableContainer sx={{ maxHeight: 650 }}>
+            <Table stickyHeader>
+              <TableHead>
+                <TableRow>
+                  <TableCell padding="checkbox"></TableCell>
+                  <TableCell>Request ID</TableCell>
+                  <TableCell>Reference</TableCell>
+                  <TableCell align="center">Full Name</TableCell>
+                  <TableCell align="right">Amount</TableCell>
+                  <TableCell align="right">Status</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {(searchQuery ? filteredPayouts : filteredCryptoOrders) &&
+                (searchQuery ? filteredPayouts : filteredCryptoOrders).length > 0 ? (
+                  (searchQuery ? filteredPayouts : filteredCryptoOrders).map(
+                    (payout, index) => {
+                      const isPayoutSelected = selectedCryptoOrders.includes(
+                        payout.payoutRequestId
+                      );
+                      return (
+                        <Row
+                          key={index}
+                          payout={payout}
+                          isPayoutSelected={isPayoutSelected}
+                        />
+                      );
+                    }
+                  )
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={5}>No records to display</TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <Box p={2}>
+            <TablePagination
+              component="div"
+              count={
+                isUserRoute ? userPayoutsData?.count ?? 0 : payouts?.data?.count ?? 0
+              }
+              onPageChange={handlePageChange}
+              onRowsPerPageChange={handleLimitChange}
+              page={pagination.pageIndex}
+              rowsPerPage={pagination.pageSize}
+              rowsPerPageOptions={[5, 10, 25, 30]}
+              ActionsComponent={(props) => (
+                <div style={{ display: "flex" }}>
+                  <IconButton
+                    onClick={handleFirstPage}
+                    disabled={pagination.pageIndex === 0}
+                  >
+                    <FirstPageIcon />
+                  </IconButton>
+                  <IconButton
+                    onClick={() => handlePageChange(pagination.pageIndex - 1)}
+                    disabled={pagination.pageIndex === 0}
+                  >
+                    <NavigateBeforeIcon />
+                  </IconButton>
+                  <IconButton
+                    onClick={() => handlePageChange(pagination.pageIndex + 1)}
+                    disabled={pagination.pageIndex >= totalPages - 1}
+                  >
+                    <NavigateNextIcon />
+                  </IconButton>
+                  <IconButton
+                    onClick={handleLastPage}
+                    disabled={pagination.pageIndex >= totalPages - 1}
+                  >
+                    <LastPageIcon />
+                  </IconButton>
+                </div>
+              )}
+            />
+          </Box>
+        </>
+      )}
     </Card>
   );
+  
 }
 
 function Row({ payout, isPayoutSelected }) {
@@ -568,7 +868,7 @@ function Row({ payout, isPayoutSelected }) {
   const fetchUserTransactions = async () => {
     try {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/users/transaction?userId=${userids}&reference=${reference}`,
+        `https://api.vigoplace.com/api/admin/console/users/transaction?userId=${userids}&reference=${reference}`,
         {
           headers: {
             Authorization: user?.token,
@@ -595,7 +895,7 @@ function Row({ payout, isPayoutSelected }) {
     const token = await getToken();
     const parsed = await axios.post(
       //"http://localhost:4000/api/admin/console/approvepayout",
-      "https://vigoplace.com/server/api/admin/console/approvepayout",
+      "https://api.vigoplace.com/api/admin/console/approvepayout",
       { payoutRequestId: id, approvalPin: pin, users },
       {
         headers: {
@@ -628,7 +928,7 @@ function Row({ payout, isPayoutSelected }) {
     const token = await getToken();
     const parsed = await axios.post(
       // "http://localhost:3001/api/admin/console/approvepayout",
-      "https://vigoplace.com/server/api/admin/console/approvepayout",
+      "https://api.vigoplace.com/api/admin/console/approvepayout",
       { payoutRequestId: id, approvalPin: pin, deliveryETA, users },
       {
         headers: {
@@ -657,7 +957,7 @@ function Row({ payout, isPayoutSelected }) {
     const token = await getToken();
     const parsed = await axios.post(
       // "http://localhost:3001/api/admin/console/declinepayout",
-      "https://vigoplace.com/server/api/admin/console/declinepayout",
+      "https://api.vigoplace.com/api/admin/console/declinepayout",
       { payoutRequestId: id, approvalPin: pin, reason, users },
       {
         headers: {
@@ -694,7 +994,7 @@ function Row({ payout, isPayoutSelected }) {
     const token = await getToken();
     const parsed = await axios.post(
       //"http://localhost:4000/api/admin/console/split/payment",
-      "https://vigoplace.com/server/api/admin/console/split/payment",
+      "https://api.vigoplace.com/api/admin/console/split/payment",
       {
         reference: reference,
         split: [
@@ -744,7 +1044,7 @@ function Row({ payout, isPayoutSelected }) {
     const token = await getToken();
     const parsed = await axios.put(
       //"http://localhost:4000/api/admin/console/transaction",
-      "https://vigoplace.com/server/api/api/admin/console/transaction",
+      "https://api.vigoplace.com/api/api/admin/console/transaction",
       {
         reference: reference,
         status: "onHold",
@@ -1035,10 +1335,8 @@ function Row({ payout, isPayoutSelected }) {
     formatAndDrawDescription(transactionDescription);
     drawTexts(
       "Account Number",
-      queryClient.getQueryData([
-        "payoutRequest",
-        payout.payoutRequestId,
-      ])?.data?.accountNumber
+      queryClient.getQueryData(["payoutRequest", payout.payoutRequestId])?.data
+        ?.accountNumber
     );
     drawTexts(
       "Bank Name",

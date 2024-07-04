@@ -93,7 +93,7 @@ function KycUsers() {
     ["fetchVerifiedKycUsers", globalFilter, pagination],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/kyc-verified?perPage=${pagination.pageSize}&page=${pagination.pageIndex}&search=${globalFilter}`,
+        `https://api.vigoplace.com/api/admin/console/kyc-verified?perPage=${pagination.pageSize}&page=${pagination.pageIndex}&search=${globalFilter}`,
         //`http://localhost:4000/api/admin/console/kyc-verified?perPage=${pagination.pageSize}&page=${pagination + 1}&search=${globalFilter}`,
         {
           headers: {
@@ -123,7 +123,7 @@ function KycUsers() {
     ["fetchUnVerifiedKycUsers", globalFilter1, pagination1],
     async () => {
       const { data } = await axios.get(
-        `https://vigoplace.com/server/api/admin/console/kyc-unverified?perPage=${pagination1.pageSize}&page=${pagination1.pageIndex}&search=${globalFilter}`,
+        `https://api.vigoplace.com/api/admin/console/kyc-unverified?perPage=${pagination1.pageSize}&page=${pagination1.pageIndex}&search=${globalFilter}`,
        //`http://localhost:4000/api/admin/console/kyc-unverified?perPage=${pagination1.pageSize}&page=${pagination1.pageIndex + 1}&search=${globalFilter1}`,
         {
           headers: {
