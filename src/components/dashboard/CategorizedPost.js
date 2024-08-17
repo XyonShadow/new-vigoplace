@@ -11,7 +11,7 @@ import ReactPlayer from "react-player";
 import CarouselMini from "./Carousel";
 import Image from "next/image";
 
-const API_BASE_URL = "https://vigoplace.com/server";
+const API_BASE_URL = "https://api.vigoplace.com";
 //const API_BASE_URL = "http://localhost:4000";
 
 export const CategorizedPost = ({

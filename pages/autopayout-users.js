@@ -69,7 +69,7 @@ export default function AutoPayout() {
         }
       );
 
-      console.log(data);
+      //console.log(data);
       return data;
     },
     {
@@ -307,14 +307,14 @@ export default function AutoPayout() {
               ActionsComponent={(props) => (
                 <div style={{ display: "flex" }}>
                   <IconButton
-                    onClick={() => handlePageChange(null, 0)}
+                    onClick={() => handlePageChange(0)}
                     disabled={pagination.pageIndex === 0}
                   >
                     <FirstPageIcon />
                   </IconButton>
                   <IconButton
                     onClick={() =>
-                      handlePageChange(null, pagination.pageIndex - 1)
+                      handlePageChange(pagination.pageIndex - 1)
                     }
                     disabled={pagination.pageIndex === 0}
                   >
@@ -322,7 +322,7 @@ export default function AutoPayout() {
                   </IconButton>
                   <IconButton
                     onClick={() =>
-                      handlePageChange(null, pagination.pageIndex + 1)
+                      handlePageChange(pagination.pageIndex + 1)
                     }
                     disabled={
                       pagination.pageIndex >=
@@ -337,7 +337,6 @@ export default function AutoPayout() {
                   <IconButton
                     onClick={() =>
                       handlePageChange(
-                        null,
                         Math.ceil(
                           (data?.data?.count || 0) / pagination.pageSize
                         ) - 1

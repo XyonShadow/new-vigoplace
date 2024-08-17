@@ -879,7 +879,7 @@ function Row({ payout, isPayoutSelected }) {
       //console.log(data);
       setTransaction(data?.data ?? []);
     } catch (err) {
-      setIsError(true);
+      //setIsError(true);
       console.log(err, "err fetching user transactions");
     }
   };
