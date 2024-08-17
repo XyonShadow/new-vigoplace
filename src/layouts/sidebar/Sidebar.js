@@ -52,6 +52,8 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
 
   const dataFromAbove = queryClient.getQueryData(["routeRoles"]);
 
+  console.log(unreadTicketsCount);
+
   // useEffect(() => {
   //   // Load storedRoutes from localStorage
   //   const storedRoutesData = JSON.parse(localStorage.getItem("parse"));
@@ -689,7 +691,36 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
                                   height="20"
                                 />
                               </ListItemIcon>
-                              <ListItemText>{subItem.title}</ListItemText>
+
+                              <ListItemText>
+                                {subItem.href === "/tickets" ? (
+                                  <>
+                                    {subItem.title}
+                                    {unreadTicketsCount > 0 && (
+                                      <span
+                                        style={{
+                                          marginLeft: "5px", // Adjust the margin as needed
+                                          //display: "inline-block",
+                                          position: "absolute",
+                                          top: "2px",
+                                          width: "15px",
+                                          height: "15px",
+                                          borderRadius: "50%",
+                                          backgroundColor: "red",
+                                          color: "white",
+                                          textAlign: "center",
+                                          fontSize: "x-small",
+                                          //lineHeight: "20px", // Center the text vertically
+                                        }}
+                                      >
+                                        {unreadTicketsCount}
+                                      </span>
+                                    )}
+                                  </>
+                                ) : (
+                                  subItem.title
+                                )}
+                              </ListItemText>
                             </ListItem>
                           </NextLink>
                         ))}

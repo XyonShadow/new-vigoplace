@@ -137,122 +137,6 @@ function DailyReadings() {
   const [gospelVerse2, setGospelVerse2] = useState("");
   const [gospelTextOption2, setGospelTextOption2] = useState("");
   const [verseBeforeGospel, setVerseBeforeGospel] = useState("");
-  //BIBLE ID
-  const [bibleId, setBibleId] = useState("");
-  const [books, setBooks] = useState([]);
-
-  //////READING 1 VERSE/////////
-  const [selectedBook, setSelectedBook] = useState("");
-  const [chapters, setChapters] = useState([]);
-  const [selectedChapter, setSelectedChapter] = useState("");
-  const [verses, setVerses] = useState([]);
-  const [selectedVerse, setSelectedVerse] = useState([]);
-  const [confirmedVerses, setConfirmedVerses] = useState([]);
-  ////////READING 1 OPTION 2 VERSE///////
-  const [selectedBook2, setSelectedBook2] = useState("");
-  const [chapters2, setChapters2] = useState([]);
-  const [selectedChapter2, setSelectedChapter2] = useState("");
-  const [verses2, setVerses2] = useState([]);
-  const [selectedVerse2, setSelectedVerse2] = useState([]);
-  const [confirmedVerses2, setConfirmedVerses2] = useState([]);
-  /////////READING 2 VERSE ////////////
-  const [selectedBook3, setSelectedBook3] = useState("");
-  const [chapters3, setChapters3] = useState([]);
-  const [selectedChapter3, setSelectedChapter3] = useState("");
-  const [verses3, setVerses3] = useState([]);
-  const [selectedVerse3, setSelectedVerse3] = useState([]);
-  const [confirmedVerses3, setConfirmedVerses3] = useState([]);
-  /////////READING 2 OPTION 1 VERSE ////////////
-  const [selectedBook9, setSelectedBook9] = useState("");
-  const [chapters9, setChapters9] = useState([]);
-  const [selectedChapter9, setSelectedChapter9] = useState("");
-  const [verses9, setVerses9] = useState([]);
-  const [selectedVerse9, setSelectedVerse9] = useState([]);
-  const [confirmedVerses9, setConfirmedVerses9] = useState([]);
-  /////////////READING 3 VERSE///////////
-  const [selectedBook4, setSelectedBook4] = useState("");
-  const [chapters4, setChapters4] = useState([]);
-  const [selectedChapter4, setSelectedChapter4] = useState("");
-  const [verses4, setVerses4] = useState([]);
-  const [selectedVerse4, setSelectedVerse4] = useState([]);
-  const [confirmedVerses4, setConfirmedVerses4] = useState([]);
-  //////////////READING 4 VERSE///////////
-  const [selectedBook5, setSelectedBook5] = useState("");
-  const [chapters5, setChapters5] = useState([]);
-  const [selectedChapter5, setSelectedChapter5] = useState("");
-  const [verses5, setVerses5] = useState([]);
-  const [selectedVerse5, setSelectedVerse5] = useState([]);
-  const [confirmedVerses5, setConfirmedVerses5] = useState([]);
-  //////////////////READING 5 VERSE///////////
-  const [selectedBook6, setSelectedBook6] = useState("");
-  const [chapters6, setChapters6] = useState([]);
-  const [selectedChapter6, setSelectedChapter6] = useState("");
-  const [verses6, setVerses6] = useState([]);
-  const [selectedVerse6, setSelectedVerse6] = useState([]);
-  const [confirmedVerses6, setConfirmedVerses6] = useState([]);
-  /////////////////READING 6 VERSE//////////////////
-  const [selectedBook7, setSelectedBook7] = useState("");
-  const [chapters7, setChapters7] = useState([]);
-  const [selectedChapter7, setSelectedChapter7] = useState("");
-  const [verses7, setVerses7] = useState([]);
-  const [selectedVerse7, setSelectedVerse7] = useState([]);
-  const [confirmedVerses7, setConfirmedVerses7] = useState([]);
-  ///////////////READING 7 VERSE/////////////
-  const [selectedBook8, setSelectedBook8] = useState("");
-  const [chapters8, setChapters8] = useState([]);
-  const [selectedChapter8, setSelectedChapter8] = useState("");
-  const [verses8, setVerses8] = useState([]);
-  const [selectedVerse8, setSelectedVerse8] = useState([]);
-  const [confirmedVerses8, setConfirmedVerses8] = useState([]);
-  //////////////PROCESSIONAL PSALMS GOSPEL2 VERSE////////////////
-  const [selectedBook10, setSelectedBook10] = useState("");
-  const [chapters10, setChapters10] = useState([]);
-  const [selectedChapter10, setSelectedChapter10] = useState("");
-  const [verses10, setVerses10] = useState([]);
-  const [selectedVerse10, setSelectedVerse10] = useState([]);
-  const [confirmedVerses10, setConfirmedVerses10] = useState([]);
-  /////////////RESPONSIAL PSALM VERSE///////////////////
-  const [selectedBook11, setSelectedBook11] = useState("");
-  const [chapters11, setChapters11] = useState([]);
-  const [selectedChapter11, setSelectedChapter11] = useState("");
-  const [verses11, setVerses11] = useState([]);
-  const [selectedVerse11, setSelectedVerse11] = useState([]);
-  const [confirmedVerses11, setConfirmedVerses11] = useState([]);
-  ////////////RESPONSIAL PSALM VERSE OPT2////////////////
-  const [selectedBook12, setSelectedBook12] = useState("");
-  const [chapters12, setChapters12] = useState([]);
-  const [selectedChapter12, setSelectedChapter12] = useState("");
-  const [verses12, setVerses12] = useState([]);
-  const [selectedVerse12, setSelectedVerse12] = useState([]);
-  const [confirmedVerses12, setConfirmedVerses12] = useState([]);
-  /////////////////VERSE B4 GOSPEL OPT2////////////////
-  const [selectedBook13, setSelectedBook13] = useState("");
-  const [chapters13, setChapters13] = useState([]);
-  const [selectedChapter13, setSelectedChapter13] = useState("");
-  const [verses13, setVerses13] = useState([]);
-  const [selectedVerse13, setSelectedVerse13] = useState([]);
-  const [confirmedVerses13, setConfirmedVerses13] = useState([]);
-  ////////////////ALLELULIA VERSE///////////////////////////
-  const [selectedBook14, setSelectedBook14] = useState("");
-  const [chapters14, setChapters14] = useState([]);
-  const [selectedChapter14, setSelectedChapter14] = useState("");
-  const [verses14, setVerses14] = useState([]);
-  const [selectedVerse14, setSelectedVerse14] = useState([]);
-  const [confirmedVerses14, setConfirmedVerses14] = useState([]);
-  //////////////////GOSPEL VERSE////////////////////////
-  const [selectedBook15, setSelectedBook15] = useState("");
-  const [chapters15, setChapters15] = useState([]);
-  const [selectedChapter15, setSelectedChapter15] = useState("");
-  const [verses15, setVerses15] = useState([]);
-  const [selectedVerse15, setSelectedVerse15] = useState([]);
-  const [confirmedVerses15, setConfirmedVerses15] = useState([]);
-  /////////////////////////GOSPEL VERSE 2//////////////////
-  const [selectedBook16, setSelectedBook16] = useState("");
-  const [chapters16, setChapters16] = useState([]);
-  const [selectedChapter16, setSelectedChapter16] = useState("");
-  const [verses16, setVerses16] = useState([]);
-  const [selectedVerse16, setSelectedVerse16] = useState([]);
-  const [confirmedVerses16, setConfirmedVerses16] = useState([]);
 
   /////////////////////////////////////////////////////EDIT SECTION///////////////////////////////////////////////
   const [fetchDate, setFetchDate] = useState("");
@@ -337,122 +221,6 @@ function DailyReadings() {
   const [editGospelVerse2, setEditGospelVerse2] = useState("");
   const [editGospelTextOption2, setEditGospelTextOption2] = useState("");
   const [editVerseBeforeGospel, setEditVerseBeforeGospel] = useState("");
-  //EDIT BIBLE ID
-  const [editBibleId, setEditBibleId] = useState("40072c4a5aba4022-01");
-  const [editBooks, setEditBooks] = useState([]);
-
-  //////EDIT READING 1 VERSE/////////
-  const [editSelectedBook, setEditSelectedBook] = useState("");
-  const [editChapters, setEditChapters] = useState([]);
-  const [editSelectedChapter, setEditSelectedChapter] = useState("");
-  const [editVerses, setEditVerses] = useState([]);
-  const [editSelectedVerse, setEditSelectedVerse] = useState([]);
-  const [editConfirmedVerses, setEditConfirmedVerses] = useState([]);
-  ////////EDIT READING 1 OPTION 2 VERSE///////
-  const [editSelectedBook2, setEditSelectedBook2] = useState("");
-  const [editChapters2, setEditChapters2] = useState([]);
-  const [editSelectedChapter2, setEditSelectedChapter2] = useState("");
-  const [editVerses2, setEditVerses2] = useState([]);
-  const [editSelectedVerse2, setEditSelectedVerse2] = useState([]);
-  const [editConfirmedVerses2, setEditConfirmedVerses2] = useState([]);
-  /////////EDIT READING 2 VERSE ////////////
-  const [editSelectedBook3, setEditSelectedBook3] = useState("");
-  const [editChapters3, setEditChapters3] = useState([]);
-  const [editSelectedChapter3, setEditSelectedChapter3] = useState("");
-  const [editVerses3, setEditVerses3] = useState([]);
-  const [editSelectedVerse3, setEditSelectedVerse3] = useState([]);
-  const [editConfirmedVerses3, setEditConfirmedVerses3] = useState([]);
-  /////////EDIT READING 2 OPTION 1 VERSE ////////////
-  const [editSelectedBook9, setEditSelectedBook9] = useState("");
-  const [editChapters9, setEditChapters9] = useState([]);
-  const [editSelectedChapter9, setEditSelectedChapter9] = useState("");
-  const [editVerses9, setEditVerses9] = useState([]);
-  const [editSelectedVerse9, setEditSelectedVerse9] = useState([]);
-  const [editConfirmedVerses9, setEditConfirmedVerses9] = useState([]);
-  /////////////EDIT READING 3 VERSE///////////
-  const [editSelectedBook4, setEditSelectedBook4] = useState("");
-  const [editChapters4, setEditChapters4] = useState([]);
-  const [editSelectedChapter4, setEditSelectedChapter4] = useState("");
-  const [editVerses4, setEditVerses4] = useState([]);
-  const [editSelectedVerse4, setEditSelectedVerse4] = useState([]);
-  const [editConfirmedVerses4, setEditConfirmedVerses4] = useState([]);
-  //////////////EDIT READING 4 VERSE///////////
-  const [editSelectedBook5, setEditSelectedBook5] = useState("");
-  const [editChapters5, setEditChapters5] = useState([]);
-  const [editSelectedChapter5, setEditSelectedChapter5] = useState("");
-  const [editVerses5, setEditVerses5] = useState([]);
-  const [editSelectedVerse5, setEditSelectedVerse5] = useState([]);
-  const [editConfirmedVerses5, setEditConfirmedVerses5] = useState([]);
-  //////////////////EDIT READING 5 VERSE///////////
-  const [editSelectedBook6, setEditSelectedBook6] = useState("");
-  const [editChapters6, setEditChapters6] = useState([]);
-  const [editSelectedChapter6, setEditSelectedChapter6] = useState("");
-  const [editVerses6, setEditVerses6] = useState([]);
-  const [editSelectedVerse6, setEditSelectedVerse6] = useState([]);
-  const [editConfirmedVerses6, setEditConfirmedVerses6] = useState([]);
-  /////////////////EDIT READING 6 VERSE//////////////////
-  const [editSelectedBook7, setEditSelectedBook7] = useState("");
-  const [editChapters7, setEditChapters7] = useState([]);
-  const [editSelectedChapter7, setEditSelectedChapter7] = useState("");
-  const [editVerses7, setEditVerses7] = useState([]);
-  const [editSelectedVerse7, setEditSelectedVerse7] = useState([]);
-  const [editConfirmedVerses7, setEditConfirmedVerses7] = useState([]);
-  ///////////////EDIT READING 7 VERSE/////////////
-  const [editSelectedBook8, setEditSelectedBook8] = useState("");
-  const [editChapters8, setEditChapters8] = useState([]);
-  const [editSelectedChapter8, setEditSelectedChapter8] = useState("");
-  const [editVerses8, setEditVerses8] = useState([]);
-  const [editSelectedVerse8, setEditSelectedVerse8] = useState([]);
-  const [editConfirmedVerses8, setEditConfirmedVerses8] = useState([]);
-  //////////////EDIT PROCESSIONAL PSALMS GOSPEL2 VERSE////////////////
-  const [editSelectedBook10, setEditSelectedBook10] = useState("");
-  const [editChapters10, setEditChapters10] = useState([]);
-  const [editSelectedChapter10, setEditSelectedChapter10] = useState("");
-  const [editVerses10, setEditVerses10] = useState([]);
-  const [editSelectedVerse10, setEditSelectedVerse10] = useState([]);
-  const [editConfirmedVerses10, setEditConfirmedVerses10] = useState([]);
-  /////////////EDIT RESPONSIAL PSALM VERSE///////////////////
-  const [editSelectedBook11, setEditSelectedBook11] = useState("");
-  const [editChapters11, setEditChapters11] = useState([]);
-  const [editSelectedChapter11, setEditSelectedChapter11] = useState("");
-  const [editVerses11, setEditVerses11] = useState([]);
-  const [editSelectedVerse11, setEditSelectedVerse11] = useState([]);
-  const [editConfirmedVerses11, setEditConfirmedVerses11] = useState([]);
-  ////////////EDIT RESPONSIAL PSALM VERSE OPT2////////////////
-  const [editSelectedBook12, setEditSelectedBook12] = useState("");
-  const [editChapters12, setEditChapters12] = useState([]);
-  const [editSelectedChapter12, setEditSelectedChapter12] = useState("");
-  const [editVerses12, setEditVerses12] = useState([]);
-  const [editSelectedVerse12, setEditSelectedVerse12] = useState([]);
-  const [editConfirmedVerses12, setEditConfirmedVerses12] = useState([]);
-  /////////////////EDIT VERSE B4 GOSPEL OPT2////////////////
-  const [editSelectedBook13, setEditSelectedBook13] = useState("");
-  const [editChapters13, setEditChapters13] = useState([]);
-  const [editSelectedChapter13, setEditSelectedChapter13] = useState("");
-  const [editVerses13, setEditVerses13] = useState([]);
-  const [editSelectedVerse13, setEditSelectedVerse13] = useState([]);
-  const [editConfirmedVerses13, setEditConfirmedVerses13] = useState([]);
-  ////////////////EDIT ALLELULIA VERSE///////////////////////////
-  const [editSelectedBook14, setEditSelectedBook14] = useState("");
-  const [editChapters14, setEditChapters14] = useState([]);
-  const [editSelectedChapter14, setEditSelectedChapter14] = useState("");
-  const [editVerses14, setEditVerses14] = useState([]);
-  const [editSelectedVerse14, setEditSelectedVerse14] = useState([]);
-  const [editConfirmedVerses14, setEditConfirmedVerses14] = useState([]);
-  //////////////////EDIT GOSPEL VERSE////////////////////////
-  const [editSelectedBook15, setEditSelectedBook15] = useState("");
-  const [editChapters15, setEditChapters15] = useState([]);
-  const [editSelectedChapter15, setEditSelectedChapter15] = useState("");
-  const [editVerses15, setEditVerses15] = useState([]);
-  const [editSelectedVerse15, setEditSelectedVerse15] = useState([]);
-  const [editConfirmedVerses15, setEditConfirmedVerses15] = useState([]);
-  /////////////////////////EDIT GOSPEL VERSE 2//////////////////
-  const [editSelectedBook16, setEditSelectedBook16] = useState("");
-  const [editChapters16, setEditChapters16] = useState([]);
-  const [editSelectedChapter16, setEditSelectedChapter16] = useState("");
-  const [editVerses16, setEditVerses16] = useState([]);
-  const [editSelectedVerse16, setEditSelectedVerse16] = useState([]);
-  const [editConfirmedVerses16, setEditConfirmedVerses16] = useState([]);
 
   const [dailyReadingToast, setDailyReadingToast] = useState({
     error: false,
@@ -465,54 +233,19 @@ function DailyReadings() {
   });
 
   const [tabValue, setTabValue] = useState(0);
-
-  const formatVerseRange = (verses) => {
-    let formattedVerses = [];
-    let startVerse = null;
-    let endVerse = null;
-
-    for (let i = 0; i < verses.length; i++) {
-      const verseParts = verses[i].split(".");
-      const chapter = verseParts[1];
-      const verse = verseParts[2];
-
-      if (startVerse === null) {
-        startVerse = verses[i];
-        endVerse = verses[i];
-      } else if (parseInt(verse) === parseInt(endVerse.split(".")[2]) + 1) {
-        endVerse = verses[i];
-      } else {
-        if (startVerse === endVerse) {
-          formattedVerses.push(startVerse);
-        } else {
-          formattedVerses.push(
-            `${startVerse.split(".")[0]}.${startVerse.split(".")[1]}.${
-              startVerse.split(".")[2]
-            }-${endVerse.split(".")[2]}`
-          );
-        }
-        startVerse = verses[i];
-        endVerse = verses[i];
-      }
-    }
-
-    if (startVerse !== null) {
-      if (startVerse === endVerse) {
-        formattedVerses.push(startVerse);
-      } else {
-        formattedVerses.push(
-          `${startVerse.split(".")[0]}.${startVerse.split(".")[1]}.${
-            startVerse.split(".")[2]
-          }-${endVerse.split(".")[2]}`
-        );
-      }
-    }
-
-    return formattedVerses.join(", ");
-  };
+  const [postTabValue, setPostTabValue] = useState(0);
+  const [editTabValue, setEditTabValue] = useState(0);
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
+  };
+
+  const handlePostTabChange = (event, newValue) => {
+    setPostTabValue(newValue);
+  };
+
+  const handleEditTabChange = (event, newValue) => {
+    setEditTabValue(newValue);
   };
 
   const handleDate = (event) => {
@@ -729,10 +462,6 @@ function DailyReadings() {
 
   const handleVerseBeforeGospel = (event) => {
     setVerseBeforeGospel(event.target.value);
-  };
-
-  const handleBibleId = (event) => {
-    setBibleId(event.target.value);
   };
 
   ////////////////ONCHANGE EDIT SECTION////////////////////////
@@ -952,137 +681,7 @@ function DailyReadings() {
     setEditVerseBeforeGospel(event.target.value);
   };
 
-  const handleEditBibleId = (event) => {
-    setEditBibleId(event.target.value);
-  };
-
-  /////////POST VERSES/////////////////
-  const handleFetchVerses = () => {
-    if (selectedVerse.length > 0) {
-      setConfirmedVerses([...confirmedVerses, ...selectedVerse]);
-    }
-    if (selectedVerse2.length > 0) {
-      setConfirmedVerses2([...confirmedVerses2, ...selectedVerse2]);
-    }
-    if (selectedVerse3.length > 0) {
-      setConfirmedVerses3([...confirmedVerses3, ...selectedVerse3]);
-    }
-    if (selectedVerse4.length > 0) {
-      setConfirmedVerses4([...confirmedVerses4, ...selectedVerse4]);
-    }
-    if (selectedVerse5.length > 0) {
-      setConfirmedVerses5([...confirmedVerses5, ...selectedVerse5]);
-    }
-    if (selectedVerse6.length > 0) {
-      setConfirmedVerses6([...confirmedVerses6, ...selectedVerse6]);
-    }
-    if (selectedVerse7.length > 0) {
-      setConfirmedVerses7([...confirmedVerses7, ...selectedVerse7]);
-    }
-    if (selectedVerse8.length > 0) {
-      setConfirmedVerses8([...confirmedVerses8, ...selectedVerse8]);
-    }
-    if (selectedVerse9.length > 0) {
-      setConfirmedVerses9([...confirmedVerses9, ...selectedVerse9]);
-    }
-    if (selectedVerse10.length > 0) {
-      setConfirmedVerses10([...confirmedVerses10, ...selectedVerse10]);
-    }
-    if (selectedVerse11.length > 0) {
-      setConfirmedVerses11([...confirmedVerses11, ...selectedVerse11]);
-    }
-    if (selectedVerse12.length > 0) {
-      setConfirmedVerses12([...confirmedVerses12, ...selectedVerse12]);
-    }
-    if (selectedVerse13.length > 0) {
-      setConfirmedVerses13([...confirmedVerses13, ...selectedVerse13]);
-    }
-    if (selectedVerse14.length > 0) {
-      setConfirmedVerses14([...confirmedVerses14, ...selectedVerse14]);
-    }
-    if (selectedVerse15.length > 0) {
-      setConfirmedVerses15([...confirmedVerses15, ...selectedVerse15]);
-    }
-    if (selectedVerse16.length > 0) {
-      setConfirmedVerses16([...confirmedVerses16, ...selectedVerse16]);
-    }
-  };
-
-  ///////////////EDIT VERSES////////////
-  const handleEditFetchVerses = () => {
-    if (editSelectedVerse.length > 0) {
-      setEditConfirmedVerses([...editConfirmedVerses, ...editSelectedVerse]);
-    }
-    if (editSelectedVerse2.length > 0) {
-      setEditConfirmedVerses2([...editConfirmedVerses2, ...editSelectedVerse2]);
-    }
-    if (editSelectedVerse3.length > 0) {
-      setEditConfirmedVerses3([...editConfirmedVerses3, ...editSelectedVerse3]);
-    }
-    if (editSelectedVerse4.length > 0) {
-      setEditConfirmedVerses4([...editConfirmedVerses4, ...editSelectedVerse4]);
-    }
-    if (editSelectedVerse5.length > 0) {
-      setEditConfirmedVerses5([...editConfirmedVerses5, ...editSelectedVerse5]);
-    }
-    if (editSelectedVerse6.length > 0) {
-      setEditConfirmedVerses6([...editConfirmedVerses6, ...editSelectedVerse6]);
-    }
-    if (editSelectedVerse7.length > 0) {
-      setEditConfirmedVerses7([...editConfirmedVerses7, ...editSelectedVerse7]);
-    }
-    if (editSelectedVerse8.length > 0) {
-      setEditConfirmedVerses8([...editConfirmedVerses8, ...editSelectedVerse8]);
-    }
-    if (editSelectedVerse9.length > 0) {
-      setEditConfirmedVerses9([...editConfirmedVerses9, ...editSelectedVerse9]);
-    }
-    if (editSelectedVerse10.length > 0) {
-      setEditConfirmedVerses10([
-        ...editConfirmedVerses10,
-        ...editSelectedVerse10,
-      ]);
-    }
-    if (editSelectedVerse11.length > 0) {
-      setEditConfirmedVerses11([
-        ...editConfirmedVerses11,
-        ...editSelectedVerse11,
-      ]);
-    }
-    if (editSelectedVerse12.length > 0) {
-      setEditConfirmedVerses12([
-        ...editConfirmedVerses12,
-        ...editSelectedVerse12,
-      ]);
-    }
-    if (editSelectedVerse13.length > 0) {
-      setEditConfirmedVerses13([
-        ...editConfirmedVerses13,
-        ...editSelectedVerse13,
-      ]);
-    }
-    if (editSelectedVerse14.length > 0) {
-      setEditConfirmedVerses14([
-        ...editConfirmedVerses14,
-        ...editSelectedVerse14,
-      ]);
-    }
-    if (editSelectedVerse15.length > 0) {
-      setEditConfirmedVerses15([
-        ...editConfirmedVerses15,
-        ...editSelectedVerse15,
-      ]);
-    }
-    if (editSelectedVerse16.length > 0) {
-      setEditConfirmedVerses16([
-        ...editConfirmedVerses16,
-        ...editSelectedVerse16,
-      ]);
-    }
-  };
-
   /////////////////API REQUESTS////////////////////////////////////
-
   const { data, isError, isFetching, isLoading, refetch } = useQuery(
     ["fetchDailyReading", fetchDate],
     async () => {
@@ -1096,7 +695,7 @@ function DailyReadings() {
         }
       );
 
-      console.log(data);
+      //console.log(data);
 
       setId(data?.data?.id);
       const fullDate = data?.data?.date;
@@ -1165,7 +764,7 @@ function DailyReadings() {
       onError: (err) => {
         console.log(err, "err fetching daily reading");
       },
-      enabled: !!user?.token,
+      enabled: !!user?.token && !!fetchDate,
     }
   );
 
@@ -1552,2511 +1151,6 @@ function DailyReadings() {
     },
   });
 
-  const apiKey = "1b403d7377c77b6554e9fb5b2f7dcf6b";
-
-  useEffect(() => {
-    axios
-      .get(`https://api.scripture.api.bible/v1/bibles/${bibleId}/books`, {
-        headers: { "api-key": apiKey },
-      })
-      .then((response) => {
-        setBooks(response.data.data);
-      })
-      .catch((error) => console.error("Error fetching books:", error));
-  }, [bibleId]);
-
-  useEffect(() => {
-    axios
-      .get(`https://api.scripture.api.bible/v1/bibles/${editBibleId}/books`, {
-        headers: { "api-key": apiKey },
-      })
-      .then((response) => {
-        setEditBooks(response.data.data);
-      })
-      .catch((error) => console.error("Error fetching books:", error));
-  }, [editBibleId]);
-
-  ////////////////READING 1 VERSE///////////////////////
-  useEffect(() => {
-    if (selectedBook) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${bibleId}/books/${selectedBook}/chapters`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setChapters(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching chapters:", error));
-    }
-  }, [selectedBook, bibleId]);
-
-  useEffect(() => {
-    if (selectedChapter) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${bibleId}/chapters/${selectedChapter}/verses`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setVerses(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching verses:", error));
-    }
-  }, [selectedChapter, bibleId]);
-
-  useEffect(() => {
-    if (selectedBook && selectedChapter && confirmedVerses.length > 0) {
-      setReading1Verse(formatVerseRange(confirmedVerses));
-      const fetchData = async () => {
-        try {
-          const promises = confirmedVerses.map((verseId) =>
-            axios.get(
-              `https://api.scripture.api.bible/v1/bibles/${bibleId}/verses/${verseId}?content-type=json`,
-              {
-                headers: { "api-key": apiKey },
-              }
-            )
-          );
-          const responses = await Promise.all(promises);
-          const contents = responses.map(
-            (response) => response.data.data.content
-          );
-
-          let extractedText = "";
-          const extractText = (items) => {
-            items.forEach((item) => {
-              if (item.type === "text" && isNaN(item.text.trim())) {
-                extractedText += item.text;
-              } else if (item.items && item.items.length > 0) {
-                extractText(item.items);
-              }
-            });
-          };
-
-          contents.forEach((content) => extractText(content));
-
-          setReading1Text(extractedText);
-        } catch (error) {
-          console.error("Error fetching verse text:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [selectedBook, selectedChapter, confirmedVerses, bibleId]);
-
-  ////////////////EDIT READING 1 VERSE///////////////////////
-  useEffect(() => {
-    if (editSelectedBook) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${editBibleId}/books/${editSelectedBook}/chapters`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setEditChapters(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching chapters:", error));
-    }
-  }, [editSelectedBook, editBibleId]);
-
-  useEffect(() => {
-    if (editSelectedChapter) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${editBibleId}/chapters/${editSelectedChapter}/verses`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setEditVerses(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching verses:", error));
-    }
-  }, [editSelectedChapter, editBibleId]);
-
-  useEffect(() => {
-    if (
-      editSelectedBook &&
-      editSelectedChapter &&
-      editConfirmedVerses.length > 0
-    ) {
-      setEditReading1Verse(formatVerseRange(editConfirmedVerses));
-      const fetchData = async () => {
-        try {
-          const promises = editConfirmedVerses.map((verseId) =>
-            axios.get(
-              `https://api.scripture.api.bible/v1/bibles/${editBibleId}/verses/${verseId}?content-type=json`,
-              {
-                headers: { "api-key": apiKey },
-              }
-            )
-          );
-          const responses = await Promise.all(promises);
-          const contents = responses.map(
-            (response) => response.data.data.content
-          );
-
-          let extractedText = "";
-          const extractText = (items) => {
-            items.forEach((item) => {
-              if (item.type === "text" && isNaN(item.text.trim())) {
-                extractedText += item.text;
-              } else if (item.items && item.items.length > 0) {
-                extractText(item.items);
-              }
-            });
-          };
-
-          contents.forEach((content) => extractText(content));
-
-          setEditReading1Text(extractedText);
-        } catch (error) {
-          console.error("Error fetching verse text:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [editSelectedBook, editSelectedChapter, editConfirmedVerses, editBibleId]);
-
-  ////////////////READING 1 OPTION 2 VERSE///////////////////////
-  useEffect(() => {
-    if (selectedBook2) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${bibleId}/books/${selectedBook2}/chapters`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setChapters2(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching chapters:", error));
-    }
-  }, [selectedBook2, bibleId]);
-
-  useEffect(() => {
-    if (selectedChapter2) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${bibleId}/chapters/${selectedChapter2}/verses`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setVerses2(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching verses:", error));
-    }
-  }, [selectedChapter2, bibleId]);
-
-  useEffect(() => {
-    if (selectedBook2 && selectedChapter2 && confirmedVerses2.length > 0) {
-      setReading1Option2Verse(formatVerseRange(confirmedVerses2));
-      const fetchData = async () => {
-        try {
-          const promises = confirmedVerses2.map((verseId) =>
-            axios.get(
-              `https://api.scripture.api.bible/v1/bibles/${bibleId}/verses/${verseId}?content-type=json`,
-              {
-                headers: { "api-key": apiKey },
-              }
-            )
-          );
-          const responses = await Promise.all(promises);
-          const contents = responses.map(
-            (response) => response.data.data.content
-          );
-
-          let extractedText = "";
-          const extractText = (items) => {
-            items.forEach((item) => {
-              if (item.type === "text" && isNaN(item.text.trim())) {
-                extractedText += item.text;
-              } else if (item.items && item.items.length > 0) {
-                extractText(item.items);
-              }
-            });
-          };
-
-          contents.forEach((content) => extractText(content));
-
-          setReading1TextOption2(extractedText);
-        } catch (error) {
-          console.error("Error fetching verse text:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [selectedBook2, selectedChapter2, confirmedVerses2, bibleId]);
-
-  ////////////////EDIT READING 1 OPTION 2 VERSE///////////////////////
-  useEffect(() => {
-    if (editSelectedBook2) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${editBibleId}/books/${editSelectedBook2}/chapters`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setEditChapters2(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching chapters:", error));
-    }
-  }, [editSelectedBook2, editBibleId]);
-
-  useEffect(() => {
-    if (editSelectedChapter2) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${editBibleId}/chapters/${editSelectedChapter2}/verses`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setEditVerses2(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching verses:", error));
-    }
-  }, [editSelectedChapter2, editBibleId]);
-
-  useEffect(() => {
-    if (
-      editSelectedBook2 &&
-      editSelectedChapter2 &&
-      editConfirmedVerses2.length > 0
-    ) {
-      setEditReading1Option2Verse(formatVerseRange(editConfirmedVerses2));
-      const fetchData = async () => {
-        try {
-          const promises = editConfirmedVerses2.map((verseId) =>
-            axios.get(
-              `https://api.scripture.api.bible/v1/bibles/${editBibleId}/verses/${verseId}?content-type=json`,
-              {
-                headers: { "api-key": apiKey },
-              }
-            )
-          );
-          const responses = await Promise.all(promises);
-          const contents = responses.map(
-            (response) => response.data.data.content
-          );
-
-          let extractedText = "";
-          const extractText = (items) => {
-            items.forEach((item) => {
-              if (item.type === "text" && isNaN(item.text.trim())) {
-                extractedText += item.text;
-              } else if (item.items && item.items.length > 0) {
-                extractText(item.items);
-              }
-            });
-          };
-
-          contents.forEach((content) => extractText(content));
-
-          setEditReading1TextOption2(extractedText);
-        } catch (error) {
-          console.error("Error fetching verse text:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [
-    editSelectedBook2,
-    editSelectedChapter2,
-    editConfirmedVerses2,
-    editBibleId,
-  ]);
-
-  ///////////READING 2 VERSE/////////
-  useEffect(() => {
-    if (selectedBook3) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${bibleId}/books/${selectedBook3}/chapters`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setChapters3(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching chapters:", error));
-    }
-  }, [selectedBook3, bibleId]);
-
-  useEffect(() => {
-    if (selectedChapter3) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${bibleId}/chapters/${selectedChapter3}/verses`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setVerses3(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching verses:", error));
-    }
-  }, [selectedChapter3, bibleId]);
-
-  useEffect(() => {
-    if (selectedBook3 && selectedChapter3 && confirmedVerses3.length > 0) {
-      setReading2Verse(formatVerseRange(confirmedVerses3));
-      const fetchData = async () => {
-        try {
-          const promises = confirmedVerses3.map((verseId) =>
-            axios.get(
-              `https://api.scripture.api.bible/v1/bibles/${bibleId}/verses/${verseId}?content-type=json`,
-              {
-                headers: { "api-key": apiKey },
-              }
-            )
-          );
-          const responses = await Promise.all(promises);
-          const contents = responses.map(
-            (response) => response.data.data.content
-          );
-
-          let extractedText = "";
-          const extractText = (items) => {
-            items.forEach((item) => {
-              if (item.type === "text" && isNaN(item.text.trim())) {
-                extractedText += item.text;
-              } else if (item.items && item.items.length > 0) {
-                extractText(item.items);
-              }
-            });
-          };
-
-          contents.forEach((content) => extractText(content));
-
-          setReading2Text(extractedText);
-        } catch (error) {
-          console.error("Error fetching verse text:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [selectedBook3, selectedChapter3, confirmedVerses3, bibleId]);
-
-  ///////////EDIT READING 2 VERSE/////////
-  useEffect(() => {
-    if (editSelectedBook3) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${editBibleId}/books/${editSelectedBook3}/chapters`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setEditChapters3(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching chapters:", error));
-    }
-  }, [editSelectedBook3, editBibleId]);
-
-  useEffect(() => {
-    if (editSelectedChapter3) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${editBibleId}/chapters/${editSelectedChapter3}/verses`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setEditVerses3(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching verses:", error));
-    }
-  }, [editSelectedChapter3, editBibleId]);
-
-  useEffect(() => {
-    if (
-      editSelectedBook3 &&
-      editSelectedChapter3 &&
-      editConfirmedVerses3.length > 0
-    ) {
-      setEditReading2Verse(formatVerseRange(editConfirmedVerses3));
-      const fetchData = async () => {
-        try {
-          const promises = editConfirmedVerses3.map((verseId) =>
-            axios.get(
-              `https://api.scripture.api.bible/v1/bibles/${editBibleId}/verses/${verseId}?content-type=json`,
-              {
-                headers: { "api-key": apiKey },
-              }
-            )
-          );
-          const responses = await Promise.all(promises);
-          const contents = responses.map(
-            (response) => response.data.data.content
-          );
-
-          let extractedText = "";
-          const extractText = (items) => {
-            items.forEach((item) => {
-              if (item.type === "text" && isNaN(item.text.trim())) {
-                extractedText += item.text;
-              } else if (item.items && item.items.length > 0) {
-                extractText(item.items);
-              }
-            });
-          };
-
-          contents.forEach((content) => extractText(content));
-
-          setEditReading2Text(extractedText);
-        } catch (error) {
-          console.error("Error fetching verse text:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [
-    editSelectedBook3,
-    editSelectedChapter3,
-    editConfirmedVerses3,
-    editBibleId,
-  ]);
-
-  ///////////READING 2 OPTION 1 VERSE/////////
-  useEffect(() => {
-    if (selectedBook9) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${bibleId}/books/${selectedBook9}/chapters`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setChapters9(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching chapters:", error));
-    }
-  }, [selectedBook9, bibleId]);
-
-  useEffect(() => {
-    if (selectedChapter9) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${bibleId}/chapters/${selectedChapter9}/verses`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setVerses9(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching verses:", error));
-    }
-  }, [selectedChapter9, bibleId]);
-
-  useEffect(() => {
-    if (selectedBook9 && selectedChapter9 && confirmedVerses9.length > 0) {
-      setReading2Option1Verse(formatVerseRange(confirmedVerses9));
-      const fetchData = async () => {
-        try {
-          const promises = confirmedVerses9.map((verseId) =>
-            axios.get(
-              `https://api.scripture.api.bible/v1/bibles/${bibleId}/verses/${verseId}?content-type=json`,
-              {
-                headers: { "api-key": apiKey },
-              }
-            )
-          );
-          const responses = await Promise.all(promises);
-          const contents = responses.map(
-            (response) => response.data.data.content
-          );
-
-          let extractedText = "";
-          const extractText = (items) => {
-            items.forEach((item) => {
-              if (item.type === "text" && isNaN(item.text.trim())) {
-                extractedText += item.text;
-              } else if (item.items && item.items.length > 0) {
-                extractText(item.items);
-              }
-            });
-          };
-
-          contents.forEach((content) => extractText(content));
-
-          setReading2TextOption1(extractedText);
-        } catch (error) {
-          console.error("Error fetching verse text:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [selectedBook9, selectedChapter9, confirmedVerses9, bibleId]);
-
-  ///////////EDIT READING 2 OPTION 1 VERSE/////////
-  useEffect(() => {
-    if (editSelectedBook9) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${editBibleId}/books/${editSelectedBook9}/chapters`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setEditChapters9(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching chapters:", error));
-    }
-  }, [editSelectedBook9, editBibleId]);
-
-  useEffect(() => {
-    if (editSelectedChapter9) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${editBibleId}/chapters/${editSelectedChapter9}/verses`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setEditVerses9(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching verses:", error));
-    }
-  }, [editSelectedChapter9, editBibleId]);
-
-  useEffect(() => {
-    if (
-      editSelectedBook9 &&
-      editSelectedChapter9 &&
-      editConfirmedVerses9.length > 0
-    ) {
-      setEditReading2Option1Verse(formatVerseRange(editConfirmedVerses9));
-      const fetchData = async () => {
-        try {
-          const promises = editConfirmedVerses9.map((verseId) =>
-            axios.get(
-              `https://api.scripture.api.bible/v1/bibles/${editBibleId}/verses/${verseId}?content-type=json`,
-              {
-                headers: { "api-key": apiKey },
-              }
-            )
-          );
-          const responses = await Promise.all(promises);
-          const contents = responses.map(
-            (response) => response.data.data.content
-          );
-
-          let extractedText = "";
-          const extractText = (items) => {
-            items.forEach((item) => {
-              if (item.type === "text" && isNaN(item.text.trim())) {
-                extractedText += item.text;
-              } else if (item.items && item.items.length > 0) {
-                extractText(item.items);
-              }
-            });
-          };
-
-          contents.forEach((content) => extractText(content));
-
-          setEditReading2TextOption1(extractedText);
-        } catch (error) {
-          console.error("Error fetching verse text:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [
-    editSelectedBook9,
-    editSelectedChapter9,
-    editConfirmedVerses9,
-    editBibleId,
-  ]);
-
-  ///////////READING 3 VERSE/////////
-  useEffect(() => {
-    if (selectedBook4) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${bibleId}/books/${selectedBook4}/chapters`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setChapters4(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching chapters:", error));
-    }
-  }, [selectedBook4, bibleId]);
-
-  useEffect(() => {
-    if (selectedChapter4) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${bibleId}/chapters/${selectedChapter4}/verses`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setVerses4(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching verses:", error));
-    }
-  }, [selectedChapter4, bibleId]);
-
-  useEffect(() => {
-    if (selectedBook4 && selectedChapter4 && confirmedVerses4.length > 0) {
-      setReading3Verse(formatVerseRange(confirmedVerses4));
-      const fetchData = async () => {
-        try {
-          const promises = confirmedVerses4.map((verseId) =>
-            axios.get(
-              `https://api.scripture.api.bible/v1/bibles/${bibleId}/verses/${verseId}?content-type=json`,
-              {
-                headers: { "api-key": apiKey },
-              }
-            )
-          );
-          const responses = await Promise.all(promises);
-          const contents = responses.map(
-            (response) => response.data.data.content
-          );
-
-          let extractedText = "";
-          const extractText = (items) => {
-            items.forEach((item) => {
-              if (item.type === "text" && isNaN(item.text.trim())) {
-                extractedText += item.text;
-              } else if (item.items && item.items.length > 0) {
-                extractText(item.items);
-              }
-            });
-          };
-
-          contents.forEach((content) => extractText(content));
-
-          setReading3Text(extractedText);
-        } catch (error) {
-          console.error("Error fetching verse text:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [selectedBook4, selectedChapter4, confirmedVerses4, bibleId]);
-
-  ///////////EDIT READING 3 VERSE/////////
-  useEffect(() => {
-    if (editSelectedBook4) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${editBibleId}/books/${editSelectedBook4}/chapters`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setEditChapters4(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching chapters:", error));
-    }
-  }, [editSelectedBook4, editBibleId]);
-
-  useEffect(() => {
-    if (editSelectedChapter4) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${editBibleId}/chapters/${editSelectedChapter4}/verses`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setEditVerses4(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching verses:", error));
-    }
-  }, [editSelectedChapter4, editBibleId]);
-
-  useEffect(() => {
-    if (
-      editSelectedBook4 &&
-      editSelectedChapter4 &&
-      editConfirmedVerses4.length > 0
-    ) {
-      setEditReading3Verse(formatVerseRange(editConfirmedVerses4));
-      const fetchData = async () => {
-        try {
-          const promises = editConfirmedVerses4.map((verseId) =>
-            axios.get(
-              `https://api.scripture.api.bible/v1/bibles/${editBibleId}/verses/${verseId}?content-type=json`,
-              {
-                headers: { "api-key": apiKey },
-              }
-            )
-          );
-          const responses = await Promise.all(promises);
-          const contents = responses.map(
-            (response) => response.data.data.content
-          );
-
-          let extractedText = "";
-          const extractText = (items) => {
-            items.forEach((item) => {
-              if (item.type === "text" && isNaN(item.text.trim())) {
-                extractedText += item.text;
-              } else if (item.items && item.items.length > 0) {
-                extractText(item.items);
-              }
-            });
-          };
-
-          contents.forEach((content) => extractText(content));
-
-          setEditReading3Text(extractedText);
-        } catch (error) {
-          console.error("Error fetching verse text:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [
-    editSelectedBook4,
-    editSelectedChapter4,
-    editConfirmedVerses4,
-    editBibleId,
-  ]);
-
-  ///////////READING 4 VERSE/////////
-  useEffect(() => {
-    if (selectedBook5) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${bibleId}/books/${selectedBook5}/chapters`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setChapters5(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching chapters:", error));
-    }
-  }, [selectedBook5, bibleId]);
-
-  useEffect(() => {
-    if (selectedChapter5) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${bibleId}/chapters/${selectedChapter5}/verses`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setVerses5(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching verses:", error));
-    }
-  }, [selectedChapter5, bibleId]);
-
-  useEffect(() => {
-    if (selectedBook5 && selectedChapter5 && confirmedVerses5.length > 0) {
-      setReading4Verse(formatVerseRange(confirmedVerses5));
-      const fetchData = async () => {
-        try {
-          const promises = confirmedVerses5.map((verseId) =>
-            axios.get(
-              `https://api.scripture.api.bible/v1/bibles/${bibleId}/verses/${verseId}?content-type=json`,
-              {
-                headers: { "api-key": apiKey },
-              }
-            )
-          );
-          const responses = await Promise.all(promises);
-          const contents = responses.map(
-            (response) => response.data.data.content
-          );
-
-          let extractedText = "";
-          const extractText = (items) => {
-            items.forEach((item) => {
-              if (item.type === "text" && isNaN(item.text.trim())) {
-                extractedText += item.text;
-              } else if (item.items && item.items.length > 0) {
-                extractText(item.items);
-              }
-            });
-          };
-
-          contents.forEach((content) => extractText(content));
-
-          setReading4Text(extractedText);
-        } catch (error) {
-          console.error("Error fetching verse text:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [selectedBook5, selectedChapter5, confirmedVerses5, bibleId]);
-
-  ///////////EDIT READING 4 VERSE/////////
-  useEffect(() => {
-    if (editSelectedBook5) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${editBibleId}/books/${editselectedBook5}/chapters`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setEditChapters5(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching chapters:", error));
-    }
-  }, [editSelectedBook5, editBibleId]);
-
-  useEffect(() => {
-    if (editSelectedChapter5) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${editBibleId}/chapters/${editSelectedChapter5}/verses`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setEditVerses5(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching verses:", error));
-    }
-  }, [editSelectedChapter5, editBibleId]);
-
-  useEffect(() => {
-    if (
-      editSelectedBook5 &&
-      editSelectedChapter5 &&
-      editConfirmedVerses5.length > 0
-    ) {
-      setEditReading4Verse(formatVerseRange(editConfirmedVerses5));
-      const fetchData = async () => {
-        try {
-          const promises = editConfirmedVerses5.map((verseId) =>
-            axios.get(
-              `https://api.scripture.api.bible/v1/bibles/${editBibleId}/verses/${verseId}?content-type=json`,
-              {
-                headers: { "api-key": apiKey },
-              }
-            )
-          );
-          const responses = await Promise.all(promises);
-          const contents = responses.map(
-            (response) => response.data.data.content
-          );
-
-          let extractedText = "";
-          const extractText = (items) => {
-            items.forEach((item) => {
-              if (item.type === "text" && isNaN(item.text.trim())) {
-                extractedText += item.text;
-              } else if (item.items && item.items.length > 0) {
-                extractText(item.items);
-              }
-            });
-          };
-
-          contents.forEach((content) => extractText(content));
-
-          setEditReading4Text(extractedText);
-        } catch (error) {
-          console.error("Error fetching verse text:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [
-    editSelectedBook5,
-    editSelectedChapter5,
-    editConfirmedVerses5,
-    editBibleId,
-  ]);
-
-  ///////////READING 5 VERSE/////////
-  useEffect(() => {
-    if (selectedBook6) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${bibleId}/books/${selectedBook6}/chapters`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setChapters6(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching chapters:", error));
-    }
-  }, [selectedBook6, bibleId]);
-
-  useEffect(() => {
-    if (selectedChapter6) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${bibleId}/chapters/${selectedChapter6}/verses`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setVerses6(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching verses:", error));
-    }
-  }, [selectedChapter6, bibleId]);
-
-  useEffect(() => {
-    if (selectedBook6 && selectedChapter6 && confirmedVerses6.length > 0) {
-      setReading5Verse(formatVerseRange(confirmedVerses6));
-      const fetchData = async () => {
-        try {
-          const promises = confirmedVerses6.map((verseId) =>
-            axios.get(
-              `https://api.scripture.api.bible/v1/bibles/${bibleId}/verses/${verseId}?content-type=json`,
-              {
-                headers: { "api-key": apiKey },
-              }
-            )
-          );
-          const responses = await Promise.all(promises);
-          const contents = responses.map(
-            (response) => response.data.data.content
-          );
-
-          let extractedText = "";
-          const extractText = (items) => {
-            items.forEach((item) => {
-              if (item.type === "text" && isNaN(item.text.trim())) {
-                extractedText += item.text;
-              } else if (item.items && item.items.length > 0) {
-                extractText(item.items);
-              }
-            });
-          };
-
-          contents.forEach((content) => extractText(content));
-
-          setReading5Text(extractedText);
-        } catch (error) {
-          console.error("Error fetching verse text:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [selectedBook6, selectedChapter6, confirmedVerses6, bibleId]);
-
-  ///////////EDIT READING 5 VERSE/////////
-  useEffect(() => {
-    if (editSelectedBook6) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${editBibleId}/books/${editSelectedBook6}/chapters`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setEditChapters6(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching chapters:", error));
-    }
-  }, [editSelectedBook6, editBibleId]);
-
-  useEffect(() => {
-    if (editSelectedChapter6) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${editBibleId}/chapters/${editSelectedChapter6}/verses`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setEditVerses6(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching verses:", error));
-    }
-  }, [editSelectedChapter6, editBibleId]);
-
-  useEffect(() => {
-    if (
-      editSelectedBook6 &&
-      editSelectedChapter6 &&
-      editConfirmedVerses6.length > 0
-    ) {
-      setEditReading5Verse(formatVerseRange(editConfirmedVerses6));
-      const fetchData = async () => {
-        try {
-          const promises = editConfirmedVerses6.map((verseId) =>
-            axios.get(
-              `https://api.scripture.api.bible/v1/bibles/${editBibleId}/verses/${verseId}?content-type=json`,
-              {
-                headers: { "api-key": apiKey },
-              }
-            )
-          );
-          const responses = await Promise.all(promises);
-          const contents = responses.map(
-            (response) => response.data.data.content
-          );
-
-          let extractedText = "";
-          const extractText = (items) => {
-            items.forEach((item) => {
-              if (item.type === "text" && isNaN(item.text.trim())) {
-                extractedText += item.text;
-              } else if (item.items && item.items.length > 0) {
-                extractText(item.items);
-              }
-            });
-          };
-
-          contents.forEach((content) => extractText(content));
-
-          setEditReading5Text(extractedText);
-        } catch (error) {
-          console.error("Error fetching verse text:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [
-    editSelectedBook6,
-    editSelectedChapter6,
-    editConfirmedVerses6,
-    editBibleId,
-  ]);
-
-  ///////////READING 6 VERSE/////////
-  useEffect(() => {
-    if (selectedBook7) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${bibleId}/books/${selectedBook7}/chapters`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setChapters7(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching chapters:", error));
-    }
-  }, [selectedBook7, bibleId]);
-
-  useEffect(() => {
-    if (selectedChapter7) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${bibleId}/chapters/${selectedChapter7}/verses`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setVerses7(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching verses:", error));
-    }
-  }, [selectedChapter7, bibleId]);
-
-  useEffect(() => {
-    if (selectedBook7 && selectedChapter7 && confirmedVerses7.length > 0) {
-      setReading6Verse(formatVerseRange(confirmedVerses7));
-      const fetchData = async () => {
-        try {
-          const promises = confirmedVerses7.map((verseId) =>
-            axios.get(
-              `https://api.scripture.api.bible/v1/bibles/${bibleId}/verses/${verseId}?content-type=json`,
-              {
-                headers: { "api-key": apiKey },
-              }
-            )
-          );
-          const responses = await Promise.all(promises);
-          const contents = responses.map(
-            (response) => response.data.data.content
-          );
-
-          let extractedText = "";
-          const extractText = (items) => {
-            items.forEach((item) => {
-              if (item.type === "text" && isNaN(item.text.trim())) {
-                extractedText += item.text;
-              } else if (item.items && item.items.length > 0) {
-                extractText(item.items);
-              }
-            });
-          };
-
-          contents.forEach((content) => extractText(content));
-
-          setReading6Text(extractedText);
-        } catch (error) {
-          console.error("Error fetching verse text:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [selectedBook7, selectedChapter7, confirmedVerses7, bibleId]);
-
-  ///////////EDIT READING 6 VERSE/////////
-  useEffect(() => {
-    if (editSelectedBook7) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${editBibleId}/books/${editSelectedBook7}/chapters`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setEditChapters7(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching chapters:", error));
-    }
-  }, [editSelectedBook7, editBibleId]);
-
-  useEffect(() => {
-    if (editSelectedChapter7) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${editBibleId}/chapters/${editSelectedChapter7}/verses`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setEditVerses7(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching verses:", error));
-    }
-  }, [editSelectedChapter7, editBibleId]);
-
-  useEffect(() => {
-    if (
-      editSelectedBook7 &&
-      editSelectedChapter7 &&
-      editConfirmedVerses7.length > 0
-    ) {
-      setEditReading6Verse(formatVerseRange(editConfirmedVerses7));
-      const fetchData = async () => {
-        try {
-          const promises = editConfirmedVerses7.map((verseId) =>
-            axios.get(
-              `https://api.scripture.api.bible/v1/bibles/${editBibleId}/verses/${verseId}?content-type=json`,
-              {
-                headers: { "api-key": apiKey },
-              }
-            )
-          );
-          const responses = await Promise.all(promises);
-          const contents = responses.map(
-            (response) => response.data.data.content
-          );
-
-          let extractedText = "";
-          const extractText = (items) => {
-            items.forEach((item) => {
-              if (item.type === "text" && isNaN(item.text.trim())) {
-                extractedText += item.text;
-              } else if (item.items && item.items.length > 0) {
-                extractText(item.items);
-              }
-            });
-          };
-
-          contents.forEach((content) => extractText(content));
-
-          setEditReading6Text(extractedText);
-        } catch (error) {
-          console.error("Error fetching verse text:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [
-    editSelectedBook7,
-    editSelectedChapter7,
-    editConfirmedVerses7,
-    editBibleId,
-  ]);
-
-  ///////////READING 7 VERSE/////////
-  useEffect(() => {
-    if (selectedBook8) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${bibleId}/books/${selectedBook8}/chapters`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setChapters8(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching chapters:", error));
-    }
-  }, [selectedBook8, bibleId]);
-
-  useEffect(() => {
-    if (selectedChapter8) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${bibleId}/chapters/${selectedChapter8}/verses`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setVerses8(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching verses:", error));
-    }
-  }, [selectedChapter8, bibleId]);
-
-  useEffect(() => {
-    if (selectedBook8 && selectedChapter8 && confirmedVerses8.length > 0) {
-      setReading7Verse(formatVerseRange(confirmedVerses8));
-      const fetchData = async () => {
-        try {
-          const promises = confirmedVerses8.map((verseId) =>
-            axios.get(
-              `https://api.scripture.api.bible/v1/bibles/${bibleId}/verses/${verseId}?content-type=json`,
-              {
-                headers: { "api-key": apiKey },
-              }
-            )
-          );
-          const responses = await Promise.all(promises);
-          const contents = responses.map(
-            (response) => response.data.data.content
-          );
-
-          let extractedText = "";
-          const extractText = (items) => {
-            items.forEach((item) => {
-              if (item.type === "text" && isNaN(item.text.trim())) {
-                extractedText += item.text;
-              } else if (item.items && item.items.length > 0) {
-                extractText(item.items);
-              }
-            });
-          };
-
-          contents.forEach((content) => extractText(content));
-
-          setReading7Text(extractedText);
-        } catch (error) {
-          console.error("Error fetching verse text:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [selectedBook8, selectedChapter8, confirmedVerses8, bibleId]);
-
-  ///////////EDIT READING 7 VERSE/////////
-  useEffect(() => {
-    if (editSelectedBook8) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${editBibleId}/books/${editSelectedBook8}/chapters`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setEditChapters8(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching chapters:", error));
-    }
-  }, [editSelectedBook8, editBibleId]);
-
-  useEffect(() => {
-    if (editSelectedChapter8) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${editBibleId}/chapters/${editSelectedChapter8}/verses`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setEditVerses8(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching verses:", error));
-    }
-  }, [editSelectedChapter8, editBibleId]);
-
-  useEffect(() => {
-    if (
-      editSelectedBook8 &&
-      editSelectedChapter8 &&
-      editConfirmedVerses8.length > 0
-    ) {
-      setEditReading7Verse(formatVerseRange(editConfirmedVerses8));
-      const fetchData = async () => {
-        try {
-          const promises = editConfirmedVerses8.map((verseId) =>
-            axios.get(
-              `https://api.scripture.api.bible/v1/bibles/${editBibleId}/verses/${verseId}?content-type=json`,
-              {
-                headers: { "api-key": apiKey },
-              }
-            )
-          );
-          const responses = await Promise.all(promises);
-          const contents = responses.map(
-            (response) => response.data.data.content
-          );
-
-          let extractedText = "";
-          const extractText = (items) => {
-            items.forEach((item) => {
-              if (item.type === "text" && isNaN(item.text.trim())) {
-                extractedText += item.text;
-              } else if (item.items && item.items.length > 0) {
-                extractText(item.items);
-              }
-            });
-          };
-
-          contents.forEach((content) => extractText(content));
-
-          setEditReading7Text(extractedText);
-        } catch (error) {
-          console.error("Error fetching verse text:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [
-    editSelectedBook8,
-    editSelectedChapter8,
-    editConfirmedVerses8,
-    editBibleId,
-  ]);
-
-  //////////////PROCESSIONAL PSALMS GOSPEL2 VERSE////////////////
-  useEffect(() => {
-    if (selectedBook10) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${bibleId}/books/${selectedBook10}/chapters`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setChapters10(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching chapters:", error));
-    }
-  }, [selectedBook10, bibleId]);
-
-  useEffect(() => {
-    if (selectedChapter10) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${bibleId}/chapters/${selectedChapter10}/verses`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setVerses10(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching verses:", error));
-    }
-  }, [selectedChapter10, bibleId]);
-
-  useEffect(() => {
-    if (selectedBook10 && selectedChapter10 && confirmedVerses10.length > 0) {
-      setProcessionPalmsGospel2Verse(formatVerseRange(confirmedVerses10));
-      const fetchData = async () => {
-        try {
-          const promises = confirmedVerses10.map((verseId) =>
-            axios.get(
-              `https://api.scripture.api.bible/v1/bibles/${bibleId}/verses/${verseId}?content-type=json`,
-              {
-                headers: { "api-key": apiKey },
-              }
-            )
-          );
-          const responses = await Promise.all(promises);
-          const contents = responses.map(
-            (response) => response.data.data.content
-          );
-
-          let extractedText = "";
-          const extractText = (items) => {
-            items.forEach((item) => {
-              if (item.type === "text" && isNaN(item.text.trim())) {
-                extractedText += item.text;
-              } else if (item.items && item.items.length > 0) {
-                extractText(item.items);
-              }
-            });
-          };
-
-          contents.forEach((content) => extractText(content));
-
-          setProcessionPalmsGospel2Text(extractedText);
-        } catch (error) {
-          console.error("Error fetching verse text:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [selectedBook10, selectedChapter10, confirmedVerses10, bibleId]);
-
-  //////////////EDIT PROCESSIONAL PSALMS GOSPEL2 VERSE////////////////
-  useEffect(() => {
-    if (editSelectedBook10) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${editBibleId}/books/${editSelectedBook10}/chapters`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setEditChapters10(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching chapters:", error));
-    }
-  }, [editSelectedBook10, editBibleId]);
-
-  useEffect(() => {
-    if (editSelectedChapter10) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${editBibleId}/chapters/${editSelectedChapter10}/verses`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setEditVerses10(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching verses:", error));
-    }
-  }, [editSelectedChapter10, editBibleId]);
-
-  useEffect(() => {
-    if (
-      editSelectedBook10 &&
-      editSelectedChapter10 &&
-      editConfirmedVerses10.length > 0
-    ) {
-      setEditProcessionPalmsGospel2Verse(
-        formatVerseRange(editConfirmedVerses10)
-      );
-      const fetchData = async () => {
-        try {
-          const promises = editConfirmedVerses10.map((verseId) =>
-            axios.get(
-              `https://api.scripture.api.bible/v1/bibles/${editBibleId}/verses/${verseId}?content-type=json`,
-              {
-                headers: { "api-key": apiKey },
-              }
-            )
-          );
-          const responses = await Promise.all(promises);
-          const contents = responses.map(
-            (response) => response.data.data.content
-          );
-
-          let extractedText = "";
-          const extractText = (items) => {
-            items.forEach((item) => {
-              if (item.type === "text" && isNaN(item.text.trim())) {
-                extractedText += item.text;
-              } else if (item.items && item.items.length > 0) {
-                extractText(item.items);
-              }
-            });
-          };
-
-          contents.forEach((content) => extractText(content));
-
-          setEditProcessionPalmsGospel2Text(extractedText);
-        } catch (error) {
-          console.error("Error fetching verse text:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [
-    editSelectedBook10,
-    editSelectedChapter10,
-    editConfirmedVerses10,
-    editBibleId,
-  ]);
-
-  /////////////RESPONSIAL PSALM VERSE///////////////////
-  useEffect(() => {
-    if (selectedBook11) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${bibleId}/books/${selectedBook11}/chapters`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setChapters11(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching chapters:", error));
-    }
-  }, [selectedBook11, bibleId]);
-
-  useEffect(() => {
-    if (selectedChapter11) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${bibleId}/chapters/${selectedChapter11}/verses`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setVerses11(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching verses:", error));
-    }
-  }, [selectedChapter11, bibleId]);
-
-  useEffect(() => {
-    if (selectedBook11 && selectedChapter11 && confirmedVerses11.length > 0) {
-      setResponsorialPsalmVerse(formatVerseRange(confirmedVerses11));
-      const fetchData = async () => {
-        try {
-          const promises = confirmedVerses11.map((verseId) =>
-            axios.get(
-              `https://api.scripture.api.bible/v1/bibles/${bibleId}/verses/${verseId}?content-type=json`,
-              {
-                headers: { "api-key": apiKey },
-              }
-            )
-          );
-          const responses = await Promise.all(promises);
-          const contents = responses.map(
-            (response) => response.data.data.content
-          );
-
-          let extractedText = "";
-          const extractText = (items) => {
-            items.forEach((item) => {
-              if (item.type === "text" && isNaN(item.text.trim())) {
-                extractedText += item.text;
-              } else if (item.items && item.items.length > 0) {
-                extractText(item.items);
-              }
-            });
-          };
-
-          contents.forEach((content) => extractText(content));
-
-          setResponsorialPsalmRespond(extractedText);
-          setResponsorialPsalmText1(extractedText);
-        } catch (error) {
-          console.error("Error fetching verse text:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [selectedBook11, selectedChapter11, confirmedVerses11, bibleId]);
-
-  /////////////EDIT RESPONSIAL PSALM VERSE///////////////////
-  useEffect(() => {
-    if (editSelectedBook11) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${editBibleId}/books/${editSelectedBook11}/chapters`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setEditChapters11(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching chapters:", error));
-    }
-  }, [editSelectedBook11, editBibleId]);
-
-  useEffect(() => {
-    if (editSelectedChapter11) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${editBibleId}/chapters/${editSelectedChapter11}/verses`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setEditVerses11(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching verses:", error));
-    }
-  }, [editSelectedChapter11, editBibleId]);
-
-  useEffect(() => {
-    if (
-      editSelectedBook11 &&
-      editSelectedChapter11 &&
-      editConfirmedVerses11.length > 0
-    ) {
-      setEditResponsorialPsalmVerse(formatVerseRange(editConfirmedVerses11));
-      const fetchData = async () => {
-        try {
-          const promises = editConfirmedVerses11.map((verseId) =>
-            axios.get(
-              `https://api.scripture.api.bible/v1/bibles/${editBibleId}/verses/${verseId}?content-type=json`,
-              {
-                headers: { "api-key": apiKey },
-              }
-            )
-          );
-          const responses = await Promise.all(promises);
-          const contents = responses.map(
-            (response) => response.data.data.content
-          );
-
-          let extractedText = "";
-          const extractText = (items) => {
-            items.forEach((item) => {
-              if (item.type === "text" && isNaN(item.text.trim())) {
-                extractedText += item.text;
-              } else if (item.items && item.items.length > 0) {
-                extractText(item.items);
-              }
-            });
-          };
-
-          contents.forEach((content) => extractText(content));
-
-          setEditResponsorialPsalmRespond(extractedText);
-          setEditResponsorialPsalmText1(extractedText);
-        } catch (error) {
-          console.error("Error fetching verse text:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [
-    editSelectedBook11,
-    editSelectedChapter11,
-    editConfirmedVerses11,
-    editBibleId,
-  ]);
-
-  ////////////RESPONSIAL PSALM VERSE OPT2////////////////
-  useEffect(() => {
-    if (selectedBook12) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${bibleId}/books/${selectedBook12}/chapters`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setChapters12(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching chapters:", error));
-    }
-  }, [selectedBook12, bibleId]);
-
-  useEffect(() => {
-    if (selectedChapter12) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${bibleId}/chapters/${selectedChapter12}/verses`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setVerses12(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching verses:", error));
-    }
-  }, [selectedChapter12, bibleId]);
-
-  useEffect(() => {
-    if (selectedBook12 && selectedChapter12 && confirmedVerses12.length > 0) {
-      setResponsorialPsalmVerseOPT2(formatVerseRange(confirmedVerses12));
-      const fetchData = async () => {
-        try {
-          const promises = confirmedVerses12.map((verseId) =>
-            axios.get(
-              `https://api.scripture.api.bible/v1/bibles/${bibleId}/verses/${verseId}?content-type=json`,
-              {
-                headers: { "api-key": apiKey },
-              }
-            )
-          );
-          const responses = await Promise.all(promises);
-          const contents = responses.map(
-            (response) => response.data.data.content
-          );
-
-          let extractedText = "";
-          const extractText = (items) => {
-            items.forEach((item) => {
-              if (item.type === "text" && isNaN(item.text.trim())) {
-                extractedText += item.text;
-              } else if (item.items && item.items.length > 0) {
-                extractText(item.items);
-              }
-            });
-          };
-
-          contents.forEach((content) => extractText(content));
-
-          setResponsorialPsalmText1OPT2(extractedText);
-        } catch (error) {
-          console.error("Error fetching verse text:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [selectedBook12, selectedChapter12, confirmedVerses12, bibleId]);
-
-  ////////////RESPONSIAL PSALM VERSE OPT2////////////////
-  useEffect(() => {
-    if (editSelectedBook12) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${editBibleId}/books/${editSelectedBook12}/chapters`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setEditChapters12(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching chapters:", error));
-    }
-  }, [editSelectedBook12, editBibleId]);
-
-  useEffect(() => {
-    if (editSelectedChapter12) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${editBibleId}/chapters/${editSelectedChapter12}/verses`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setEditVerses12(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching verses:", error));
-    }
-  }, [editSelectedChapter12, editBibleId]);
-
-  useEffect(() => {
-    if (
-      editSelectedBook12 &&
-      editSelectedChapter12 &&
-      editConfirmedVerses12.length > 0
-    ) {
-      setEditResponsorialPsalmVerseOPT2(
-        formatVerseRange(editConfirmedVerses12)
-      );
-      const fetchData = async () => {
-        try {
-          const promises = editConfirmedVerses12.map((verseId) =>
-            axios.get(
-              `https://api.scripture.api.bible/v1/bibles/${editBibleId}/verses/${verseId}?content-type=json`,
-              {
-                headers: { "api-key": apiKey },
-              }
-            )
-          );
-          const responses = await Promise.all(promises);
-          const contents = responses.map(
-            (response) => response.data.data.content
-          );
-
-          let extractedText = "";
-          const extractText = (items) => {
-            items.forEach((item) => {
-              if (item.type === "text" && isNaN(item.text.trim())) {
-                extractedText += item.text;
-              } else if (item.items && item.items.length > 0) {
-                extractText(item.items);
-              }
-            });
-          };
-
-          contents.forEach((content) => extractText(content));
-
-          setEditResponsorialPsalmText1OPT2(extractedText);
-        } catch (error) {
-          console.error("Error fetching verse text:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [
-    editSelectedBook12,
-    editSelectedChapter12,
-    editConfirmedVerses12,
-    editBibleId,
-  ]);
-
-  /////////////////VERSE B4 GOSPEL OPT2////////////////
-  useEffect(() => {
-    if (selectedBook13) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${bibleId}/books/${selectedBook13}/chapters`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setChapters13(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching chapters:", error));
-    }
-  }, [selectedBook13, bibleId]);
-
-  useEffect(() => {
-    if (selectedChapter13) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${bibleId}/chapters/${selectedChapter13}/verses`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setVerses13(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching verses:", error));
-    }
-  }, [selectedChapter13, bibleId]);
-
-  useEffect(() => {
-    if (selectedBook13 && selectedChapter13 && confirmedVerses13.length > 0) {
-      setVerseb4GospelOPT2(formatVerseRange(confirmedVerses13));
-      const fetchData = async () => {
-        try {
-          const promises = confirmedVerses13.map((verseId) =>
-            axios.get(
-              `https://api.scripture.api.bible/v1/bibles/${bibleId}/verses/${verseId}?content-type=json`,
-              {
-                headers: { "api-key": apiKey },
-              }
-            )
-          );
-          const responses = await Promise.all(promises);
-          const contents = responses.map(
-            (response) => response.data.data.content
-          );
-
-          let extractedText = "";
-          const extractText = (items) => {
-            items.forEach((item) => {
-              if (item.type === "text" && isNaN(item.text.trim())) {
-                extractedText += item.text;
-              } else if (item.items && item.items.length > 0) {
-                extractText(item.items);
-              }
-            });
-          };
-
-          contents.forEach((content) => extractText(content));
-
-          setB4GospelTextOPT2(extractedText);
-        } catch (error) {
-          console.error("Error fetching verse text:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [selectedBook13, selectedChapter13, confirmedVerses13, bibleId]);
-
-  /////////////////EDIT VERSE B4 GOSPEL OPT2////////////////
-  useEffect(() => {
-    if (editSelectedBook13) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${editBibleId}/books/${editSelectedBook13}/chapters`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setEditChapters13(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching chapters:", error));
-    }
-  }, [editSelectedBook13, editBibleId]);
-
-  useEffect(() => {
-    if (editSelectedChapter13) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${editBibleId}/chapters/${editSelectedChapter13}/verses`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setEditVerses13(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching verses:", error));
-    }
-  }, [editSelectedChapter13, editBibleId]);
-
-  useEffect(() => {
-    if (
-      editSelectedBook13 &&
-      editSelectedChapter13 &&
-      editConfirmedVerses13.length > 0
-    ) {
-      setEditVerseb4GospelOPT2(formatVerseRange(editConfirmedVerses13));
-      const fetchData = async () => {
-        try {
-          const promises = editConfirmedVerses13.map((verseId) =>
-            axios.get(
-              `https://api.scripture.api.bible/v1/bibles/${editBibleId}/verses/${verseId}?content-type=json`,
-              {
-                headers: { "api-key": apiKey },
-              }
-            )
-          );
-          const responses = await Promise.all(promises);
-          const contents = responses.map(
-            (response) => response.data.data.content
-          );
-
-          let extractedText = "";
-          const extractText = (items) => {
-            items.forEach((item) => {
-              if (item.type === "text" && isNaN(item.text.trim())) {
-                extractedText += item.text;
-              } else if (item.items && item.items.length > 0) {
-                extractText(item.items);
-              }
-            });
-          };
-
-          contents.forEach((content) => extractText(content));
-
-          setEditB4GospelTextOPT2(extractedText);
-        } catch (error) {
-          console.error("Error fetching verse text:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [
-    editSelectedBook13,
-    editSelectedChapter13,
-    editConfirmedVerses13,
-    editBibleId,
-  ]);
-
-  ////////////////ALLELULIA VERSE///////////////////////////
-  useEffect(() => {
-    if (selectedBook14) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${bibleId}/books/${selectedBook14}/chapters`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setChapters14(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching chapters:", error));
-    }
-  }, [selectedBook14, bibleId]);
-
-  useEffect(() => {
-    if (selectedChapter14) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${bibleId}/chapters/${selectedChapter14}/verses`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setVerses14(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching verses:", error));
-    }
-  }, [selectedChapter14, bibleId]);
-
-  useEffect(() => {
-    if (selectedBook14 && selectedChapter14 && confirmedVerses14.length > 0) {
-      setAlleluiaVerse(formatVerseRange(confirmedVerses14));
-      const fetchData = async () => {
-        try {
-          const promises = confirmedVerses14.map((verseId) =>
-            axios.get(
-              `https://api.scripture.api.bible/v1/bibles/${bibleId}/verses/${verseId}?content-type=json`,
-              {
-                headers: { "api-key": apiKey },
-              }
-            )
-          );
-          const responses = await Promise.all(promises);
-          const contents = responses.map(
-            (response) => response.data.data.content
-          );
-
-          let extractedText = "";
-          const extractText = (items) => {
-            items.forEach((item) => {
-              if (item.type === "text" && isNaN(item.text.trim())) {
-                extractedText += item.text;
-              } else if (item.items && item.items.length > 0) {
-                extractText(item.items);
-              }
-            });
-          };
-
-          contents.forEach((content) => extractText(content));
-
-          setAlleluiaText(extractedText);
-        } catch (error) {
-          console.error("Error fetching verse text:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [selectedBook14, selectedChapter14, confirmedVerses14, bibleId]);
-
-  ////////////////EDIT ALLELULIA VERSE///////////////////////////
-  useEffect(() => {
-    if (editSelectedBook14) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${editBibleId}/books/${editSelectedBook14}/chapters`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setEditChapters14(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching chapters:", error));
-    }
-  }, [editSelectedBook14, editBibleId]);
-
-  useEffect(() => {
-    if (editSelectedChapter14) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${editBibleId}/chapters/${editSelectedChapter14}/verses`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setEditVerses14(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching verses:", error));
-    }
-  }, [editSelectedChapter14, editBibleId]);
-
-  useEffect(() => {
-    if (
-      editSelectedBook14 &&
-      editSelectedChapter14 &&
-      editConfirmedVerses14.length > 0
-    ) {
-      setEditAlleluiaVerse(formatVerseRange(editConfirmedVerses14));
-      const fetchData = async () => {
-        try {
-          const promises = editConfirmedVerses14.map((verseId) =>
-            axios.get(
-              `https://api.scripture.api.bible/v1/bibles/${editBibleId}/verses/${verseId}?content-type=json`,
-              {
-                headers: { "api-key": apiKey },
-              }
-            )
-          );
-          const responses = await Promise.all(promises);
-          const contents = responses.map(
-            (response) => response.data.data.content
-          );
-
-          let extractedText = "";
-          const extractText = (items) => {
-            items.forEach((item) => {
-              if (item.type === "text" && isNaN(item.text.trim())) {
-                extractedText += item.text;
-              } else if (item.items && item.items.length > 0) {
-                extractText(item.items);
-              }
-            });
-          };
-
-          contents.forEach((content) => extractText(content));
-
-          setEditAlleluiaText(extractedText);
-        } catch (error) {
-          console.error("Error fetching verse text:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [
-    editSelectedBook14,
-    editSelectedChapter14,
-    editConfirmedVerses14,
-    editBibleId,
-  ]);
-
-  //////////////////GOSPEL VERSE//////////////////////////
-  useEffect(() => {
-    if (selectedBook15) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${bibleId}/books/${selectedBook15}/chapters`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setChapters15(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching chapters:", error));
-    }
-  }, [selectedBook15, bibleId]);
-
-  useEffect(() => {
-    if (selectedChapter15) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${bibleId}/chapters/${selectedChapter15}/verses`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setVerses15(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching verses:", error));
-    }
-  }, [selectedChapter15, bibleId]);
-
-  useEffect(() => {
-    if (selectedBook15 && selectedChapter15 && confirmedVerses15.length > 0) {
-      setGospelVerse(formatVerseRange(confirmedVerses15));
-      const fetchData = async () => {
-        try {
-          const promises = confirmedVerses15.map((verseId) =>
-            axios.get(
-              `https://api.scripture.api.bible/v1/bibles/${bibleId}/verses/${verseId}?content-type=json`,
-              {
-                headers: { "api-key": apiKey },
-              }
-            )
-          );
-          const responses = await Promise.all(promises);
-          const contents = responses.map(
-            (response) => response.data.data.content
-          );
-
-          let extractedText = "";
-          const extractText = (items) => {
-            items.forEach((item) => {
-              if (item.type === "text" && isNaN(item.text.trim())) {
-                extractedText += item.text;
-              } else if (item.items && item.items.length > 0) {
-                extractText(item.items);
-              }
-            });
-          };
-
-          contents.forEach((content) => extractText(content));
-
-          setGospelText(extractedText);
-        } catch (error) {
-          console.error("Error fetching verse text:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [selectedBook15, selectedChapter15, confirmedVerses15, bibleId]);
-
-  //////////////////GOSPEL VERSE//////////////////////////
-  useEffect(() => {
-    if (editSelectedBook15) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${editBibleId}/books/${editSelectedBook15}/chapters`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setEditChapters15(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching chapters:", error));
-    }
-  }, [editSelectedBook15, editBibleId]);
-
-  useEffect(() => {
-    if (editSelectedChapter15) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${editBibleId}/chapters/${editSelectedChapter15}/verses`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setEditVerses15(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching verses:", error));
-    }
-  }, [editSelectedChapter15, editBibleId]);
-
-  useEffect(() => {
-    if (
-      editSelectedBook15 &&
-      editSelectedChapter15 &&
-      editConfirmedVerses15.length > 0
-    ) {
-      setEditGospelVerse(formatVerseRange(editConfirmedVerses15));
-      const fetchData = async () => {
-        try {
-          const promises = editConfirmedVerses15.map((verseId) =>
-            axios.get(
-              `https://api.scripture.api.bible/v1/bibles/${editBibleId}/verses/${verseId}?content-type=json`,
-              {
-                headers: { "api-key": apiKey },
-              }
-            )
-          );
-          const responses = await Promise.all(promises);
-          const contents = responses.map(
-            (response) => response.data.data.content
-          );
-
-          let extractedText = "";
-          const extractText = (items) => {
-            items.forEach((item) => {
-              if (item.type === "text" && isNaN(item.text.trim())) {
-                extractedText += item.text;
-              } else if (item.items && item.items.length > 0) {
-                extractText(item.items);
-              }
-            });
-          };
-
-          contents.forEach((content) => extractText(content));
-
-          setEditGospelText(extractedText);
-        } catch (error) {
-          console.error("Error fetching verse text:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [
-    editSelectedBook15,
-    editSelectedChapter15,
-    editConfirmedVerses15,
-    editBibleId,
-  ]);
-
-  /////////////////////////GOSPEL VERSE 2//////////////////
-  useEffect(() => {
-    if (selectedBook16) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${bibleId}/books/${selectedBook16}/chapters`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setChapters16(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching chapters:", error));
-    }
-  }, [selectedBook16, bibleId]);
-
-  useEffect(() => {
-    if (selectedChapter16) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${bibleId}/chapters/${selectedChapter16}/verses`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setVerses16(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching verses:", error));
-    }
-  }, [selectedChapter16, bibleId]);
-
-  useEffect(() => {
-    if (selectedBook16 && selectedChapter16 && confirmedVerses16.length > 0) {
-      setGospelVerse2(formatVerseRange(confirmedVerses16));
-      const fetchData = async () => {
-        try {
-          const promises = confirmedVerses16.map((verseId) =>
-            axios.get(
-              `https://api.scripture.api.bible/v1/bibles/${bibleId}/verses/${verseId}?content-type=json`,
-              {
-                headers: { "api-key": apiKey },
-              }
-            )
-          );
-          const responses = await Promise.all(promises);
-          const contents = responses.map(
-            (response) => response.data.data.content
-          );
-
-          let extractedText = "";
-          const extractText = (items) => {
-            items.forEach((item) => {
-              if (item.type === "text" && isNaN(item.text.trim())) {
-                extractedText += item.text;
-              } else if (item.items && item.items.length > 0) {
-                extractText(item.items);
-              }
-            });
-          };
-
-          contents.forEach((content) => extractText(content));
-
-          setGospelTextOption2(extractedText);
-        } catch (error) {
-          console.error("Error fetching verse text:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [selectedBook16, selectedChapter16, confirmedVerses16, bibleId]);
-
-  /////////////////////////EDIT GOSPEL VERSE 2//////////////////
-  useEffect(() => {
-    if (editSelectedBook16) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${editBibleId}/books/${editSelectedBook16}/chapters`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setEditChapters16(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching chapters:", error));
-    }
-  }, [editSelectedBook16, editBibleId]);
-
-  useEffect(() => {
-    if (editSelectedChapter16) {
-      axios
-        .get(
-          `https://api.scripture.api.bible/v1/bibles/${editBibleId}/chapters/${editSelectedChapter16}/verses`,
-          {
-            headers: { "api-key": apiKey },
-          }
-        )
-        .then((response) => {
-          setEditVerses16(response.data.data);
-        })
-        .catch((error) => console.error("Error fetching verses:", error));
-    }
-  }, [editSelectedChapter16, editBibleId]);
-
-  useEffect(() => {
-    if (
-      editSelectedBook16 &&
-      editSelectedChapter16 &&
-      editConfirmedVerses16.length > 0
-    ) {
-      setEditGospelVerse2(formatVerseRange(editConfirmedVerses16));
-      const fetchData = async () => {
-        try {
-          const promises = editConfirmedVerses16.map((verseId) =>
-            axios.get(
-              `https://api.scripture.api.bible/v1/bibles/${editBibleId}/verses/${verseId}?content-type=json`,
-              {
-                headers: { "api-key": apiKey },
-              }
-            )
-          );
-          const responses = await Promise.all(promises);
-          const contents = responses.map(
-            (response) => response.data.data.content
-          );
-
-          let extractedText = "";
-          const extractText = (items) => {
-            items.forEach((item) => {
-              if (item.type === "text" && isNaN(item.text.trim())) {
-                extractedText += item.text;
-              } else if (item.items && item.items.length > 0) {
-                extractText(item.items);
-              }
-            });
-          };
-
-          contents.forEach((content) => extractText(content));
-
-          setEditGospelTextOption2(extractedText);
-        } catch (error) {
-          console.error("Error fetching verse text:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [
-    editSelectedBook16,
-    editSelectedChapter16,
-    editConfirmedVerses16,
-    editBibleId,
-  ]);
-
   const handleClose = () => {
     setDailyReadingToast({ error: false, success: false });
   };
@@ -4146,62 +1240,124 @@ function DailyReadings() {
                   <CardHeader subheader="" title="Daily Reading" />
                   <Divider />
                   <CardContent>
-                    <TextField
-                      fullWidth
-                      label="Title"
-                      margin="normal"
-                      name="title"
-                      onChange={handleTitle}
-                      type="text"
-                      value={title}
-                      variant="outlined"
-                      sx={{
-                        height: "40px",
-                        "& .MuiOutlinedInput-root": {
-                          height: "40px",
-                        },
-                        "& .MuiInputLabel-root": {
-                          lineHeight: "15px",
-                          fontSize: "smaller",
-                        },
-                      }}
-                    />
-                    <TextField
-                      fullWidth
-                      //label="Old Password"
-                      margin="normal"
-                      name="date"
-                      onChange={handleDate}
-                      type="date"
-                      value={date}
-                      variant="outlined"
-                      sx={{
-                        height: "40px",
-                        "& .MuiOutlinedInput-root": {
-                          height: "40px",
-                        },
-                        "& .MuiInputLabel-root": {
-                          lineHeight: "15px",
-                          fontSize: "smaller",
-                        },
-                      }}
-                    />
-
-                    <FormControl fullWidth>
-                      <InputLabel
-                        id="demo-dialog-select-label"
-                        style={{ marginTop: "18px" }}
+                    <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                      <Tabs
+                        value={postTabValue}
+                        onChange={handlePostTabChange}
+                        textColor="inherit"
+                        // scrollButtons="auto"
+                        aria-label=""
+                        variant="scrollable"
+                        scrollButtons={false}
                       >
-                        Select a bible version
-                      </InputLabel>
-                      <Select
-                        labelId="demo-dialog-select-label"
-                        id="demo-dialog-select"
-                        value={bibleId}
-                        onChange={handleBibleId}
-                        input={<OutlinedInput label="Select a bible version" />}
+                        <Tab label="Title" {...a11yProps(0)} />
+                        <Tab label="Date" {...a11yProps(1)} />
+                        <Tab label="Reading 1 verse" {...a11yProps(2)} />
+                        <Tab
+                          label="Reading 1 option 2 verse"
+                          {...a11yProps(3)}
+                        />
+                        <Tab label="Reading 2 verse" {...a11yProps(4)} />
+                        <Tab
+                          label="Reading 2 option 1 verse"
+                          {...a11yProps(5)}
+                        />
+                        <Tab label="Reading 3 verse" {...a11yProps(6)} />
+                        <Tab label="Reading 4 verse" {...a11yProps(7)} />
+                        <Tab label="Reading 5 verse" {...a11yProps(8)} />
+                        <Tab label="Reading 6 verse" {...a11yProps(9)} />
+                        <Tab label="Reading 7 verse" {...a11yProps(10)} />
+                        <Tab
+                          label="Procession Psalm Verse"
+                          {...a11yProps(11)}
+                        />
+                        <Tab
+                          label="Procession Psalm Gospel"
+                          {...a11yProps(12)}
+                        />
+                        
+                        <Tab
+                          label="Procession Psalm Gospel 2 Verse"
+                          {...a11yProps(13)}
+                        />
+                        <Tab
+                          label="Procession Psalm Gospel 2 Text"
+                          {...a11yProps(14)}
+                        />
+                        <Tab
+                          label="Responsorial Psalm Verse"
+                          {...a11yProps(15)}
+                        />
+                        <Tab
+                          label="Responsorial Psalm Text 2"
+                          {...a11yProps(16)}
+                        />
+                        <Tab
+                          label="Responsorial Psalm Text 3"
+                          {...a11yProps(17)}
+                        />
+                        <Tab
+                          label="Responsorial Psalm Text 4"
+                          {...a11yProps(18)}
+                        />
+                        <Tab
+                          label="Responsorial Psalm Text 5"
+                          {...a11yProps(19)}
+                        />
+                        <Tab
+                          label="Responsorial Psalm Text 6"
+                          {...a11yProps(20)}
+                        />
+                        <Tab
+                          label="Responsorial Psalm Verse OPT 2"
+                          {...a11yProps(21)}
+                        />
+                        <Tab
+                          label="Responsorial Psalm Text 2 OPT 2"
+                          {...a11yProps(22)}
+                        />
+                        <Tab
+                          label="Responsorial Psalm Response OPT 2"
+                          {...a11yProps(23)}
+                        />
+                        <Tab
+                          label="Responsorial Psalm Text 3 OPT 2"
+                          {...a11yProps(24)}
+                        />
+                        <Tab
+                          label="Responsorial Psalm Text 4 OPT 2"
+                          {...a11yProps(25)}
+                        />
+                        <Tab
+                          label="Responsorial Psalm Text 5 OPT 2"
+                          {...a11yProps(26)}
+                        />
+                        <Tab label="Responsorial Text 1" {...a11yProps(27)} />
+                        <Tab label="Responsorial Text 2" {...a11yProps(28)} />
+                        <Tab label="Responsorial Text 3" {...a11yProps(29)} />
+                        <Tab label="Before Gospel Text" {...a11yProps(30)} />
+                        <Tab
+                          label="Verse Before Gospel OPT2"
+                          {...a11yProps(31)}
+                        />
+                        <Tab label="Alleluia Verse" {...a11yProps(32)} />
+                        <Tab label="Alleluia OPT2" {...a11yProps(33)} />
+                        <Tab label="Alleluia Text OPT2" {...a11yProps(34)} />
+                        <Tab label="Gospel Verse" {...a11yProps(35)} />
+                        <Tab label="Gospel Verse 2" {...a11yProps(36)} />
+                      </Tabs>
+                    </Box>
+
+                    <TabPanel value={postTabValue} index={0}>
+                      <TextField
                         fullWidth
-                        style={{ marginTop: "20px" }}
+                        label="Title"
+                        margin="normal"
+                        name="title"
+                        onChange={handleTitle}
+                        type="text"
+                        value={title}
+                        variant="outlined"
                         sx={{
                           height: "40px",
                           "& .MuiOutlinedInput-root": {
@@ -4212,153 +1368,34 @@ function DailyReadings() {
                             fontSize: "smaller",
                           },
                         }}
-                      >
-                        <MenuItem value={"de4e12af7f28f599-02"}>
-                          King James (Authorised) Version
-                        </MenuItem>
-                        <MenuItem value={"40072c4a5aba4022-01"}>
-                          Revised Version 1885
-                        </MenuItem>
-                      </Select>
-                    </FormControl>
+                      />
+                    </TabPanel>
 
-                    {bibleId && (
-                      <>
-                        {/********************* READING 1 VERSE ********************/}
-                        <Box
-                          display="flex"
-                          width="100%"
-                          sx={{ marginTop: "10px" }}
-                        >
-                          <FormControl
-                            variant="outlined"
-                            style={{ flex: 1, marginRight: "8px" }}
-                          >
-                            <InputLabel
-                              id="book-select-label"
-                              sx={{ lineHeight: "15px" }}
-                            >
-                              Book
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="book-select-label"
-                              value={selectedBook}
-                              onChange={(e) => {
-                                setSelectedBook(e.target.value);
-                                setSelectedChapter(""); // Reset chapter and verse when book changes
-                                setSelectedVerse([]);
-                              }}
-                              label="Book"
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {books.map((book) => (
-                                <MenuItem key={book.id} value={book.id}>
-                                  {book.name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-
-                          <FormControl
-                            variant="outlined"
-                            style={{ flex: 1, marginRight: "8px" }}
-                          >
-                            <InputLabel
-                              id="chapter-select-label"
-                              sx={{ lineHeight: "15px" }}
-                            >
-                              Chapter
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="chapter-select-label"
-                              value={selectedChapter}
-                              onChange={(e) => {
-                                setSelectedChapter(e.target.value);
-                                setSelectedVerse([]); // Reset verse when chapter changes
-                              }}
-                              label="Chapter"
-                              disabled={!selectedBook} // Disable if no book is selected
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {chapters
-                                .filter(
-                                  (chapter) => chapter.bookId === selectedBook
-                                )
-                                .map((chapter) => (
-                                  <MenuItem key={chapter.id} value={chapter.id}>
-                                    {chapter.reference}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-
-                          <FormControl variant="outlined" style={{ flex: 1 }}>
-                            <InputLabel
-                              sx={{ lineHeight: "15px" }}
-                              id="verse-select-label"
-                            >
-                              Verse
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="verse-select-label"
-                              multiple
-                              value={selectedVerse}
-                              onChange={(e) => setSelectedVerse(e.target.value)}
-                              label="Verse"
-                              disabled={!selectedChapter} // Disable if no chapter is selected
-                              renderValue={(selected) => selected.join(", ")}
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {verses
-                                .filter(
-                                  (verse) => verse.chapterId === selectedChapter
-                                )
-                                .map((verse) => (
-                                  <MenuItem key={verse.id} value={verse.id}>
-                                    {verse.reference}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-                        </Box>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={handleFetchVerses}
-                          sx={{ marginTop: "10px" }}
-                        >
-                          OK
-                        </Button>
+                    <TabPanel value={postTabValue} index={1}>
+                      <TextField
+                        fullWidth
+                        //label="Old Password"
+                        margin="normal"
+                        name="date"
+                        onChange={handleDate}
+                        type="date"
+                        value={date}
+                        variant="outlined"
+                        sx={{
+                          height: "40px",
+                          "& .MuiOutlinedInput-root": {
+                            height: "40px",
+                          },
+                          "& .MuiInputLabel-root": {
+                            lineHeight: "15px",
+                            fontSize: "smaller",
+                          },
+                        }}
+                      />
+                    </TabPanel>
+                    <>
+                      {/********************* READING 1 VERSE ********************/}
+                      <TabPanel value={postTabValue} index={2}>
                         <TextField
                           fullWidth
                           label="Reading1 Verse"
@@ -4401,144 +1438,9 @@ function DailyReadings() {
                             }}
                           />
                         )}
-                        {/********************* READING 1 OPTION 2 VERSE ********************/}
-                        <Box
-                          display="flex"
-                          width="100%"
-                          sx={{ marginTop: "10px" }}
-                        >
-                          <FormControl
-                            variant="outlined"
-                            style={{ flex: 1, marginRight: "8px" }}
-                          >
-                            <InputLabel
-                              id="book-select-label"
-                              sx={{ lineHeight: "15px" }}
-                            >
-                              Book
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="book-select-label"
-                              value={selectedBook2}
-                              onChange={(e) => {
-                                setSelectedBook2(e.target.value);
-                                setSelectedChapter2(""); // Reset chapter and verse when book changes
-                                setSelectedVerse2([]);
-                              }}
-                              label="Book"
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {books.map((book) => (
-                                <MenuItem key={book.id} value={book.id}>
-                                  {book.name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-
-                          <FormControl
-                            variant="outlined"
-                            style={{ flex: 1, marginRight: "8px" }}
-                          >
-                            <InputLabel
-                              id="chapter-select-label"
-                              sx={{ lineHeight: "15px" }}
-                            >
-                              Chapter
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="chapter-select-label"
-                              value={selectedChapter2}
-                              onChange={(e) => {
-                                setSelectedChapter2(e.target.value);
-                                setSelectedVerse2([]); // Reset verse when chapter changes
-                              }}
-                              label="Chapter"
-                              disabled={!selectedBook2} // Disable if no book is selected
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {chapters2
-                                .filter(
-                                  (chapter) => chapter.bookId === selectedBook2
-                                )
-                                .map((chapter) => (
-                                  <MenuItem key={chapter.id} value={chapter.id}>
-                                    {chapter.reference}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-
-                          <FormControl variant="outlined" style={{ flex: 1 }}>
-                            <InputLabel
-                              sx={{ lineHeight: "15px" }}
-                              id="verse-select-label"
-                            >
-                              Verse
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="verse-select-label"
-                              multiple
-                              value={selectedVerse2}
-                              onChange={(e) =>
-                                setSelectedVerse2(e.target.value)
-                              }
-                              label="Verse"
-                              disabled={!selectedChapter2} // Disable if no chapter is selected
-                              renderValue={(selected) => selected.join(", ")}
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {verses2
-                                .filter(
-                                  (verse) =>
-                                    verse.chapterId === selectedChapter2
-                                )
-                                .map((verse) => (
-                                  <MenuItem key={verse.id} value={verse.id}>
-                                    {verse.reference}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-                        </Box>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={handleFetchVerses}
-                          sx={{ marginTop: "10px" }}
-                        >
-                          OK
-                        </Button>
+                      </TabPanel>
+                      {/********************* READING 1 OPTION 2 VERSE ********************/}
+                      <TabPanel value={postTabValue} index={3}>
                         <TextField
                           fullWidth
                           label="Reading1 Option2 Verse"
@@ -4581,144 +1483,10 @@ function DailyReadings() {
                             }}
                           />
                         )}
-                        {/********************* READING 2 VERSE ********************/}
-                        <Box
-                          display="flex"
-                          width="100%"
-                          sx={{ marginTop: "10px" }}
-                        >
-                          <FormControl
-                            variant="outlined"
-                            style={{ flex: 1, marginRight: "8px" }}
-                          >
-                            <InputLabel
-                              id="book-select-label"
-                              sx={{ lineHeight: "15px" }}
-                            >
-                              Book
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="book-select-label"
-                              value={selectedBook3}
-                              onChange={(e) => {
-                                setSelectedBook3(e.target.value);
-                                setSelectedChapter3(""); // Reset chapter and verse when book changes
-                                setSelectedVerse3([]);
-                              }}
-                              label="Book"
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {books.map((book) => (
-                                <MenuItem key={book.id} value={book.id}>
-                                  {book.name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
+                      </TabPanel>
 
-                          <FormControl
-                            variant="outlined"
-                            style={{ flex: 1, marginRight: "8px" }}
-                          >
-                            <InputLabel
-                              id="chapter-select-label"
-                              sx={{ lineHeight: "15px" }}
-                            >
-                              Chapter
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="chapter-select-label"
-                              value={selectedChapter3}
-                              onChange={(e) => {
-                                setSelectedChapter3(e.target.value);
-                                setSelectedVerse3([]); // Reset verse when chapter changes
-                              }}
-                              label="Chapter"
-                              disabled={!selectedBook3} // Disable if no book is selected
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {chapters3
-                                .filter(
-                                  (chapter) => chapter.bookId === selectedBook3
-                                )
-                                .map((chapter) => (
-                                  <MenuItem key={chapter.id} value={chapter.id}>
-                                    {chapter.reference}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-
-                          <FormControl variant="outlined" style={{ flex: 1 }}>
-                            <InputLabel
-                              sx={{ lineHeight: "15px" }}
-                              id="verse-select-label"
-                            >
-                              Verse
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="verse-select-label"
-                              multiple
-                              value={selectedVerse3}
-                              onChange={(e) =>
-                                setSelectedVerse3(e.target.value)
-                              }
-                              label="Verse"
-                              disabled={!selectedChapter3} // Disable if no chapter is selected
-                              renderValue={(selected) => selected.join(", ")}
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {verses3
-                                .filter(
-                                  (verse) =>
-                                    verse.chapterId === selectedChapter3
-                                )
-                                .map((verse) => (
-                                  <MenuItem key={verse.id} value={verse.id}>
-                                    {verse.reference}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-                        </Box>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={handleFetchVerses}
-                          sx={{ marginTop: "10px" }}
-                        >
-                          OK
-                        </Button>
+                      {/********************* READING 2 VERSE ********************/}
+                      <TabPanel value={postTabValue} index={4}>
                         <TextField
                           fullWidth
                           label="Reading2 Verse"
@@ -4761,144 +1529,9 @@ function DailyReadings() {
                             }}
                           />
                         )}
-                        {/********************* READING 2 OPTION 1 VERSE ********************/}
-                        <Box
-                          display="flex"
-                          width="100%"
-                          sx={{ marginTop: "10px" }}
-                        >
-                          <FormControl
-                            variant="outlined"
-                            style={{ flex: 1, marginRight: "8px" }}
-                          >
-                            <InputLabel
-                              id="book-select-label"
-                              sx={{ lineHeight: "15px" }}
-                            >
-                              Book
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="book-select-label"
-                              value={selectedBook9}
-                              onChange={(e) => {
-                                setSelectedBook9(e.target.value);
-                                setSelectedChapter9(""); // Reset chapter and verse when book changes
-                                setSelectedVerse9([]);
-                              }}
-                              label="Book"
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {books.map((book) => (
-                                <MenuItem key={book.id} value={book.id}>
-                                  {book.name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-
-                          <FormControl
-                            variant="outlined"
-                            style={{ flex: 1, marginRight: "8px" }}
-                          >
-                            <InputLabel
-                              id="chapter-select-label"
-                              sx={{ lineHeight: "15px" }}
-                            >
-                              Chapter
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="chapter-select-label"
-                              value={selectedChapter9}
-                              onChange={(e) => {
-                                setSelectedChapter9(e.target.value);
-                                setSelectedVerse9([]); // Reset verse when chapter changes
-                              }}
-                              label="Chapter"
-                              disabled={!selectedBook9} // Disable if no book is selected
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {chapters9
-                                .filter(
-                                  (chapter) => chapter.bookId === selectedBook9
-                                )
-                                .map((chapter) => (
-                                  <MenuItem key={chapter.id} value={chapter.id}>
-                                    {chapter.reference}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-
-                          <FormControl variant="outlined" style={{ flex: 1 }}>
-                            <InputLabel
-                              sx={{ lineHeight: "15px" }}
-                              id="verse-select-label"
-                            >
-                              Verse
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="verse-select-label"
-                              multiple
-                              value={selectedVerse9}
-                              onChange={(e) =>
-                                setSelectedVerse9(e.target.value)
-                              }
-                              label="Verse"
-                              disabled={!selectedChapter9} // Disable if no chapter is selected
-                              renderValue={(selected) => selected.join(", ")}
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {verses9
-                                .filter(
-                                  (verse) =>
-                                    verse.chapterId === selectedChapter9
-                                )
-                                .map((verse) => (
-                                  <MenuItem key={verse.id} value={verse.id}>
-                                    {verse.reference}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-                        </Box>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={handleFetchVerses}
-                          sx={{ marginTop: "10px" }}
-                        >
-                          OK
-                        </Button>
+                      </TabPanel>
+                      {/********************* READING 2 OPTION 1 VERSE ********************/}
+                      <TabPanel value={postTabValue} index={5}>
                         <TextField
                           fullWidth
                           label="Reading2 Option1 Verse"
@@ -4941,144 +1574,9 @@ function DailyReadings() {
                             }}
                           />
                         )}
-                        {/********************* READING 3 VERSE ********************/}
-                        <Box
-                          display="flex"
-                          width="100%"
-                          sx={{ marginTop: "10px" }}
-                        >
-                          <FormControl
-                            variant="outlined"
-                            style={{ flex: 1, marginRight: "8px" }}
-                          >
-                            <InputLabel
-                              id="book-select-label"
-                              sx={{ lineHeight: "15px" }}
-                            >
-                              Book
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="book-select-label"
-                              value={selectedBook4}
-                              onChange={(e) => {
-                                setSelectedBook4(e.target.value);
-                                setSelectedChapter4(""); // Reset chapter and verse when book changes
-                                setSelectedVerse4([]);
-                              }}
-                              label="Book"
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {books.map((book) => (
-                                <MenuItem key={book.id} value={book.id}>
-                                  {book.name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-
-                          <FormControl
-                            variant="outlined"
-                            style={{ flex: 1, marginRight: "8px" }}
-                          >
-                            <InputLabel
-                              id="chapter-select-label"
-                              sx={{ lineHeight: "15px" }}
-                            >
-                              Chapter
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="chapter-select-label"
-                              value={selectedChapter4}
-                              onChange={(e) => {
-                                setSelectedChapter4(e.target.value);
-                                setSelectedVerse4([]); // Reset verse when chapter changes
-                              }}
-                              label="Chapter"
-                              disabled={!selectedBook4} // Disable if no book is selected
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {chapters4
-                                .filter(
-                                  (chapter) => chapter.bookId === selectedBook4
-                                )
-                                .map((chapter) => (
-                                  <MenuItem key={chapter.id} value={chapter.id}>
-                                    {chapter.reference}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-
-                          <FormControl variant="outlined" style={{ flex: 1 }}>
-                            <InputLabel
-                              sx={{ lineHeight: "15px" }}
-                              id="verse-select-label"
-                            >
-                              Verse
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="verse-select-label"
-                              multiple
-                              value={selectedVerse4}
-                              onChange={(e) =>
-                                setSelectedVerse4(e.target.value)
-                              }
-                              label="Verse"
-                              disabled={!selectedChapter4} // Disable if no chapter is selected
-                              renderValue={(selected) => selected.join(", ")}
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {verses4
-                                .filter(
-                                  (verse) =>
-                                    verse.chapterId === selectedChapter4
-                                )
-                                .map((verse) => (
-                                  <MenuItem key={verse.id} value={verse.id}>
-                                    {verse.reference}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-                        </Box>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={handleFetchVerses}
-                          sx={{ marginTop: "10px" }}
-                        >
-                          OK
-                        </Button>
+                      </TabPanel>
+                      {/********************* READING 3 VERSE ********************/}
+                      <TabPanel value={postTabValue} index={6}>
                         <TextField
                           fullWidth
                           label="Reading3 Verse"
@@ -5121,144 +1619,9 @@ function DailyReadings() {
                             }}
                           />
                         )}
-                        {/********************* READING 4 VERSE ********************/}
-                        <Box
-                          display="flex"
-                          width="100%"
-                          sx={{ marginTop: "10px" }}
-                        >
-                          <FormControl
-                            variant="outlined"
-                            style={{ flex: 1, marginRight: "8px" }}
-                          >
-                            <InputLabel
-                              id="book-select-label"
-                              sx={{ lineHeight: "15px" }}
-                            >
-                              Book
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="book-select-label"
-                              value={selectedBook5}
-                              onChange={(e) => {
-                                setSelectedBook5(e.target.value);
-                                setSelectedChapter5(""); // Reset chapter and verse when book changes
-                                setSelectedVerse5([]);
-                              }}
-                              label="Book"
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {books.map((book) => (
-                                <MenuItem key={book.id} value={book.id}>
-                                  {book.name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-
-                          <FormControl
-                            variant="outlined"
-                            style={{ flex: 1, marginRight: "8px" }}
-                          >
-                            <InputLabel
-                              id="chapter-select-label"
-                              sx={{ lineHeight: "15px" }}
-                            >
-                              Chapter
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="chapter-select-label"
-                              value={selectedChapter5}
-                              onChange={(e) => {
-                                setSelectedChapter5(e.target.value);
-                                setSelectedVerse5([]); // Reset verse when chapter changes
-                              }}
-                              label="Chapter"
-                              disabled={!selectedBook5} // Disable if no book is selected
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {chapters5
-                                .filter(
-                                  (chapter) => chapter.bookId === selectedBook5
-                                )
-                                .map((chapter) => (
-                                  <MenuItem key={chapter.id} value={chapter.id}>
-                                    {chapter.reference}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-
-                          <FormControl variant="outlined" style={{ flex: 1 }}>
-                            <InputLabel
-                              sx={{ lineHeight: "15px" }}
-                              id="verse-select-label"
-                            >
-                              Verse
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="verse-select-label"
-                              multiple
-                              value={selectedVerse5}
-                              onChange={(e) =>
-                                setSelectedVerse5(e.target.value)
-                              }
-                              label="Verse"
-                              disabled={!selectedChapter5} // Disable if no chapter is selected
-                              renderValue={(selected) => selected.join(", ")}
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {verses5
-                                .filter(
-                                  (verse) =>
-                                    verse.chapterId === selectedChapter5
-                                )
-                                .map((verse) => (
-                                  <MenuItem key={verse.id} value={verse.id}>
-                                    {verse.reference}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-                        </Box>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={handleFetchVerses}
-                          sx={{ marginTop: "10px" }}
-                        >
-                          OK
-                        </Button>
+                      </TabPanel>
+                      {/********************* READING 4 VERSE ********************/}
+                      <TabPanel value={postTabValue} index={7}>
                         <TextField
                           fullWidth
                           label="Reading4 Verse"
@@ -5301,144 +1664,9 @@ function DailyReadings() {
                             }}
                           />
                         )}
-                        {/********************* READING 5 VERSE ********************/}
-                        <Box
-                          display="flex"
-                          width="100%"
-                          sx={{ marginTop: "10px" }}
-                        >
-                          <FormControl
-                            variant="outlined"
-                            style={{ flex: 1, marginRight: "8px" }}
-                          >
-                            <InputLabel
-                              id="book-select-label"
-                              sx={{ lineHeight: "15px" }}
-                            >
-                              Book
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="book-select-label"
-                              value={selectedBook6}
-                              onChange={(e) => {
-                                setSelectedBook6(e.target.value);
-                                setSelectedChapter6(""); // Reset chapter and verse when book changes
-                                setSelectedVerse6([]);
-                              }}
-                              label="Book"
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {books.map((book) => (
-                                <MenuItem key={book.id} value={book.id}>
-                                  {book.name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-
-                          <FormControl
-                            variant="outlined"
-                            style={{ flex: 1, marginRight: "8px" }}
-                          >
-                            <InputLabel
-                              id="chapter-select-label"
-                              sx={{ lineHeight: "15px" }}
-                            >
-                              Chapter
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="chapter-select-label"
-                              value={selectedChapter6}
-                              onChange={(e) => {
-                                setSelectedChapter6(e.target.value);
-                                setSelectedVerse6([]); // Reset verse when chapter changes
-                              }}
-                              label="Chapter"
-                              disabled={!selectedBook6} // Disable if no book is selected
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {chapters6
-                                .filter(
-                                  (chapter) => chapter.bookId === selectedBook6
-                                )
-                                .map((chapter) => (
-                                  <MenuItem key={chapter.id} value={chapter.id}>
-                                    {chapter.reference}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-
-                          <FormControl variant="outlined" style={{ flex: 1 }}>
-                            <InputLabel
-                              sx={{ lineHeight: "15px" }}
-                              id="verse-select-label"
-                            >
-                              Verse
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="verse-select-label"
-                              multiple
-                              value={selectedVerse6}
-                              onChange={(e) =>
-                                setSelectedVerse6(e.target.value)
-                              }
-                              label="Verse"
-                              disabled={!selectedChapter6} // Disable if no chapter is selected
-                              renderValue={(selected) => selected.join(", ")}
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {verses6
-                                .filter(
-                                  (verse) =>
-                                    verse.chapterId === selectedChapter6
-                                )
-                                .map((verse) => (
-                                  <MenuItem key={verse.id} value={verse.id}>
-                                    {verse.reference}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-                        </Box>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={handleFetchVerses}
-                          sx={{ marginTop: "10px" }}
-                        >
-                          OK
-                        </Button>
+                      </TabPanel>
+                      {/********************* READING 5 VERSE ********************/}
+                      <TabPanel value={postTabValue} index={8}>
                         <TextField
                           fullWidth
                           label="Reading5 Verse"
@@ -5481,144 +1709,9 @@ function DailyReadings() {
                             }}
                           />
                         )}
-                        {/********************* READING 6 VERSE ********************/}
-                        <Box
-                          display="flex"
-                          width="100%"
-                          sx={{ marginTop: "10px" }}
-                        >
-                          <FormControl
-                            variant="outlined"
-                            style={{ flex: 1, marginRight: "8px" }}
-                          >
-                            <InputLabel
-                              id="book-select-label"
-                              sx={{ lineHeight: "15px" }}
-                            >
-                              Book
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="book-select-label"
-                              value={selectedBook7}
-                              onChange={(e) => {
-                                setSelectedBook7(e.target.value);
-                                setSelectedChapter7(""); // Reset chapter and verse when book changes
-                                setSelectedVerse7([]);
-                              }}
-                              label="Book"
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {books.map((book) => (
-                                <MenuItem key={book.id} value={book.id}>
-                                  {book.name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-
-                          <FormControl
-                            variant="outlined"
-                            style={{ flex: 1, marginRight: "8px" }}
-                          >
-                            <InputLabel
-                              id="chapter-select-label"
-                              sx={{ lineHeight: "15px" }}
-                            >
-                              Chapter
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="chapter-select-label"
-                              value={selectedChapter7}
-                              onChange={(e) => {
-                                setSelectedChapter7(e.target.value);
-                                setSelectedVerse7([]); // Reset verse when chapter changes
-                              }}
-                              label="Chapter"
-                              disabled={!selectedBook7} // Disable if no book is selected
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {chapters7
-                                .filter(
-                                  (chapter) => chapter.bookId === selectedBook7
-                                )
-                                .map((chapter) => (
-                                  <MenuItem key={chapter.id} value={chapter.id}>
-                                    {chapter.reference}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-
-                          <FormControl variant="outlined" style={{ flex: 1 }}>
-                            <InputLabel
-                              sx={{ lineHeight: "15px" }}
-                              id="verse-select-label"
-                            >
-                              Verse
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="verse-select-label"
-                              multiple
-                              value={selectedVerse7}
-                              onChange={(e) =>
-                                setSelectedVerse7(e.target.value)
-                              }
-                              label="Verse"
-                              disabled={!selectedChapter7} // Disable if no chapter is selected
-                              renderValue={(selected) => selected.join(", ")}
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {verses7
-                                .filter(
-                                  (verse) =>
-                                    verse.chapterId === selectedChapter7
-                                )
-                                .map((verse) => (
-                                  <MenuItem key={verse.id} value={verse.id}>
-                                    {verse.reference}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-                        </Box>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={handleFetchVerses}
-                          sx={{ marginTop: "10px" }}
-                        >
-                          OK
-                        </Button>
+                      </TabPanel>
+                      {/********************* READING 6 VERSE ********************/}
+                      <TabPanel value={postTabValue} index={9}>
                         <TextField
                           fullWidth
                           label="Reading6 Verse"
@@ -5661,144 +1754,9 @@ function DailyReadings() {
                             }}
                           />
                         )}
-                        {/********************* READING 7 VERSE ********************/}
-                        <Box
-                          display="flex"
-                          width="100%"
-                          sx={{ marginTop: "10px" }}
-                        >
-                          <FormControl
-                            variant="outlined"
-                            style={{ flex: 1, marginRight: "8px" }}
-                          >
-                            <InputLabel
-                              id="book-select-label"
-                              sx={{ lineHeight: "15px" }}
-                            >
-                              Book
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="book-select-label"
-                              value={selectedBook8}
-                              onChange={(e) => {
-                                setSelectedBook8(e.target.value);
-                                setSelectedChapter8(""); // Reset chapter and verse when book changes
-                                setSelectedVerse8([]);
-                              }}
-                              label="Book"
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {books.map((book) => (
-                                <MenuItem key={book.id} value={book.id}>
-                                  {book.name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-
-                          <FormControl
-                            variant="outlined"
-                            style={{ flex: 1, marginRight: "8px" }}
-                          >
-                            <InputLabel
-                              id="chapter-select-label"
-                              sx={{ lineHeight: "15px" }}
-                            >
-                              Chapter
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="chapter-select-label"
-                              value={selectedChapter8}
-                              onChange={(e) => {
-                                setSelectedChapter8(e.target.value);
-                                setSelectedVerse8([]); // Reset verse when chapter changes
-                              }}
-                              label="Chapter"
-                              disabled={!selectedBook8} // Disable if no book is selected
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {chapters8
-                                .filter(
-                                  (chapter) => chapter.bookId === selectedBook8
-                                )
-                                .map((chapter) => (
-                                  <MenuItem key={chapter.id} value={chapter.id}>
-                                    {chapter.reference}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-
-                          <FormControl variant="outlined" style={{ flex: 1 }}>
-                            <InputLabel
-                              sx={{ lineHeight: "15px" }}
-                              id="verse-select-label"
-                            >
-                              Verse
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="verse-select-label"
-                              multiple
-                              value={selectedVerse8}
-                              onChange={(e) =>
-                                setSelectedVerse8(e.target.value)
-                              }
-                              label="Verse"
-                              disabled={!selectedChapter8} // Disable if no chapter is selected
-                              renderValue={(selected) => selected.join(", ")}
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {verses8
-                                .filter(
-                                  (verse) =>
-                                    verse.chapterId === selectedChapter8
-                                )
-                                .map((verse) => (
-                                  <MenuItem key={verse.id} value={verse.id}>
-                                    {verse.reference}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-                        </Box>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={handleFetchVerses}
-                          sx={{ marginTop: "10px" }}
-                        >
-                          OK
-                        </Button>
+                      </TabPanel>
+                      {/********************* READING 7 VERSE ********************/}
+                      <TabPanel value={postTabValue} index={10}>
                         <TextField
                           fullWidth
                           label="Reading7 Verse"
@@ -5841,8 +1799,10 @@ function DailyReadings() {
                             }}
                           />
                         )}
+                      </TabPanel>
 
-                        {/* START FROM HERE  */}
+                      {/* START FROM HERE  */}
+                      <TabPanel value={postTabValue} index={11}>
                         <TextField
                           fullWidth
                           label="Procession Psalm Verse"
@@ -5863,6 +1823,9 @@ function DailyReadings() {
                             },
                           }}
                         />
+                      </TabPanel>
+
+                      <TabPanel value={postTabValue} index={12}>
                         <TextField
                           fullWidth
                           label="Procession Psalms Gospel"
@@ -5883,148 +1846,12 @@ function DailyReadings() {
                             },
                           }}
                         />
+                      </TabPanel>
 
-                        {/*PROCESSIONAL PSALMS GOSPEL2 VERSE*/}
-                        <Box
-                          display="flex"
-                          width="100%"
-                          sx={{ marginTop: "10px" }}
-                        >
-                          <FormControl
-                            variant="outlined"
-                            style={{ flex: 1, marginRight: "8px" }}
-                          >
-                            <InputLabel
-                              id="book-select-label"
-                              sx={{ lineHeight: "15px" }}
-                            >
-                              Book
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="book-select-label"
-                              value={selectedBook10}
-                              onChange={(e) => {
-                                setSelectedBook10(e.target.value);
-                                setSelectedChapter10(""); // Reset chapter and verse when book changes
-                                setSelectedVerse10([]);
-                              }}
-                              label="Book"
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {books.map((book) => (
-                                <MenuItem key={book.id} value={book.id}>
-                                  {book.name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-
-                          <FormControl
-                            variant="outlined"
-                            style={{ flex: 1, marginRight: "8px" }}
-                          >
-                            <InputLabel
-                              id="chapter-select-label"
-                              sx={{ lineHeight: "15px" }}
-                            >
-                              Chapter
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="chapter-select-label"
-                              value={selectedChapter10}
-                              onChange={(e) => {
-                                setSelectedChapter10(e.target.value);
-                                setSelectedVerse10([]); // Reset verse when chapter changes
-                              }}
-                              label="Chapter"
-                              disabled={!selectedBook10} // Disable if no book is selected
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {chapters10
-                                .filter(
-                                  (chapter) => chapter.bookId === selectedBook10
-                                )
-                                .map((chapter) => (
-                                  <MenuItem key={chapter.id} value={chapter.id}>
-                                    {chapter.reference}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-
-                          <FormControl variant="outlined" style={{ flex: 1 }}>
-                            <InputLabel
-                              sx={{ lineHeight: "15px" }}
-                              id="verse-select-label"
-                            >
-                              Verse
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="verse-select-label"
-                              multiple
-                              value={selectedVerse10}
-                              onChange={(e) =>
-                                setSelectedVerse10(e.target.value)
-                              }
-                              label="Verse"
-                              disabled={!selectedChapter10} // Disable if no chapter is selected
-                              renderValue={(selected) => selected.join(", ")}
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {verses10
-                                .filter(
-                                  (verse) =>
-                                    verse.chapterId === selectedChapter10
-                                )
-                                .map((verse) => (
-                                  <MenuItem key={verse.id} value={verse.id}>
-                                    {verse.reference}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-                        </Box>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={handleFetchVerses}
-                          sx={{ marginTop: "10px" }}
-                        >
-                          OK
-                        </Button>
-                        <TextField
+                      <TabPanel value={postTabValue} index={13}>
+                      <TextField
                           fullWidth
-                          label="Procession Psalms Gospel2 Verse"
+                          label="Procession Psalms Gospel 2 Verse"
                           margin="normal"
                           name="processionPalmsGospel2Verse"
                           onChange={handleProcessionPalmsGospel2Verse}
@@ -6042,167 +1869,33 @@ function DailyReadings() {
                             },
                           }}
                         />
-                        {processionPalmsGospel2Verse && (
-                          <TextField
-                            fullWidth
-                            label="Procession Psalms Gospel2 Text"
-                            margin="normal"
-                            name="processionPalmsGospel2Text"
-                            onChange={handleProcessionPalmsGospel2Text}
-                            type="text"
-                            value={processionPalmsGospel2Text}
-                            variant="outlined"
-                            sx={{
+                        </TabPanel>
+
+<TabPanel value={postTabValue} index={14}>
+
+<TextField
+                          fullWidth
+                          label="Procession Psalms Gospel 2 Text"
+                          margin="normal"
+                          name="processionPalmsGospel2Text"
+                          onChange={handleProcessionPalmsGospel2Text}
+                          type="text"
+                          value={processionPalmsGospel2Text}
+                          variant="outlined"
+                          sx={{
+                            height: "40px",
+                            "& .MuiOutlinedInput-root": {
                               height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                        )}
-
-                        {/*RESPONSIAL PSALM VERSE*/}
-                        <Box
-                          display="flex"
-                          width="100%"
-                          sx={{ marginTop: "10px" }}
-                        >
-                          <FormControl
-                            variant="outlined"
-                            style={{ flex: 1, marginRight: "8px" }}
-                          >
-                            <InputLabel
-                              id="book-select-label"
-                              sx={{ lineHeight: "15px" }}
-                            >
-                              Book
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="book-select-label"
-                              value={selectedBook11}
-                              onChange={(e) => {
-                                setSelectedBook11(e.target.value);
-                                setSelectedChapter11(""); // Reset chapter and verse when book changes
-                                setSelectedVerse11([]);
-                              }}
-                              label="Book"
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {books.map((book) => (
-                                <MenuItem key={book.id} value={book.id}>
-                                  {book.name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-
-                          <FormControl
-                            variant="outlined"
-                            style={{ flex: 1, marginRight: "8px" }}
-                          >
-                            <InputLabel
-                              id="chapter-select-label"
-                              sx={{ lineHeight: "15px" }}
-                            >
-                              Chapter
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="chapter-select-label"
-                              value={selectedChapter11}
-                              onChange={(e) => {
-                                setSelectedChapter11(e.target.value);
-                                setSelectedVerse11([]); // Reset verse when chapter changes
-                              }}
-                              label="Chapter"
-                              disabled={!selectedBook11} // Disable if no book is selected
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {chapters11
-                                .filter(
-                                  (chapter) => chapter.bookId === selectedBook11
-                                )
-                                .map((chapter) => (
-                                  <MenuItem key={chapter.id} value={chapter.id}>
-                                    {chapter.reference}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-
-                          <FormControl variant="outlined" style={{ flex: 1 }}>
-                            <InputLabel
-                              sx={{ lineHeight: "15px" }}
-                              id="verse-select-label"
-                            >
-                              Verse
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="verse-select-label"
-                              multiple
-                              value={selectedVerse11}
-                              onChange={(e) =>
-                                setSelectedVerse11(e.target.value)
-                              }
-                              label="Verse"
-                              disabled={!selectedChapter11} // Disable if no chapter is selected
-                              renderValue={(selected) => selected.join(", ")}
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {verses11
-                                .filter(
-                                  (verse) =>
-                                    verse.chapterId === selectedChapter11
-                                )
-                                .map((verse) => (
-                                  <MenuItem key={verse.id} value={verse.id}>
-                                    {verse.reference}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-                        </Box>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={handleFetchVerses}
-                          sx={{ marginTop: "10px" }}
-                        >
-                          OK
-                        </Button>
+                            },
+                            "& .MuiInputLabel-root": {
+                              lineHeight: "15px",
+                              fontSize: "smaller",
+                            },
+                          }}
+                        />
+                        </TabPanel>
+                      {/*PROCESSIONAL PSALMS GOSPEL2 VERSE*/}
+                      <TabPanel value={postTabValue} index={15}>
                         <TextField
                           fullWidth
                           label="Responsorial Psalm Verse"
@@ -6223,6 +1916,7 @@ function DailyReadings() {
                             },
                           }}
                         />
+
                         {responsorialPsalmVerse && (
                           <>
                             <TextField
@@ -6245,6 +1939,7 @@ function DailyReadings() {
                                 },
                               }}
                             />
+
                             <TextField
                               fullWidth
                               label="Responsorial Psalm Text1"
@@ -6267,6 +1962,8 @@ function DailyReadings() {
                             />
                           </>
                         )}
+                      </TabPanel>
+                      <TabPanel value={postTabValue} index={16}>
                         <TextField
                           fullWidth
                           label="Responsorial Psalm Text2"
@@ -6287,6 +1984,8 @@ function DailyReadings() {
                             },
                           }}
                         />
+                      </TabPanel>
+                      <TabPanel value={postTabValue} index={17}>
                         <TextField
                           fullWidth
                           label="Responsorial Psalm Text3"
@@ -6307,6 +2006,8 @@ function DailyReadings() {
                             },
                           }}
                         />
+                      </TabPanel>
+                      <TabPanel value={postTabValue} index={18}>
                         <TextField
                           fullWidth
                           label="Responsorial Psalm Text4"
@@ -6327,6 +2028,8 @@ function DailyReadings() {
                             },
                           }}
                         />
+                      </TabPanel>
+                      <TabPanel value={postTabValue} index={19}>
                         <TextField
                           fullWidth
                           label="Responsorial Psalm Text5"
@@ -6347,6 +2050,8 @@ function DailyReadings() {
                             },
                           }}
                         />
+                      </TabPanel>
+                      <TabPanel value={postTabValue} index={20}>
                         <TextField
                           fullWidth
                           label="Responsorial Psalm Text6"
@@ -6367,145 +2072,9 @@ function DailyReadings() {
                             },
                           }}
                         />
-
-                        {/*RESPONSIAL PSALM VERSE OPT2*/}
-                        <Box
-                          display="flex"
-                          width="100%"
-                          sx={{ marginTop: "10px" }}
-                        >
-                          <FormControl
-                            variant="outlined"
-                            style={{ flex: 1, marginRight: "8px" }}
-                          >
-                            <InputLabel
-                              id="book-select-label"
-                              sx={{ lineHeight: "15px" }}
-                            >
-                              Book
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="book-select-label"
-                              value={selectedBook12}
-                              onChange={(e) => {
-                                setSelectedBook12(e.target.value);
-                                setSelectedChapter12(""); // Reset chapter and verse when book changes
-                                setSelectedVerse12([]);
-                              }}
-                              label="Book"
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {books.map((book) => (
-                                <MenuItem key={book.id} value={book.id}>
-                                  {book.name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-
-                          <FormControl
-                            variant="outlined"
-                            style={{ flex: 1, marginRight: "8px" }}
-                          >
-                            <InputLabel
-                              id="chapter-select-label"
-                              sx={{ lineHeight: "15px" }}
-                            >
-                              Chapter
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="chapter-select-label"
-                              value={selectedChapter12}
-                              onChange={(e) => {
-                                setSelectedChapter12(e.target.value);
-                                setSelectedVerse12([]); // Reset verse when chapter changes
-                              }}
-                              label="Chapter"
-                              disabled={!selectedBook12} // Disable if no book is selected
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {chapters12
-                                .filter(
-                                  (chapter) => chapter.bookId === selectedBook12
-                                )
-                                .map((chapter) => (
-                                  <MenuItem key={chapter.id} value={chapter.id}>
-                                    {chapter.reference}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-
-                          <FormControl variant="outlined" style={{ flex: 1 }}>
-                            <InputLabel
-                              sx={{ lineHeight: "15px" }}
-                              id="verse-select-label"
-                            >
-                              Verse
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="verse-select-label"
-                              multiple
-                              value={selectedVerse12}
-                              onChange={(e) =>
-                                setSelectedVerse12(e.target.value)
-                              }
-                              label="Verse"
-                              disabled={!selectedChapter12} // Disable if no chapter is selected
-                              renderValue={(selected) => selected.join(", ")}
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {verses12
-                                .filter(
-                                  (verse) =>
-                                    verse.chapterId === selectedChapter12
-                                )
-                                .map((verse) => (
-                                  <MenuItem key={verse.id} value={verse.id}>
-                                    {verse.reference}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-                        </Box>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={handleFetchVerses}
-                          sx={{ marginTop: "10px" }}
-                        >
-                          OK
-                        </Button>
+                      </TabPanel>
+                      {/*RESPONSIAL PSALM VERSE OPT2*/}
+                      <TabPanel value={postTabValue} index={21}>
                         <TextField
                           fullWidth
                           label="Responsorial Psalm Verse OPT2"
@@ -6548,6 +2117,8 @@ function DailyReadings() {
                             }}
                           />
                         )}
+                      </TabPanel>
+                      <TabPanel value={postTabValue} index={22}>
                         <TextField
                           fullWidth
                           label="Responsorial Psalm Text2 OPT2"
@@ -6568,6 +2139,8 @@ function DailyReadings() {
                             },
                           }}
                         />
+                      </TabPanel>
+                      <TabPanel value={postTabValue} index={23}>
                         <TextField
                           fullWidth
                           label="Responsorial Psalm Response OPT2"
@@ -6588,6 +2161,8 @@ function DailyReadings() {
                             },
                           }}
                         />
+                      </TabPanel>
+                      <TabPanel value={postTabValue} index={24}>
                         <TextField
                           fullWidth
                           label="Responsorial Psalm Text3 OPT2"
@@ -6608,6 +2183,8 @@ function DailyReadings() {
                             },
                           }}
                         />
+                      </TabPanel>
+                      <TabPanel value={postTabValue} index={25}>
                         <TextField
                           fullWidth
                           label="Responsorial Psalm Text4 OPT2"
@@ -6628,6 +2205,8 @@ function DailyReadings() {
                             },
                           }}
                         />
+                      </TabPanel>
+                      <TabPanel value={postTabValue} index={26}>
                         <TextField
                           fullWidth
                           label="Responsorial Psalm Text5 OPT2"
@@ -6648,6 +2227,8 @@ function DailyReadings() {
                             },
                           }}
                         />
+                      </TabPanel>
+                      <TabPanel value={postTabValue} index={27}>
                         <TextField
                           fullWidth
                           label="ResponsorialText1"
@@ -6668,6 +2249,8 @@ function DailyReadings() {
                             },
                           }}
                         />
+                      </TabPanel>
+                      <TabPanel value={postTabValue} index={28}>
                         <TextField
                           fullWidth
                           label="ResponsorialText2"
@@ -6688,6 +2271,8 @@ function DailyReadings() {
                             },
                           }}
                         />
+                      </TabPanel>
+                      <TabPanel value={postTabValue} index={29}>
                         <TextField
                           fullWidth
                           label="ResponsorialText3"
@@ -6708,6 +2293,9 @@ function DailyReadings() {
                             },
                           }}
                         />
+                      </TabPanel>
+
+                      <TabPanel value={postTabValue} index={30}>
                         <TextField
                           fullWidth
                           label="Before Gospel Text"
@@ -6728,145 +2316,9 @@ function DailyReadings() {
                             },
                           }}
                         />
-
-                        {/*VERSE B4 GOSPEL OPT2*/}
-                        <Box
-                          display="flex"
-                          width="100%"
-                          sx={{ marginTop: "10px" }}
-                        >
-                          <FormControl
-                            variant="outlined"
-                            style={{ flex: 1, marginRight: "8px" }}
-                          >
-                            <InputLabel
-                              id="book-select-label"
-                              sx={{ lineHeight: "15px" }}
-                            >
-                              Book
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="book-select-label"
-                              value={selectedBook13}
-                              onChange={(e) => {
-                                setSelectedBook13(e.target.value);
-                                setSelectedChapter13(""); // Reset chapter and verse when book changes
-                                setSelectedVerse13([]);
-                              }}
-                              label="Book"
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {books.map((book) => (
-                                <MenuItem key={book.id} value={book.id}>
-                                  {book.name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-
-                          <FormControl
-                            variant="outlined"
-                            style={{ flex: 1, marginRight: "8px" }}
-                          >
-                            <InputLabel
-                              id="chapter-select-label"
-                              sx={{ lineHeight: "15px" }}
-                            >
-                              Chapter
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="chapter-select-label"
-                              value={selectedChapter13}
-                              onChange={(e) => {
-                                setSelectedChapter13(e.target.value);
-                                setSelectedVerse13([]); // Reset verse when chapter changes
-                              }}
-                              label="Chapter"
-                              disabled={!selectedBook13} // Disable if no book is selected
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {chapters13
-                                .filter(
-                                  (chapter) => chapter.bookId === selectedBook13
-                                )
-                                .map((chapter) => (
-                                  <MenuItem key={chapter.id} value={chapter.id}>
-                                    {chapter.reference}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-
-                          <FormControl variant="outlined" style={{ flex: 1 }}>
-                            <InputLabel
-                              sx={{ lineHeight: "15px" }}
-                              id="verse-select-label"
-                            >
-                              Verse
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="verse-select-label"
-                              multiple
-                              value={selectedVerse13}
-                              onChange={(e) =>
-                                setSelectedVerse13(e.target.value)
-                              }
-                              label="Verse"
-                              disabled={!selectedChapter13} // Disable if no chapter is selected
-                              renderValue={(selected) => selected.join(", ")}
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {verses13
-                                .filter(
-                                  (verse) =>
-                                    verse.chapterId === selectedChapter13
-                                )
-                                .map((verse) => (
-                                  <MenuItem key={verse.id} value={verse.id}>
-                                    {verse.reference}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-                        </Box>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={handleFetchVerses}
-                          sx={{ marginTop: "10px" }}
-                        >
-                          OK
-                        </Button>
+                      </TabPanel>
+                      {/*VERSE B4 GOSPEL OPT2*/}
+                      <TabPanel value={postTabValue} index={31}>
                         <TextField
                           fullWidth
                           label="Verse before Gospel OPT2"
@@ -6909,145 +2361,9 @@ function DailyReadings() {
                             }}
                           />
                         )}
-
-                        {/* ALLELULIA VERSE*/}
-                        <Box
-                          display="flex"
-                          width="100%"
-                          sx={{ marginTop: "10px" }}
-                        >
-                          <FormControl
-                            variant="outlined"
-                            style={{ flex: 1, marginRight: "8px" }}
-                          >
-                            <InputLabel
-                              id="book-select-label"
-                              sx={{ lineHeight: "15px" }}
-                            >
-                              Book
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="book-select-label"
-                              value={selectedBook14}
-                              onChange={(e) => {
-                                setSelectedBook14(e.target.value);
-                                setSelectedChapter14(""); // Reset chapter and verse when book changes
-                                setSelectedVerse14([]);
-                              }}
-                              label="Book"
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {books.map((book) => (
-                                <MenuItem key={book.id} value={book.id}>
-                                  {book.name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-
-                          <FormControl
-                            variant="outlined"
-                            style={{ flex: 1, marginRight: "8px" }}
-                          >
-                            <InputLabel
-                              id="chapter-select-label"
-                              sx={{ lineHeight: "15px" }}
-                            >
-                              Chapter
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="chapter-select-label"
-                              value={selectedChapter14}
-                              onChange={(e) => {
-                                setSelectedChapter14(e.target.value);
-                                setSelectedVerse14([]); // Reset verse when chapter changes
-                              }}
-                              label="Chapter"
-                              disabled={!selectedBook14} // Disable if no book is selected
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {chapters14
-                                .filter(
-                                  (chapter) => chapter.bookId === selectedBook14
-                                )
-                                .map((chapter) => (
-                                  <MenuItem key={chapter.id} value={chapter.id}>
-                                    {chapter.reference}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-
-                          <FormControl variant="outlined" style={{ flex: 1 }}>
-                            <InputLabel
-                              sx={{ lineHeight: "15px" }}
-                              id="verse-select-label"
-                            >
-                              Verse
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="verse-select-label"
-                              multiple
-                              value={selectedVerse14}
-                              onChange={(e) =>
-                                setSelectedVerse14(e.target.value)
-                              }
-                              label="Verse"
-                              disabled={!selectedChapter14} // Disable if no chapter is selected
-                              renderValue={(selected) => selected.join(", ")}
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {verses14
-                                .filter(
-                                  (verse) =>
-                                    verse.chapterId === selectedChapter14
-                                )
-                                .map((verse) => (
-                                  <MenuItem key={verse.id} value={verse.id}>
-                                    {verse.reference}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-                        </Box>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={handleFetchVerses}
-                          sx={{ marginTop: "10px" }}
-                        >
-                          OK
-                        </Button>
+                      </TabPanel>
+                      {/* ALLELULIA VERSE*/}
+                      <TabPanel value={postTabValue} index={32}>
                         <TextField
                           fullWidth
                           label="Alleluia Verse"
@@ -7090,6 +2406,9 @@ function DailyReadings() {
                             }}
                           />
                         )}
+                      </TabPanel>
+
+                      <TabPanel value={postTabValue} index={33}>
                         <TextField
                           fullWidth
                           label="Alleluia OPT2"
@@ -7110,6 +2429,8 @@ function DailyReadings() {
                             },
                           }}
                         />
+                      </TabPanel>
+                      <TabPanel value={postTabValue} index={34}>
                         <TextField
                           fullWidth
                           label="Alleluia Text OPT2"
@@ -7130,145 +2451,9 @@ function DailyReadings() {
                             },
                           }}
                         />
-
-                        {/*       GOSPEL VERSE        */}
-                        <Box
-                          display="flex"
-                          width="100%"
-                          sx={{ marginTop: "10px" }}
-                        >
-                          <FormControl
-                            variant="outlined"
-                            style={{ flex: 1, marginRight: "8px" }}
-                          >
-                            <InputLabel
-                              id="book-select-label"
-                              sx={{ lineHeight: "15px" }}
-                            >
-                              Book
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="book-select-label"
-                              value={selectedBook15}
-                              onChange={(e) => {
-                                setSelectedBook15(e.target.value);
-                                setSelectedChapter15(""); // Reset chapter and verse when book changes
-                                setSelectedVerse15([]);
-                              }}
-                              label="Book"
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {books.map((book) => (
-                                <MenuItem key={book.id} value={book.id}>
-                                  {book.name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-
-                          <FormControl
-                            variant="outlined"
-                            style={{ flex: 1, marginRight: "8px" }}
-                          >
-                            <InputLabel
-                              id="chapter-select-label"
-                              sx={{ lineHeight: "15px" }}
-                            >
-                              Chapter
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="chapter-select-label"
-                              value={selectedChapter15}
-                              onChange={(e) => {
-                                setSelectedChapter15(e.target.value);
-                                setSelectedVerse15([]); // Reset verse when chapter changes
-                              }}
-                              label="Chapter"
-                              disabled={!selectedBook15} // Disable if no book is selected
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {chapters15
-                                .filter(
-                                  (chapter) => chapter.bookId === selectedBook15
-                                )
-                                .map((chapter) => (
-                                  <MenuItem key={chapter.id} value={chapter.id}>
-                                    {chapter.reference}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-
-                          <FormControl variant="outlined" style={{ flex: 1 }}>
-                            <InputLabel
-                              sx={{ lineHeight: "15px" }}
-                              id="verse-select-label"
-                            >
-                              Verse
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="verse-select-label"
-                              multiple
-                              value={selectedVerse15}
-                              onChange={(e) =>
-                                setSelectedVerse15(e.target.value)
-                              }
-                              label="Verse"
-                              disabled={!selectedChapter15} // Disable if no chapter is selected
-                              renderValue={(selected) => selected.join(", ")}
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {verses15
-                                .filter(
-                                  (verse) =>
-                                    verse.chapterId === selectedChapter15
-                                )
-                                .map((verse) => (
-                                  <MenuItem key={verse.id} value={verse.id}>
-                                    {verse.reference}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-                        </Box>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={handleFetchVerses}
-                          sx={{ marginTop: "10px" }}
-                        >
-                          OK
-                        </Button>
+                      </TabPanel>
+                      {/*       GOSPEL VERSE        */}
+                      <TabPanel value={postTabValue} index={35}>
                         <TextField
                           fullWidth
                           label="Gospel Verse"
@@ -7311,145 +2496,10 @@ function DailyReadings() {
                             }}
                           />
                         )}
+                      </TabPanel>
 
-                        {/*      GOSPEL VERSE 2       */}
-                        <Box
-                          display="flex"
-                          width="100%"
-                          sx={{ marginTop: "10px" }}
-                        >
-                          <FormControl
-                            variant="outlined"
-                            style={{ flex: 1, marginRight: "8px" }}
-                          >
-                            <InputLabel
-                              id="book-select-label"
-                              sx={{ lineHeight: "15px" }}
-                            >
-                              Book
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="book-select-label"
-                              value={selectedBook16}
-                              onChange={(e) => {
-                                setSelectedBook16(e.target.value);
-                                setSelectedChapter16(""); // Reset chapter and verse when book changes
-                                setSelectedVerse16([]);
-                              }}
-                              label="Book"
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {books.map((book) => (
-                                <MenuItem key={book.id} value={book.id}>
-                                  {book.name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-
-                          <FormControl
-                            variant="outlined"
-                            style={{ flex: 1, marginRight: "8px" }}
-                          >
-                            <InputLabel
-                              id="chapter-select-label"
-                              sx={{ lineHeight: "15px" }}
-                            >
-                              Chapter
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="chapter-select-label"
-                              value={selectedChapter16}
-                              onChange={(e) => {
-                                setSelectedChapter16(e.target.value);
-                                setSelectedVerse16([]); // Reset verse when chapter changes
-                              }}
-                              label="Chapter"
-                              disabled={!selectedBook16} // Disable if no book is selected
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {chapters16
-                                .filter(
-                                  (chapter) => chapter.bookId === selectedBook16
-                                )
-                                .map((chapter) => (
-                                  <MenuItem key={chapter.id} value={chapter.id}>
-                                    {chapter.reference}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-
-                          <FormControl variant="outlined" style={{ flex: 1 }}>
-                            <InputLabel
-                              sx={{ lineHeight: "15px" }}
-                              id="verse-select-label"
-                            >
-                              Verse
-                            </InputLabel>
-                            <Select
-                              fullWidth
-                              labelId="verse-select-label"
-                              multiple
-                              value={selectedVerse16}
-                              onChange={(e) =>
-                                setSelectedVerse16(e.target.value)
-                              }
-                              label="Verse"
-                              disabled={!selectedChapter16} // Disable if no chapter is selected
-                              renderValue={(selected) => selected.join(", ")}
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "8px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            >
-                              {verses16
-                                .filter(
-                                  (verse) =>
-                                    verse.chapterId === selectedChapter16
-                                )
-                                .map((verse) => (
-                                  <MenuItem key={verse.id} value={verse.id}>
-                                    {verse.reference}
-                                  </MenuItem>
-                                ))}
-                            </Select>
-                          </FormControl>
-                        </Box>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={handleFetchVerses}
-                          sx={{ marginTop: "10px" }}
-                        >
-                          OK
-                        </Button>
+                      {/*      GOSPEL VERSE 2       */}
+                      <TabPanel value={postTabValue} index={36}>
                         <TextField
                           fullWidth
                           label="Gospel Verse2"
@@ -7492,6 +2542,9 @@ function DailyReadings() {
                             }}
                           />
                         )}
+                      </TabPanel>
+
+                      <TabPanel value={postTabValue} index={37}>
                         <TextField
                           fullWidth
                           label="Verse Before Gospel"
@@ -7512,8 +2565,8 @@ function DailyReadings() {
                             },
                           }}
                         />
-                      </>
-                    )}
+                      </TabPanel>
+                    </>
                   </CardContent>
                   <Divider />
                   <Box
@@ -7642,64 +2695,124 @@ function DailyReadings() {
                     <CardHeader subheader="" title="Daily Reading" />
                     <Divider />
                     <CardContent>
-                      <TextField
-                        fullWidth
-                        label="Title"
-                        margin="normal"
-                        name="title"
-                        onChange={handleEditTitle}
-                        type="text"
-                        value={editTitle}
-                        variant="outlined"
-                        sx={{
-                          height: "40px",
-                          "& .MuiOutlinedInput-root": {
-                            height: "40px",
-                          },
-                          "& .MuiInputLabel-root": {
-                            lineHeight: "15px",
-                            fontSize: "smaller",
-                          },
-                        }}
-                      />
-                      <TextField
-                        fullWidth
-                        //label="Old Password"
-                        margin="normal"
-                        name="date"
-                        onChange={handleEditDate}
-                        type="date"
-                        value={editDate}
-                        variant="outlined"
-                        sx={{
-                          height: "40px",
-                          "& .MuiOutlinedInput-root": {
-                            height: "40px",
-                          },
-                          "& .MuiInputLabel-root": {
-                            lineHeight: "15px",
-                            fontSize: "smaller",
-                          },
-                        }}
-                      />
-
-                      <FormControl fullWidth>
-                        <InputLabel
-                          id="demo-dialog-select-label"
-                          style={{ marginTop: "18px" }}
+                      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                        <Tabs
+                          value={editTabValue}
+                          onChange={handleEditTabChange}
+                          textColor="inherit"
+                          // scrollButtons="auto"
+                          aria-label=""
+                          variant="scrollable"
+                          scrollButtons={false}
                         >
-                          Select a bible version
-                        </InputLabel>
-                        <Select
-                          labelId="demo-dialog-select-label"
-                          id="demo-dialog-select"
-                          value={editBibleId}
-                          onChange={handleEditBibleId}
-                          input={
-                            <OutlinedInput label="Select a bible version" />
-                          }
+                          <Tab label="Title" {...a11yProps(0)} />
+                        <Tab label="Date" {...a11yProps(1)} />
+                        <Tab label="Reading 1 verse" {...a11yProps(2)} />
+                        <Tab
+                          label="Reading 1 option 2 verse"
+                          {...a11yProps(3)}
+                        />
+                        <Tab label="Reading 2 verse" {...a11yProps(4)} />
+                        <Tab
+                          label="Reading 2 option 1 verse"
+                          {...a11yProps(5)}
+                        />
+                        <Tab label="Reading 3 verse" {...a11yProps(6)} />
+                        <Tab label="Reading 4 verse" {...a11yProps(7)} />
+                        <Tab label="Reading 5 verse" {...a11yProps(8)} />
+                        <Tab label="Reading 6 verse" {...a11yProps(9)} />
+                        <Tab label="Reading 7 verse" {...a11yProps(10)} />
+                        <Tab
+                          label="Procession Psalm Verse"
+                          {...a11yProps(11)}
+                        />
+                        <Tab
+                          label="Procession Psalm Gospel"
+                          {...a11yProps(12)}
+                        />
+                        
+                        <Tab
+                          label="Procession Psalm Gospel 2 Verse"
+                          {...a11yProps(13)}
+                        />
+                        {/* <Tab
+                          label="Procession Psalm Gospel 2 Text"
+                          {...a11yProps(14)}
+                        /> */}
+                        <Tab
+                          label="Responsorial Psalm Verse"
+                          {...a11yProps(14)}
+                        />
+                        <Tab
+                          label="Responsorial Psalm Text 2"
+                          {...a11yProps(15)}
+                        />
+                        <Tab
+                          label="Responsorial Psalm Text 3"
+                          {...a11yProps(16)}
+                        />
+                        <Tab
+                          label="Responsorial Psalm Text 4"
+                          {...a11yProps(17)}
+                        />
+                        <Tab
+                          label="Responsorial Psalm Text 5"
+                          {...a11yProps(18)}
+                        />
+                        <Tab
+                          label="Responsorial Psalm Text 6"
+                          {...a11yProps(19)}
+                        />
+                        <Tab
+                          label="Responsorial Psalm Verse OPT 2"
+                          {...a11yProps(20)}
+                        />
+                        <Tab
+                          label="Responsorial Psalm Text 2 OPT 2"
+                          {...a11yProps(21)}
+                        />
+                        <Tab
+                          label="Responsorial Psalm Response OPT 2"
+                          {...a11yProps(22)}
+                        />
+                        <Tab
+                          label="Responsorial Psalm Text 3 OPT 2"
+                          {...a11yProps(23)}
+                        />
+                        <Tab
+                          label="Responsorial Psalm Text 4 OPT 2"
+                          {...a11yProps(24)}
+                        />
+                        <Tab
+                          label="Responsorial Psalm Text 5 OPT 2"
+                          {...a11yProps(25)}
+                        />
+                        <Tab label="Responsorial Text 1" {...a11yProps(26)} />
+                        <Tab label="Responsorial Text 2" {...a11yProps(27)} />
+                        <Tab label="Responsorial Text 3" {...a11yProps(28)} />
+                        <Tab label="Before Gospel Text" {...a11yProps(29)} />
+                        <Tab
+                          label="Verse Before Gospel OPT2"
+                          {...a11yProps(30)}
+                        />
+                        <Tab label="Alleluia Verse" {...a11yProps(31)} />
+                        <Tab label="Alleluia OPT2" {...a11yProps(32)} />
+                        <Tab label="Alleluia Text OPT2" {...a11yProps(33)} />
+                        <Tab label="Gospel Verse" {...a11yProps(34)} />
+                        <Tab label="Gospel Verse 2" {...a11yProps(35)} />
+                        </Tabs>
+                      </Box>
+
+                      <TabPanel value={editTabValue} index={0}>
+                        <TextField
                           fullWidth
-                          style={{ marginTop: "20px" }}
+                          label="Title"
+                          margin="normal"
+                          name="title"
+                          onChange={handleEditTitle}
+                          type="text"
+                          value={editTitle}
+                          variant="outlined"
                           sx={{
                             height: "40px",
                             "& .MuiOutlinedInput-root": {
@@ -7710,160 +2823,34 @@ function DailyReadings() {
                               fontSize: "smaller",
                             },
                           }}
-                        >
-                          <MenuItem value={"de4e12af7f28f599-02"}>
-                            King James (Authorised) Version
-                          </MenuItem>
-                          <MenuItem value={"40072c4a5aba4022-01"}>
-                            Revised Version 1885
-                          </MenuItem>
-                        </Select>
-                      </FormControl>
+                        />
+                      </TabPanel>
 
-                      {editBibleId && (
-                        <>
-                          {/********************* READING 1 VERSE ********************/}
-                          <Box
-                            display="flex"
-                            width="100%"
-                            sx={{ marginTop: "10px" }}
-                          >
-                            <FormControl
-                              variant="outlined"
-                              style={{ flex: 1, marginRight: "8px" }}
-                            >
-                              <InputLabel
-                                id="book-select-label"
-                                sx={{ lineHeight: "15px" }}
-                              >
-                                Book
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="book-select-label"
-                                value={editSelectedBook}
-                                onChange={(e) => {
-                                  setEditSelectedBook(e.target.value);
-                                  setEditSelectedChapter(""); // Reset chapter and verse when book changes
-                                  setEditSelectedVerse([]);
-                                }}
-                                label="Book"
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editBooks.map((book) => (
-                                  <MenuItem key={book.id} value={book.id}>
-                                    {book.name}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                            </FormControl>
-
-                            <FormControl
-                              variant="outlined"
-                              style={{ flex: 1, marginRight: "8px" }}
-                            >
-                              <InputLabel
-                                id="chapter-select-label"
-                                sx={{ lineHeight: "15px" }}
-                              >
-                                Chapter
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="chapter-select-label"
-                                value={editSelectedChapter}
-                                onChange={(e) => {
-                                  setEditSelectedChapter(e.target.value);
-                                  setEditSelectedVerse([]); // Reset verse when chapter changes
-                                }}
-                                label="Chapter"
-                                disabled={!editSelectedBook} // Disable if no book is selected
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editChapters
-                                  .filter(
-                                    (chapter) =>
-                                      chapter.bookId === editSelectedBook
-                                  )
-                                  .map((chapter) => (
-                                    <MenuItem
-                                      key={chapter.id}
-                                      value={chapter.id}
-                                    >
-                                      {chapter.reference}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-
-                            <FormControl variant="outlined" style={{ flex: 1 }}>
-                              <InputLabel
-                                sx={{ lineHeight: "15px" }}
-                                id="verse-select-label"
-                              >
-                                Verse
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="verse-select-label"
-                                multiple
-                                value={editSelectedVerse}
-                                onChange={(e) =>
-                                  setEditSelectedVerse(e.target.value)
-                                }
-                                label="Verse"
-                                disabled={!editSelectedChapter} // Disable if no chapter is selected
-                                renderValue={(selected) => selected.join(", ")}
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editVerses
-                                  .filter(
-                                    (verse) =>
-                                      verse.chapterId === editSelectedChapter
-                                  )
-                                  .map((verse) => (
-                                    <MenuItem key={verse.id} value={verse.id}>
-                                      {verse.reference}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-                          </Box>
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleEditFetchVerses}
-                            sx={{ marginTop: "10px" }}
-                          >
-                            OK
-                          </Button>
+                      <TabPanel value={editTabValue} index={1}>
+                        <TextField
+                          fullWidth
+                          //label="Old Password"
+                          margin="normal"
+                          name="date"
+                          onChange={handleEditDate}
+                          type="date"
+                          value={editDate}
+                          variant="outlined"
+                          sx={{
+                            height: "40px",
+                            "& .MuiOutlinedInput-root": {
+                              height: "40px",
+                            },
+                            "& .MuiInputLabel-root": {
+                              lineHeight: "15px",
+                              fontSize: "smaller",
+                            },
+                          }}
+                        />
+                      </TabPanel>
+                      <>
+                        {/********************* READING 1 VERSE ********************/}
+                        <TabPanel value={editTabValue} index={2}>
                           <TextField
                             fullWidth
                             label="Reading1 Verse"
@@ -7906,148 +2893,10 @@ function DailyReadings() {
                               }}
                             />
                           )}
-                          {/********************* READING 1 OPTION 2 VERSE ********************/}
-                          <Box
-                            display="flex"
-                            width="100%"
-                            sx={{ marginTop: "10px" }}
-                          >
-                            <FormControl
-                              variant="outlined"
-                              style={{ flex: 1, marginRight: "8px" }}
-                            >
-                              <InputLabel
-                                id="book-select-label"
-                                sx={{ lineHeight: "15px" }}
-                              >
-                                Book
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="book-select-label"
-                                value={editSelectedBook2}
-                                onChange={(e) => {
-                                  setEditSelectedBook2(e.target.value);
-                                  setEditSelectedChapter2(""); // Reset chapter and verse when book changes
-                                  setEditSelectedVerse2([]);
-                                }}
-                                label="Book"
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editBooks.map((book) => (
-                                  <MenuItem key={book.id} value={book.id}>
-                                    {book.name}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                            </FormControl>
+                        </TabPanel>
 
-                            <FormControl
-                              variant="outlined"
-                              style={{ flex: 1, marginRight: "8px" }}
-                            >
-                              <InputLabel
-                                id="chapter-select-label"
-                                sx={{ lineHeight: "15px" }}
-                              >
-                                Chapter
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="chapter-select-label"
-                                value={editSelectedChapter2}
-                                onChange={(e) => {
-                                  setEditSelectedChapter2(e.target.value);
-                                  setEditSelectedVerse2([]); // Reset verse when chapter changes
-                                }}
-                                label="Chapter"
-                                disabled={!editSelectedBook2} // Disable if no book is selected
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editChapters2
-                                  .filter(
-                                    (chapter) =>
-                                      chapter.bookId === editSelectedBook2
-                                  )
-                                  .map((chapter) => (
-                                    <MenuItem
-                                      key={chapter.id}
-                                      value={chapter.id}
-                                    >
-                                      {chapter.reference}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-
-                            <FormControl variant="outlined" style={{ flex: 1 }}>
-                              <InputLabel
-                                sx={{ lineHeight: "15px" }}
-                                id="verse-select-label"
-                              >
-                                Verse
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="verse-select-label"
-                                multiple
-                                value={editSelectedVerse2}
-                                onChange={(e) =>
-                                  setEditSelectedVerse2(e.target.value)
-                                }
-                                label="Verse"
-                                disabled={!editSelectedChapter2} // Disable if no chapter is selected
-                                renderValue={(selected) => selected.join(", ")}
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editVerses2
-                                  .filter(
-                                    (verse) =>
-                                      verse.chapterId === editSelectedChapter2
-                                  )
-                                  .map((verse) => (
-                                    <MenuItem key={verse.id} value={verse.id}>
-                                      {verse.reference}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-                          </Box>
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleEditFetchVerses}
-                            sx={{ marginTop: "10px" }}
-                          >
-                            OK
-                          </Button>
+                        {/********************* READING 1 OPTION 2 VERSE ********************/}
+                        <TabPanel value={editTabValue} index={3}>
                           <TextField
                             fullWidth
                             label="Reading1 Option2 Verse"
@@ -8090,148 +2939,10 @@ function DailyReadings() {
                               }}
                             />
                           )}
-                          {/********************* READING 2 VERSE ********************/}
-                          <Box
-                            display="flex"
-                            width="100%"
-                            sx={{ marginTop: "10px" }}
-                          >
-                            <FormControl
-                              variant="outlined"
-                              style={{ flex: 1, marginRight: "8px" }}
-                            >
-                              <InputLabel
-                                id="book-select-label"
-                                sx={{ lineHeight: "15px" }}
-                              >
-                                Book
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="book-select-label"
-                                value={editSelectedBook3}
-                                onChange={(e) => {
-                                  setEditSelectedBook3(e.target.value);
-                                  setEditSelectedChapter3(""); // Reset chapter and verse when book changes
-                                  setEditSelectedVerse3([]);
-                                }}
-                                label="Book"
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editBooks.map((book) => (
-                                  <MenuItem key={book.id} value={book.id}>
-                                    {book.name}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                            </FormControl>
+                        </TabPanel>
 
-                            <FormControl
-                              variant="outlined"
-                              style={{ flex: 1, marginRight: "8px" }}
-                            >
-                              <InputLabel
-                                id="chapter-select-label"
-                                sx={{ lineHeight: "15px" }}
-                              >
-                                Chapter
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="chapter-select-label"
-                                value={editSelectedChapter3}
-                                onChange={(e) => {
-                                  setEditSelectedChapter3(e.target.value);
-                                  setEditSelectedVerse3([]); // Reset verse when chapter changes
-                                }}
-                                label="Chapter"
-                                disabled={!editSelectedBook3} // Disable if no book is selected
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editChapters3
-                                  .filter(
-                                    (chapter) =>
-                                      chapter.bookId === editSelectedBook3
-                                  )
-                                  .map((chapter) => (
-                                    <MenuItem
-                                      key={chapter.id}
-                                      value={chapter.id}
-                                    >
-                                      {chapter.reference}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-
-                            <FormControl variant="outlined" style={{ flex: 1 }}>
-                              <InputLabel
-                                sx={{ lineHeight: "15px" }}
-                                id="verse-select-label"
-                              >
-                                Verse
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="verse-select-label"
-                                multiple
-                                value={editSelectedVerse3}
-                                onChange={(e) =>
-                                  setEditSelectedVerse3(e.target.value)
-                                }
-                                label="Verse"
-                                disabled={!editSelectedChapter3} // Disable if no chapter is selected
-                                renderValue={(selected) => selected.join(", ")}
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editVerses3
-                                  .filter(
-                                    (verse) =>
-                                      verse.chapterId === editSelectedChapter3
-                                  )
-                                  .map((verse) => (
-                                    <MenuItem key={verse.id} value={verse.id}>
-                                      {verse.reference}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-                          </Box>
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleEditFetchVerses}
-                            sx={{ marginTop: "10px" }}
-                          >
-                            OK
-                          </Button>
+                        {/********************* READING 2 VERSE ********************/}
+                        <TabPanel value={editTabValue} index={4}>
                           <TextField
                             fullWidth
                             label="Reading2 Verse"
@@ -8274,148 +2985,10 @@ function DailyReadings() {
                               }}
                             />
                           )}
-                          {/********************* READING 2 OPTION 1 VERSE ********************/}
-                          <Box
-                            display="flex"
-                            width="100%"
-                            sx={{ marginTop: "10px" }}
-                          >
-                            <FormControl
-                              variant="outlined"
-                              style={{ flex: 1, marginRight: "8px" }}
-                            >
-                              <InputLabel
-                                id="book-select-label"
-                                sx={{ lineHeight: "15px" }}
-                              >
-                                Book
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="book-select-label"
-                                value={editSelectedBook9}
-                                onChange={(e) => {
-                                  setEditSelectedBook9(e.target.value);
-                                  setEditSelectedChapter9(""); // Reset chapter and verse when book changes
-                                  setEditSelectedVerse9([]);
-                                }}
-                                label="Book"
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editBooks.map((book) => (
-                                  <MenuItem key={book.id} value={book.id}>
-                                    {book.name}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                            </FormControl>
+                        </TabPanel>
 
-                            <FormControl
-                              variant="outlined"
-                              style={{ flex: 1, marginRight: "8px" }}
-                            >
-                              <InputLabel
-                                id="chapter-select-label"
-                                sx={{ lineHeight: "15px" }}
-                              >
-                                Chapter
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="chapter-select-label"
-                                value={editSelectedChapter9}
-                                onChange={(e) => {
-                                  setEditSelectedChapter9(e.target.value);
-                                  setEditSelectedVerse9([]); // Reset verse when chapter changes
-                                }}
-                                label="Chapter"
-                                disabled={!editSelectedBook9} // Disable if no book is selected
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editChapters9
-                                  .filter(
-                                    (chapter) =>
-                                      chapter.bookId === editSelectedBook9
-                                  )
-                                  .map((chapter) => (
-                                    <MenuItem
-                                      key={chapter.id}
-                                      value={chapter.id}
-                                    >
-                                      {chapter.reference}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-
-                            <FormControl variant="outlined" style={{ flex: 1 }}>
-                              <InputLabel
-                                sx={{ lineHeight: "15px" }}
-                                id="verse-select-label"
-                              >
-                                Verse
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="verse-select-label"
-                                multiple
-                                value={editSelectedVerse9}
-                                onChange={(e) =>
-                                  setEditSelectedVerse9(e.target.value)
-                                }
-                                label="Verse"
-                                disabled={!editSelectedChapter9} // Disable if no chapter is selected
-                                renderValue={(selected) => selected.join(", ")}
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editVerses9
-                                  .filter(
-                                    (verse) =>
-                                      verse.chapterId === editSelectedChapter9
-                                  )
-                                  .map((verse) => (
-                                    <MenuItem key={verse.id} value={verse.id}>
-                                      {verse.reference}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-                          </Box>
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleEditFetchVerses}
-                            sx={{ marginTop: "10px" }}
-                          >
-                            OK
-                          </Button>
+                        {/********************* READING 2 OPTION 1 VERSE ********************/}
+                        <TabPanel value={editTabValue} index={5}>
                           <TextField
                             fullWidth
                             label="Reading2 Option1 Verse"
@@ -8458,148 +3031,10 @@ function DailyReadings() {
                               }}
                             />
                           )}
-                          {/********************* READING 3 VERSE ********************/}
-                          <Box
-                            display="flex"
-                            width="100%"
-                            sx={{ marginTop: "10px" }}
-                          >
-                            <FormControl
-                              variant="outlined"
-                              style={{ flex: 1, marginRight: "8px" }}
-                            >
-                              <InputLabel
-                                id="book-select-label"
-                                sx={{ lineHeight: "15px" }}
-                              >
-                                Book
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="book-select-label"
-                                value={editSelectedBook4}
-                                onChange={(e) => {
-                                  setEditSelectedBook4(e.target.value);
-                                  setEditSelectedChapter4(""); // Reset chapter and verse when book changes
-                                  setEditSelectedVerse4([]);
-                                }}
-                                label="Book"
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editBooks.map((book) => (
-                                  <MenuItem key={book.id} value={book.id}>
-                                    {book.name}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                            </FormControl>
+                        </TabPanel>
 
-                            <FormControl
-                              variant="outlined"
-                              style={{ flex: 1, marginRight: "8px" }}
-                            >
-                              <InputLabel
-                                id="chapter-select-label"
-                                sx={{ lineHeight: "15px" }}
-                              >
-                                Chapter
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="chapter-select-label"
-                                value={editSelectedChapter4}
-                                onChange={(e) => {
-                                  setEditSelectedChapter4(e.target.value);
-                                  setEditSelectedVerse4([]); // Reset verse when chapter changes
-                                }}
-                                label="Chapter"
-                                disabled={!editSelectedBook4} // Disable if no book is selected
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editChapters4
-                                  .filter(
-                                    (chapter) =>
-                                      chapter.bookId === editSelectedBook4
-                                  )
-                                  .map((chapter) => (
-                                    <MenuItem
-                                      key={chapter.id}
-                                      value={chapter.id}
-                                    >
-                                      {chapter.reference}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-
-                            <FormControl variant="outlined" style={{ flex: 1 }}>
-                              <InputLabel
-                                sx={{ lineHeight: "15px" }}
-                                id="verse-select-label"
-                              >
-                                Verse
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="verse-select-label"
-                                multiple
-                                value={editSelectedVerse4}
-                                onChange={(e) =>
-                                  setEditSelectedVerse4(e.target.value)
-                                }
-                                label="Verse"
-                                disabled={!editSelectedChapter4} // Disable if no chapter is selected
-                                renderValue={(selected) => selected.join(", ")}
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editVerses4
-                                  .filter(
-                                    (verse) =>
-                                      verse.chapterId === editSelectedChapter4
-                                  )
-                                  .map((verse) => (
-                                    <MenuItem key={verse.id} value={verse.id}>
-                                      {verse.reference}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-                          </Box>
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleEditFetchVerses}
-                            sx={{ marginTop: "10px" }}
-                          >
-                            OK
-                          </Button>
+                        {/********************* READING 3 VERSE ********************/}
+                        <TabPanel value={editTabValue} index={6}>
                           <TextField
                             fullWidth
                             label="Reading3 Verse"
@@ -8642,148 +3077,10 @@ function DailyReadings() {
                               }}
                             />
                           )}
-                          {/********************* READING 4 VERSE ********************/}
-                          <Box
-                            display="flex"
-                            width="100%"
-                            sx={{ marginTop: "10px" }}
-                          >
-                            <FormControl
-                              variant="outlined"
-                              style={{ flex: 1, marginRight: "8px" }}
-                            >
-                              <InputLabel
-                                id="book-select-label"
-                                sx={{ lineHeight: "15px" }}
-                              >
-                                Book
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="book-select-label"
-                                value={editSelectedBook5}
-                                onChange={(e) => {
-                                  setEditSelectedBook5(e.target.value);
-                                  setEditSelectedChapter5(""); // Reset chapter and verse when book changes
-                                  setEditSelectedVerse5([]);
-                                }}
-                                label="Book"
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editBooks.map((book) => (
-                                  <MenuItem key={book.id} value={book.id}>
-                                    {book.name}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                            </FormControl>
+                        </TabPanel>
 
-                            <FormControl
-                              variant="outlined"
-                              style={{ flex: 1, marginRight: "8px" }}
-                            >
-                              <InputLabel
-                                id="chapter-select-label"
-                                sx={{ lineHeight: "15px" }}
-                              >
-                                Chapter
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="chapter-select-label"
-                                value={editSelectedChapter5}
-                                onChange={(e) => {
-                                  setEditSelectedChapter5(e.target.value);
-                                  setEditSelectedVerse5([]); // Reset verse when chapter changes
-                                }}
-                                label="Chapter"
-                                disabled={!editSelectedBook5} // Disable if no book is selected
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editChapters5
-                                  .filter(
-                                    (chapter) =>
-                                      chapter.bookId === editSelectedBook5
-                                  )
-                                  .map((chapter) => (
-                                    <MenuItem
-                                      key={chapter.id}
-                                      value={chapter.id}
-                                    >
-                                      {chapter.reference}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-
-                            <FormControl variant="outlined" style={{ flex: 1 }}>
-                              <InputLabel
-                                sx={{ lineHeight: "15px" }}
-                                id="verse-select-label"
-                              >
-                                Verse
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="verse-select-label"
-                                multiple
-                                value={editSelectedVerse5}
-                                onChange={(e) =>
-                                  setEditSelectedVerse5(e.target.value)
-                                }
-                                label="Verse"
-                                disabled={!editSelectedChapter5} // Disable if no chapter is selected
-                                renderValue={(selected) => selected.join(", ")}
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editVerses5
-                                  .filter(
-                                    (verse) =>
-                                      verse.chapterId === editSelectedChapter5
-                                  )
-                                  .map((verse) => (
-                                    <MenuItem key={verse.id} value={verse.id}>
-                                      {verse.reference}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-                          </Box>
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleEditFetchVerses}
-                            sx={{ marginTop: "10px" }}
-                          >
-                            OK
-                          </Button>
+                        {/********************* READING 4 VERSE ********************/}
+                        <TabPanel value={editTabValue} index={7}>
                           <TextField
                             fullWidth
                             label="Reading4 Verse"
@@ -8826,148 +3123,9 @@ function DailyReadings() {
                               }}
                             />
                           )}
-                          {/********************* READING 5 VERSE ********************/}
-                          <Box
-                            display="flex"
-                            width="100%"
-                            sx={{ marginTop: "10px" }}
-                          >
-                            <FormControl
-                              variant="outlined"
-                              style={{ flex: 1, marginRight: "8px" }}
-                            >
-                              <InputLabel
-                                id="book-select-label"
-                                sx={{ lineHeight: "15px" }}
-                              >
-                                Book
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="book-select-label"
-                                value={editSelectedBook6}
-                                onChange={(e) => {
-                                  setEditSelectedBook6(e.target.value);
-                                  setEditSelectedChapter6(""); // Reset chapter and verse when book changes
-                                  setEditSelectedVerse6([]);
-                                }}
-                                label="Book"
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editBooks.map((book) => (
-                                  <MenuItem key={book.id} value={book.id}>
-                                    {book.name}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                            </FormControl>
-
-                            <FormControl
-                              variant="outlined"
-                              style={{ flex: 1, marginRight: "8px" }}
-                            >
-                              <InputLabel
-                                id="chapter-select-label"
-                                sx={{ lineHeight: "15px" }}
-                              >
-                                Chapter
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="chapter-select-label"
-                                value={editSelectedChapter6}
-                                onChange={(e) => {
-                                  setEditSelectedChapter6(e.target.value);
-                                  setEditSelectedVerse6([]); // Reset verse when chapter changes
-                                }}
-                                label="Chapter"
-                                disabled={!editSelectedBook6} // Disable if no book is selected
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editChapters6
-                                  .filter(
-                                    (chapter) =>
-                                      chapter.bookId === editSelectedBook6
-                                  )
-                                  .map((chapter) => (
-                                    <MenuItem
-                                      key={chapter.id}
-                                      value={chapter.id}
-                                    >
-                                      {chapter.reference}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-
-                            <FormControl variant="outlined" style={{ flex: 1 }}>
-                              <InputLabel
-                                sx={{ lineHeight: "15px" }}
-                                id="verse-select-label"
-                              >
-                                Verse
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="verse-select-label"
-                                multiple
-                                value={editSelectedVerse6}
-                                onChange={(e) =>
-                                  setEditSelectedVerse6(e.target.value)
-                                }
-                                label="Verse"
-                                disabled={!editSelectedChapter6} // Disable if no chapter is selected
-                                renderValue={(selected) => selected.join(", ")}
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editVerses6
-                                  .filter(
-                                    (verse) =>
-                                      verse.chapterId === editSelectedChapter6
-                                  )
-                                  .map((verse) => (
-                                    <MenuItem key={verse.id} value={verse.id}>
-                                      {verse.reference}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-                          </Box>
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleEditFetchVerses}
-                            sx={{ marginTop: "10px" }}
-                          >
-                            OK
-                          </Button>
+                        </TabPanel>
+                        {/********************* READING 5 VERSE ********************/}
+                        <TabPanel value={editTabValue} index={8}>
                           <TextField
                             fullWidth
                             label="Reading5 Verse"
@@ -9010,148 +3168,10 @@ function DailyReadings() {
                               }}
                             />
                           )}
-                          {/********************* READING 6 VERSE ********************/}
-                          <Box
-                            display="flex"
-                            width="100%"
-                            sx={{ marginTop: "10px" }}
-                          >
-                            <FormControl
-                              variant="outlined"
-                              style={{ flex: 1, marginRight: "8px" }}
-                            >
-                              <InputLabel
-                                id="book-select-label"
-                                sx={{ lineHeight: "15px" }}
-                              >
-                                Book
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="book-select-label"
-                                value={editSelectedBook7}
-                                onChange={(e) => {
-                                  setEditSelectedBook7(e.target.value);
-                                  setEditSelectedChapter7(""); // Reset chapter and verse when book changes
-                                  setEditSelectedVerse7([]);
-                                }}
-                                label="Book"
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editBooks.map((book) => (
-                                  <MenuItem key={book.id} value={book.id}>
-                                    {book.name}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                            </FormControl>
+                        </TabPanel>
 
-                            <FormControl
-                              variant="outlined"
-                              style={{ flex: 1, marginRight: "8px" }}
-                            >
-                              <InputLabel
-                                id="chapter-select-label"
-                                sx={{ lineHeight: "15px" }}
-                              >
-                                Chapter
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="chapter-select-label"
-                                value={editSelectedChapter7}
-                                onChange={(e) => {
-                                  setEditSelectedChapter7(e.target.value);
-                                  setEditSelectedVerse7([]); // Reset verse when chapter changes
-                                }}
-                                label="Chapter"
-                                disabled={!editSelectedBook7} // Disable if no book is selected
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editChapters7
-                                  .filter(
-                                    (chapter) =>
-                                      chapter.bookId === editSelectedBook7
-                                  )
-                                  .map((chapter) => (
-                                    <MenuItem
-                                      key={chapter.id}
-                                      value={chapter.id}
-                                    >
-                                      {chapter.reference}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-
-                            <FormControl variant="outlined" style={{ flex: 1 }}>
-                              <InputLabel
-                                sx={{ lineHeight: "15px" }}
-                                id="verse-select-label"
-                              >
-                                Verse
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="verse-select-label"
-                                multiple
-                                value={editSelectedVerse7}
-                                onChange={(e) =>
-                                  setEditSelectedVerse7(e.target.value)
-                                }
-                                label="Verse"
-                                disabled={!editSelectedChapter7} // Disable if no chapter is selected
-                                renderValue={(selected) => selected.join(", ")}
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editVerses7
-                                  .filter(
-                                    (verse) =>
-                                      verse.chapterId === editSelectedChapter7
-                                  )
-                                  .map((verse) => (
-                                    <MenuItem key={verse.id} value={verse.id}>
-                                      {verse.reference}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-                          </Box>
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleEditFetchVerses}
-                            sx={{ marginTop: "10px" }}
-                          >
-                            OK
-                          </Button>
+                        {/********************* READING 6 VERSE ********************/}
+                        <TabPanel value={editTabValue} index={9}>
                           <TextField
                             fullWidth
                             label="Reading6 Verse"
@@ -9194,148 +3214,10 @@ function DailyReadings() {
                               }}
                             />
                           )}
-                          {/********************* READING 7 VERSE ********************/}
-                          <Box
-                            display="flex"
-                            width="100%"
-                            sx={{ marginTop: "10px" }}
-                          >
-                            <FormControl
-                              variant="outlined"
-                              style={{ flex: 1, marginRight: "8px" }}
-                            >
-                              <InputLabel
-                                id="book-select-label"
-                                sx={{ lineHeight: "15px" }}
-                              >
-                                Book
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="book-select-label"
-                                value={editSelectedBook8}
-                                onChange={(e) => {
-                                  setEditSelectedBook8(e.target.value);
-                                  setEditSelectedChapter8(""); // Reset chapter and verse when book changes
-                                  setEditSelectedVerse8([]);
-                                }}
-                                label="Book"
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editBooks.map((book) => (
-                                  <MenuItem key={book.id} value={book.id}>
-                                    {book.name}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                            </FormControl>
+                        </TabPanel>
 
-                            <FormControl
-                              variant="outlined"
-                              style={{ flex: 1, marginRight: "8px" }}
-                            >
-                              <InputLabel
-                                id="chapter-select-label"
-                                sx={{ lineHeight: "15px" }}
-                              >
-                                Chapter
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="chapter-select-label"
-                                value={editSelectedChapter8}
-                                onChange={(e) => {
-                                  setEditSelectedChapter8(e.target.value);
-                                  setEditSelectedVerse8([]); // Reset verse when chapter changes
-                                }}
-                                label="Chapter"
-                                disabled={!editSelectedBook8} // Disable if no book is selected
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editChapters8
-                                  .filter(
-                                    (chapter) =>
-                                      chapter.bookId === editSelectedBook8
-                                  )
-                                  .map((chapter) => (
-                                    <MenuItem
-                                      key={chapter.id}
-                                      value={chapter.id}
-                                    >
-                                      {chapter.reference}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-
-                            <FormControl variant="outlined" style={{ flex: 1 }}>
-                              <InputLabel
-                                sx={{ lineHeight: "15px" }}
-                                id="verse-select-label"
-                              >
-                                Verse
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="verse-select-label"
-                                multiple
-                                value={editSelectedVerse8}
-                                onChange={(e) =>
-                                  setEditSelectedVerse8(e.target.value)
-                                }
-                                label="Verse"
-                                disabled={!editSelectedChapter8} // Disable if no chapter is selected
-                                renderValue={(selected) => selected.join(", ")}
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editVerses8
-                                  .filter(
-                                    (verse) =>
-                                      verse.chapterId === editSelectedChapter8
-                                  )
-                                  .map((verse) => (
-                                    <MenuItem key={verse.id} value={verse.id}>
-                                      {verse.reference}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-                          </Box>
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleEditFetchVerses}
-                            sx={{ marginTop: "10px" }}
-                          >
-                            OK
-                          </Button>
+                        {/********************* READING 7 VERSE ********************/}
+                        <TabPanel value={editTabValue} index={10}>
                           <TextField
                             fullWidth
                             label="Reading7 Verse"
@@ -9378,8 +3260,10 @@ function DailyReadings() {
                               }}
                             />
                           )}
+                        </TabPanel>
 
-                          {/* START FROM HERE  */}
+                        {/* START FROM HERE  */}
+                        <TabPanel value={editTabValue} index={11}>
                           <TextField
                             fullWidth
                             label="Procession Psalm Verse"
@@ -9400,6 +3284,9 @@ function DailyReadings() {
                               },
                             }}
                           />
+                        </TabPanel>
+
+                        <TabPanel value={editTabValue} index={12}>
                           <TextField
                             fullWidth
                             label="Procession Psalms Gospel"
@@ -9420,149 +3307,10 @@ function DailyReadings() {
                               },
                             }}
                           />
+                        </TabPanel>
 
-                          {/*PROCESSIONAL PSALMS GOSPEL2 VERSE*/}
-                          <Box
-                            display="flex"
-                            width="100%"
-                            sx={{ marginTop: "10px" }}
-                          >
-                            <FormControl
-                              variant="outlined"
-                              style={{ flex: 1, marginRight: "8px" }}
-                            >
-                              <InputLabel
-                                id="book-select-label"
-                                sx={{ lineHeight: "15px" }}
-                              >
-                                Book
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="book-select-label"
-                                value={editSelectedBook10}
-                                onChange={(e) => {
-                                  setEditSelectedBook10(e.target.value);
-                                  setEditSelectedChapter10(""); // Reset chapter and verse when book changes
-                                  setEditSelectedVerse10([]);
-                                }}
-                                label="Book"
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editBooks.map((book) => (
-                                  <MenuItem key={book.id} value={book.id}>
-                                    {book.name}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                            </FormControl>
-
-                            <FormControl
-                              variant="outlined"
-                              style={{ flex: 1, marginRight: "8px" }}
-                            >
-                              <InputLabel
-                                id="chapter-select-label"
-                                sx={{ lineHeight: "15px" }}
-                              >
-                                Chapter
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="chapter-select-label"
-                                value={editSelectedChapter10}
-                                onChange={(e) => {
-                                  setEditSelectedChapter10(e.target.value);
-                                  setEditSelectedVerse10([]); // Reset verse when chapter changes
-                                }}
-                                label="Chapter"
-                                disabled={!editSelectedBook10} // Disable if no book is selected
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editChapters10
-                                  .filter(
-                                    (chapter) =>
-                                      chapter.bookId === editSelectedBook10
-                                  )
-                                  .map((chapter) => (
-                                    <MenuItem
-                                      key={chapter.id}
-                                      value={chapter.id}
-                                    >
-                                      {chapter.reference}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-
-                            <FormControl variant="outlined" style={{ flex: 1 }}>
-                              <InputLabel
-                                sx={{ lineHeight: "15px" }}
-                                id="verse-select-label"
-                              >
-                                Verse
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="verse-select-label"
-                                multiple
-                                value={editSelectedVerse10}
-                                onChange={(e) =>
-                                  setEditSelectedVerse10(e.target.value)
-                                }
-                                label="Verse"
-                                disabled={!editSelectedChapter10} // Disable if no chapter is selected
-                                renderValue={(selected) => selected.join(", ")}
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editVerses10
-                                  .filter(
-                                    (verse) =>
-                                      verse.chapterId === editSelectedChapter10
-                                  )
-                                  .map((verse) => (
-                                    <MenuItem key={verse.id} value={verse.id}>
-                                      {verse.reference}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-                          </Box>
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleEditFetchVerses}
-                            sx={{ marginTop: "10px" }}
-                          >
-                            OK
-                          </Button>
+                        {/*PROCESSIONAL PSALMS GOSPEL2 VERSE*/}
+                        <TabPanel value={editTabValue} index={13}>
                           <TextField
                             fullWidth
                             label="Procession Psalms Gospel2 Verse"
@@ -9605,149 +3353,10 @@ function DailyReadings() {
                               }}
                             />
                           )}
+                        </TabPanel>
 
-                          {/*RESPONSIAL PSALM VERSE*/}
-                          <Box
-                            display="flex"
-                            width="100%"
-                            sx={{ marginTop: "10px" }}
-                          >
-                            <FormControl
-                              variant="outlined"
-                              style={{ flex: 1, marginRight: "8px" }}
-                            >
-                              <InputLabel
-                                id="book-select-label"
-                                sx={{ lineHeight: "15px" }}
-                              >
-                                Book
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="book-select-label"
-                                value={editSelectedBook11}
-                                onChange={(e) => {
-                                  setEditSelectedBook11(e.target.value);
-                                  setEditSelectedChapter11(""); // Reset chapter and verse when book changes
-                                  setEditSelectedVerse11([]);
-                                }}
-                                label="Book"
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editBooks.map((book) => (
-                                  <MenuItem key={book.id} value={book.id}>
-                                    {book.name}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                            </FormControl>
-
-                            <FormControl
-                              variant="outlined"
-                              style={{ flex: 1, marginRight: "8px" }}
-                            >
-                              <InputLabel
-                                id="chapter-select-label"
-                                sx={{ lineHeight: "15px" }}
-                              >
-                                Chapter
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="chapter-select-label"
-                                value={editSelectedChapter11}
-                                onChange={(e) => {
-                                  setEditSelectedChapter11(e.target.value);
-                                  setEditSelectedVerse11([]); // Reset verse when chapter changes
-                                }}
-                                label="Chapter"
-                                disabled={!editSelectedBook11} // Disable if no book is selected
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editChapters11
-                                  .filter(
-                                    (chapter) =>
-                                      chapter.bookId === editSelectedBook11
-                                  )
-                                  .map((chapter) => (
-                                    <MenuItem
-                                      key={chapter.id}
-                                      value={chapter.id}
-                                    >
-                                      {chapter.reference}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-
-                            <FormControl variant="outlined" style={{ flex: 1 }}>
-                              <InputLabel
-                                sx={{ lineHeight: "15px" }}
-                                id="verse-select-label"
-                              >
-                                Verse
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="verse-select-label"
-                                multiple
-                                value={editSelectedVerse11}
-                                onChange={(e) =>
-                                  setEditSelectedVerse11(e.target.value)
-                                }
-                                label="Verse"
-                                disabled={!editSelectedChapter11} // Disable if no chapter is selected
-                                renderValue={(selected) => selected.join(", ")}
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editVerses11
-                                  .filter(
-                                    (verse) =>
-                                      verse.chapterId === editSelectedChapter11
-                                  )
-                                  .map((verse) => (
-                                    <MenuItem key={verse.id} value={verse.id}>
-                                      {verse.reference}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-                          </Box>
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleEditFetchVerses}
-                            sx={{ marginTop: "10px" }}
-                          >
-                            OK
-                          </Button>
+                        {/*RESPONSIAL PSALM VERSE*/}
+                        <TabPanel value={editTabValue} index={14}>
                           <TextField
                             fullWidth
                             label="Responsorial Psalm Verse"
@@ -9812,6 +3421,8 @@ function DailyReadings() {
                               />
                             </>
                           )}
+                        </TabPanel>
+                        <TabPanel value={editTabValue} index={15}>
                           <TextField
                             fullWidth
                             label="Responsorial Psalm Text2"
@@ -9832,6 +3443,9 @@ function DailyReadings() {
                               },
                             }}
                           />
+                        </TabPanel>
+
+                        <TabPanel value={editTabValue} index={16}>
                           <TextField
                             fullWidth
                             label="Responsorial Psalm Text3"
@@ -9852,6 +3466,9 @@ function DailyReadings() {
                               },
                             }}
                           />
+                        </TabPanel>
+
+                        <TabPanel value={editTabValue} index={17}>
                           <TextField
                             fullWidth
                             label="Responsorial Psalm Text4"
@@ -9872,6 +3489,9 @@ function DailyReadings() {
                               },
                             }}
                           />
+                        </TabPanel>
+
+                        <TabPanel value={editTabValue} index={18}>
                           <TextField
                             fullWidth
                             label="Responsorial Psalm Text5"
@@ -9892,6 +3512,9 @@ function DailyReadings() {
                               },
                             }}
                           />
+                        </TabPanel>
+
+                        <TabPanel value={editTabValue} index={19}>
                           <TextField
                             fullWidth
                             label="Responsorial Psalm Text6"
@@ -9912,149 +3535,10 @@ function DailyReadings() {
                               },
                             }}
                           />
+                        </TabPanel>
 
-                          {/*RESPONSIAL PSALM VERSE OPT2*/}
-                          <Box
-                            display="flex"
-                            width="100%"
-                            sx={{ marginTop: "10px" }}
-                          >
-                            <FormControl
-                              variant="outlined"
-                              style={{ flex: 1, marginRight: "8px" }}
-                            >
-                              <InputLabel
-                                id="book-select-label"
-                                sx={{ lineHeight: "15px" }}
-                              >
-                                Book
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="book-select-label"
-                                value={editSelectedBook12}
-                                onChange={(e) => {
-                                  setEditSelectedBook12(e.target.value);
-                                  setEditSelectedChapter12(""); // Reset chapter and verse when book changes
-                                  setEditSelectedVerse12([]);
-                                }}
-                                label="Book"
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editBooks.map((book) => (
-                                  <MenuItem key={book.id} value={book.id}>
-                                    {book.name}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                            </FormControl>
-
-                            <FormControl
-                              variant="outlined"
-                              style={{ flex: 1, marginRight: "8px" }}
-                            >
-                              <InputLabel
-                                id="chapter-select-label"
-                                sx={{ lineHeight: "15px" }}
-                              >
-                                Chapter
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="chapter-select-label"
-                                value={editSelectedChapter12}
-                                onChange={(e) => {
-                                  setEditSelectedChapter12(e.target.value);
-                                  setEditSelectedVerse12([]); // Reset verse when chapter changes
-                                }}
-                                label="Chapter"
-                                disabled={!editSelectedBook12} // Disable if no book is selected
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editChapters12
-                                  .filter(
-                                    (chapter) =>
-                                      chapter.bookId === editSelectedBook12
-                                  )
-                                  .map((chapter) => (
-                                    <MenuItem
-                                      key={chapter.id}
-                                      value={chapter.id}
-                                    >
-                                      {chapter.reference}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-
-                            <FormControl variant="outlined" style={{ flex: 1 }}>
-                              <InputLabel
-                                sx={{ lineHeight: "15px" }}
-                                id="verse-select-label"
-                              >
-                                Verse
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="verse-select-label"
-                                multiple
-                                value={editSelectedVerse12}
-                                onChange={(e) =>
-                                  setEditSelectedVerse12(e.target.value)
-                                }
-                                label="Verse"
-                                disabled={!editSelectedChapter12} // Disable if no chapter is selected
-                                renderValue={(selected) => selected.join(", ")}
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editVerses12
-                                  .filter(
-                                    (verse) =>
-                                      verse.chapterId === editSelectedChapter12
-                                  )
-                                  .map((verse) => (
-                                    <MenuItem key={verse.id} value={verse.id}>
-                                      {verse.reference}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-                          </Box>
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleEditFetchVerses}
-                            sx={{ marginTop: "10px" }}
-                          >
-                            OK
-                          </Button>
+                        {/*RESPONSIAL PSALM VERSE OPT2*/}
+                        <TabPanel value={editTabValue} index={20}>
                           <TextField
                             fullWidth
                             label="Responsorial Psalm Verse OPT2"
@@ -10097,6 +3581,9 @@ function DailyReadings() {
                               }}
                             />
                           )}
+                        </TabPanel>
+
+                        <TabPanel value={editTabValue} index={21}>
                           <TextField
                             fullWidth
                             label="Responsorial Psalm Text2 OPT2"
@@ -10117,6 +3604,9 @@ function DailyReadings() {
                               },
                             }}
                           />
+                        </TabPanel>
+
+                        <TabPanel value={editTabValue} index={22}>
                           <TextField
                             fullWidth
                             label="Responsorial Psalm Response OPT2"
@@ -10137,6 +3627,9 @@ function DailyReadings() {
                               },
                             }}
                           />
+                        </TabPanel>
+
+                        <TabPanel value={editTabValue} index={23}>
                           <TextField
                             fullWidth
                             label="Responsorial Psalm Text3 OPT2"
@@ -10157,6 +3650,9 @@ function DailyReadings() {
                               },
                             }}
                           />
+                        </TabPanel>
+
+                        <TabPanel value={editTabValue} index={24}>
                           <TextField
                             fullWidth
                             label="Responsorial Psalm Text4 OPT2"
@@ -10177,6 +3673,9 @@ function DailyReadings() {
                               },
                             }}
                           />
+                        </TabPanel>
+
+                        <TabPanel value={editTabValue} index={25}>
                           <TextField
                             fullWidth
                             label="Responsorial Psalm Text5 OPT2"
@@ -10197,6 +3696,9 @@ function DailyReadings() {
                               },
                             }}
                           />
+                        </TabPanel>
+
+                        <TabPanel value={editTabValue} index={26}>
                           <TextField
                             fullWidth
                             label="ResponsorialText1"
@@ -10217,6 +3719,9 @@ function DailyReadings() {
                               },
                             }}
                           />
+                        </TabPanel>
+
+                        <TabPanel value={editTabValue} index={27}>
                           <TextField
                             fullWidth
                             label="ResponsorialText2"
@@ -10237,6 +3742,9 @@ function DailyReadings() {
                               },
                             }}
                           />
+                        </TabPanel>
+
+                        <TabPanel value={editTabValue} index={28}>
                           <TextField
                             fullWidth
                             label="ResponsorialText3"
@@ -10257,6 +3765,9 @@ function DailyReadings() {
                               },
                             }}
                           />
+                        </TabPanel>
+
+                        <TabPanel value={editTabValue} index={29}>
                           <TextField
                             fullWidth
                             label="Before Gospel Text"
@@ -10277,149 +3788,10 @@ function DailyReadings() {
                               },
                             }}
                           />
+                        </TabPanel>
 
-                          {/*VERSE B4 GOSPEL OPT2*/}
-                          <Box
-                            display="flex"
-                            width="100%"
-                            sx={{ marginTop: "10px" }}
-                          >
-                            <FormControl
-                              variant="outlined"
-                              style={{ flex: 1, marginRight: "8px" }}
-                            >
-                              <InputLabel
-                                id="book-select-label"
-                                sx={{ lineHeight: "15px" }}
-                              >
-                                Book
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="book-select-label"
-                                value={editSelectedBook13}
-                                onChange={(e) => {
-                                  setEditSelectedBook13(e.target.value);
-                                  setEditSelectedChapter13(""); // Reset chapter and verse when book changes
-                                  setEditSelectedVerse13([]);
-                                }}
-                                label="Book"
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editBooks.map((book) => (
-                                  <MenuItem key={book.id} value={book.id}>
-                                    {book.name}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                            </FormControl>
-
-                            <FormControl
-                              variant="outlined"
-                              style={{ flex: 1, marginRight: "8px" }}
-                            >
-                              <InputLabel
-                                id="chapter-select-label"
-                                sx={{ lineHeight: "15px" }}
-                              >
-                                Chapter
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="chapter-select-label"
-                                value={editSelectedChapter13}
-                                onChange={(e) => {
-                                  setEditSelectedChapter13(e.target.value);
-                                  setEditSelectedVerse13([]); // Reset verse when chapter changes
-                                }}
-                                label="Chapter"
-                                disabled={!editSelectedBook13} // Disable if no book is selected
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editChapters13
-                                  .filter(
-                                    (chapter) =>
-                                      chapter.bookId === editSelectedBook13
-                                  )
-                                  .map((chapter) => (
-                                    <MenuItem
-                                      key={chapter.id}
-                                      value={chapter.id}
-                                    >
-                                      {chapter.reference}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-
-                            <FormControl variant="outlined" style={{ flex: 1 }}>
-                              <InputLabel
-                                sx={{ lineHeight: "15px" }}
-                                id="verse-select-label"
-                              >
-                                Verse
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="verse-select-label"
-                                multiple
-                                value={editSelectedVerse13}
-                                onChange={(e) =>
-                                  setEditSelectedVerse13(e.target.value)
-                                }
-                                label="Verse"
-                                disabled={!editSelectedChapter13} // Disable if no chapter is selected
-                                renderValue={(selected) => selected.join(", ")}
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editVerses13
-                                  .filter(
-                                    (verse) =>
-                                      verse.chapterId === editSelectedChapter13
-                                  )
-                                  .map((verse) => (
-                                    <MenuItem key={verse.id} value={verse.id}>
-                                      {verse.reference}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-                          </Box>
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleEditFetchVerses}
-                            sx={{ marginTop: "10px" }}
-                          >
-                            OK
-                          </Button>
+                        {/*VERSE B4 GOSPEL OPT2*/}
+                        <TabPanel value={editTabValue} index={30}>
                           <TextField
                             fullWidth
                             label="Verse before Gospel OPT2"
@@ -10462,149 +3834,10 @@ function DailyReadings() {
                               }}
                             />
                           )}
+                        </TabPanel>
 
-                          {/* ALLELULIA VERSE*/}
-                          <Box
-                            display="flex"
-                            width="100%"
-                            sx={{ marginTop: "10px" }}
-                          >
-                            <FormControl
-                              variant="outlined"
-                              style={{ flex: 1, marginRight: "8px" }}
-                            >
-                              <InputLabel
-                                id="book-select-label"
-                                sx={{ lineHeight: "15px" }}
-                              >
-                                Book
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="book-select-label"
-                                value={editSelectedBook14}
-                                onChange={(e) => {
-                                  setEditSelectedBook14(e.target.value);
-                                  setEditSelectedChapter14(""); // Reset chapter and verse when book changes
-                                  setEditSelectedVerse14([]);
-                                }}
-                                label="Book"
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editBooks.map((book) => (
-                                  <MenuItem key={book.id} value={book.id}>
-                                    {book.name}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                            </FormControl>
-
-                            <FormControl
-                              variant="outlined"
-                              style={{ flex: 1, marginRight: "8px" }}
-                            >
-                              <InputLabel
-                                id="chapter-select-label"
-                                sx={{ lineHeight: "15px" }}
-                              >
-                                Chapter
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="chapter-select-label"
-                                value={editSelectedChapter14}
-                                onChange={(e) => {
-                                  setEditSelectedChapter14(e.target.value);
-                                  setEditSelectedVerse14([]); // Reset verse when chapter changes
-                                }}
-                                label="Chapter"
-                                disabled={!editSelectedBook14} // Disable if no book is selected
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editChapters14
-                                  .filter(
-                                    (chapter) =>
-                                      chapter.bookId === editSelectedBook14
-                                  )
-                                  .map((chapter) => (
-                                    <MenuItem
-                                      key={chapter.id}
-                                      value={chapter.id}
-                                    >
-                                      {chapter.reference}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-
-                            <FormControl variant="outlined" style={{ flex: 1 }}>
-                              <InputLabel
-                                sx={{ lineHeight: "15px" }}
-                                id="verse-select-label"
-                              >
-                                Verse
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="verse-select-label"
-                                multiple
-                                value={editSelectedVerse14}
-                                onChange={(e) =>
-                                  setEditSelectedVerse14(e.target.value)
-                                }
-                                label="Verse"
-                                disabled={!editSelectedChapter14} // Disable if no chapter is selected
-                                renderValue={(selected) => selected.join(", ")}
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editVerses14
-                                  .filter(
-                                    (verse) =>
-                                      verse.chapterId === editSelectedChapter14
-                                  )
-                                  .map((verse) => (
-                                    <MenuItem key={verse.id} value={verse.id}>
-                                      {verse.reference}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-                          </Box>
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleEditFetchVerses}
-                            sx={{ marginTop: "10px" }}
-                          >
-                            OK
-                          </Button>
+                        {/* ALLELULIA VERSE*/}
+                        <TabPanel value={editTabValue} index={31}>
                           <TextField
                             fullWidth
                             label="Alleluia Verse"
@@ -10647,6 +3880,9 @@ function DailyReadings() {
                               }}
                             />
                           )}
+                        </TabPanel>
+
+                        <TabPanel value={editTabValue} index={32}>
                           <TextField
                             fullWidth
                             label="Alleluia OPT2"
@@ -10667,6 +3903,9 @@ function DailyReadings() {
                               },
                             }}
                           />
+                        </TabPanel>
+
+                        <TabPanel value={editTabValue} index={33}>
                           <TextField
                             fullWidth
                             label="Alleluia Text OPT2"
@@ -10687,149 +3926,10 @@ function DailyReadings() {
                               },
                             }}
                           />
+                        </TabPanel>
 
-                          {/*       GOSPEL VERSE        */}
-                          <Box
-                            display="flex"
-                            width="100%"
-                            sx={{ marginTop: "10px" }}
-                          >
-                            <FormControl
-                              variant="outlined"
-                              style={{ flex: 1, marginRight: "8px" }}
-                            >
-                              <InputLabel
-                                id="book-select-label"
-                                sx={{ lineHeight: "15px" }}
-                              >
-                                Book
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="book-select-label"
-                                value={editSelectedBook15}
-                                onChange={(e) => {
-                                  setEditSelectedBook15(e.target.value);
-                                  setEditSelectedChapter15(""); // Reset chapter and verse when book changes
-                                  setEditSelectedVerse15([]);
-                                }}
-                                label="Book"
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editBooks.map((book) => (
-                                  <MenuItem key={book.id} value={book.id}>
-                                    {book.name}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                            </FormControl>
-
-                            <FormControl
-                              variant="outlined"
-                              style={{ flex: 1, marginRight: "8px" }}
-                            >
-                              <InputLabel
-                                id="chapter-select-label"
-                                sx={{ lineHeight: "15px" }}
-                              >
-                                Chapter
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="chapter-select-label"
-                                value={editSelectedChapter15}
-                                onChange={(e) => {
-                                  setEditSelectedChapter15(e.target.value);
-                                  setEditSelectedVerse15([]); // Reset verse when chapter changes
-                                }}
-                                label="Chapter"
-                                disabled={!editSelectedBook15} // Disable if no book is selected
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editChapters15
-                                  .filter(
-                                    (chapter) =>
-                                      chapter.bookId === editSelectedBook15
-                                  )
-                                  .map((chapter) => (
-                                    <MenuItem
-                                      key={chapter.id}
-                                      value={chapter.id}
-                                    >
-                                      {chapter.reference}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-
-                            <FormControl variant="outlined" style={{ flex: 1 }}>
-                              <InputLabel
-                                sx={{ lineHeight: "15px" }}
-                                id="verse-select-label"
-                              >
-                                Verse
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="verse-select-label"
-                                multiple
-                                value={editSelectedVerse15}
-                                onChange={(e) =>
-                                  setEditSelectedVerse15(e.target.value)
-                                }
-                                label="Verse"
-                                disabled={!editSelectedChapter15} // Disable if no chapter is selected
-                                renderValue={(selected) => selected.join(", ")}
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editVerses15
-                                  .filter(
-                                    (verse) =>
-                                      verse.chapterId === editSelectedChapter15
-                                  )
-                                  .map((verse) => (
-                                    <MenuItem key={verse.id} value={verse.id}>
-                                      {verse.reference}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-                          </Box>
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleEditFetchVerses}
-                            sx={{ marginTop: "10px" }}
-                          >
-                            OK
-                          </Button>
+                        {/*       GOSPEL VERSE        */}
+                        <TabPanel value={editTabValue} index={34}>
                           <TextField
                             fullWidth
                             label="Gospel Verse"
@@ -10872,149 +3972,10 @@ function DailyReadings() {
                               }}
                             />
                           )}
+                        </TabPanel>
 
-                          {/*      GOSPEL VERSE 2       */}
-                          <Box
-                            display="flex"
-                            width="100%"
-                            sx={{ marginTop: "10px" }}
-                          >
-                            <FormControl
-                              variant="outlined"
-                              style={{ flex: 1, marginRight: "8px" }}
-                            >
-                              <InputLabel
-                                id="book-select-label"
-                                sx={{ lineHeight: "15px" }}
-                              >
-                                Book
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="book-select-label"
-                                value={editSelectedBook16}
-                                onChange={(e) => {
-                                  setEditSelectedBook16(e.target.value);
-                                  setEditSelectedChapter16(""); // Reset chapter and verse when book changes
-                                  setEditSelectedVerse16([]);
-                                }}
-                                label="Book"
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editBooks.map((book) => (
-                                  <MenuItem key={book.id} value={book.id}>
-                                    {book.name}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                            </FormControl>
-
-                            <FormControl
-                              variant="outlined"
-                              style={{ flex: 1, marginRight: "8px" }}
-                            >
-                              <InputLabel
-                                id="chapter-select-label"
-                                sx={{ lineHeight: "15px" }}
-                              >
-                                Chapter
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="chapter-select-label"
-                                value={editSelectedChapter16}
-                                onChange={(e) => {
-                                  setEditSelectedChapter16(e.target.value);
-                                  setEditSelectedVerse16([]); // Reset verse when chapter changes
-                                }}
-                                label="Chapter"
-                                disabled={!editSelectedBook16} // Disable if no book is selected
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editChapters16
-                                  .filter(
-                                    (chapter) =>
-                                      chapter.bookId === editSelectedBook16
-                                  )
-                                  .map((chapter) => (
-                                    <MenuItem
-                                      key={chapter.id}
-                                      value={chapter.id}
-                                    >
-                                      {chapter.reference}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-
-                            <FormControl variant="outlined" style={{ flex: 1 }}>
-                              <InputLabel
-                                sx={{ lineHeight: "15px" }}
-                                id="verse-select-label"
-                              >
-                                Verse
-                              </InputLabel>
-                              <Select
-                                fullWidth
-                                labelId="verse-select-label"
-                                multiple
-                                value={editSelectedVerse16}
-                                onChange={(e) =>
-                                  setEditSelectedVerse16(e.target.value)
-                                }
-                                label="Verse"
-                                disabled={!editSelectedChapter16} // Disable if no chapter is selected
-                                renderValue={(selected) => selected.join(", ")}
-                                sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "8px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              >
-                                {editVerses16
-                                  .filter(
-                                    (verse) =>
-                                      verse.chapterId === editSelectedChapter16
-                                  )
-                                  .map((verse) => (
-                                    <MenuItem key={verse.id} value={verse.id}>
-                                      {verse.reference}
-                                    </MenuItem>
-                                  ))}
-                              </Select>
-                            </FormControl>
-                          </Box>
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleEditFetchVerses}
-                            sx={{ marginTop: "10px" }}
-                          >
-                            OK
-                          </Button>
+                        {/*      GOSPEL VERSE 2       */}
+                        <TabPanel value={editTabValue} index={35}>
                           <TextField
                             fullWidth
                             label="Gospel Verse2"
@@ -11057,6 +4018,9 @@ function DailyReadings() {
                               }}
                             />
                           )}
+                        </TabPanel>
+
+                        <TabPanel value={editTabValue} index={36}>
                           <TextField
                             fullWidth
                             label="Verse Before Gospel"
@@ -11077,8 +4041,8 @@ function DailyReadings() {
                               },
                             }}
                           />
-                        </>
-                      )}
+                        </TabPanel>
+                      </>
                     </CardContent>
                     <Divider />
                     <Box

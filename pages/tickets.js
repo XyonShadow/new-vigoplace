@@ -70,6 +70,7 @@ function Tickets() {
   const user = getUser?.data?.user;
 
   const [columnFilters, setColumnFilters] = React.useState([]);
+  const [columnFilters1, setColumnFilters1] = React.useState([]);
   const [globalFilter, setGlobalFilter] = React.useState("");
   const [sorting, setSorting] = React.useState([]);
   const [pagination, setPagination] = React.useState({
@@ -97,7 +98,7 @@ function Tickets() {
 
   useEffect(() => {
     setPagination1({ ...pagination1, pageIndex: 0 });
-  }, [columnFilters]);
+  }, [columnFilters1]);
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -246,10 +247,8 @@ function Tickets() {
       globalFilter, //refetch when globalFilter changes
       pagination.pageIndex, //refetch when pagination.pageIndex changes
       pagination.pageSize, //refetch when pagination.pageSize changes
-      sorting, //refetch when sorting changes
       gender,
       status,
-      isVerified,
       ticketType,
     ],
     async () => {
@@ -302,21 +301,18 @@ function Tickets() {
   } = useQuery(
     [
       "fetchClosedTickets",
-      columnFilters, //refetch when columnFilters changes
+      columnFilters1, //refetch when columnFilters changes
       globalFilter, //refetch when globalFilter changes
       pagination1.pageIndex, //refetch when pagination.pageIndex changes
       pagination1.pageSize, //refetch when pagination.pageSize changes
-      sorting, //refetch when sorting changes
-      gender,
       status,
-      isVerified,
       ticketType1,
     ],
     async () => {
       const { data } = await axios.get(
         `https://api.vigoplace.com/api/admin/tickets/${ticketType1}/close?limit=${1000}${
-          columnFilters?.length >= 1
-            ? `&search=${JSON.stringify(columnFilters)}`
+          columnFilters1?.length >= 1
+            ? `&search=${JSON.stringify(columnFilters1)}`
             : ""
         }`,
         // `http://localhost:4000/api/admin/tickets/${ticketType}?limit=${1000}${
@@ -356,6 +352,10 @@ function Tickets() {
 
   const handleTicketType = (event) => {
     setTicketType(event.target.value);
+  };
+
+  const handleTicketType1 = (event) => {
+    setTicketType1(event.target.value);
   };
 
   const handleStatus = (event) => {
@@ -509,10 +509,10 @@ function Tickets() {
                   // enableRowActions
                   enableStickyHeader
                   enableStickyFooter
-                  manualPagination
+                  manualPagination={true}
                   onPaginationChange={setPagination1}
                   rowCount={datalenght1 ?? 0}
-                  onColumnFiltersChange={setColumnFilters}
+                  onColumnFiltersChange={setColumnFilters1}
                   onGlobalFilterChange={setGlobalFilter}
                   initialState={{ showColumnFilters: false }}
                   positionToolbarAlertBanner="bottom"
@@ -571,9 +571,9 @@ function Tickets() {
                           <Select
                             labelId="demo-simple-select-standard-label"
                             id="demo-simple-select-standard"
-                            value={ticketType}
+                            value={ticketType1}
                             defaultValue="unassigned"
-                            onChange={handleTicketType}
+                            onChange={handleTicketType1}
                             label="Ticket State"
                           >
                             <MenuItem value=""></MenuItem>
