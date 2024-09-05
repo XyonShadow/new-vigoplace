@@ -143,10 +143,20 @@ const Users = () => {
     React.useState(false);
   const [offAutoPayoutErrorToast, setoffAutoPayoutErrorToast] =
     React.useState(false);
+  const [autoEarningSuccessToast, setAutoEarningSuccessToast] =
+    React.useState(false);
+  const [autoEarningErrorToast, setAutoEarningErrorToast] =
+    React.useState(false);
+  const [offAutoEarningSuccessToast, setoffAutoEarningSuccessToast] =
+    React.useState(false);
+  const [offAutoEarningErrorToast, setoffAutoEarningErrorToast] =
+    React.useState(false);
   const [lienModal, setLienModal] = React.useState(false);
   const [ticketModal, setTicketModal] = React.useState(false);
   const [autoPayoutModal, setAutoPayoutModal] = React.useState(false);
   const [offAutoPayoutModal, setOffAutoPayoutModal] = React.useState(false);
+  const [autoEarningModal, setAutoEarningModal] = React.useState(false);
+  const [offAutoEarningModal, setOffAutoEarningModal] = React.useState(false);
   const [notifyModal, setNotifyModal] = React.useState(false);
   const [kycModal, setKycModal] = React.useState(false);
   const [emailModal, setEmailModal] = React.useState(false);
@@ -796,6 +806,72 @@ const Users = () => {
     },
   });
 
+  const autoEarning = async ({ id, pin }) => {
+    const verifyAutoEarning = await axios.patch(
+      //"http://localhost:4000/api/admin/console/users/kycverify",
+      "https://api.vigoplace.com/api/admin/console/users/update-earnings",
+      { userId: id, approvalPin: pin, autoEarning: true },
+      {
+        headers: {
+          Authorization: user?.token,
+        },
+      }
+    );
+
+    return verifyAutoEarning;
+  };
+
+  const autoEarningMutation = useMutation({
+    mutationKey: ["autoEarning"],
+    mutationFn: autoEarning,
+    onSuccess: () => {
+      setPin(null);
+      setAutoEarningSuccessToast(true);
+      queryClient.invalidateQueries("fetchSingleUser");
+      setTimeout(() => {
+        autoEarningMutation.reset();
+      }, 7000);
+    },
+    onError: async (error) => {
+      console.log(error);
+      setAutoEarningErrorToast(true);
+      setPin(null);
+    },
+  });
+
+  const offAutoEarning = async ({ id, pin }) => {
+    const unVerifyAutoEarning = await axios.patch(
+      //"http://localhost:4000/api/admin/console/users/kycverify",
+      "https://api.vigoplace.com/api/admin/console/users/update-earnings",
+      { userId: id, approvalPin: pin, autoEarning: false },
+      {
+        headers: {
+          Authorization: user?.token,
+        },
+      }
+    );
+
+    return unVerifyAutoEarning;
+  };
+
+  const offAutoEarningMutation = useMutation({
+    mutationKey: ["offAutoEarning"],
+    mutationFn: offAutoEarning,
+    onSuccess: () => {
+      setPin(null);
+      setoffAutoEarningSuccessToast(true);
+      queryClient.invalidateQueries("fetchSingleUser");
+      setTimeout(() => {
+        offAutoEarningMutation.reset();
+      }, 7000);
+    },
+    onError: async (error) => {
+      console.log(error);
+      setoffAutoEarningErrorToast(true);
+      setPin(null);
+    },
+  });
+
   const handleCreditSuccessToastClose = (event, reason) => {
     setCreditSuccessToast(false);
   };
@@ -843,6 +919,20 @@ const Users = () => {
   };
   const handleoffAutoPayoutErrorToastClose = (event, reason) => {
     setoffAutoPayoutErrorToast(false);
+  };
+
+  const handleAutoEarningSuccessToastClose = (event, reason) => {
+    setAutoEarningSuccessToast(false);
+  };
+  const handleAutoEarningErrorToastClose = (event, reason) => {
+    setAutoEarningErrorToast(false);
+  };
+
+  const handleoffAutoEarningSuccessToastClose = (event, reason) => {
+    setoffAutoEarningSuccessToast(false);
+  };
+  const handleoffAutoEarningErrorToastClose = (event, reason) => {
+    setoffAutoEarningErrorToast(false);
   };
 
   const handleClose = (event, reason) => {
@@ -1118,6 +1208,66 @@ const Users = () => {
           sx={{ width: "100%" }}
         >
           {offAutoPayoutMutation?.error?.response?.data?.message}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        TransitionComponent={Slide}
+        open={autoEarningSuccessToast}
+        autoHideDuration={6000}
+        onClose={handleAutoEarningSuccessToastClose}
+      >
+        <Alert
+          onClose={handleAutoEarningSuccessToastClose}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {autoEarningMutation?.data?.data?.message}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        TransitionComponent={Slide}
+        open={autoEarningErrorToast}
+        autoHideDuration={6000}
+        onClose={handleAutoEarningErrorToastClose}
+      >
+        <Alert
+          onClose={handleAutoEarningErrorToastClose}
+          severity="warning"
+          sx={{ width: "100%" }}
+        >
+          {autoEarningMutation?.error?.response?.data?.message}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        TransitionComponent={Slide}
+        open={offAutoEarningSuccessToast}
+        autoHideDuration={6000}
+        onClose={handleoffAutoEarningSuccessToastClose}
+      >
+        <Alert
+          onClose={handleoffAutoEarningSuccessToastClose}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {offAutoEarningMutation?.data?.data?.message}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        TransitionComponent={Slide}
+        open={offAutoEarningErrorToast}
+        autoHideDuration={6000}
+        onClose={handleoffAutoEarningErrorToastClose}
+      >
+        <Alert
+          onClose={handleoffAutoEarningErrorToastClose}
+          severity="warning"
+          sx={{ width: "100%" }}
+        >
+          {offAutoEarningMutation?.error?.response?.data?.message}
         </Alert>
       </Snackbar>
 
@@ -1857,6 +2007,157 @@ const Users = () => {
                       </Dialog>
                     </>
                   )}
+
+                  {userDetails?.data?.user?.autoEarning === 0 ? (
+                    <>
+                      <MenuItem sx={{ width: "100%", marginRight: "auto" }}>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          onClick={() => setAutoEarningModal(true)}
+                        >
+                          {autoEarningMutation.isLoading ? (
+                            <CircularProgress size={23} color="inherit" />
+                          ) : autoEarningMutation.isSuccess ? (
+                            <CheckIcon />
+                          ) : (
+                            "Verify Auto Earning"
+                          )}
+                        </Typography>
+                      </MenuItem>
+
+                      <Dialog
+                        open={autoEarningModal}
+                        onClose={() => {
+                          setAutoEarningModal(false);
+                        }}
+                      >
+                        <DialogTitle>Verify User's Auto Earning</DialogTitle>
+                        <DialogContent>
+                          <DialogContentText>
+                            Please enter your admin approval pin to verify auto
+                            payout for this user's wallet, if you dont have one
+                            yet, head to{" "}
+                            {
+                              <Link style={{ color: "blue" }} href="/settings">
+                                Settings
+                              </Link>
+                            }{" "}
+                          </DialogContentText>
+
+                          <TextField
+                            margin="dense"
+                            id="name"
+                            label="Approval Pin"
+                            type="number"
+                            fullWidth
+                            value={pin}
+                            variant="standard"
+                            onChange={handlePin}
+                          />
+                        </DialogContent>
+                        <DialogActions>
+                          <Button
+                            onClick={() => {
+                              setPin(null);
+                              setAutoEarningModal(false);
+                            }}
+                          >
+                            Cancel
+                          </Button>
+                          <LoadingButton
+                            variant="contained"
+                            loading={autoEarningMutation.isLoading}
+                            disabled={pin === null || pin?.length <= 5}
+                            onClick={() => {
+                              autoEarningMutation.mutate({
+                                id: userDetails?.data?.user?.id,
+                                pin,
+                              });
+                              setAutoEarningModal(false);
+                            }}
+                          >
+                            Verify
+                          </LoadingButton>
+                        </DialogActions>
+                      </Dialog>
+                    </>
+                  ) : (
+                    <>
+                      <MenuItem sx={{ width: "100%", marginRight: "auto" }}>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          onClick={() => setOffAutoEarningModal(true)}
+                        >
+                          {offAutoEarningMutation.isLoading ? (
+                            <CircularProgress size={23} color="inherit" />
+                          ) : offAutoEarningMutation.isSuccess ? (
+                            <CheckIcon />
+                          ) : (
+                            "UnVerify Auto Earning"
+                          )}
+                        </Typography>
+                      </MenuItem>
+
+                      <Dialog
+                        open={offAutoEarningModal}
+                        onClose={() => {
+                          setOffAutoEarningModal(false);
+                        }}
+                      >
+                        <DialogTitle>UnVerify User's Auto Earning</DialogTitle>
+                        <DialogContent>
+                          <DialogContentText>
+                            Please enter your admin approval pin to unverify
+                            auto payout for this user's wallet, if you dont have
+                            one yet, head to{" "}
+                            {
+                              <Link style={{ color: "blue" }} href="/settings">
+                                Settings
+                              </Link>
+                            }{" "}
+                          </DialogContentText>
+
+                          <TextField
+                            margin="dense"
+                            id="name"
+                            label="Approval Pin"
+                            type="number"
+                            fullWidth
+                            value={pin}
+                            variant="standard"
+                            onChange={handlePin}
+                          />
+                        </DialogContent>
+                        <DialogActions>
+                          <Button
+                            onClick={() => {
+                              setPin(null);
+                              setOffAutoEarningModal(false);
+                            }}
+                          >
+                            Cancel
+                          </Button>
+                          <LoadingButton
+                            variant="contained"
+                            loading={offAutoEarningMutation.isLoading}
+                            disabled={pin === null || pin?.length <= 5}
+                            onClick={() => {
+                              offAutoEarningMutation.mutate({
+                                id: userDetails?.data?.user?.id,
+                                pin,
+                              });
+                              setOffAutoEarningModal(false);
+                            }}
+                          >
+                            UnVerify
+                          </LoadingButton>
+                        </DialogActions>
+                      </Dialog>
+                    </>
+                  )}
+
                   <>
                     <MenuItem sx={{ width: "100%", marginRight: "auto" }}>
                       <Typography

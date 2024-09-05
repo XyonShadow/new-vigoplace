@@ -18,6 +18,9 @@ import {
   OutlinedInput,
   Tabs,
   Tab,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { format, parse } from "date-fns";
@@ -33,6 +36,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import Slide from "@mui/material/Slide";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -235,6 +239,11 @@ function DailyReadings() {
   const [tabValue, setTabValue] = useState(0);
   const [postTabValue, setPostTabValue] = useState(0);
   const [editTabValue, setEditTabValue] = useState(0);
+  const [expanded, setExpanded] = useState(false);
+
+  const handleAccordionToggle = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
+  };
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -1240,191 +1249,89 @@ function DailyReadings() {
                   <CardHeader subheader="" title="Daily Reading" />
                   <Divider />
                   <CardContent>
-                    <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                      <Tabs
-                        value={postTabValue}
-                        onChange={handlePostTabChange}
-                        textColor="inherit"
-                        // scrollButtons="auto"
-                        aria-label=""
-                        variant="scrollable"
-                        scrollButtons={false}
+                    <Accordion
+                      expanded={expanded === "panel1"}
+                      onChange={handleAccordionToggle("panel1")}
+                    >
+                      <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel1a-content"
+                        id="panel1a-header"
                       >
-                        <Tab label="Title" {...a11yProps(0)} />
-                        <Tab label="Date" {...a11yProps(1)} />
-                        <Tab label="Reading 1 verse" {...a11yProps(2)} />
-                        <Tab
-                          label="Reading 1 option 2 verse"
-                          {...a11yProps(3)}
-                        />
-                        <Tab label="Reading 2 verse" {...a11yProps(4)} />
-                        <Tab
-                          label="Reading 2 option 1 verse"
-                          {...a11yProps(5)}
-                        />
-                        <Tab label="Reading 3 verse" {...a11yProps(6)} />
-                        <Tab label="Reading 4 verse" {...a11yProps(7)} />
-                        <Tab label="Reading 5 verse" {...a11yProps(8)} />
-                        <Tab label="Reading 6 verse" {...a11yProps(9)} />
-                        <Tab label="Reading 7 verse" {...a11yProps(10)} />
-                        <Tab
-                          label="Procession Psalm Verse"
-                          {...a11yProps(11)}
-                        />
-                        <Tab
-                          label="Procession Psalm Gospel"
-                          {...a11yProps(12)}
-                        />
-                        
-                        <Tab
-                          label="Procession Psalm Gospel 2 Verse"
-                          {...a11yProps(13)}
-                        />
-                        <Tab
-                          label="Procession Psalm Gospel 2 Text"
-                          {...a11yProps(14)}
-                        />
-                        <Tab
-                          label="Responsorial Psalm Verse"
-                          {...a11yProps(15)}
-                        />
-                        <Tab
-                          label="Responsorial Psalm Text 2"
-                          {...a11yProps(16)}
-                        />
-                        <Tab
-                          label="Responsorial Psalm Text 3"
-                          {...a11yProps(17)}
-                        />
-                        <Tab
-                          label="Responsorial Psalm Text 4"
-                          {...a11yProps(18)}
-                        />
-                        <Tab
-                          label="Responsorial Psalm Text 5"
-                          {...a11yProps(19)}
-                        />
-                        <Tab
-                          label="Responsorial Psalm Text 6"
-                          {...a11yProps(20)}
-                        />
-                        <Tab
-                          label="Responsorial Psalm Verse OPT 2"
-                          {...a11yProps(21)}
-                        />
-                        <Tab
-                          label="Responsorial Psalm Text 2 OPT 2"
-                          {...a11yProps(22)}
-                        />
-                        <Tab
-                          label="Responsorial Psalm Response OPT 2"
-                          {...a11yProps(23)}
-                        />
-                        <Tab
-                          label="Responsorial Psalm Text 3 OPT 2"
-                          {...a11yProps(24)}
-                        />
-                        <Tab
-                          label="Responsorial Psalm Text 4 OPT 2"
-                          {...a11yProps(25)}
-                        />
-                        <Tab
-                          label="Responsorial Psalm Text 5 OPT 2"
-                          {...a11yProps(26)}
-                        />
-                        <Tab label="Responsorial Text 1" {...a11yProps(27)} />
-                        <Tab label="Responsorial Text 2" {...a11yProps(28)} />
-                        <Tab label="Responsorial Text 3" {...a11yProps(29)} />
-                        <Tab label="Before Gospel Text" {...a11yProps(30)} />
-                        <Tab
-                          label="Verse Before Gospel OPT2"
-                          {...a11yProps(31)}
-                        />
-                        <Tab label="Alleluia Verse" {...a11yProps(32)} />
-                        <Tab label="Alleluia OPT2" {...a11yProps(33)} />
-                        <Tab label="Alleluia Text OPT2" {...a11yProps(34)} />
-                        <Tab label="Gospel Verse" {...a11yProps(35)} />
-                        <Tab label="Gospel Verse 2" {...a11yProps(36)} />
-                      </Tabs>
-                    </Box>
-
-                    <TabPanel value={postTabValue} index={0}>
-                      <TextField
-                        fullWidth
-                        label="Title"
-                        margin="normal"
-                        name="title"
-                        onChange={handleTitle}
-                        type="text"
-                        value={title}
-                        variant="outlined"
-                        sx={{
-                          height: "40px",
-                          "& .MuiOutlinedInput-root": {
+                        Title
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <TextField
+                          fullWidth
+                          label="Title"
+                          margin="normal"
+                          name="title"
+                          onChange={handleTitle}
+                          type="text"
+                          value={title}
+                          variant="outlined"
+                          sx={{
                             height: "40px",
-                          },
-                          "& .MuiInputLabel-root": {
-                            lineHeight: "15px",
-                            fontSize: "smaller",
-                          },
-                        }}
-                      />
-                    </TabPanel>
+                            "& .MuiOutlinedInput-root": {
+                              height: "40px",
+                            },
+                            "& .MuiInputLabel-root": {
+                              lineHeight: "15px",
+                              fontSize: "smaller",
+                            },
+                          }}
+                        />
+                      </AccordionDetails>
+                    </Accordion>
 
-                    <TabPanel value={postTabValue} index={1}>
-                      <TextField
-                        fullWidth
-                        //label="Old Password"
-                        margin="normal"
-                        name="date"
-                        onChange={handleDate}
-                        type="date"
-                        value={date}
-                        variant="outlined"
-                        sx={{
-                          height: "40px",
-                          "& .MuiOutlinedInput-root": {
+                    <Accordion
+                      expanded={expanded === "panel2"}
+                      onChange={handleAccordionToggle("panel2")}
+                    >
+                      <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel2a-content"
+                        id="panel2a-header"
+                      >
+                        Date
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <TextField
+                          fullWidth
+                          margin="normal"
+                          name="date"
+                          onChange={handleDate}
+                          type="date"
+                          value={date}
+                          variant="outlined"
+                          sx={{
                             height: "40px",
-                          },
-                          "& .MuiInputLabel-root": {
-                            lineHeight: "15px",
-                            fontSize: "smaller",
-                          },
-                        }}
-                      />
-                    </TabPanel>
+                            "& .MuiOutlinedInput-root": {
+                              height: "40px",
+                            },
+                            "& .MuiInputLabel-root": {
+                              lineHeight: "15px",
+                              fontSize: "smaller",
+                            },
+                          }}
+                        />
+                      </AccordionDetails>
+                    </Accordion>
                     <>
                       {/********************* READING 1 VERSE ********************/}
-                      <TabPanel value={postTabValue} index={2}>
-                        <TextField
-                          fullWidth
-                          label="Reading1 Verse"
-                          margin="normal"
-                          name="reading1Verse"
-                          type="text"
-                          onChange={handleReading1Verse}
-                          value={reading1Verse}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
-                              height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                        {reading1Verse && (
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Reading 1 verse
+                        </AccordionSummary>
+                        <AccordionDetails>
                           <TextField
                             fullWidth
-                            label="Reading1 Text"
+                            label="Reading1 Verse"
                             margin="normal"
-                            name="reading1Text"
-                            onChange={handleReading1Text}
+                            name="reading1Verse"
                             type="text"
-                            value={reading1Text}
+                            onChange={handleReading1Verse}
+                            value={reading1Verse}
                             variant="outlined"
                             sx={{
                               height: "40px",
@@ -1437,39 +1344,44 @@ function DailyReadings() {
                               },
                             }}
                           />
-                        )}
-                      </TabPanel>
+                          {reading1Verse && (
+                            <TextField
+                              fullWidth
+                              label="Reading1 Text"
+                              margin="normal"
+                              name="reading1Text"
+                              onChange={handleReading1Text}
+                              type="text"
+                              value={reading1Text}
+                              variant="outlined"
+                              sx={{
+                                height: "40px",
+                                "& .MuiOutlinedInput-root": {
+                                  height: "40px",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          )}
+                        </AccordionDetails>
+                      </Accordion>
                       {/********************* READING 1 OPTION 2 VERSE ********************/}
-                      <TabPanel value={postTabValue} index={3}>
-                        <TextField
-                          fullWidth
-                          label="Reading1 Option2 Verse"
-                          margin="normal"
-                          name="reading1Option2Verse"
-                          onChange={handleReading1Option2Verse}
-                          type="text"
-                          value={reading1Option2Verse}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
-                              height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                        {reading1Option2Verse && (
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Reading 1 option 2 verse
+                        </AccordionSummary>
+                        <AccordionDetails>
                           <TextField
                             fullWidth
-                            label="Reading1 Text Option2"
+                            label="Reading1 Option2 Verse"
                             margin="normal"
-                            name="reading1TextOption2"
-                            onChange={handleReading1TextOption2}
+                            name="reading1Option2Verse"
+                            onChange={handleReading1Option2Verse}
                             type="text"
-                            value={reading1TextOption2}
+                            value={reading1Option2Verse}
                             variant="outlined"
                             sx={{
                               height: "40px",
@@ -1482,40 +1394,45 @@ function DailyReadings() {
                               },
                             }}
                           />
-                        )}
-                      </TabPanel>
+                          {reading1Option2Verse && (
+                            <TextField
+                              fullWidth
+                              label="Reading1 Text Option2"
+                              margin="normal"
+                              name="reading1TextOption2"
+                              onChange={handleReading1TextOption2}
+                              type="text"
+                              value={reading1TextOption2}
+                              variant="outlined"
+                              sx={{
+                                height: "40px",
+                                "& .MuiOutlinedInput-root": {
+                                  height: "40px",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          )}
+                        </AccordionDetails>
+                      </Accordion>
 
                       {/********************* READING 2 VERSE ********************/}
-                      <TabPanel value={postTabValue} index={4}>
-                        <TextField
-                          fullWidth
-                          label="Reading2 Verse"
-                          margin="normal"
-                          name="reading2Verse"
-                          onChange={handleReading2Verse}
-                          type="text"
-                          value={reading2Verse}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
-                              height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                        {reading2Verse && (
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Reading 2 verse
+                        </AccordionSummary>
+                        <AccordionDetails>
                           <TextField
                             fullWidth
-                            label="Reading2 Text"
+                            label="Reading2 Verse"
                             margin="normal"
-                            name="reading2Text"
-                            onChange={handleReading2Text}
+                            name="reading2Verse"
+                            onChange={handleReading2Verse}
                             type="text"
-                            value={reading2Text}
+                            value={reading2Verse}
                             variant="outlined"
                             sx={{
                               height: "40px",
@@ -1528,39 +1445,44 @@ function DailyReadings() {
                               },
                             }}
                           />
-                        )}
-                      </TabPanel>
+                          {reading2Verse && (
+                            <TextField
+                              fullWidth
+                              label="Reading2 Text"
+                              margin="normal"
+                              name="reading2Text"
+                              onChange={handleReading2Text}
+                              type="text"
+                              value={reading2Text}
+                              variant="outlined"
+                              sx={{
+                                height: "40px",
+                                "& .MuiOutlinedInput-root": {
+                                  height: "40px",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          )}
+                        </AccordionDetails>
+                      </Accordion>
                       {/********************* READING 2 OPTION 1 VERSE ********************/}
-                      <TabPanel value={postTabValue} index={5}>
-                        <TextField
-                          fullWidth
-                          label="Reading2 Option1 Verse"
-                          margin="normal"
-                          name="reading2Option1Verse"
-                          onChange={handleReading2Option1Verse}
-                          type="text"
-                          value={reading2Option1Verse}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
-                              height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                        {reading2Option1Verse && (
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Reading 2 Option 1 Verse
+                        </AccordionSummary>
+                        <AccordionDetails>
                           <TextField
                             fullWidth
-                            label="Reading2 Text Option1"
+                            label="Reading2 Option1 Verse"
                             margin="normal"
-                            name="reading2TextOption1"
-                            onChange={handleReading2TextOption1}
+                            name="reading2Option1Verse"
+                            onChange={handleReading2Option1Verse}
                             type="text"
-                            value={reading2TextOption1}
+                            value={reading2Option1Verse}
                             variant="outlined"
                             sx={{
                               height: "40px",
@@ -1573,39 +1495,44 @@ function DailyReadings() {
                               },
                             }}
                           />
-                        )}
-                      </TabPanel>
+                          {reading2Option1Verse && (
+                            <TextField
+                              fullWidth
+                              label="Reading2 Text Option1"
+                              margin="normal"
+                              name="reading2TextOption1"
+                              onChange={handleReading2TextOption1}
+                              type="text"
+                              value={reading2TextOption1}
+                              variant="outlined"
+                              sx={{
+                                height: "40px",
+                                "& .MuiOutlinedInput-root": {
+                                  height: "40px",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          )}
+                        </AccordionDetails>
+                      </Accordion>
                       {/********************* READING 3 VERSE ********************/}
-                      <TabPanel value={postTabValue} index={6}>
-                        <TextField
-                          fullWidth
-                          label="Reading3 Verse"
-                          margin="normal"
-                          name="reading3Verse"
-                          onChange={handleReading3Verse}
-                          type="text"
-                          value={reading3Verse}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
-                              height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                        {reading3Verse && (
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Reading 3 Verse
+                        </AccordionSummary>
+                        <AccordionDetails>
                           <TextField
                             fullWidth
-                            label="Reading3 Text"
+                            label="Reading3 Verse"
                             margin="normal"
-                            name="reading3Text"
-                            onChange={handleReading3Text}
+                            name="reading3Verse"
+                            onChange={handleReading3Verse}
                             type="text"
-                            value={reading3Text}
+                            value={reading3Verse}
                             variant="outlined"
                             sx={{
                               height: "40px",
@@ -1618,39 +1545,44 @@ function DailyReadings() {
                               },
                             }}
                           />
-                        )}
-                      </TabPanel>
+                          {reading3Verse && (
+                            <TextField
+                              fullWidth
+                              label="Reading3 Text"
+                              margin="normal"
+                              name="reading3Text"
+                              onChange={handleReading3Text}
+                              type="text"
+                              value={reading3Text}
+                              variant="outlined"
+                              sx={{
+                                height: "40px",
+                                "& .MuiOutlinedInput-root": {
+                                  height: "40px",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          )}
+                        </AccordionDetails>
+                      </Accordion>
                       {/********************* READING 4 VERSE ********************/}
-                      <TabPanel value={postTabValue} index={7}>
-                        <TextField
-                          fullWidth
-                          label="Reading4 Verse"
-                          margin="normal"
-                          name="reading4Verse"
-                          onChange={handleReading4Verse}
-                          type="text"
-                          value={reading4Verse}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
-                              height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                        {reading4Verse && (
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Reading 4 Verse
+                        </AccordionSummary>
+                        <AccordionDetails>
                           <TextField
                             fullWidth
-                            label="Reading4 Text"
+                            label="Reading4 Verse"
                             margin="normal"
-                            name="reading4Text"
-                            onChange={handleReading4Text}
+                            name="reading4Verse"
+                            onChange={handleReading4Verse}
                             type="text"
-                            value={reading4Text}
+                            value={reading4Verse}
                             variant="outlined"
                             sx={{
                               height: "40px",
@@ -1663,39 +1595,44 @@ function DailyReadings() {
                               },
                             }}
                           />
-                        )}
-                      </TabPanel>
+                          {reading4Verse && (
+                            <TextField
+                              fullWidth
+                              label="Reading4 Text"
+                              margin="normal"
+                              name="reading4Text"
+                              onChange={handleReading4Text}
+                              type="text"
+                              value={reading4Text}
+                              variant="outlined"
+                              sx={{
+                                height: "40px",
+                                "& .MuiOutlinedInput-root": {
+                                  height: "40px",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          )}
+                        </AccordionDetails>
+                      </Accordion>
                       {/********************* READING 5 VERSE ********************/}
-                      <TabPanel value={postTabValue} index={8}>
-                        <TextField
-                          fullWidth
-                          label="Reading5 Verse"
-                          margin="normal"
-                          name="reading5Verse"
-                          onChange={handleReading5Verse}
-                          type="text"
-                          value={reading5Verse}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
-                              height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                        {reading5Verse && (
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Reading 5 Verse
+                        </AccordionSummary>
+                        <AccordionDetails>
                           <TextField
                             fullWidth
-                            label="Reading5 Text"
+                            label="Reading5 Verse"
                             margin="normal"
-                            name="reading5Text"
-                            onChange={handleReading5Text}
+                            name="reading5Verse"
+                            onChange={handleReading5Verse}
                             type="text"
-                            value={reading5Text}
+                            value={reading5Verse}
                             variant="outlined"
                             sx={{
                               height: "40px",
@@ -1708,39 +1645,44 @@ function DailyReadings() {
                               },
                             }}
                           />
-                        )}
-                      </TabPanel>
+                          {reading5Verse && (
+                            <TextField
+                              fullWidth
+                              label="Reading5 Text"
+                              margin="normal"
+                              name="reading5Text"
+                              onChange={handleReading5Text}
+                              type="text"
+                              value={reading5Text}
+                              variant="outlined"
+                              sx={{
+                                height: "40px",
+                                "& .MuiOutlinedInput-root": {
+                                  height: "40px",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          )}
+                        </AccordionDetails>
+                      </Accordion>
                       {/********************* READING 6 VERSE ********************/}
-                      <TabPanel value={postTabValue} index={9}>
-                        <TextField
-                          fullWidth
-                          label="Reading6 Verse"
-                          margin="normal"
-                          name="reading6Verse"
-                          onChange={handleReading6Verse}
-                          type="text"
-                          value={reading6Verse}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
-                              height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                        {reading6Verse && (
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Reading 6 Verse
+                        </AccordionSummary>
+                        <AccordionDetails>
                           <TextField
                             fullWidth
-                            label="Reading6 Text"
+                            label="Reading6 Verse"
                             margin="normal"
-                            name="reading6Text"
-                            onChange={handleReading6Text}
+                            name="reading6Verse"
+                            onChange={handleReading6Verse}
                             type="text"
-                            value={reading6Text}
+                            value={reading6Verse}
                             variant="outlined"
                             sx={{
                               height: "40px",
@@ -1753,39 +1695,44 @@ function DailyReadings() {
                               },
                             }}
                           />
-                        )}
-                      </TabPanel>
+                          {reading6Verse && (
+                            <TextField
+                              fullWidth
+                              label="Reading6 Text"
+                              margin="normal"
+                              name="reading6Text"
+                              onChange={handleReading6Text}
+                              type="text"
+                              value={reading6Text}
+                              variant="outlined"
+                              sx={{
+                                height: "40px",
+                                "& .MuiOutlinedInput-root": {
+                                  height: "40px",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          )}
+                        </AccordionDetails>
+                      </Accordion>
                       {/********************* READING 7 VERSE ********************/}
-                      <TabPanel value={postTabValue} index={10}>
-                        <TextField
-                          fullWidth
-                          label="Reading7 Verse"
-                          margin="normal"
-                          name="reading7Verse"
-                          onChange={handleReading7Verse}
-                          type="text"
-                          value={reading7Verse}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
-                              height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                        {reading7Verse && (
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Reading 7 Verse
+                        </AccordionSummary>
+                        <AccordionDetails>
                           <TextField
                             fullWidth
-                            label="Reading7 Text"
+                            label="Reading7 Verse"
                             margin="normal"
-                            name="reading7Text"
-                            onChange={handleReading7Text}
+                            name="reading7Verse"
+                            onChange={handleReading7Verse}
                             type="text"
-                            value={reading7Text}
+                            value={reading7Verse}
                             variant="outlined"
                             sx={{
                               height: "40px",
@@ -1798,312 +1745,371 @@ function DailyReadings() {
                               },
                             }}
                           />
-                        )}
-                      </TabPanel>
+                          {reading7Verse && (
+                            <TextField
+                              fullWidth
+                              label="Reading7 Text"
+                              margin="normal"
+                              name="reading7Text"
+                              onChange={handleReading7Text}
+                              type="text"
+                              value={reading7Text}
+                              variant="outlined"
+                              sx={{
+                                height: "40px",
+                                "& .MuiOutlinedInput-root": {
+                                  height: "40px",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          )}
+                        </AccordionDetails>
+                      </Accordion>
 
                       {/* START FROM HERE  */}
-                      <TabPanel value={postTabValue} index={11}>
-                        <TextField
-                          fullWidth
-                          label="Procession Psalm Verse"
-                          margin="normal"
-                          name="processionPalmVerse"
-                          onChange={handleProcessionPalmVerse}
-                          type="text"
-                          value={processionPalmVerse}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Procession Psalm Verse
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <TextField
+                            fullWidth
+                            label="Procession Psalm Verse"
+                            margin="normal"
+                            name="processionPalmVerse"
+                            onChange={handleProcessionPalmVerse}
+                            type="text"
+                            value={processionPalmVerse}
+                            variant="outlined"
+                            sx={{
                               height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                      </TabPanel>
+                              "& .MuiOutlinedInput-root": {
+                                height: "40px",
+                              },
+                              "& .MuiInputLabel-root": {
+                                lineHeight: "15px",
+                                fontSize: "smaller",
+                              },
+                            }}
+                          />
+                        </AccordionDetails>
+                      </Accordion>
 
-                      <TabPanel value={postTabValue} index={12}>
-                        <TextField
-                          fullWidth
-                          label="Procession Psalms Gospel"
-                          margin="normal"
-                          name="processionPalmsGospel"
-                          onChange={handleProcessionPalmsGospel}
-                          type="text"
-                          value={processionPalmsGospel}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Procession Psalms Gospel
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <TextField
+                            fullWidth
+                            label="Procession Psalms Gospel"
+                            margin="normal"
+                            name="processionPalmsGospel"
+                            onChange={handleProcessionPalmsGospel}
+                            type="text"
+                            value={processionPalmsGospel}
+                            variant="outlined"
+                            sx={{
                               height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                      </TabPanel>
+                              "& .MuiOutlinedInput-root": {
+                                height: "40px",
+                              },
+                              "& .MuiInputLabel-root": {
+                                lineHeight: "15px",
+                                fontSize: "smaller",
+                              },
+                            }}
+                          />
+                        </AccordionDetails>
+                      </Accordion>
 
-                      <TabPanel value={postTabValue} index={13}>
-                      <TextField
-                          fullWidth
-                          label="Procession Psalms Gospel 2 Verse"
-                          margin="normal"
-                          name="processionPalmsGospel2Verse"
-                          onChange={handleProcessionPalmsGospel2Verse}
-                          type="text"
-                          value={processionPalmsGospel2Verse}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Procession Psalms Gospel 2 Verse
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <TextField
+                            fullWidth
+                            label="Procession Psalms Gospel 2 Verse"
+                            margin="normal"
+                            name="processionPalmsGospel2Verse"
+                            onChange={handleProcessionPalmsGospel2Verse}
+                            type="text"
+                            value={processionPalmsGospel2Verse}
+                            variant="outlined"
+                            sx={{
                               height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                        </TabPanel>
+                              "& .MuiOutlinedInput-root": {
+                                height: "40px",
+                              },
+                              "& .MuiInputLabel-root": {
+                                lineHeight: "15px",
+                                fontSize: "smaller",
+                              },
+                            }}
+                          />
+                        </AccordionDetails>
+                      </Accordion>
 
-<TabPanel value={postTabValue} index={14}>
-
-<TextField
-                          fullWidth
-                          label="Procession Psalms Gospel 2 Text"
-                          margin="normal"
-                          name="processionPalmsGospel2Text"
-                          onChange={handleProcessionPalmsGospel2Text}
-                          type="text"
-                          value={processionPalmsGospel2Text}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Procession Psalms Gospel 2 Text
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <TextField
+                            fullWidth
+                            label="Procession Psalms Gospel 2 Text"
+                            margin="normal"
+                            name="processionPalmsGospel2Text"
+                            onChange={handleProcessionPalmsGospel2Text}
+                            type="text"
+                            value={processionPalmsGospel2Text}
+                            variant="outlined"
+                            sx={{
                               height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                        </TabPanel>
+                              "& .MuiOutlinedInput-root": {
+                                height: "40px",
+                              },
+                              "& .MuiInputLabel-root": {
+                                lineHeight: "15px",
+                                fontSize: "smaller",
+                              },
+                            }}
+                          />
+                        </AccordionDetails>
+                      </Accordion>
                       {/*PROCESSIONAL PSALMS GOSPEL2 VERSE*/}
-                      <TabPanel value={postTabValue} index={15}>
-                        <TextField
-                          fullWidth
-                          label="Responsorial Psalm Verse"
-                          margin="normal"
-                          name="responsorialPsalmVerse"
-                          onChange={handleResponsorialPsalmVerse}
-                          type="text"
-                          value={responsorialPsalmVerse}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Responsorial Psalm Verse
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <TextField
+                            fullWidth
+                            label="Responsorial Psalm Verse"
+                            margin="normal"
+                            name="responsorialPsalmVerse"
+                            onChange={handleResponsorialPsalmVerse}
+                            type="text"
+                            value={responsorialPsalmVerse}
+                            variant="outlined"
+                            sx={{
                               height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-
-                        {responsorialPsalmVerse && (
-                          <>
-                            <TextField
-                              fullWidth
-                              label="Responsorial Psalm Respond"
-                              margin="normal"
-                              name="responsorialPsalmRespond"
-                              onChange={handleResponsorialPsalmRespond}
-                              type="text"
-                              value={responsorialPsalmRespond}
-                              variant="outlined"
-                              sx={{
+                              "& .MuiOutlinedInput-root": {
                                 height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "15px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            />
+                              },
+                              "& .MuiInputLabel-root": {
+                                lineHeight: "15px",
+                                fontSize: "smaller",
+                              },
+                            }}
+                          />
 
-                            <TextField
-                              fullWidth
-                              label="Responsorial Psalm Text1"
-                              margin="normal"
-                              name="responsorialPsalmText1"
-                              onChange={handleResponsorialPsalmText1}
-                              type="text"
-                              value={responsorialPsalmText1}
-                              variant="outlined"
-                              sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
+                          {responsorialPsalmVerse && (
+                            <>
+                              <TextField
+                                fullWidth
+                                label="Responsorial Psalm Respond"
+                                margin="normal"
+                                name="responsorialPsalmRespond"
+                                onChange={handleResponsorialPsalmRespond}
+                                type="text"
+                                value={responsorialPsalmRespond}
+                                variant="outlined"
+                                sx={{
                                   height: "40px",
-                                },
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "15px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            />
-                          </>
-                        )}
-                      </TabPanel>
-                      <TabPanel value={postTabValue} index={16}>
-                        <TextField
-                          fullWidth
-                          label="Responsorial Psalm Text2"
-                          margin="normal"
-                          name="responsorialPsalmText2"
-                          onChange={handleResponsorialPsalmText2}
-                          type="text"
-                          value={responsorialPsalmText2}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
+                                  "& .MuiOutlinedInput-root": {
+                                    height: "40px",
+                                  },
+                                  "& .MuiInputLabel-root": {
+                                    lineHeight: "15px",
+                                    fontSize: "smaller",
+                                  },
+                                }}
+                              />
+
+                              <TextField
+                                fullWidth
+                                label="Responsorial Psalm Text1"
+                                margin="normal"
+                                name="responsorialPsalmText1"
+                                onChange={handleResponsorialPsalmText1}
+                                type="text"
+                                value={responsorialPsalmText1}
+                                variant="outlined"
+                                sx={{
+                                  height: "40px",
+                                  "& .MuiOutlinedInput-root": {
+                                    height: "40px",
+                                  },
+                                  "& .MuiInputLabel-root": {
+                                    lineHeight: "15px",
+                                    fontSize: "smaller",
+                                  },
+                                }}
+                              />
+                            </>
+                          )}
+                        </AccordionDetails>
+                      </Accordion>
+
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Responsorial Psalm Text 2
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <TextField
+                            fullWidth
+                            label="Responsorial Psalm Text2"
+                            margin="normal"
+                            name="responsorialPsalmText2"
+                            onChange={handleResponsorialPsalmText2}
+                            type="text"
+                            value={responsorialPsalmText2}
+                            variant="outlined"
+                            sx={{
                               height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                      </TabPanel>
-                      <TabPanel value={postTabValue} index={17}>
-                        <TextField
-                          fullWidth
-                          label="Responsorial Psalm Text3"
-                          margin="normal"
-                          name="responsorialPsalmText3"
-                          onChange={handleResponsorialPsalmText3}
-                          type="text"
-                          value={responsorialPsalmText3}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
+                              "& .MuiOutlinedInput-root": {
+                                height: "40px",
+                              },
+                              "& .MuiInputLabel-root": {
+                                lineHeight: "15px",
+                                fontSize: "smaller",
+                              },
+                            }}
+                          />
+                        </AccordionDetails>
+                      </Accordion>
+
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Responsorial Psalm Text 3
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <TextField
+                            fullWidth
+                            label="Responsorial Psalm Text3"
+                            margin="normal"
+                            name="responsorialPsalmText3"
+                            onChange={handleResponsorialPsalmText3}
+                            type="text"
+                            value={responsorialPsalmText3}
+                            variant="outlined"
+                            sx={{
                               height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                      </TabPanel>
-                      <TabPanel value={postTabValue} index={18}>
-                        <TextField
-                          fullWidth
-                          label="Responsorial Psalm Text4"
-                          margin="normal"
-                          name="responsorialPsalmText4"
-                          onChange={handleResponsorialPsalmText4}
-                          type="text"
-                          value={responsorialPsalmText4}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
+                              "& .MuiOutlinedInput-root": {
+                                height: "40px",
+                              },
+                              "& .MuiInputLabel-root": {
+                                lineHeight: "15px",
+                                fontSize: "smaller",
+                              },
+                            }}
+                          />
+                        </AccordionDetails>
+                      </Accordion>
+
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Responsorial Psalm Text 4
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <TextField
+                            fullWidth
+                            label="Responsorial Psalm Text4"
+                            margin="normal"
+                            name="responsorialPsalmText4"
+                            onChange={handleResponsorialPsalmText4}
+                            type="text"
+                            value={responsorialPsalmText4}
+                            variant="outlined"
+                            sx={{
                               height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                      </TabPanel>
-                      <TabPanel value={postTabValue} index={19}>
-                        <TextField
-                          fullWidth
-                          label="Responsorial Psalm Text5"
-                          margin="normal"
-                          name="responsorialPsalmText5"
-                          onChange={handleResponsorialPsalmText5}
-                          type="text"
-                          value={responsorialPsalmText5}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
+                              "& .MuiOutlinedInput-root": {
+                                height: "40px",
+                              },
+                              "& .MuiInputLabel-root": {
+                                lineHeight: "15px",
+                                fontSize: "smaller",
+                              },
+                            }}
+                          />
+                        </AccordionDetails>
+                      </Accordion>
+
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Responsorial Psalm Text 5
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <TextField
+                            fullWidth
+                            label="Responsorial Psalm Text5"
+                            margin="normal"
+                            name="responsorialPsalmText5"
+                            onChange={handleResponsorialPsalmText5}
+                            type="text"
+                            value={responsorialPsalmText5}
+                            variant="outlined"
+                            sx={{
                               height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                      </TabPanel>
-                      <TabPanel value={postTabValue} index={20}>
-                        <TextField
-                          fullWidth
-                          label="Responsorial Psalm Text6"
-                          margin="normal"
-                          name="responsorialPsalmText6"
-                          onChange={handleResponsorialPsalmText6}
-                          type="text"
-                          value={responsorialPsalmText6}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
+                              "& .MuiOutlinedInput-root": {
+                                height: "40px",
+                              },
+                              "& .MuiInputLabel-root": {
+                                lineHeight: "15px",
+                                fontSize: "smaller",
+                              },
+                            }}
+                          />
+                        </AccordionDetails>
+                      </Accordion>
+
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Responsorial Psalm Text 6
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <TextField
+                            fullWidth
+                            label="Responsorial Psalm Text6"
+                            margin="normal"
+                            name="responsorialPsalmText6"
+                            onChange={handleResponsorialPsalmText6}
+                            type="text"
+                            value={responsorialPsalmText6}
+                            variant="outlined"
+                            sx={{
                               height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                      </TabPanel>
+                              "& .MuiOutlinedInput-root": {
+                                height: "40px",
+                              },
+                              "& .MuiInputLabel-root": {
+                                lineHeight: "15px",
+                                fontSize: "smaller",
+                              },
+                            }}
+                          />
+                        </AccordionDetails>
+                      </Accordion>
                       {/*RESPONSIAL PSALM VERSE OPT2*/}
-                      <TabPanel value={postTabValue} index={21}>
-                        <TextField
-                          fullWidth
-                          label="Responsorial Psalm Verse OPT2"
-                          margin="normal"
-                          name="responsorialPsalmVerseOPT2"
-                          onChange={handleResponsorialPsalmVerseOPT2}
-                          type="text"
-                          value={responsorialPsalmVerseOPT2}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
-                              height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                        {responsorialPsalmVerseOPT2 && (
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Responsorial Psalm Verse OPT2
+                        </AccordionSummary>
+                        <AccordionDetails>
                           <TextField
                             fullWidth
-                            label="Responsorial Psalm Text1 OPT2"
+                            label="Responsorial Psalm Verse OPT2"
                             margin="normal"
-                            name="responsorialPsalmText1OPT2"
-                            onChange={handleResponsorialPsalmText1OPT2}
+                            name="responsorialPsalmVerseOPT2"
+                            onChange={handleResponsorialPsalmVerseOPT2}
                             type="text"
-                            value={responsorialPsalmText1OPT2}
+                            value={responsorialPsalmVerseOPT2}
                             variant="outlined"
                             sx={{
                               height: "40px",
@@ -2116,238 +2122,297 @@ function DailyReadings() {
                               },
                             }}
                           />
-                        )}
-                      </TabPanel>
-                      <TabPanel value={postTabValue} index={22}>
-                        <TextField
-                          fullWidth
-                          label="Responsorial Psalm Text2 OPT2"
-                          margin="normal"
-                          name="responsorialPsalmText2OPT2"
-                          onChange={handleResponsorialPsalmText2OPT2}
-                          type="text"
-                          value={responsorialPsalmText2OPT2}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
-                              height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                      </TabPanel>
-                      <TabPanel value={postTabValue} index={23}>
-                        <TextField
-                          fullWidth
-                          label="Responsorial Psalm Response OPT2"
-                          margin="normal"
-                          name="responsorialPsalmResponseOPT2"
-                          onChange={handleResponsorialPsalmResponseOPT2}
-                          type="text"
-                          value={responsorialPsalmResponseOPT2}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
-                              height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                      </TabPanel>
-                      <TabPanel value={postTabValue} index={24}>
-                        <TextField
-                          fullWidth
-                          label="Responsorial Psalm Text3 OPT2"
-                          margin="normal"
-                          name="responsorialPsalmText3OPT2"
-                          onChange={handleResponsorialPsalmText3OPT2}
-                          type="text"
-                          value={responsorialPsalmText3OPT2}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
-                              height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                      </TabPanel>
-                      <TabPanel value={postTabValue} index={25}>
-                        <TextField
-                          fullWidth
-                          label="Responsorial Psalm Text4 OPT2"
-                          margin="normal"
-                          name="responsorialPsalmText4OPT2"
-                          onChange={handleResponsorialPsalmText4OPT2}
-                          type="text"
-                          value={responsorialPsalmText4OPT2}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
-                              height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                      </TabPanel>
-                      <TabPanel value={postTabValue} index={26}>
-                        <TextField
-                          fullWidth
-                          label="Responsorial Psalm Text5 OPT2"
-                          margin="normal"
-                          name="responsorialPsalmText5OPT2"
-                          onChange={handleResponsorialPsalmText5OPT2}
-                          type="text"
-                          value={responsorialPsalmText5OPT2}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
-                              height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                      </TabPanel>
-                      <TabPanel value={postTabValue} index={27}>
-                        <TextField
-                          fullWidth
-                          label="ResponsorialText1"
-                          margin="normal"
-                          name="responsorialText1"
-                          onChange={handleResponsorialText1}
-                          type="text"
-                          value={responsorialText1}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
-                              height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                      </TabPanel>
-                      <TabPanel value={postTabValue} index={28}>
-                        <TextField
-                          fullWidth
-                          label="ResponsorialText2"
-                          margin="normal"
-                          name="responsorialText2"
-                          onChange={handleResponsorialText2}
-                          type="text"
-                          value={responsorialText2}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
-                              height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                      </TabPanel>
-                      <TabPanel value={postTabValue} index={29}>
-                        <TextField
-                          fullWidth
-                          label="ResponsorialText3"
-                          margin="normal"
-                          name="responsorialText3"
-                          onChange={handleResponsorialText3}
-                          type="text"
-                          value={responsorialText3}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
-                              height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                      </TabPanel>
+                          {responsorialPsalmVerseOPT2 && (
+                            <TextField
+                              fullWidth
+                              label="Responsorial Psalm Text1 OPT2"
+                              margin="normal"
+                              name="responsorialPsalmText1OPT2"
+                              onChange={handleResponsorialPsalmText1OPT2}
+                              type="text"
+                              value={responsorialPsalmText1OPT2}
+                              variant="outlined"
+                              sx={{
+                                height: "40px",
+                                "& .MuiOutlinedInput-root": {
+                                  height: "40px",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          )}
+                        </AccordionDetails>
+                      </Accordion>
 
-                      <TabPanel value={postTabValue} index={30}>
-                        <TextField
-                          fullWidth
-                          label="Before Gospel Text"
-                          margin="normal"
-                          name="beforeGospelText"
-                          onChange={handleBeforeGospelText}
-                          type="text"
-                          value={beforeGospelText}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Responsorial Psalm Text 2 OPT2
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <TextField
+                            fullWidth
+                            label="Responsorial Psalm Text2 OPT2"
+                            margin="normal"
+                            name="responsorialPsalmText2OPT2"
+                            onChange={handleResponsorialPsalmText2OPT2}
+                            type="text"
+                            value={responsorialPsalmText2OPT2}
+                            variant="outlined"
+                            sx={{
                               height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                      </TabPanel>
+                              "& .MuiOutlinedInput-root": {
+                                height: "40px",
+                              },
+                              "& .MuiInputLabel-root": {
+                                lineHeight: "15px",
+                                fontSize: "smaller",
+                              },
+                            }}
+                          />
+                        </AccordionDetails>
+                      </Accordion>
+
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Responsorial Psalm Response OPT2
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <TextField
+                            fullWidth
+                            label="Responsorial Psalm Response OPT2"
+                            margin="normal"
+                            name="responsorialPsalmResponseOPT2"
+                            onChange={handleResponsorialPsalmResponseOPT2}
+                            type="text"
+                            value={responsorialPsalmResponseOPT2}
+                            variant="outlined"
+                            sx={{
+                              height: "40px",
+                              "& .MuiOutlinedInput-root": {
+                                height: "40px",
+                              },
+                              "& .MuiInputLabel-root": {
+                                lineHeight: "15px",
+                                fontSize: "smaller",
+                              },
+                            }}
+                          />
+                        </AccordionDetails>
+                      </Accordion>
+
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Responsorial Psalm Text 3 OPT2
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          {" "}
+                          <TextField
+                            fullWidth
+                            label="Responsorial Psalm Text3 OPT2"
+                            margin="normal"
+                            name="responsorialPsalmText3OPT2"
+                            onChange={handleResponsorialPsalmText3OPT2}
+                            type="text"
+                            value={responsorialPsalmText3OPT2}
+                            variant="outlined"
+                            sx={{
+                              height: "40px",
+                              "& .MuiOutlinedInput-root": {
+                                height: "40px",
+                              },
+                              "& .MuiInputLabel-root": {
+                                lineHeight: "15px",
+                                fontSize: "smaller",
+                              },
+                            }}
+                          />
+                        </AccordionDetails>
+                      </Accordion>
+
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Responsorial Psalm Text 4 OPT2
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <TextField
+                            fullWidth
+                            label="Responsorial Psalm Text4 OPT2"
+                            margin="normal"
+                            name="responsorialPsalmText4OPT2"
+                            onChange={handleResponsorialPsalmText4OPT2}
+                            type="text"
+                            value={responsorialPsalmText4OPT2}
+                            variant="outlined"
+                            sx={{
+                              height: "40px",
+                              "& .MuiOutlinedInput-root": {
+                                height: "40px",
+                              },
+                              "& .MuiInputLabel-root": {
+                                lineHeight: "15px",
+                                fontSize: "smaller",
+                              },
+                            }}
+                          />
+                        </AccordionDetails>
+                      </Accordion>
+
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Responsorial Psalm Text 5 OPT2
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <TextField
+                            fullWidth
+                            label="Responsorial Psalm Text5 OPT2"
+                            margin="normal"
+                            name="responsorialPsalmText5OPT2"
+                            onChange={handleResponsorialPsalmText5OPT2}
+                            type="text"
+                            value={responsorialPsalmText5OPT2}
+                            variant="outlined"
+                            sx={{
+                              height: "40px",
+                              "& .MuiOutlinedInput-root": {
+                                height: "40px",
+                              },
+                              "& .MuiInputLabel-root": {
+                                lineHeight: "15px",
+                                fontSize: "smaller",
+                              },
+                            }}
+                          />
+                        </AccordionDetails>
+                      </Accordion>
+
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Responsorial Text 1
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <TextField
+                            fullWidth
+                            label="ResponsorialText1"
+                            margin="normal"
+                            name="responsorialText1"
+                            onChange={handleResponsorialText1}
+                            type="text"
+                            value={responsorialText1}
+                            variant="outlined"
+                            sx={{
+                              height: "40px",
+                              "& .MuiOutlinedInput-root": {
+                                height: "40px",
+                              },
+                              "& .MuiInputLabel-root": {
+                                lineHeight: "15px",
+                                fontSize: "smaller",
+                              },
+                            }}
+                          />
+                        </AccordionDetails>
+                      </Accordion>
+
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Responsorial Text 2
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <TextField
+                            fullWidth
+                            label="ResponsorialText2"
+                            margin="normal"
+                            name="responsorialText2"
+                            onChange={handleResponsorialText2}
+                            type="text"
+                            value={responsorialText2}
+                            variant="outlined"
+                            sx={{
+                              height: "40px",
+                              "& .MuiOutlinedInput-root": {
+                                height: "40px",
+                              },
+                              "& .MuiInputLabel-root": {
+                                lineHeight: "15px",
+                                fontSize: "smaller",
+                              },
+                            }}
+                          />
+                        </AccordionDetails>
+                      </Accordion>
+
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Responsorial Text 3
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <TextField
+                            fullWidth
+                            label="ResponsorialText3"
+                            margin="normal"
+                            name="responsorialText3"
+                            onChange={handleResponsorialText3}
+                            type="text"
+                            value={responsorialText3}
+                            variant="outlined"
+                            sx={{
+                              height: "40px",
+                              "& .MuiOutlinedInput-root": {
+                                height: "40px",
+                              },
+                              "& .MuiInputLabel-root": {
+                                lineHeight: "15px",
+                                fontSize: "smaller",
+                              },
+                            }}
+                          />
+                        </AccordionDetails>
+                      </Accordion>
+
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Before Gospel Text
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <TextField
+                            fullWidth
+                            label="Before Gospel Text"
+                            margin="normal"
+                            name="beforeGospelText"
+                            onChange={handleBeforeGospelText}
+                            type="text"
+                            value={beforeGospelText}
+                            variant="outlined"
+                            sx={{
+                              height: "40px",
+                              "& .MuiOutlinedInput-root": {
+                                height: "40px",
+                              },
+                              "& .MuiInputLabel-root": {
+                                lineHeight: "15px",
+                                fontSize: "smaller",
+                              },
+                            }}
+                          />
+                        </AccordionDetails>
+                      </Accordion>
                       {/*VERSE B4 GOSPEL OPT2*/}
-                      <TabPanel value={postTabValue} index={31}>
-                        <TextField
-                          fullWidth
-                          label="Verse before Gospel OPT2"
-                          margin="normal"
-                          name="verseb4GospelOPT2"
-                          onChange={handleVerseb4GospelOPT2}
-                          type="text"
-                          value={verseb4GospelOPT2}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
-                              height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                        {verseb4GospelOPT2 && (
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Verse before Gospel OPT2
+                        </AccordionSummary>
+                        <AccordionDetails>
                           <TextField
                             fullWidth
-                            label="Before Gospel Text OPT2"
+                            label="Verse before Gospel OPT2"
                             margin="normal"
-                            name="b4GospelTextOPT2"
-                            onChange={handleB4GospelTextOPT2}
+                            name="verseb4GospelOPT2"
+                            onChange={handleVerseb4GospelOPT2}
                             type="text"
-                            value={b4GospelTextOPT2}
+                            value={verseb4GospelOPT2}
                             variant="outlined"
                             sx={{
                               height: "40px",
@@ -2360,39 +2425,44 @@ function DailyReadings() {
                               },
                             }}
                           />
-                        )}
-                      </TabPanel>
+                          {verseb4GospelOPT2 && (
+                            <TextField
+                              fullWidth
+                              label="Before Gospel Text OPT2"
+                              margin="normal"
+                              name="b4GospelTextOPT2"
+                              onChange={handleB4GospelTextOPT2}
+                              type="text"
+                              value={b4GospelTextOPT2}
+                              variant="outlined"
+                              sx={{
+                                height: "40px",
+                                "& .MuiOutlinedInput-root": {
+                                  height: "40px",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          )}
+                        </AccordionDetails>
+                      </Accordion>
                       {/* ALLELULIA VERSE*/}
-                      <TabPanel value={postTabValue} index={32}>
-                        <TextField
-                          fullWidth
-                          label="Alleluia Verse"
-                          margin="normal"
-                          name="alleluiaVerse"
-                          onChange={handleAlleluiaVerse}
-                          type="text"
-                          value={alleluiaVerse}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
-                              height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                        {alleluiaVerse && (
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Alleluia Verse
+                        </AccordionSummary>
+                        <AccordionDetails>
                           <TextField
                             fullWidth
-                            label="Alleluia Text"
+                            label="Alleluia Verse"
                             margin="normal"
-                            name="alleluiaText"
-                            onChange={handleAlleluiaText}
+                            name="alleluiaVerse"
+                            onChange={handleAlleluiaVerse}
                             type="text"
-                            value={alleluiaText}
+                            value={alleluiaVerse}
                             variant="outlined"
                             sx={{
                               height: "40px",
@@ -2405,84 +2475,44 @@ function DailyReadings() {
                               },
                             }}
                           />
-                        )}
-                      </TabPanel>
+                          {alleluiaVerse && (
+                            <TextField
+                              fullWidth
+                              label="Alleluia Text"
+                              margin="normal"
+                              name="alleluiaText"
+                              onChange={handleAlleluiaText}
+                              type="text"
+                              value={alleluiaText}
+                              variant="outlined"
+                              sx={{
+                                height: "40px",
+                                "& .MuiOutlinedInput-root": {
+                                  height: "40px",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          )}
+                        </AccordionDetails>
+                      </Accordion>
 
-                      <TabPanel value={postTabValue} index={33}>
-                        <TextField
-                          fullWidth
-                          label="Alleluia OPT2"
-                          margin="normal"
-                          name="alleluiaOPT2"
-                          onChange={handleAlleluiaOPT2}
-                          type="text"
-                          value={alleluiaOPT2}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
-                              height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                      </TabPanel>
-                      <TabPanel value={postTabValue} index={34}>
-                        <TextField
-                          fullWidth
-                          label="Alleluia Text OPT2"
-                          margin="normal"
-                          name="alleluiaTextOPT2"
-                          onChange={handleAlleluiaTextOPT2}
-                          type="text"
-                          value={alleluiaTextOPT2}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
-                              height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                      </TabPanel>
-                      {/*       GOSPEL VERSE        */}
-                      <TabPanel value={postTabValue} index={35}>
-                        <TextField
-                          fullWidth
-                          label="Gospel Verse"
-                          margin="normal"
-                          name="gospelVerse"
-                          onChange={handleGospelVerse}
-                          type="text"
-                          value={gospelVerse}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
-                              height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                        {gospelVerse && (
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Alleluia OPT2
+                        </AccordionSummary>
+                        <AccordionDetails>
                           <TextField
                             fullWidth
-                            label="Gospel Text"
+                            label="Alleluia OPT2"
                             margin="normal"
-                            name="gospelText"
-                            onChange={handleGospelText}
+                            name="alleluiaOPT2"
+                            onChange={handleAlleluiaOPT2}
                             type="text"
-                            value={gospelText}
+                            value={alleluiaOPT2}
                             variant="outlined"
                             sx={{
                               height: "40px",
@@ -2495,40 +2525,101 @@ function DailyReadings() {
                               },
                             }}
                           />
-                        )}
-                      </TabPanel>
+                        </AccordionDetails>
+                      </Accordion>
+
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Alleluia Text OPT2
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <TextField
+                            fullWidth
+                            label="Alleluia Text OPT2"
+                            margin="normal"
+                            name="alleluiaTextOPT2"
+                            onChange={handleAlleluiaTextOPT2}
+                            type="text"
+                            value={alleluiaTextOPT2}
+                            variant="outlined"
+                            sx={{
+                              height: "40px",
+                              "& .MuiOutlinedInput-root": {
+                                height: "40px",
+                              },
+                              "& .MuiInputLabel-root": {
+                                lineHeight: "15px",
+                                fontSize: "smaller",
+                              },
+                            }}
+                          />
+                        </AccordionDetails>
+                      </Accordion>
+                      {/*       GOSPEL VERSE        */}
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Gospel Verse
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <TextField
+                            fullWidth
+                            label="Gospel Verse"
+                            margin="normal"
+                            name="gospelVerse"
+                            onChange={handleGospelVerse}
+                            type="text"
+                            value={gospelVerse}
+                            variant="outlined"
+                            sx={{
+                              height: "40px",
+                              "& .MuiOutlinedInput-root": {
+                                height: "40px",
+                              },
+                              "& .MuiInputLabel-root": {
+                                lineHeight: "15px",
+                                fontSize: "smaller",
+                              },
+                            }}
+                          />
+                          {gospelVerse && (
+                            <TextField
+                              fullWidth
+                              label="Gospel Text"
+                              margin="normal"
+                              name="gospelText"
+                              onChange={handleGospelText}
+                              type="text"
+                              value={gospelText}
+                              variant="outlined"
+                              sx={{
+                                height: "40px",
+                                "& .MuiOutlinedInput-root": {
+                                  height: "40px",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          )}
+                        </AccordionDetails>
+                      </Accordion>
 
                       {/*      GOSPEL VERSE 2       */}
-                      <TabPanel value={postTabValue} index={36}>
-                        <TextField
-                          fullWidth
-                          label="Gospel Verse2"
-                          margin="normal"
-                          name="gospelVerse2"
-                          onChange={handleGospelVerse2}
-                          type="text"
-                          value={gospelVerse2}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
-                              height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                        {gospelVerse && (
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Gospel Verse 2
+                        </AccordionSummary>
+                        <AccordionDetails>
                           <TextField
                             fullWidth
-                            label="Gospel Text Option2"
+                            label="Gospel Verse2"
                             margin="normal"
-                            name="gospelTextOption2"
-                            onChange={handleGospelTextOption2}
+                            name="gospelVerse2"
+                            onChange={handleGospelVerse2}
                             type="text"
-                            value={gospelTextOption2}
+                            value={gospelVerse2}
                             variant="outlined"
                             sx={{
                               height: "40px",
@@ -2541,31 +2632,58 @@ function DailyReadings() {
                               },
                             }}
                           />
-                        )}
-                      </TabPanel>
+                          {gospelVerse && (
+                            <TextField
+                              fullWidth
+                              label="Gospel Text Option2"
+                              margin="normal"
+                              name="gospelTextOption2"
+                              onChange={handleGospelTextOption2}
+                              type="text"
+                              value={gospelTextOption2}
+                              variant="outlined"
+                              sx={{
+                                height: "40px",
+                                "& .MuiOutlinedInput-root": {
+                                  height: "40px",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          )}
+                        </AccordionDetails>
+                      </Accordion>
 
-                      <TabPanel value={postTabValue} index={37}>
-                        <TextField
-                          fullWidth
-                          label="Verse Before Gospel"
-                          margin="normal"
-                          name="verseBeforeGospel"
-                          onChange={handleVerseBeforeGospel}
-                          type="text"
-                          value={verseBeforeGospel}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Verse Before Gospel
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <TextField
+                            fullWidth
+                            label="Verse Before Gospel"
+                            margin="normal"
+                            name="verseBeforeGospel"
+                            onChange={handleVerseBeforeGospel}
+                            type="text"
+                            value={verseBeforeGospel}
+                            variant="outlined"
+                            sx={{
                               height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                      </TabPanel>
+                              "& .MuiOutlinedInput-root": {
+                                height: "40px",
+                              },
+                              "& .MuiInputLabel-root": {
+                                lineHeight: "15px",
+                                fontSize: "smaller",
+                              },
+                            }}
+                          />
+                        </AccordionDetails>
+                      </Accordion>
                     </>
                   </CardContent>
                   <Divider />
@@ -2695,138 +2813,35 @@ function DailyReadings() {
                     <CardHeader subheader="" title="Daily Reading" />
                     <Divider />
                     <CardContent>
-                      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                        <Tabs
-                          value={editTabValue}
-                          onChange={handleEditTabChange}
-                          textColor="inherit"
-                          // scrollButtons="auto"
-                          aria-label=""
-                          variant="scrollable"
-                          scrollButtons={false}
-                        >
-                          <Tab label="Title" {...a11yProps(0)} />
-                        <Tab label="Date" {...a11yProps(1)} />
-                        <Tab label="Reading 1 verse" {...a11yProps(2)} />
-                        <Tab
-                          label="Reading 1 option 2 verse"
-                          {...a11yProps(3)}
-                        />
-                        <Tab label="Reading 2 verse" {...a11yProps(4)} />
-                        <Tab
-                          label="Reading 2 option 1 verse"
-                          {...a11yProps(5)}
-                        />
-                        <Tab label="Reading 3 verse" {...a11yProps(6)} />
-                        <Tab label="Reading 4 verse" {...a11yProps(7)} />
-                        <Tab label="Reading 5 verse" {...a11yProps(8)} />
-                        <Tab label="Reading 6 verse" {...a11yProps(9)} />
-                        <Tab label="Reading 7 verse" {...a11yProps(10)} />
-                        <Tab
-                          label="Procession Psalm Verse"
-                          {...a11yProps(11)}
-                        />
-                        <Tab
-                          label="Procession Psalm Gospel"
-                          {...a11yProps(12)}
-                        />
-                        
-                        <Tab
-                          label="Procession Psalm Gospel 2 Verse"
-                          {...a11yProps(13)}
-                        />
-                        {/* <Tab
-                          label="Procession Psalm Gospel 2 Text"
-                          {...a11yProps(14)}
-                        /> */}
-                        <Tab
-                          label="Responsorial Psalm Verse"
-                          {...a11yProps(14)}
-                        />
-                        <Tab
-                          label="Responsorial Psalm Text 2"
-                          {...a11yProps(15)}
-                        />
-                        <Tab
-                          label="Responsorial Psalm Text 3"
-                          {...a11yProps(16)}
-                        />
-                        <Tab
-                          label="Responsorial Psalm Text 4"
-                          {...a11yProps(17)}
-                        />
-                        <Tab
-                          label="Responsorial Psalm Text 5"
-                          {...a11yProps(18)}
-                        />
-                        <Tab
-                          label="Responsorial Psalm Text 6"
-                          {...a11yProps(19)}
-                        />
-                        <Tab
-                          label="Responsorial Psalm Verse OPT 2"
-                          {...a11yProps(20)}
-                        />
-                        <Tab
-                          label="Responsorial Psalm Text 2 OPT 2"
-                          {...a11yProps(21)}
-                        />
-                        <Tab
-                          label="Responsorial Psalm Response OPT 2"
-                          {...a11yProps(22)}
-                        />
-                        <Tab
-                          label="Responsorial Psalm Text 3 OPT 2"
-                          {...a11yProps(23)}
-                        />
-                        <Tab
-                          label="Responsorial Psalm Text 4 OPT 2"
-                          {...a11yProps(24)}
-                        />
-                        <Tab
-                          label="Responsorial Psalm Text 5 OPT 2"
-                          {...a11yProps(25)}
-                        />
-                        <Tab label="Responsorial Text 1" {...a11yProps(26)} />
-                        <Tab label="Responsorial Text 2" {...a11yProps(27)} />
-                        <Tab label="Responsorial Text 3" {...a11yProps(28)} />
-                        <Tab label="Before Gospel Text" {...a11yProps(29)} />
-                        <Tab
-                          label="Verse Before Gospel OPT2"
-                          {...a11yProps(30)}
-                        />
-                        <Tab label="Alleluia Verse" {...a11yProps(31)} />
-                        <Tab label="Alleluia OPT2" {...a11yProps(32)} />
-                        <Tab label="Alleluia Text OPT2" {...a11yProps(33)} />
-                        <Tab label="Gospel Verse" {...a11yProps(34)} />
-                        <Tab label="Gospel Verse 2" {...a11yProps(35)} />
-                        </Tabs>
-                      </Box>
-
-                      <TabPanel value={editTabValue} index={0}>
-                        <TextField
-                          fullWidth
-                          label="Title"
-                          margin="normal"
-                          name="title"
-                          onChange={handleEditTitle}
-                          type="text"
-                          value={editTitle}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Title
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <TextField
+                            fullWidth
+                            label="Title"
+                            margin="normal"
+                            name="title"
+                            onChange={handleEditTitle}
+                            type="text"
+                            value={editTitle}
+                            variant="outlined"
+                            sx={{
                               height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                      </TabPanel>
+                              "& .MuiOutlinedInput-root": {
+                                height: "40px",
+                              },
+                              "& .MuiInputLabel-root": {
+                                lineHeight: "15px",
+                                fontSize: "smaller",
+                              },
+                            }}
+                          />
+                        </AccordionDetails>
+                      </Accordion>
 
-                      <TabPanel value={editTabValue} index={1}>
+                      {/* <TabPanel value={editTabValue} index={1}>
                         <TextField
                           fullWidth
                           //label="Old Password"
@@ -2847,39 +2862,22 @@ function DailyReadings() {
                             },
                           }}
                         />
-                      </TabPanel>
+                      </TabPanel> */}
                       <>
                         {/********************* READING 1 VERSE ********************/}
-                        <TabPanel value={editTabValue} index={2}>
-                          <TextField
-                            fullWidth
-                            label="Reading1 Verse"
-                            margin="normal"
-                            name="reading1Verse"
-                            type="text"
-                            onChange={handleEditReading1Verse}
-                            value={editReading1Verse}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                          {editReading1Verse && (
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Reading 1 Verse
+                          </AccordionSummary>
+                          <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Reading1 Text"
+                              label="Reading1 Verse"
                               margin="normal"
-                              name="reading1Text"
-                              onChange={handleEditReading1Text}
+                              name="reading1Verse"
                               type="text"
-                              value={editReading1Text}
+                              onChange={handleEditReading1Verse}
+                              value={editReading1Verse}
                               variant="outlined"
                               sx={{
                                 height: "40px",
@@ -2892,40 +2890,45 @@ function DailyReadings() {
                                 },
                               }}
                             />
-                          )}
-                        </TabPanel>
+                            {editReading1Verse && (
+                              <TextField
+                                fullWidth
+                                label="Reading1 Text"
+                                margin="normal"
+                                name="reading1Text"
+                                onChange={handleEditReading1Text}
+                                type="text"
+                                value={editReading1Text}
+                                variant="outlined"
+                                sx={{
+                                  height: "40px",
+                                  "& .MuiOutlinedInput-root": {
+                                    height: "40px",
+                                  },
+                                  "& .MuiInputLabel-root": {
+                                    lineHeight: "15px",
+                                    fontSize: "smaller",
+                                  },
+                                }}
+                              />
+                            )}
+                          </AccordionDetails>
+                        </Accordion>
 
                         {/********************* READING 1 OPTION 2 VERSE ********************/}
-                        <TabPanel value={editTabValue} index={3}>
-                          <TextField
-                            fullWidth
-                            label="Reading1 Option2 Verse"
-                            margin="normal"
-                            name="reading1Option2Verse"
-                            onChange={handleEditReading1Option2Verse}
-                            type="text"
-                            value={editReading1Option2Verse}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                          {editReading1Option2Verse && (
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Reading 1 Option 2 Verse
+                          </AccordionSummary>
+                          <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Reading1 Text Option2"
+                              label="Reading1 Option2 Verse"
                               margin="normal"
-                              name="reading1TextOption2"
-                              onChange={handleEditReading1TextOption2}
+                              name="reading1Option2Verse"
+                              onChange={handleEditReading1Option2Verse}
                               type="text"
-                              value={editReading1TextOption2}
+                              value={editReading1Option2Verse}
                               variant="outlined"
                               sx={{
                                 height: "40px",
@@ -2938,40 +2941,45 @@ function DailyReadings() {
                                 },
                               }}
                             />
-                          )}
-                        </TabPanel>
+                            {editReading1Option2Verse && (
+                              <TextField
+                                fullWidth
+                                label="Reading1 Text Option2"
+                                margin="normal"
+                                name="reading1TextOption2"
+                                onChange={handleEditReading1TextOption2}
+                                type="text"
+                                value={editReading1TextOption2}
+                                variant="outlined"
+                                sx={{
+                                  height: "40px",
+                                  "& .MuiOutlinedInput-root": {
+                                    height: "40px",
+                                  },
+                                  "& .MuiInputLabel-root": {
+                                    lineHeight: "15px",
+                                    fontSize: "smaller",
+                                  },
+                                }}
+                              />
+                            )}
+                          </AccordionDetails>
+                        </Accordion>
 
                         {/********************* READING 2 VERSE ********************/}
-                        <TabPanel value={editTabValue} index={4}>
-                          <TextField
-                            fullWidth
-                            label="Reading2 Verse"
-                            margin="normal"
-                            name="reading2Verse"
-                            onChange={handleEditReading2Verse}
-                            type="text"
-                            value={editReading2Verse}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                          {editReading2Verse && (
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Reading 2 Verse
+                          </AccordionSummary>
+                          <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Reading2 Text"
+                              label="Reading2 Verse"
                               margin="normal"
-                              name="reading2Text"
-                              onChange={handleEditReading2Text}
+                              name="reading2Verse"
+                              onChange={handleEditReading2Verse}
                               type="text"
-                              value={editReading2Text}
+                              value={editReading2Verse}
                               variant="outlined"
                               sx={{
                                 height: "40px",
@@ -2984,40 +2992,45 @@ function DailyReadings() {
                                 },
                               }}
                             />
-                          )}
-                        </TabPanel>
+                            {editReading2Verse && (
+                              <TextField
+                                fullWidth
+                                label="Reading2 Text"
+                                margin="normal"
+                                name="reading2Text"
+                                onChange={handleEditReading2Text}
+                                type="text"
+                                value={editReading2Text}
+                                variant="outlined"
+                                sx={{
+                                  height: "40px",
+                                  "& .MuiOutlinedInput-root": {
+                                    height: "40px",
+                                  },
+                                  "& .MuiInputLabel-root": {
+                                    lineHeight: "15px",
+                                    fontSize: "smaller",
+                                  },
+                                }}
+                              />
+                            )}
+                          </AccordionDetails>
+                        </Accordion>
 
                         {/********************* READING 2 OPTION 1 VERSE ********************/}
-                        <TabPanel value={editTabValue} index={5}>
-                          <TextField
-                            fullWidth
-                            label="Reading2 Option1 Verse"
-                            margin="normal"
-                            name="reading2Option1Verse"
-                            onChange={handleEditReading2Option1Verse}
-                            type="text"
-                            value={editReading2Option1Verse}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                          {editReading2Option1Verse && (
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Reading 2 Option 1 Verse
+                          </AccordionSummary>
+                          <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Reading2 Text Option1"
+                              label="Reading2 Option1 Verse"
                               margin="normal"
-                              name="reading2TextOption1"
-                              onChange={handleEditReading2TextOption1}
+                              name="reading2Option1Verse"
+                              onChange={handleEditReading2Option1Verse}
                               type="text"
-                              value={editReading2TextOption1}
+                              value={editReading2Option1Verse}
                               variant="outlined"
                               sx={{
                                 height: "40px",
@@ -3030,40 +3043,45 @@ function DailyReadings() {
                                 },
                               }}
                             />
-                          )}
-                        </TabPanel>
+                            {editReading2Option1Verse && (
+                              <TextField
+                                fullWidth
+                                label="Reading2 Text Option1"
+                                margin="normal"
+                                name="reading2TextOption1"
+                                onChange={handleEditReading2TextOption1}
+                                type="text"
+                                value={editReading2TextOption1}
+                                variant="outlined"
+                                sx={{
+                                  height: "40px",
+                                  "& .MuiOutlinedInput-root": {
+                                    height: "40px",
+                                  },
+                                  "& .MuiInputLabel-root": {
+                                    lineHeight: "15px",
+                                    fontSize: "smaller",
+                                  },
+                                }}
+                              />
+                            )}
+                          </AccordionDetails>
+                        </Accordion>
 
                         {/********************* READING 3 VERSE ********************/}
-                        <TabPanel value={editTabValue} index={6}>
-                          <TextField
-                            fullWidth
-                            label="Reading3 Verse"
-                            margin="normal"
-                            name="reading3Verse"
-                            onChange={handleEditReading3Verse}
-                            type="text"
-                            value={editReading3Verse}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                          {editReading3Verse && (
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Reading 3 Verse
+                          </AccordionSummary>
+                          <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Reading3 Text"
+                              label="Reading3 Verse"
                               margin="normal"
-                              name="reading3Text"
-                              onChange={handleEditReading3Text}
+                              name="reading3Verse"
+                              onChange={handleEditReading3Verse}
                               type="text"
-                              value={editReading3Text}
+                              value={editReading3Verse}
                               variant="outlined"
                               sx={{
                                 height: "40px",
@@ -3076,40 +3094,45 @@ function DailyReadings() {
                                 },
                               }}
                             />
-                          )}
-                        </TabPanel>
+                            {editReading3Verse && (
+                              <TextField
+                                fullWidth
+                                label="Reading3 Text"
+                                margin="normal"
+                                name="reading3Text"
+                                onChange={handleEditReading3Text}
+                                type="text"
+                                value={editReading3Text}
+                                variant="outlined"
+                                sx={{
+                                  height: "40px",
+                                  "& .MuiOutlinedInput-root": {
+                                    height: "40px",
+                                  },
+                                  "& .MuiInputLabel-root": {
+                                    lineHeight: "15px",
+                                    fontSize: "smaller",
+                                  },
+                                }}
+                              />
+                            )}
+                          </AccordionDetails>
+                        </Accordion>
 
                         {/********************* READING 4 VERSE ********************/}
-                        <TabPanel value={editTabValue} index={7}>
-                          <TextField
-                            fullWidth
-                            label="Reading4 Verse"
-                            margin="normal"
-                            name="reading4Verse"
-                            onChange={handleEditReading4Verse}
-                            type="text"
-                            value={editReading4Verse}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                          {editReading4Verse && (
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Reading 4 Verse
+                          </AccordionSummary>
+                          <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Reading4 Text"
+                              label="Reading4 Verse"
                               margin="normal"
-                              name="reading4Text"
-                              onChange={handleEditReading4Text}
+                              name="reading4Verse"
+                              onChange={handleEditReading4Verse}
                               type="text"
-                              value={editReading4Text}
+                              value={editReading4Verse}
                               variant="outlined"
                               sx={{
                                 height: "40px",
@@ -3122,39 +3145,44 @@ function DailyReadings() {
                                 },
                               }}
                             />
-                          )}
-                        </TabPanel>
+                            {editReading4Verse && (
+                              <TextField
+                                fullWidth
+                                label="Reading4 Text"
+                                margin="normal"
+                                name="reading4Text"
+                                onChange={handleEditReading4Text}
+                                type="text"
+                                value={editReading4Text}
+                                variant="outlined"
+                                sx={{
+                                  height: "40px",
+                                  "& .MuiOutlinedInput-root": {
+                                    height: "40px",
+                                  },
+                                  "& .MuiInputLabel-root": {
+                                    lineHeight: "15px",
+                                    fontSize: "smaller",
+                                  },
+                                }}
+                              />
+                            )}
+                          </AccordionDetails>
+                        </Accordion>
                         {/********************* READING 5 VERSE ********************/}
-                        <TabPanel value={editTabValue} index={8}>
-                          <TextField
-                            fullWidth
-                            label="Reading5 Verse"
-                            margin="normal"
-                            name="reading5Verse"
-                            onChange={handleEditReading5Verse}
-                            type="text"
-                            value={editReading5Verse}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                          {editReading5Verse && (
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Reading 5 Verse
+                          </AccordionSummary>
+                          <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Reading5 Text"
+                              label="Reading5 Verse"
                               margin="normal"
-                              name="reading5Text"
-                              onChange={handleEditReading5Text}
+                              name="reading5Verse"
+                              onChange={handleEditReading5Verse}
                               type="text"
-                              value={editReading5Text}
+                              value={editReading5Verse}
                               variant="outlined"
                               sx={{
                                 height: "40px",
@@ -3167,40 +3195,45 @@ function DailyReadings() {
                                 },
                               }}
                             />
-                          )}
-                        </TabPanel>
+                            {editReading5Verse && (
+                              <TextField
+                                fullWidth
+                                label="Reading5 Text"
+                                margin="normal"
+                                name="reading5Text"
+                                onChange={handleEditReading5Text}
+                                type="text"
+                                value={editReading5Text}
+                                variant="outlined"
+                                sx={{
+                                  height: "40px",
+                                  "& .MuiOutlinedInput-root": {
+                                    height: "40px",
+                                  },
+                                  "& .MuiInputLabel-root": {
+                                    lineHeight: "15px",
+                                    fontSize: "smaller",
+                                  },
+                                }}
+                              />
+                            )}
+                          </AccordionDetails>
+                        </Accordion>
 
                         {/********************* READING 6 VERSE ********************/}
-                        <TabPanel value={editTabValue} index={9}>
-                          <TextField
-                            fullWidth
-                            label="Reading6 Verse"
-                            margin="normal"
-                            name="reading6Verse"
-                            onChange={handleEditReading6Verse}
-                            type="text"
-                            value={editReading6Verse}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                          {editReading6Verse && (
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Reading 6 Verse
+                          </AccordionSummary>
+                          <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Reading6 Text"
+                              label="Reading6 Verse"
                               margin="normal"
-                              name="reading6Text"
-                              onChange={handleEditReading6Text}
+                              name="reading6Verse"
+                              onChange={handleEditReading6Verse}
                               type="text"
-                              value={editReading6Text}
+                              value={editReading6Verse}
                               variant="outlined"
                               sx={{
                                 height: "40px",
@@ -3213,40 +3246,45 @@ function DailyReadings() {
                                 },
                               }}
                             />
-                          )}
-                        </TabPanel>
+                            {editReading6Verse && (
+                              <TextField
+                                fullWidth
+                                label="Reading6 Text"
+                                margin="normal"
+                                name="reading6Text"
+                                onChange={handleEditReading6Text}
+                                type="text"
+                                value={editReading6Text}
+                                variant="outlined"
+                                sx={{
+                                  height: "40px",
+                                  "& .MuiOutlinedInput-root": {
+                                    height: "40px",
+                                  },
+                                  "& .MuiInputLabel-root": {
+                                    lineHeight: "15px",
+                                    fontSize: "smaller",
+                                  },
+                                }}
+                              />
+                            )}
+                          </AccordionDetails>
+                        </Accordion>
 
                         {/********************* READING 7 VERSE ********************/}
-                        <TabPanel value={editTabValue} index={10}>
-                          <TextField
-                            fullWidth
-                            label="Reading7 Verse"
-                            margin="normal"
-                            name="reading7Verse"
-                            onChange={handleEditReading7Verse}
-                            type="text"
-                            value={editReading7Verse}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                          {editReading7Verse && (
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Reading 7 Verse
+                          </AccordionSummary>
+                          <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Reading7 Text"
+                              label="Reading7 Verse"
                               margin="normal"
-                              name="reading7Text"
-                              onChange={handleEditReading7Text}
+                              name="reading7Verse"
+                              onChange={handleEditReading7Verse}
                               type="text"
-                              value={editReading7Text}
+                              value={editReading7Verse}
                               variant="outlined"
                               sx={{
                                 height: "40px",
@@ -3259,87 +3297,102 @@ function DailyReadings() {
                                 },
                               }}
                             />
-                          )}
-                        </TabPanel>
+                            {editReading7Verse && (
+                              <TextField
+                                fullWidth
+                                label="Reading7 Text"
+                                margin="normal"
+                                name="reading7Text"
+                                onChange={handleEditReading7Text}
+                                type="text"
+                                value={editReading7Text}
+                                variant="outlined"
+                                sx={{
+                                  height: "40px",
+                                  "& .MuiOutlinedInput-root": {
+                                    height: "40px",
+                                  },
+                                  "& .MuiInputLabel-root": {
+                                    lineHeight: "15px",
+                                    fontSize: "smaller",
+                                  },
+                                }}
+                              />
+                            )}
+                          </AccordionDetails>
+                        </Accordion>
 
                         {/* START FROM HERE  */}
-                        <TabPanel value={editTabValue} index={11}>
-                          <TextField
-                            fullWidth
-                            label="Procession Psalm Verse"
-                            margin="normal"
-                            name="processionPalmVerse"
-                            onChange={handleEditProcessionPalmVerse}
-                            type="text"
-                            value={editProcessionPalmVerse}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Procession Psalm Verse
+                          </AccordionSummary>
+                          <AccordionDetails>
+                            <TextField
+                              fullWidth
+                              label="Procession Psalm Verse"
+                              margin="normal"
+                              name="processionPalmVerse"
+                              onChange={handleEditProcessionPalmVerse}
+                              type="text"
+                              value={editProcessionPalmVerse}
+                              variant="outlined"
+                              sx={{
                                 height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                        </TabPanel>
+                                "& .MuiOutlinedInput-root": {
+                                  height: "40px",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          </AccordionDetails>
+                        </Accordion>
 
-                        <TabPanel value={editTabValue} index={12}>
-                          <TextField
-                            fullWidth
-                            label="Procession Psalms Gospel"
-                            margin="normal"
-                            name="processionPalmsGospel"
-                            onChange={handleEditProcessionPalmsGospel}
-                            type="text"
-                            value={editProcessionPalmsGospel}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Procession Psalms Gospel
+                          </AccordionSummary>
+                          <AccordionDetails>
+                            <TextField
+                              fullWidth
+                              label="Procession Psalms Gospel"
+                              margin="normal"
+                              name="processionPalmsGospel"
+                              onChange={handleEditProcessionPalmsGospel}
+                              type="text"
+                              value={editProcessionPalmsGospel}
+                              variant="outlined"
+                              sx={{
                                 height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                        </TabPanel>
+                                "& .MuiOutlinedInput-root": {
+                                  height: "40px",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          </AccordionDetails>
+                        </Accordion>
 
                         {/*PROCESSIONAL PSALMS GOSPEL2 VERSE*/}
-                        <TabPanel value={editTabValue} index={13}>
-                          <TextField
-                            fullWidth
-                            label="Procession Psalms Gospel2 Verse"
-                            margin="normal"
-                            name="processionPalmsGospel2Verse"
-                            onChange={handleEditProcessionPalmsGospel2Verse}
-                            type="text"
-                            value={editProcessionPalmsGospel2Verse}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                          {editProcessionPalmsGospel2Verse && (
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Procession Psalms Gospel 2 Verse
+                          </AccordionSummary>
+                          <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Procession Psalms Gospel2 Text"
+                              label="Procession Psalms Gospel2 Verse"
                               margin="normal"
-                              name="processionPalmsGospel2Text"
-                              onChange={handleEditProcessionPalmsGospel2Text}
+                              name="processionPalmsGospel2Verse"
+                              onChange={handleEditProcessionPalmsGospel2Verse}
                               type="text"
-                              value={editProcessionPalmsGospel2Text}
+                              value={editProcessionPalmsGospel2Verse}
                               variant="outlined"
                               sx={{
                                 height: "40px",
@@ -3352,222 +3405,258 @@ function DailyReadings() {
                                 },
                               }}
                             />
-                          )}
-                        </TabPanel>
+                            {editProcessionPalmsGospel2Verse && (
+                              <TextField
+                                fullWidth
+                                label="Procession Psalms Gospel2 Text"
+                                margin="normal"
+                                name="processionPalmsGospel2Text"
+                                onChange={handleEditProcessionPalmsGospel2Text}
+                                type="text"
+                                value={editProcessionPalmsGospel2Text}
+                                variant="outlined"
+                                sx={{
+                                  height: "40px",
+                                  "& .MuiOutlinedInput-root": {
+                                    height: "40px",
+                                  },
+                                  "& .MuiInputLabel-root": {
+                                    lineHeight: "15px",
+                                    fontSize: "smaller",
+                                  },
+                                }}
+                              />
+                            )}
+                          </AccordionDetails>
+                        </Accordion>
 
                         {/*RESPONSIAL PSALM VERSE*/}
-                        <TabPanel value={editTabValue} index={14}>
-                          <TextField
-                            fullWidth
-                            label="Responsorial Psalm Verse"
-                            margin="normal"
-                            name="responsorialPsalmVerse"
-                            onChange={handleEditResponsorialPsalmVerse}
-                            type="text"
-                            value={editResponsorialPsalmVerse}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Responsorial Psalm Verse
+                          </AccordionSummary>
+                          <AccordionDetails>
+                            <TextField
+                              fullWidth
+                              label="Responsorial Psalm Verse"
+                              margin="normal"
+                              name="responsorialPsalmVerse"
+                              onChange={handleEditResponsorialPsalmVerse}
+                              type="text"
+                              value={editResponsorialPsalmVerse}
+                              variant="outlined"
+                              sx={{
                                 height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                          {editResponsorialPsalmVerse && (
-                            <>
-                              <TextField
-                                fullWidth
-                                label="Responsorial Psalm Respond"
-                                margin="normal"
-                                name="responsorialPsalmRespond"
-                                onChange={handleEditResponsorialPsalmRespond}
-                                type="text"
-                                value={editResponsorialPsalmRespond}
-                                variant="outlined"
-                                sx={{
+                                "& .MuiOutlinedInput-root": {
                                   height: "40px",
-                                  "& .MuiOutlinedInput-root": {
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                            {editResponsorialPsalmVerse && (
+                              <>
+                                <TextField
+                                  fullWidth
+                                  label="Responsorial Psalm Respond"
+                                  margin="normal"
+                                  name="responsorialPsalmRespond"
+                                  onChange={handleEditResponsorialPsalmRespond}
+                                  type="text"
+                                  value={editResponsorialPsalmRespond}
+                                  variant="outlined"
+                                  sx={{
                                     height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "15px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              />
-                              <TextField
-                                fullWidth
-                                label="Responsorial Psalm Text1"
-                                margin="normal"
-                                name="responsorialPsalmText1"
-                                onChange={handleEditResponsorialPsalmText1}
-                                type="text"
-                                value={editResponsorialPsalmText1}
-                                variant="outlined"
-                                sx={{
+                                    "& .MuiOutlinedInput-root": {
+                                      height: "40px",
+                                    },
+                                    "& .MuiInputLabel-root": {
+                                      lineHeight: "15px",
+                                      fontSize: "smaller",
+                                    },
+                                  }}
+                                />
+                                <TextField
+                                  fullWidth
+                                  label="Responsorial Psalm Text1"
+                                  margin="normal"
+                                  name="responsorialPsalmText1"
+                                  onChange={handleEditResponsorialPsalmText1}
+                                  type="text"
+                                  value={editResponsorialPsalmText1}
+                                  variant="outlined"
+                                  sx={{
+                                    height: "40px",
+                                    "& .MuiOutlinedInput-root": {
+                                      height: "40px",
+                                    },
+                                    "& .MuiInputLabel-root": {
+                                      lineHeight: "15px",
+                                      fontSize: "smaller",
+                                    },
+                                  }}
+                                />
+                              </>
+                            )}
+                          </AccordionDetails>
+                        </Accordion>
+
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Responsorial Psalm Text 2
+                          </AccordionSummary>
+                          <AccordionDetails>
+                            <TextField
+                              fullWidth
+                              label="Responsorial Psalm Text2"
+                              margin="normal"
+                              name="responsorialPsalmText2"
+                              onChange={handleEditResponsorialPsalmText2}
+                              type="text"
+                              value={editResponsorialPsalmText2}
+                              variant="outlined"
+                              sx={{
+                                height: "40px",
+                                "& .MuiOutlinedInput-root": {
                                   height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "15px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              />
-                            </>
-                          )}
-                        </TabPanel>
-                        <TabPanel value={editTabValue} index={15}>
-                          <TextField
-                            fullWidth
-                            label="Responsorial Psalm Text2"
-                            margin="normal"
-                            name="responsorialPsalmText2"
-                            onChange={handleEditResponsorialPsalmText2}
-                            type="text"
-                            value={editResponsorialPsalmText2}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                        </TabPanel>
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          </AccordionDetails>
+                        </Accordion>
 
-                        <TabPanel value={editTabValue} index={16}>
-                          <TextField
-                            fullWidth
-                            label="Responsorial Psalm Text3"
-                            margin="normal"
-                            name="responsorialPsalmText3"
-                            onChange={handleEditResponsorialPsalmText3}
-                            type="text"
-                            value={editResponsorialPsalmText3}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Responsorial Psalm Text 3
+                          </AccordionSummary>
+                          <AccordionDetails>
+                            <TextField
+                              fullWidth
+                              label="Responsorial Psalm Text3"
+                              margin="normal"
+                              name="responsorialPsalmText3"
+                              onChange={handleEditResponsorialPsalmText3}
+                              type="text"
+                              value={editResponsorialPsalmText3}
+                              variant="outlined"
+                              sx={{
                                 height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                        </TabPanel>
+                                "& .MuiOutlinedInput-root": {
+                                  height: "40px",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          </AccordionDetails>
+                        </Accordion>
 
-                        <TabPanel value={editTabValue} index={17}>
-                          <TextField
-                            fullWidth
-                            label="Responsorial Psalm Text4"
-                            margin="normal"
-                            name="responsorialPsalmText4"
-                            onChange={handleEditResponsorialPsalmText4}
-                            type="text"
-                            value={editResponsorialPsalmText4}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Responsorial Psalm Text 4
+                          </AccordionSummary>
+                          <AccordionDetails>
+                            <TextField
+                              fullWidth
+                              label="Responsorial Psalm Text4"
+                              margin="normal"
+                              name="responsorialPsalmText4"
+                              onChange={handleEditResponsorialPsalmText4}
+                              type="text"
+                              value={editResponsorialPsalmText4}
+                              variant="outlined"
+                              sx={{
                                 height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                        </TabPanel>
+                                "& .MuiOutlinedInput-root": {
+                                  height: "40px",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          </AccordionDetails>
+                        </Accordion>
 
-                        <TabPanel value={editTabValue} index={18}>
-                          <TextField
-                            fullWidth
-                            label="Responsorial Psalm Text5"
-                            margin="normal"
-                            name="responsorialPsalmText5"
-                            onChange={handleEditResponsorialPsalmText5}
-                            type="text"
-                            value={editResponsorialPsalmText5}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Responsorial Psalm Text 5
+                          </AccordionSummary>
+                          <AccordionDetails>
+                            <TextField
+                              fullWidth
+                              label="Responsorial Psalm Text5"
+                              margin="normal"
+                              name="responsorialPsalmText5"
+                              onChange={handleEditResponsorialPsalmText5}
+                              type="text"
+                              value={editResponsorialPsalmText5}
+                              variant="outlined"
+                              sx={{
                                 height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                        </TabPanel>
+                                "& .MuiOutlinedInput-root": {
+                                  height: "40px",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          </AccordionDetails>
+                        </Accordion>
 
-                        <TabPanel value={editTabValue} index={19}>
-                          <TextField
-                            fullWidth
-                            label="Responsorial Psalm Text6"
-                            margin="normal"
-                            name="responsorialPsalmText6"
-                            onChange={handleEditResponsorialPsalmText6}
-                            type="text"
-                            value={editResponsorialPsalmText6}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Responsorial Psalm Text 6
+                          </AccordionSummary>
+                          <AccordionDetails>
+                            <TextField
+                              fullWidth
+                              label="Responsorial Psalm Text6"
+                              margin="normal"
+                              name="responsorialPsalmText6"
+                              onChange={handleEditResponsorialPsalmText6}
+                              type="text"
+                              value={editResponsorialPsalmText6}
+                              variant="outlined"
+                              sx={{
                                 height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                        </TabPanel>
+                                "& .MuiOutlinedInput-root": {
+                                  height: "40px",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          </AccordionDetails>
+                        </Accordion>
 
                         {/*RESPONSIAL PSALM VERSE OPT2*/}
-                        <TabPanel value={editTabValue} index={20}>
-                          <TextField
-                            fullWidth
-                            label="Responsorial Psalm Verse OPT2"
-                            margin="normal"
-                            name="responsorialPsalmVerseOPT2"
-                            onChange={handleEditResponsorialPsalmVerseOPT2}
-                            type="text"
-                            value={editResponsorialPsalmVerseOPT2}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                          {editResponsorialPsalmVerseOPT2 && (
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Responsorial Psalm Verse OPT 2
+                          </AccordionSummary>
+                          <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Responsorial Psalm Text1 OPT2"
+                              label="Responsorial Psalm Verse OPT2"
                               margin="normal"
-                              name="responsorialPsalmText1OPT2"
-                              onChange={handleEditResponsorialPsalmText1OPT2}
+                              name="responsorialPsalmVerseOPT2"
+                              onChange={handleEditResponsorialPsalmVerseOPT2}
                               type="text"
-                              value={editResponsorialPsalmText1OPT2}
+                              value={editResponsorialPsalmVerseOPT2}
                               variant="outlined"
                               sx={{
                                 height: "40px",
@@ -3580,247 +3669,297 @@ function DailyReadings() {
                                 },
                               }}
                             />
-                          )}
-                        </TabPanel>
+                            {editResponsorialPsalmVerseOPT2 && (
+                              <TextField
+                                fullWidth
+                                label="Responsorial Psalm Text1 OPT2"
+                                margin="normal"
+                                name="responsorialPsalmText1OPT2"
+                                onChange={handleEditResponsorialPsalmText1OPT2}
+                                type="text"
+                                value={editResponsorialPsalmText1OPT2}
+                                variant="outlined"
+                                sx={{
+                                  height: "40px",
+                                  "& .MuiOutlinedInput-root": {
+                                    height: "40px",
+                                  },
+                                  "& .MuiInputLabel-root": {
+                                    lineHeight: "15px",
+                                    fontSize: "smaller",
+                                  },
+                                }}
+                              />
+                            )}
+                          </AccordionDetails>
+                        </Accordion>
 
-                        <TabPanel value={editTabValue} index={21}>
-                          <TextField
-                            fullWidth
-                            label="Responsorial Psalm Text2 OPT2"
-                            margin="normal"
-                            name="responsorialPsalmText2OPT2"
-                            onChange={handleEditResponsorialPsalmText2OPT2}
-                            type="text"
-                            value={editResponsorialPsalmText2OPT2}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Responsorial Psalm Text 2 OPT 2
+                          </AccordionSummary>
+                          <AccordionDetails>
+                            <TextField
+                              fullWidth
+                              label="Responsorial Psalm Text2 OPT2"
+                              margin="normal"
+                              name="responsorialPsalmText2OPT2"
+                              onChange={handleEditResponsorialPsalmText2OPT2}
+                              type="text"
+                              value={editResponsorialPsalmText2OPT2}
+                              variant="outlined"
+                              sx={{
                                 height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                        </TabPanel>
+                                "& .MuiOutlinedInput-root": {
+                                  height: "40px",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          </AccordionDetails>
+                        </Accordion>
 
-                        <TabPanel value={editTabValue} index={22}>
-                          <TextField
-                            fullWidth
-                            label="Responsorial Psalm Response OPT2"
-                            margin="normal"
-                            name="responsorialPsalmResponseOPT2"
-                            onChange={handleEditResponsorialPsalmResponseOPT2}
-                            type="text"
-                            value={editResponsorialPsalmResponseOPT2}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Responsorial Psalm Response OPT2
+                          </AccordionSummary>
+                          <AccordionDetails>
+                            <TextField
+                              fullWidth
+                              label="Responsorial Psalm Response OPT2"
+                              margin="normal"
+                              name="responsorialPsalmResponseOPT2"
+                              onChange={handleEditResponsorialPsalmResponseOPT2}
+                              type="text"
+                              value={editResponsorialPsalmResponseOPT2}
+                              variant="outlined"
+                              sx={{
                                 height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                        </TabPanel>
+                                "& .MuiOutlinedInput-root": {
+                                  height: "40px",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          </AccordionDetails>
+                        </Accordion>
 
-                        <TabPanel value={editTabValue} index={23}>
-                          <TextField
-                            fullWidth
-                            label="Responsorial Psalm Text3 OPT2"
-                            margin="normal"
-                            name="responsorialPsalmText3OPT2"
-                            onChange={handleEditResponsorialPsalmText3OPT2}
-                            type="text"
-                            value={editResponsorialPsalmText3OPT2}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Responsorial Psalm Text 3 OPT2
+                          </AccordionSummary>
+                          <AccordionDetails>
+                            <TextField
+                              fullWidth
+                              label="Responsorial Psalm Text3 OPT2"
+                              margin="normal"
+                              name="responsorialPsalmText3OPT2"
+                              onChange={handleEditResponsorialPsalmText3OPT2}
+                              type="text"
+                              value={editResponsorialPsalmText3OPT2}
+                              variant="outlined"
+                              sx={{
                                 height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                        </TabPanel>
+                                "& .MuiOutlinedInput-root": {
+                                  height: "40px",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          </AccordionDetails>
+                        </Accordion>
 
-                        <TabPanel value={editTabValue} index={24}>
-                          <TextField
-                            fullWidth
-                            label="Responsorial Psalm Text4 OPT2"
-                            margin="normal"
-                            name="responsorialPsalmText4OPT2"
-                            onChange={handleEditResponsorialPsalmText4OPT2}
-                            type="text"
-                            value={editResponsorialPsalmText4OPT2}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Responsorial Psalm Text 4 OPT2
+                          </AccordionSummary>
+                          <AccordionDetails>
+                            <TextField
+                              fullWidth
+                              label="Responsorial Psalm Text4 OPT2"
+                              margin="normal"
+                              name="responsorialPsalmText4OPT2"
+                              onChange={handleEditResponsorialPsalmText4OPT2}
+                              type="text"
+                              value={editResponsorialPsalmText4OPT2}
+                              variant="outlined"
+                              sx={{
                                 height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                        </TabPanel>
+                                "& .MuiOutlinedInput-root": {
+                                  height: "40px",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          </AccordionDetails>
+                        </Accordion>
 
-                        <TabPanel value={editTabValue} index={25}>
-                          <TextField
-                            fullWidth
-                            label="Responsorial Psalm Text5 OPT2"
-                            margin="normal"
-                            name="responsorialPsalmText5OPT2"
-                            onChange={handleEditResponsorialPsalmText5OPT2}
-                            type="text"
-                            value={editResponsorialPsalmText5OPT2}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Responsorial Psalm Text 5 OPT2
+                          </AccordionSummary>
+                          <AccordionDetails>
+                            <TextField
+                              fullWidth
+                              label="Responsorial Psalm Text5 OPT2"
+                              margin="normal"
+                              name="responsorialPsalmText5OPT2"
+                              onChange={handleEditResponsorialPsalmText5OPT2}
+                              type="text"
+                              value={editResponsorialPsalmText5OPT2}
+                              variant="outlined"
+                              sx={{
                                 height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                        </TabPanel>
+                                "& .MuiOutlinedInput-root": {
+                                  height: "40px",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          </AccordionDetails>
+                        </Accordion>
 
-                        <TabPanel value={editTabValue} index={26}>
-                          <TextField
-                            fullWidth
-                            label="ResponsorialText1"
-                            margin="normal"
-                            name="responsorialText1"
-                            onChange={handleEditResponsorialText1}
-                            type="text"
-                            value={editResponsorialText1}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Responsorial Text 1
+                          </AccordionSummary>
+                          <AccordionDetails>
+                            <TextField
+                              fullWidth
+                              label="ResponsorialText1"
+                              margin="normal"
+                              name="responsorialText1"
+                              onChange={handleEditResponsorialText1}
+                              type="text"
+                              value={editResponsorialText1}
+                              variant="outlined"
+                              sx={{
                                 height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                        </TabPanel>
+                                "& .MuiOutlinedInput-root": {
+                                  height: "40px",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          </AccordionDetails>
+                        </Accordion>
 
-                        <TabPanel value={editTabValue} index={27}>
-                          <TextField
-                            fullWidth
-                            label="ResponsorialText2"
-                            margin="normal"
-                            name="responsorialText2"
-                            onChange={handleEditResponsorialText2}
-                            type="text"
-                            value={editResponsorialText2}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Responsorial Text 2
+                          </AccordionSummary>
+                          <AccordionDetails>
+                            <TextField
+                              fullWidth
+                              label="ResponsorialText2"
+                              margin="normal"
+                              name="responsorialText2"
+                              onChange={handleEditResponsorialText2}
+                              type="text"
+                              value={editResponsorialText2}
+                              variant="outlined"
+                              sx={{
                                 height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                        </TabPanel>
+                                "& .MuiOutlinedInput-root": {
+                                  height: "40px",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          </AccordionDetails>
+                        </Accordion>
 
-                        <TabPanel value={editTabValue} index={28}>
-                          <TextField
-                            fullWidth
-                            label="ResponsorialText3"
-                            margin="normal"
-                            name="responsorialText3"
-                            onChange={handleEditResponsorialText3}
-                            type="text"
-                            value={editResponsorialText3}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Responsorial Text 3
+                          </AccordionSummary>
+                          <AccordionDetails>
+                            <TextField
+                              fullWidth
+                              label="ResponsorialText3"
+                              margin="normal"
+                              name="responsorialText3"
+                              onChange={handleEditResponsorialText3}
+                              type="text"
+                              value={editResponsorialText3}
+                              variant="outlined"
+                              sx={{
                                 height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                        </TabPanel>
+                                "& .MuiOutlinedInput-root": {
+                                  height: "40px",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          </AccordionDetails>
+                        </Accordion>
 
-                        <TabPanel value={editTabValue} index={29}>
-                          <TextField
-                            fullWidth
-                            label="Before Gospel Text"
-                            margin="normal"
-                            name="beforeGospelText"
-                            onChange={handleEditBeforeGospelText}
-                            type="text"
-                            value={editBeforeGospelText}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Before Gospel Text
+                          </AccordionSummary>
+                          <AccordionDetails>
+                            <TextField
+                              fullWidth
+                              label="Before Gospel Text"
+                              margin="normal"
+                              name="beforeGospelText"
+                              onChange={handleEditBeforeGospelText}
+                              type="text"
+                              value={editBeforeGospelText}
+                              variant="outlined"
+                              sx={{
                                 height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                        </TabPanel>
+                                "& .MuiOutlinedInput-root": {
+                                  height: "40px",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          </AccordionDetails>
+                        </Accordion>
 
                         {/*VERSE B4 GOSPEL OPT2*/}
-                        <TabPanel value={editTabValue} index={30}>
-                          <TextField
-                            fullWidth
-                            label="Verse before Gospel OPT2"
-                            margin="normal"
-                            name="verseb4GospelOPT2"
-                            onChange={handleEditVerseb4GospelOPT2}
-                            type="text"
-                            value={editVerseb4GospelOPT2}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                          {editVerseb4GospelOPT2 && (
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Verse before Gospel OPT2
+                          </AccordionSummary>
+                          <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Before Gospel Text OPT2"
+                              label="Verse before Gospel OPT2"
                               margin="normal"
-                              name="b4GospelTextOPT2"
-                              onChange={handleEditB4GospelTextOPT2}
+                              name="verseb4GospelOPT2"
+                              onChange={handleEditVerseb4GospelOPT2}
                               type="text"
-                              value={editB4GospelTextOPT2}
+                              value={editVerseb4GospelOPT2}
                               variant="outlined"
                               sx={{
                                 height: "40px",
@@ -3833,40 +3972,45 @@ function DailyReadings() {
                                 },
                               }}
                             />
-                          )}
-                        </TabPanel>
+                            {editVerseb4GospelOPT2 && (
+                              <TextField
+                                fullWidth
+                                label="Before Gospel Text OPT2"
+                                margin="normal"
+                                name="b4GospelTextOPT2"
+                                onChange={handleEditB4GospelTextOPT2}
+                                type="text"
+                                value={editB4GospelTextOPT2}
+                                variant="outlined"
+                                sx={{
+                                  height: "40px",
+                                  "& .MuiOutlinedInput-root": {
+                                    height: "40px",
+                                  },
+                                  "& .MuiInputLabel-root": {
+                                    lineHeight: "15px",
+                                    fontSize: "smaller",
+                                  },
+                                }}
+                              />
+                            )}
+                          </AccordionDetails>
+                        </Accordion>
 
                         {/* ALLELULIA VERSE*/}
-                        <TabPanel value={editTabValue} index={31}>
-                          <TextField
-                            fullWidth
-                            label="Alleluia Verse"
-                            margin="normal"
-                            name="alleluiaVerse"
-                            onChange={handleEditAlleluiaVerse}
-                            type="text"
-                            value={editAlleluiaVerse}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                          {editAlleluiaVerse && (
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Alleluia Verse
+                          </AccordionSummary>
+                          <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Alleluia Text"
+                              label="Alleluia Verse"
                               margin="normal"
-                              name="alleluiaText"
-                              onChange={handleEditAlleluiaText}
+                              name="alleluiaVerse"
+                              onChange={handleEditAlleluiaVerse}
                               type="text"
-                              value={editAlleluiaText}
+                              value={editAlleluiaVerse}
                               variant="outlined"
                               sx={{
                                 height: "40px",
@@ -3879,86 +4023,101 @@ function DailyReadings() {
                                 },
                               }}
                             />
-                          )}
-                        </TabPanel>
+                            {editAlleluiaVerse && (
+                              <TextField
+                                fullWidth
+                                label="Alleluia Text"
+                                margin="normal"
+                                name="alleluiaText"
+                                onChange={handleEditAlleluiaText}
+                                type="text"
+                                value={editAlleluiaText}
+                                variant="outlined"
+                                sx={{
+                                  height: "40px",
+                                  "& .MuiOutlinedInput-root": {
+                                    height: "40px",
+                                  },
+                                  "& .MuiInputLabel-root": {
+                                    lineHeight: "15px",
+                                    fontSize: "smaller",
+                                  },
+                                }}
+                              />
+                            )}
+                          </AccordionDetails>
+                        </Accordion>
 
-                        <TabPanel value={editTabValue} index={32}>
-                          <TextField
-                            fullWidth
-                            label="Alleluia OPT2"
-                            margin="normal"
-                            name="alleluiaOPT2"
-                            onChange={handleEditAlleluiaOPT2}
-                            type="text"
-                            value={editAlleluiaOPT2}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Alleluia OPT2
+                          </AccordionSummary>
+                          <AccordionDetails>
+                            <TextField
+                              fullWidth
+                              label="Alleluia OPT2"
+                              margin="normal"
+                              name="alleluiaOPT2"
+                              onChange={handleEditAlleluiaOPT2}
+                              type="text"
+                              value={editAlleluiaOPT2}
+                              variant="outlined"
+                              sx={{
                                 height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                        </TabPanel>
+                                "& .MuiOutlinedInput-root": {
+                                  height: "40px",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          </AccordionDetails>
+                        </Accordion>
 
-                        <TabPanel value={editTabValue} index={33}>
-                          <TextField
-                            fullWidth
-                            label="Alleluia Text OPT2"
-                            margin="normal"
-                            name="alleluiaTextOPT2"
-                            onChange={handleEditAlleluiaTextOPT2}
-                            type="text"
-                            value={editAlleluiaTextOPT2}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Alleluia Text OPT2
+                          </AccordionSummary>
+                          <AccordionDetails>
+                            <TextField
+                              fullWidth
+                              label="Alleluia Text OPT2"
+                              margin="normal"
+                              name="alleluiaTextOPT2"
+                              onChange={handleEditAlleluiaTextOPT2}
+                              type="text"
+                              value={editAlleluiaTextOPT2}
+                              variant="outlined"
+                              sx={{
                                 height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                        </TabPanel>
+                                "& .MuiOutlinedInput-root": {
+                                  height: "40px",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          </AccordionDetails>
+                        </Accordion>
 
                         {/*       GOSPEL VERSE        */}
-                        <TabPanel value={editTabValue} index={34}>
-                          <TextField
-                            fullWidth
-                            label="Gospel Verse"
-                            margin="normal"
-                            name="gospelVerse"
-                            onChange={handleEditGospelVerse}
-                            type="text"
-                            value={editGospelVerse}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                          {editGospelVerse && (
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Gospel Verse
+                          </AccordionSummary>
+                          <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Gospel Text"
+                              label="Gospel Verse"
                               margin="normal"
-                              name="gospelText"
-                              onChange={handleEditGospelText}
+                              name="gospelVerse"
+                              onChange={handleEditGospelVerse}
                               type="text"
-                              value={editGospelText}
+                              value={editGospelVerse}
                               variant="outlined"
                               sx={{
                                 height: "40px",
@@ -3971,40 +4130,45 @@ function DailyReadings() {
                                 },
                               }}
                             />
-                          )}
-                        </TabPanel>
+                            {editGospelVerse && (
+                              <TextField
+                                fullWidth
+                                label="Gospel Text"
+                                margin="normal"
+                                name="gospelText"
+                                onChange={handleEditGospelText}
+                                type="text"
+                                value={editGospelText}
+                                variant="outlined"
+                                sx={{
+                                  height: "40px",
+                                  "& .MuiOutlinedInput-root": {
+                                    height: "40px",
+                                  },
+                                  "& .MuiInputLabel-root": {
+                                    lineHeight: "15px",
+                                    fontSize: "smaller",
+                                  },
+                                }}
+                              />
+                            )}
+                          </AccordionDetails>
+                        </Accordion>
 
                         {/*      GOSPEL VERSE 2       */}
-                        <TabPanel value={editTabValue} index={35}>
-                          <TextField
-                            fullWidth
-                            label="Gospel Verse2"
-                            margin="normal"
-                            name="gospelVerse2"
-                            onChange={handleEditGospelVerse2}
-                            type="text"
-                            value={editGospelVerse2}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                          {editGospelVerse && (
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Gospel Verse 2
+                          </AccordionSummary>
+                          <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Gospel Text Option2"
+                              label="Gospel Verse 2"
                               margin="normal"
-                              name="gospelTextOption2"
-                              onChange={handleEditGospelTextOption2}
+                              name="gospelVerse2"
+                              onChange={handleEditGospelVerse2}
                               type="text"
-                              value={editGospelTextOption2}
+                              value={editGospelVerse2}
                               variant="outlined"
                               sx={{
                                 height: "40px",
@@ -4017,31 +4181,58 @@ function DailyReadings() {
                                 },
                               }}
                             />
-                          )}
-                        </TabPanel>
+                            {editGospelVerse && (
+                              <TextField
+                                fullWidth
+                                label="Gospel Text Option2"
+                                margin="normal"
+                                name="gospelTextOption2"
+                                onChange={handleEditGospelTextOption2}
+                                type="text"
+                                value={editGospelTextOption2}
+                                variant="outlined"
+                                sx={{
+                                  height: "40px",
+                                  "& .MuiOutlinedInput-root": {
+                                    height: "40px",
+                                  },
+                                  "& .MuiInputLabel-root": {
+                                    lineHeight: "15px",
+                                    fontSize: "smaller",
+                                  },
+                                }}
+                              />
+                            )}
+                          </AccordionDetails>
+                        </Accordion>
 
-                        <TabPanel value={editTabValue} index={36}>
-                          <TextField
-                            fullWidth
-                            label="Verse Before Gospel"
-                            margin="normal"
-                            name="verseBeforeGospel"
-                            onChange={handleEditVerseBeforeGospel}
-                            type="text"
-                            value={editVerseBeforeGospel}
-                            variant="outlined"
-                            sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
+                        <Accordion>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Verse Before Gospel
+                          </AccordionSummary>
+                          <AccordionDetails>
+                            <TextField
+                              fullWidth
+                              label="Verse Before Gospel"
+                              margin="normal"
+                              name="verseBeforeGospel"
+                              onChange={handleEditVerseBeforeGospel}
+                              type="text"
+                              value={editVerseBeforeGospel}
+                              variant="outlined"
+                              sx={{
                                 height: "40px",
-                              },
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                        </TabPanel>
+                                "& .MuiOutlinedInput-root": {
+                                  height: "40px",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+                          </AccordionDetails>
+                        </Accordion>
                       </>
                     </CardContent>
                     <Divider />

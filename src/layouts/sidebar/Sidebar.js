@@ -52,7 +52,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
 
   const dataFromAbove = queryClient.getQueryData(["routeRoles"]);
 
-  console.log(unreadTicketsCount);
+  //console.log(unreadTicketsCount);
 
   // useEffect(() => {
   //   // Load storedRoutes from localStorage
