@@ -166,7 +166,7 @@ export default function Wallet() {
               marginBottom={2}
               sx={{ fontWeight: "bold" }}
             >
-              Users
+              Users Wallet Statistics
             </Typography>
 
             <TableContainer
@@ -249,7 +249,7 @@ export default function Wallet() {
             </TableContainer>
 
             <TablePagination
-              rowsPerPageOptions={[10, 25, 50]}
+              rowsPerPageOptions={[10, 25, 50, 100]}
               component="div"
               count={balance?.data?.count || 0}
               rowsPerPage={pagination.pageSize}
@@ -259,23 +259,19 @@ export default function Wallet() {
               ActionsComponent={(props) => (
                 <div style={{ display: "flex" }}>
                   <IconButton
-                    onClick={() => handlePageChange(null, 0)}
+                    onClick={() => handlePageChange(0)}
                     disabled={pagination.pageIndex === 0}
                   >
                     <FirstPageIcon />
                   </IconButton>
                   <IconButton
-                    onClick={() =>
-                      handlePageChange(null, pagination.pageIndex - 1)
-                    }
+                    onClick={() => handlePageChange(pagination.pageIndex - 1)}
                     disabled={pagination.pageIndex === 0}
                   >
                     <NavigateBeforeIcon />
                   </IconButton>
                   <IconButton
-                    onClick={() =>
-                      handlePageChange(null, pagination.pageIndex + 1)
-                    }
+                    onClick={() => handlePageChange(pagination.pageIndex + 1)}
                     disabled={
                       pagination.pageIndex >=
                       Math.ceil(
@@ -289,7 +285,6 @@ export default function Wallet() {
                   <IconButton
                     onClick={() =>
                       handlePageChange(
-                        null,
                         Math.ceil(
                           (balance?.data?.count || 0) / pagination.pageSize
                         ) - 1

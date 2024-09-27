@@ -242,7 +242,7 @@ export default function Followers() {
     }
   }, [startUserDate, endUserDate, startFollowerDate, endFollowerDate, pagination]); 
   
-  console.log(pagination)
+  //console.log(pagination)
   
 
   const columns = useMemo(

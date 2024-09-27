@@ -74,7 +74,7 @@ export default function Index() {
     ["fetchUsersCount"],
     async () => {
       const { data } = await axios.get(
-        `https://api.vigoplace.com/api/admin/console/users/count`,
+        `https://api.vigoplace.com/api/admin/console/total-users/count`,
         // `http://localhost:3001/api/admin/console/users/count`,
         {
           headers: {
@@ -82,11 +82,13 @@ export default function Index() {
           },
         }
       );
+
+      //console.log(data)
       return data;
     },
     {
       onError: (err) => {
-        console.log(err, "err fetching users");
+        console.log(err, "err fetching total users count");
       },
       enabled: !!user?.token,
     }

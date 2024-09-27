@@ -1258,23 +1258,19 @@ function DailyReadings() {
                         aria-controls="panel1a-content"
                         id="panel1a-header"
                       >
-                        Title
+                        Date
                       </AccordionSummary>
                       <AccordionDetails>
                         <TextField
                           fullWidth
-                          label="Title"
                           margin="normal"
-                          name="title"
-                          onChange={handleTitle}
-                          type="text"
-                          value={title}
+                          name="date"
+                          onChange={handleDate}
+                          type="date"
+                          multiline
+                          value={date}
                           variant="outlined"
                           sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
-                              height: "40px",
-                            },
                             "& .MuiInputLabel-root": {
                               lineHeight: "15px",
                               fontSize: "smaller",
@@ -1293,22 +1289,20 @@ function DailyReadings() {
                         aria-controls="panel2a-content"
                         id="panel2a-header"
                       >
-                        Date
+                        Title
                       </AccordionSummary>
                       <AccordionDetails>
                         <TextField
                           fullWidth
+                          label="Title"
                           margin="normal"
-                          name="date"
-                          onChange={handleDate}
-                          type="date"
-                          value={date}
+                          name="title"
+                          onChange={handleTitle}
+                          type="text"
+                          multiline
+                          value={title}
                           variant="outlined"
                           sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
-                              height: "40px",
-                            },
                             "& .MuiInputLabel-root": {
                               lineHeight: "15px",
                               fontSize: "smaller",
@@ -1317,6 +1311,7 @@ function DailyReadings() {
                         />
                       </AccordionDetails>
                     </Accordion>
+
                     <>
                       {/********************* READING 1 VERSE ********************/}
                       <Accordion>
@@ -1330,14 +1325,11 @@ function DailyReadings() {
                             margin="normal"
                             name="reading1Verse"
                             type="text"
+                            multiline
                             onChange={handleReading1Verse}
                             value={reading1Verse}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -1350,15 +1342,12 @@ function DailyReadings() {
                               label="Reading1 Text"
                               margin="normal"
                               name="reading1Text"
+                              multiline
                               onChange={handleReading1Text}
                               type="text"
                               value={reading1Text}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -1381,13 +1370,10 @@ function DailyReadings() {
                             name="reading1Option2Verse"
                             onChange={handleReading1Option2Verse}
                             type="text"
+                            multiline
                             value={reading1Option2Verse}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -1402,13 +1388,10 @@ function DailyReadings() {
                               name="reading1TextOption2"
                               onChange={handleReading1TextOption2}
                               type="text"
+                              multiline
                               value={reading1TextOption2}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -1432,13 +1415,10 @@ function DailyReadings() {
                             name="reading2Verse"
                             onChange={handleReading2Verse}
                             type="text"
+                            multiline
                             value={reading2Verse}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -1453,13 +1433,10 @@ function DailyReadings() {
                               name="reading2Text"
                               onChange={handleReading2Text}
                               type="text"
+                              multiline
                               value={reading2Text}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -1482,13 +1459,10 @@ function DailyReadings() {
                             name="reading2Option1Verse"
                             onChange={handleReading2Option1Verse}
                             type="text"
+                            multiline
                             value={reading2Option1Verse}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -1503,13 +1477,10 @@ function DailyReadings() {
                               name="reading2TextOption1"
                               onChange={handleReading2TextOption1}
                               type="text"
+                              multiline
                               value={reading2TextOption1}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -1532,13 +1503,10 @@ function DailyReadings() {
                             name="reading3Verse"
                             onChange={handleReading3Verse}
                             type="text"
+                            multiline
                             value={reading3Verse}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -1553,13 +1521,10 @@ function DailyReadings() {
                               name="reading3Text"
                               onChange={handleReading3Text}
                               type="text"
+                              multiline
                               value={reading3Text}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -1582,13 +1547,10 @@ function DailyReadings() {
                             name="reading4Verse"
                             onChange={handleReading4Verse}
                             type="text"
+                            multiline
                             value={reading4Verse}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -1603,13 +1565,10 @@ function DailyReadings() {
                               name="reading4Text"
                               onChange={handleReading4Text}
                               type="text"
+                              multiline
                               value={reading4Text}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -1632,13 +1591,10 @@ function DailyReadings() {
                             name="reading5Verse"
                             onChange={handleReading5Verse}
                             type="text"
+                            multiline
                             value={reading5Verse}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -1653,13 +1609,10 @@ function DailyReadings() {
                               name="reading5Text"
                               onChange={handleReading5Text}
                               type="text"
+                              multiline
                               value={reading5Text}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -1682,13 +1635,10 @@ function DailyReadings() {
                             name="reading6Verse"
                             onChange={handleReading6Verse}
                             type="text"
+                            multiline
                             value={reading6Verse}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -1703,13 +1653,10 @@ function DailyReadings() {
                               name="reading6Text"
                               onChange={handleReading6Text}
                               type="text"
+                              multiline
                               value={reading6Text}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -1732,13 +1679,10 @@ function DailyReadings() {
                             name="reading7Verse"
                             onChange={handleReading7Verse}
                             type="text"
+                            multiline
                             value={reading7Verse}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -1753,13 +1697,10 @@ function DailyReadings() {
                               name="reading7Text"
                               onChange={handleReading7Text}
                               type="text"
+                              multiline
                               value={reading7Text}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -1783,13 +1724,10 @@ function DailyReadings() {
                             name="processionPalmVerse"
                             onChange={handleProcessionPalmVerse}
                             type="text"
+                            multiline
                             value={processionPalmVerse}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -1811,13 +1749,10 @@ function DailyReadings() {
                             name="processionPalmsGospel"
                             onChange={handleProcessionPalmsGospel}
                             type="text"
+                            multiline
                             value={processionPalmsGospel}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -1839,13 +1774,10 @@ function DailyReadings() {
                             name="processionPalmsGospel2Verse"
                             onChange={handleProcessionPalmsGospel2Verse}
                             type="text"
+                            multiline
                             value={processionPalmsGospel2Verse}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -1867,13 +1799,10 @@ function DailyReadings() {
                             name="processionPalmsGospel2Text"
                             onChange={handleProcessionPalmsGospel2Text}
                             type="text"
+                            multiline
                             value={processionPalmsGospel2Text}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -1895,13 +1824,10 @@ function DailyReadings() {
                             name="responsorialPsalmVerse"
                             onChange={handleResponsorialPsalmVerse}
                             type="text"
+                            multiline
                             value={responsorialPsalmVerse}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -1918,13 +1844,10 @@ function DailyReadings() {
                                 name="responsorialPsalmRespond"
                                 onChange={handleResponsorialPsalmRespond}
                                 type="text"
+                                multiline
                                 value={responsorialPsalmRespond}
                                 variant="outlined"
                                 sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
                                   "& .MuiInputLabel-root": {
                                     lineHeight: "15px",
                                     fontSize: "smaller",
@@ -1939,13 +1862,10 @@ function DailyReadings() {
                                 name="responsorialPsalmText1"
                                 onChange={handleResponsorialPsalmText1}
                                 type="text"
+                                multiline
                                 value={responsorialPsalmText1}
                                 variant="outlined"
                                 sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
                                   "& .MuiInputLabel-root": {
                                     lineHeight: "15px",
                                     fontSize: "smaller",
@@ -1969,13 +1889,10 @@ function DailyReadings() {
                             name="responsorialPsalmText2"
                             onChange={handleResponsorialPsalmText2}
                             type="text"
+                            multiline
                             value={responsorialPsalmText2}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -1997,13 +1914,10 @@ function DailyReadings() {
                             name="responsorialPsalmText3"
                             onChange={handleResponsorialPsalmText3}
                             type="text"
+                            multiline
                             value={responsorialPsalmText3}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -2025,13 +1939,10 @@ function DailyReadings() {
                             name="responsorialPsalmText4"
                             onChange={handleResponsorialPsalmText4}
                             type="text"
+                            multiline
                             value={responsorialPsalmText4}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -2053,13 +1964,10 @@ function DailyReadings() {
                             name="responsorialPsalmText5"
                             onChange={handleResponsorialPsalmText5}
                             type="text"
+                            multiline
                             value={responsorialPsalmText5}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -2081,13 +1989,10 @@ function DailyReadings() {
                             name="responsorialPsalmText6"
                             onChange={handleResponsorialPsalmText6}
                             type="text"
+                            multiline
                             value={responsorialPsalmText6}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -2109,13 +2014,10 @@ function DailyReadings() {
                             name="responsorialPsalmVerseOPT2"
                             onChange={handleResponsorialPsalmVerseOPT2}
                             type="text"
+                            multiline
                             value={responsorialPsalmVerseOPT2}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -2130,13 +2032,10 @@ function DailyReadings() {
                               name="responsorialPsalmText1OPT2"
                               onChange={handleResponsorialPsalmText1OPT2}
                               type="text"
+                              multiline
                               value={responsorialPsalmText1OPT2}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -2159,13 +2058,10 @@ function DailyReadings() {
                             name="responsorialPsalmText2OPT2"
                             onChange={handleResponsorialPsalmText2OPT2}
                             type="text"
+                            multiline
                             value={responsorialPsalmText2OPT2}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -2187,13 +2083,10 @@ function DailyReadings() {
                             name="responsorialPsalmResponseOPT2"
                             onChange={handleResponsorialPsalmResponseOPT2}
                             type="text"
+                            multiline
                             value={responsorialPsalmResponseOPT2}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -2216,13 +2109,10 @@ function DailyReadings() {
                             name="responsorialPsalmText3OPT2"
                             onChange={handleResponsorialPsalmText3OPT2}
                             type="text"
+                            multiline
                             value={responsorialPsalmText3OPT2}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -2244,13 +2134,10 @@ function DailyReadings() {
                             name="responsorialPsalmText4OPT2"
                             onChange={handleResponsorialPsalmText4OPT2}
                             type="text"
+                            multiline
                             value={responsorialPsalmText4OPT2}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -2272,13 +2159,10 @@ function DailyReadings() {
                             name="responsorialPsalmText5OPT2"
                             onChange={handleResponsorialPsalmText5OPT2}
                             type="text"
+                            multiline
                             value={responsorialPsalmText5OPT2}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -2300,13 +2184,10 @@ function DailyReadings() {
                             name="responsorialText1"
                             onChange={handleResponsorialText1}
                             type="text"
+                            multiline
                             value={responsorialText1}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -2328,13 +2209,10 @@ function DailyReadings() {
                             name="responsorialText2"
                             onChange={handleResponsorialText2}
                             type="text"
+                            multiline
                             value={responsorialText2}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -2356,13 +2234,10 @@ function DailyReadings() {
                             name="responsorialText3"
                             onChange={handleResponsorialText3}
                             type="text"
+                            multiline
                             value={responsorialText3}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -2384,13 +2259,10 @@ function DailyReadings() {
                             name="beforeGospelText"
                             onChange={handleBeforeGospelText}
                             type="text"
+                            multiline
                             value={beforeGospelText}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -2412,13 +2284,10 @@ function DailyReadings() {
                             name="verseb4GospelOPT2"
                             onChange={handleVerseb4GospelOPT2}
                             type="text"
+                            multiline
                             value={verseb4GospelOPT2}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -2433,13 +2302,10 @@ function DailyReadings() {
                               name="b4GospelTextOPT2"
                               onChange={handleB4GospelTextOPT2}
                               type="text"
+                              multiline
                               value={b4GospelTextOPT2}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -2462,13 +2328,10 @@ function DailyReadings() {
                             name="alleluiaVerse"
                             onChange={handleAlleluiaVerse}
                             type="text"
+                            multiline
                             value={alleluiaVerse}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -2483,13 +2346,10 @@ function DailyReadings() {
                               name="alleluiaText"
                               onChange={handleAlleluiaText}
                               type="text"
+                              multiline
                               value={alleluiaText}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -2512,13 +2372,10 @@ function DailyReadings() {
                             name="alleluiaOPT2"
                             onChange={handleAlleluiaOPT2}
                             type="text"
+                            multiline
                             value={alleluiaOPT2}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -2540,13 +2397,10 @@ function DailyReadings() {
                             name="alleluiaTextOPT2"
                             onChange={handleAlleluiaTextOPT2}
                             type="text"
+                            multiline
                             value={alleluiaTextOPT2}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -2568,13 +2422,10 @@ function DailyReadings() {
                             name="gospelVerse"
                             onChange={handleGospelVerse}
                             type="text"
+                            multiline
                             value={gospelVerse}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -2589,13 +2440,10 @@ function DailyReadings() {
                               name="gospelText"
                               onChange={handleGospelText}
                               type="text"
+                              multiline
                               value={gospelText}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -2619,13 +2467,10 @@ function DailyReadings() {
                             name="gospelVerse2"
                             onChange={handleGospelVerse2}
                             type="text"
+                            multiline
                             value={gospelVerse2}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -2640,13 +2485,10 @@ function DailyReadings() {
                               name="gospelTextOption2"
                               onChange={handleGospelTextOption2}
                               type="text"
+                              multiline
                               value={gospelTextOption2}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -2669,13 +2511,10 @@ function DailyReadings() {
                             name="verseBeforeGospel"
                             onChange={handleVerseBeforeGospel}
                             type="text"
+                            multiline
                             value={verseBeforeGospel}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -2825,13 +2664,10 @@ function DailyReadings() {
                             name="title"
                             onChange={handleEditTitle}
                             type="text"
+                            multiline
                             value={editTitle}
                             variant="outlined"
                             sx={{
-                              height: "40px",
-                              "& .MuiOutlinedInput-root": {
-                                height: "40px",
-                              },
                               "& .MuiInputLabel-root": {
                                 lineHeight: "15px",
                                 fontSize: "smaller",
@@ -2876,14 +2712,11 @@ function DailyReadings() {
                               margin="normal"
                               name="reading1Verse"
                               type="text"
+                              multiline
                               onChange={handleEditReading1Verse}
                               value={editReading1Verse}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -2898,13 +2731,10 @@ function DailyReadings() {
                                 name="reading1Text"
                                 onChange={handleEditReading1Text}
                                 type="text"
+                                multiline
                                 value={editReading1Text}
                                 variant="outlined"
                                 sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
                                   "& .MuiInputLabel-root": {
                                     lineHeight: "15px",
                                     fontSize: "smaller",
@@ -2928,13 +2758,10 @@ function DailyReadings() {
                               name="reading1Option2Verse"
                               onChange={handleEditReading1Option2Verse}
                               type="text"
+                              multiline
                               value={editReading1Option2Verse}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -2949,13 +2776,10 @@ function DailyReadings() {
                                 name="reading1TextOption2"
                                 onChange={handleEditReading1TextOption2}
                                 type="text"
+                                multiline
                                 value={editReading1TextOption2}
                                 variant="outlined"
                                 sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
                                   "& .MuiInputLabel-root": {
                                     lineHeight: "15px",
                                     fontSize: "smaller",
@@ -2979,13 +2803,10 @@ function DailyReadings() {
                               name="reading2Verse"
                               onChange={handleEditReading2Verse}
                               type="text"
+                              multiline
                               value={editReading2Verse}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -3000,13 +2821,10 @@ function DailyReadings() {
                                 name="reading2Text"
                                 onChange={handleEditReading2Text}
                                 type="text"
+                                multiline
                                 value={editReading2Text}
                                 variant="outlined"
                                 sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
                                   "& .MuiInputLabel-root": {
                                     lineHeight: "15px",
                                     fontSize: "smaller",
@@ -3030,13 +2848,10 @@ function DailyReadings() {
                               name="reading2Option1Verse"
                               onChange={handleEditReading2Option1Verse}
                               type="text"
+                              multiline
                               value={editReading2Option1Verse}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -3051,13 +2866,10 @@ function DailyReadings() {
                                 name="reading2TextOption1"
                                 onChange={handleEditReading2TextOption1}
                                 type="text"
+                                multiline
                                 value={editReading2TextOption1}
                                 variant="outlined"
                                 sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
                                   "& .MuiInputLabel-root": {
                                     lineHeight: "15px",
                                     fontSize: "smaller",
@@ -3081,13 +2893,10 @@ function DailyReadings() {
                               name="reading3Verse"
                               onChange={handleEditReading3Verse}
                               type="text"
+                              multiline
                               value={editReading3Verse}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -3102,13 +2911,10 @@ function DailyReadings() {
                                 name="reading3Text"
                                 onChange={handleEditReading3Text}
                                 type="text"
+                                multiline
                                 value={editReading3Text}
                                 variant="outlined"
                                 sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
                                   "& .MuiInputLabel-root": {
                                     lineHeight: "15px",
                                     fontSize: "smaller",
@@ -3132,13 +2938,10 @@ function DailyReadings() {
                               name="reading4Verse"
                               onChange={handleEditReading4Verse}
                               type="text"
+                              multiline
                               value={editReading4Verse}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -3153,13 +2956,10 @@ function DailyReadings() {
                                 name="reading4Text"
                                 onChange={handleEditReading4Text}
                                 type="text"
+                                multiline
                                 value={editReading4Text}
                                 variant="outlined"
                                 sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
                                   "& .MuiInputLabel-root": {
                                     lineHeight: "15px",
                                     fontSize: "smaller",
@@ -3182,13 +2982,10 @@ function DailyReadings() {
                               name="reading5Verse"
                               onChange={handleEditReading5Verse}
                               type="text"
+                              multiline
                               value={editReading5Verse}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -3203,13 +3000,10 @@ function DailyReadings() {
                                 name="reading5Text"
                                 onChange={handleEditReading5Text}
                                 type="text"
+                                multiline
                                 value={editReading5Text}
                                 variant="outlined"
                                 sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
                                   "& .MuiInputLabel-root": {
                                     lineHeight: "15px",
                                     fontSize: "smaller",
@@ -3233,13 +3027,10 @@ function DailyReadings() {
                               name="reading6Verse"
                               onChange={handleEditReading6Verse}
                               type="text"
+                              multiline
                               value={editReading6Verse}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -3254,13 +3045,10 @@ function DailyReadings() {
                                 name="reading6Text"
                                 onChange={handleEditReading6Text}
                                 type="text"
+                                multiline
                                 value={editReading6Text}
                                 variant="outlined"
                                 sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
                                   "& .MuiInputLabel-root": {
                                     lineHeight: "15px",
                                     fontSize: "smaller",
@@ -3284,13 +3072,10 @@ function DailyReadings() {
                               name="reading7Verse"
                               onChange={handleEditReading7Verse}
                               type="text"
+                              multiline
                               value={editReading7Verse}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -3305,13 +3090,10 @@ function DailyReadings() {
                                 name="reading7Text"
                                 onChange={handleEditReading7Text}
                                 type="text"
+                                multiline
                                 value={editReading7Text}
                                 variant="outlined"
                                 sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
                                   "& .MuiInputLabel-root": {
                                     lineHeight: "15px",
                                     fontSize: "smaller",
@@ -3335,13 +3117,10 @@ function DailyReadings() {
                               name="processionPalmVerse"
                               onChange={handleEditProcessionPalmVerse}
                               type="text"
+                              multiline
                               value={editProcessionPalmVerse}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -3363,13 +3142,10 @@ function DailyReadings() {
                               name="processionPalmsGospel"
                               onChange={handleEditProcessionPalmsGospel}
                               type="text"
+                              multiline
                               value={editProcessionPalmsGospel}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -3392,13 +3168,10 @@ function DailyReadings() {
                               name="processionPalmsGospel2Verse"
                               onChange={handleEditProcessionPalmsGospel2Verse}
                               type="text"
+                              multiline
                               value={editProcessionPalmsGospel2Verse}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -3413,13 +3186,10 @@ function DailyReadings() {
                                 name="processionPalmsGospel2Text"
                                 onChange={handleEditProcessionPalmsGospel2Text}
                                 type="text"
+                                multiline
                                 value={editProcessionPalmsGospel2Text}
                                 variant="outlined"
                                 sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
                                   "& .MuiInputLabel-root": {
                                     lineHeight: "15px",
                                     fontSize: "smaller",
@@ -3443,13 +3213,10 @@ function DailyReadings() {
                               name="responsorialPsalmVerse"
                               onChange={handleEditResponsorialPsalmVerse}
                               type="text"
+                              multiline
                               value={editResponsorialPsalmVerse}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -3465,13 +3232,10 @@ function DailyReadings() {
                                   name="responsorialPsalmRespond"
                                   onChange={handleEditResponsorialPsalmRespond}
                                   type="text"
+                                  multiline
                                   value={editResponsorialPsalmRespond}
                                   variant="outlined"
                                   sx={{
-                                    height: "40px",
-                                    "& .MuiOutlinedInput-root": {
-                                      height: "40px",
-                                    },
                                     "& .MuiInputLabel-root": {
                                       lineHeight: "15px",
                                       fontSize: "smaller",
@@ -3485,13 +3249,10 @@ function DailyReadings() {
                                   name="responsorialPsalmText1"
                                   onChange={handleEditResponsorialPsalmText1}
                                   type="text"
+                                  multiline
                                   value={editResponsorialPsalmText1}
                                   variant="outlined"
                                   sx={{
-                                    height: "40px",
-                                    "& .MuiOutlinedInput-root": {
-                                      height: "40px",
-                                    },
                                     "& .MuiInputLabel-root": {
                                       lineHeight: "15px",
                                       fontSize: "smaller",
@@ -3515,13 +3276,10 @@ function DailyReadings() {
                               name="responsorialPsalmText2"
                               onChange={handleEditResponsorialPsalmText2}
                               type="text"
+                              multiline
                               value={editResponsorialPsalmText2}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -3543,13 +3301,10 @@ function DailyReadings() {
                               name="responsorialPsalmText3"
                               onChange={handleEditResponsorialPsalmText3}
                               type="text"
+                              multiline
                               value={editResponsorialPsalmText3}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -3571,13 +3326,10 @@ function DailyReadings() {
                               name="responsorialPsalmText4"
                               onChange={handleEditResponsorialPsalmText4}
                               type="text"
+                              multiline
                               value={editResponsorialPsalmText4}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -3599,13 +3351,10 @@ function DailyReadings() {
                               name="responsorialPsalmText5"
                               onChange={handleEditResponsorialPsalmText5}
                               type="text"
+                              multiline
                               value={editResponsorialPsalmText5}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -3627,13 +3376,10 @@ function DailyReadings() {
                               name="responsorialPsalmText6"
                               onChange={handleEditResponsorialPsalmText6}
                               type="text"
+                              multiline
                               value={editResponsorialPsalmText6}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -3656,13 +3402,10 @@ function DailyReadings() {
                               name="responsorialPsalmVerseOPT2"
                               onChange={handleEditResponsorialPsalmVerseOPT2}
                               type="text"
+                              multiline
                               value={editResponsorialPsalmVerseOPT2}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -3677,13 +3420,10 @@ function DailyReadings() {
                                 name="responsorialPsalmText1OPT2"
                                 onChange={handleEditResponsorialPsalmText1OPT2}
                                 type="text"
+                                multiline
                                 value={editResponsorialPsalmText1OPT2}
                                 variant="outlined"
                                 sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
                                   "& .MuiInputLabel-root": {
                                     lineHeight: "15px",
                                     fontSize: "smaller",
@@ -3706,13 +3446,10 @@ function DailyReadings() {
                               name="responsorialPsalmText2OPT2"
                               onChange={handleEditResponsorialPsalmText2OPT2}
                               type="text"
+                              multiline
                               value={editResponsorialPsalmText2OPT2}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -3734,13 +3471,10 @@ function DailyReadings() {
                               name="responsorialPsalmResponseOPT2"
                               onChange={handleEditResponsorialPsalmResponseOPT2}
                               type="text"
+                              multiline
                               value={editResponsorialPsalmResponseOPT2}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -3762,13 +3496,10 @@ function DailyReadings() {
                               name="responsorialPsalmText3OPT2"
                               onChange={handleEditResponsorialPsalmText3OPT2}
                               type="text"
+                              multiline
                               value={editResponsorialPsalmText3OPT2}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -3790,13 +3521,10 @@ function DailyReadings() {
                               name="responsorialPsalmText4OPT2"
                               onChange={handleEditResponsorialPsalmText4OPT2}
                               type="text"
+                              multiline
                               value={editResponsorialPsalmText4OPT2}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -3818,13 +3546,10 @@ function DailyReadings() {
                               name="responsorialPsalmText5OPT2"
                               onChange={handleEditResponsorialPsalmText5OPT2}
                               type="text"
+                              multiline
                               value={editResponsorialPsalmText5OPT2}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -3846,13 +3571,10 @@ function DailyReadings() {
                               name="responsorialText1"
                               onChange={handleEditResponsorialText1}
                               type="text"
+                              multiline
                               value={editResponsorialText1}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -3874,13 +3596,10 @@ function DailyReadings() {
                               name="responsorialText2"
                               onChange={handleEditResponsorialText2}
                               type="text"
+                              multiline
                               value={editResponsorialText2}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -3902,13 +3621,10 @@ function DailyReadings() {
                               name="responsorialText3"
                               onChange={handleEditResponsorialText3}
                               type="text"
+                              multiline
                               value={editResponsorialText3}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -3930,13 +3646,10 @@ function DailyReadings() {
                               name="beforeGospelText"
                               onChange={handleEditBeforeGospelText}
                               type="text"
+                              multiline
                               value={editBeforeGospelText}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -3959,13 +3672,10 @@ function DailyReadings() {
                               name="verseb4GospelOPT2"
                               onChange={handleEditVerseb4GospelOPT2}
                               type="text"
+                              multiline
                               value={editVerseb4GospelOPT2}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -3980,13 +3690,10 @@ function DailyReadings() {
                                 name="b4GospelTextOPT2"
                                 onChange={handleEditB4GospelTextOPT2}
                                 type="text"
+                                multiline
                                 value={editB4GospelTextOPT2}
                                 variant="outlined"
                                 sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
                                   "& .MuiInputLabel-root": {
                                     lineHeight: "15px",
                                     fontSize: "smaller",
@@ -4010,13 +3717,10 @@ function DailyReadings() {
                               name="alleluiaVerse"
                               onChange={handleEditAlleluiaVerse}
                               type="text"
+                              multiline
                               value={editAlleluiaVerse}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -4031,13 +3735,10 @@ function DailyReadings() {
                                 name="alleluiaText"
                                 onChange={handleEditAlleluiaText}
                                 type="text"
+                                multiline
                                 value={editAlleluiaText}
                                 variant="outlined"
                                 sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
                                   "& .MuiInputLabel-root": {
                                     lineHeight: "15px",
                                     fontSize: "smaller",
@@ -4060,13 +3761,10 @@ function DailyReadings() {
                               name="alleluiaOPT2"
                               onChange={handleEditAlleluiaOPT2}
                               type="text"
+                              multiline
                               value={editAlleluiaOPT2}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -4088,13 +3786,10 @@ function DailyReadings() {
                               name="alleluiaTextOPT2"
                               onChange={handleEditAlleluiaTextOPT2}
                               type="text"
+                              multiline
                               value={editAlleluiaTextOPT2}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -4117,13 +3812,10 @@ function DailyReadings() {
                               name="gospelVerse"
                               onChange={handleEditGospelVerse}
                               type="text"
+                              multiline
                               value={editGospelVerse}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -4138,13 +3830,10 @@ function DailyReadings() {
                                 name="gospelText"
                                 onChange={handleEditGospelText}
                                 type="text"
+                                multiline
                                 value={editGospelText}
                                 variant="outlined"
                                 sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
                                   "& .MuiInputLabel-root": {
                                     lineHeight: "15px",
                                     fontSize: "smaller",
@@ -4168,13 +3857,10 @@ function DailyReadings() {
                               name="gospelVerse2"
                               onChange={handleEditGospelVerse2}
                               type="text"
+                              multiline
                               value={editGospelVerse2}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",
@@ -4189,13 +3875,10 @@ function DailyReadings() {
                                 name="gospelTextOption2"
                                 onChange={handleEditGospelTextOption2}
                                 type="text"
+                                multiline
                                 value={editGospelTextOption2}
                                 variant="outlined"
                                 sx={{
-                                  height: "40px",
-                                  "& .MuiOutlinedInput-root": {
-                                    height: "40px",
-                                  },
                                   "& .MuiInputLabel-root": {
                                     lineHeight: "15px",
                                     fontSize: "smaller",
@@ -4218,13 +3901,10 @@ function DailyReadings() {
                               name="verseBeforeGospel"
                               onChange={handleEditVerseBeforeGospel}
                               type="text"
+                              multiline
                               value={editVerseBeforeGospel}
                               variant="outlined"
                               sx={{
-                                height: "40px",
-                                "& .MuiOutlinedInput-root": {
-                                  height: "40px",
-                                },
                                 "& .MuiInputLabel-root": {
                                   lineHeight: "15px",
                                   fontSize: "smaller",

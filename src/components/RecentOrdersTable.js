@@ -330,7 +330,7 @@ export default function RecentOrdersTable() {
         page,
         limit,
         searchQuery,
-        currency
+        currency,
       ],
       async () => {
         const { data } = await axios.get(
@@ -414,7 +414,7 @@ export default function RecentOrdersTable() {
           {/* <BulkActions /> */}
         </Box>
       )}
-  
+
       {isUserRoute ? (
         <Box sx={{ width: "100%" }}>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -460,7 +460,10 @@ export default function RecentOrdersTable() {
                         sx={{ height: "40px" }}
                       >
                         {statusOptions.map((statusOption) => (
-                          <MenuItem key={statusOption.id} value={statusOption.id}>
+                          <MenuItem
+                            key={statusOption.id}
+                            value={statusOption.id}
+                          >
                             {statusOption.name}
                           </MenuItem>
                         ))}
@@ -486,7 +489,8 @@ export default function RecentOrdersTable() {
                 </TableHead>
                 <TableBody>
                   {(searchQuery ? filteredPayouts : filteredCryptoOrders) &&
-                  (searchQuery ? filteredPayouts : filteredCryptoOrders).length > 0 ? (
+                  (searchQuery ? filteredPayouts : filteredCryptoOrders)
+                    .length > 0 ? (
                     (searchQuery ? filteredPayouts : filteredCryptoOrders).map(
                       (payout, index) => {
                         const isPayoutSelected = selectedCryptoOrders.includes(
@@ -513,7 +517,9 @@ export default function RecentOrdersTable() {
               <TablePagination
                 component="div"
                 count={
-                  isUserRoute ? userPayoutsData?.count ?? 0 : payouts?.data?.count ?? 0
+                  isUserRoute
+                    ? userPayoutsData?.count ?? 0
+                    : payouts?.data?.count ?? 0
                 }
                 onPageChange={handlePageChange}
                 onRowsPerPageChange={handleLimitChange}
@@ -582,7 +588,10 @@ export default function RecentOrdersTable() {
                         sx={{ height: "40px" }}
                       >
                         {statusOptions.map((statusOption) => (
-                          <MenuItem key={statusOption.id} value={statusOption.id}>
+                          <MenuItem
+                            key={statusOption.id}
+                            value={statusOption.id}
+                          >
                             {statusOption.name}
                           </MenuItem>
                         ))}
@@ -608,7 +617,8 @@ export default function RecentOrdersTable() {
                 </TableHead>
                 <TableBody>
                   {(searchQuery ? filteredPayouts : filteredCryptoOrders) &&
-                  (searchQuery ? filteredPayouts : filteredCryptoOrders).length > 0 ? (
+                  (searchQuery ? filteredPayouts : filteredCryptoOrders)
+                    .length > 0 ? (
                     (searchQuery ? filteredPayouts : filteredCryptoOrders).map(
                       (payout, index) => {
                         const isPayoutSelected = selectedCryptoOrders.includes(
@@ -635,7 +645,9 @@ export default function RecentOrdersTable() {
               <TablePagination
                 component="div"
                 count={
-                  isUserRoute ? userPayoutsData?.count ?? 0 : payouts?.data?.count ?? 0
+                  isUserRoute
+                    ? userPayoutsData?.count ?? 0
+                    : payouts?.data?.count ?? 0
                 }
                 onPageChange={handlePageChange}
                 onRowsPerPageChange={handleLimitChange}
@@ -731,7 +743,8 @@ export default function RecentOrdersTable() {
               </TableHead>
               <TableBody>
                 {(searchQuery ? filteredPayouts : filteredCryptoOrders) &&
-                (searchQuery ? filteredPayouts : filteredCryptoOrders).length > 0 ? (
+                (searchQuery ? filteredPayouts : filteredCryptoOrders).length >
+                  0 ? (
                   (searchQuery ? filteredPayouts : filteredCryptoOrders).map(
                     (payout, index) => {
                       const isPayoutSelected = selectedCryptoOrders.includes(
@@ -758,7 +771,9 @@ export default function RecentOrdersTable() {
             <TablePagination
               component="div"
               count={
-                isUserRoute ? userPayoutsData?.count ?? 0 : payouts?.data?.count ?? 0
+                isUserRoute
+                  ? userPayoutsData?.count ?? 0
+                  : payouts?.data?.count ?? 0
               }
               onPageChange={handlePageChange}
               onRowsPerPageChange={handleLimitChange}
@@ -799,7 +814,6 @@ export default function RecentOrdersTable() {
       )}
     </Card>
   );
-  
 }
 
 function Row({ payout, isPayoutSelected }) {

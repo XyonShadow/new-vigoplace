@@ -84,6 +84,9 @@ function Charges() {
     { id: "buy", label: "Buying Charge" },
     { id: "service", label: "Service Purchase Charge" },
     { id: "product", label: "Product Charge" },
+    { id: "formPost", label: "Form Post Charge" },
+    { id: "ministry", label: "Ministry Place Charge" },
+    { id: "product", label: "Product Charge" },
   ];
 
   const currencies = [

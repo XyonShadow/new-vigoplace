@@ -104,6 +104,7 @@ export default function Kyc() {
       const pdfDoc = await PDFDocument.create();
 
       const imageUrl = kycData[0]?.metadata?.governmentData?.image_url;
+      //console.log(kycData[0])
 
       // Embed the Times Roman font
       const timesRomanFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
@@ -144,62 +145,64 @@ export default function Kyc() {
 
       ///////////////////IMAGE MANIPULATION////////////////
 
-      if (imageUrl) {
-        // Function to upload image to Cloudinary
-        async function uploadImageToCloudinary(imageUrl) {
-          try {
-            const uploadPreset = "j5zyq30j"; // Replace with your Cloudinary upload preset
-            const formData = new FormData();
-            formData.append("file", imageUrl);
-            formData.append("upload_preset", uploadPreset);
+      // if (imageUrl) {
+      //   // Function to upload image to Cloudinary
+      //   async function uploadImageToCloudinary(imageUrl) {
+      //     try {
+      //       const uploadPreset = "a9fkz998"; // Replace with your Cloudinary upload preset
+      //       const formData = new FormData();
+      //       formData.append("file", imageUrl);
+      //       formData.append("upload_preset", uploadPreset);
 
-            const response = await axios.post(
-              `https://api.cloudinary.com/v1_1/dnhu3eqn5/image/upload`,
-              formData,
-              {
-                headers: {
-                  "Content-Type": "multipart/form-data",
-                },
-              }
-            );
+      //       const response = await axios.post(
+      //         `https://api.cloudinary.com/v1_1/dnhu3eqn5/image/upload`,
+      //         formData,
+      //         {
+      //           headers: {
+      //             "Content-Type": "multipart/form-data",
+      //           },
+      //         }
+      //       );
 
-            return response.data.secure_url; // URL of the uploaded image on Cloudinary
-          } catch (error) {
-            console.error("Error uploading image to Cloudinary:", error);
-            throw error;
-          }
-        }
+      //       console.log(response)
 
-        // Function to download the image from Cloudinary
-        async function downloadImageFromCloudinary(imageUrl) {
-          try {
-            const response = await axios.get(imageUrl, {
-              responseType: "arraybuffer",
-            });
+      //       return response.data.secure_url;
+      //     } catch (error) {
+      //       console.error("Error uploading image to Cloudinary:", error);
+      //       throw error;
+      //     }
+      //   }
 
-            return response.data; // Image data buffer
-          } catch (error) {
-            console.error("Error downloading image from Cloudinary:", error);
-            throw error;
-          }
-        }
+      //   // Function to download the image from Cloudinary
+      //   async function downloadImageFromCloudinary(imageUrl) {
+      //     try {
+      //       const response = await axios.get(imageUrl, {
+      //         responseType: "arraybuffer",
+      //       });
 
-        // Upload image to Cloudinary
-        const cloudinaryUrl = await uploadImageToCloudinary(imageUrl);
+      //       return response.data; // Image data buffer
+      //     } catch (error) {
+      //       console.error("Error downloading image from Cloudinary:", error);
+      //       throw error;
+      //     }
+      //   }
 
-        // Download the image from Cloudinary
-        const imageData = await downloadImageFromCloudinary(cloudinaryUrl);
+      //   // Upload image to Cloudinary
+      //   const cloudinaryUrl = await uploadImageToCloudinary(imageUrl);
 
-        // Embed the image into the PDF document
-        const kycImage = await pdfDoc.embedPng(imageData);
+      //   // Download the image from Cloudinary
+      //   const imageData = await downloadImageFromCloudinary(cloudinaryUrl);
 
-        page.drawImage(kycImage, {
-          x: xCoordinate - 20,
-          y: page.getHeight() - 135,
-          width: 100,
-          height: 100,
-        });
-      }
+      //   // Embed the image into the PDF document
+      //   const kycImage = await pdfDoc.embedPng(imageData);
+
+      //   page.drawImage(kycImage, {
+      //     x: xCoordinate - 20,
+      //     y: page.getHeight() - 135,
+      //     width: 100,
+      //     height: 100,
+      //   });
+      // }
 
       //////////////IMAGE MANIPULATION END//////////////////////////
 

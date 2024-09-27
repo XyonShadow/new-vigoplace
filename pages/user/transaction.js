@@ -186,10 +186,23 @@ export default function Transaction() {
         enableClickToCopy: false,
         header: "Description",
       },
+      //WIsDefault
       {
         accessorKey: "currency",
         enableClickToCopy: false,
         header: "Currency",
+      },
+      {
+        id: "WIsDefault",
+        accessorFn: (row) => {
+          if (row.WIsDefault === 1) {
+            return "Wallet 1";
+          } else if (row.WIsDefault === 0) {
+            return "Wallet 2";
+          }
+        },
+        enableClickToCopy: false,
+        header: "Wallet Category",
       },
       {
         id: "transactionTotal",
@@ -215,16 +228,6 @@ export default function Transaction() {
         id: "totalFee",
         enableClickToCopy: false,
         header: "Total Fee",
-      },
-      {
-        accessorFn: (row) =>
-          (
-            row.transactionNetTotal -
-            (row.gatewayCharge + row.transactionFee)
-          )?.toLocaleString("en-US"),
-        id: "totalAmount",
-        enableClickToCopy: false,
-        header: "User Gets",
       },
       {
         accessorFn: (row) => {

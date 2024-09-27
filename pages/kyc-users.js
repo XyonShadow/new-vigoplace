@@ -124,7 +124,7 @@ function KycUsers() {
     async () => {
       const { data } = await axios.get(
         `https://api.vigoplace.com/api/admin/console/kyc-unverified?perPage=${pagination1.pageSize}&page=${pagination1.pageIndex}&search=${globalFilter}`,
-       //`http://localhost:4000/api/admin/console/kyc-unverified?perPage=${pagination1.pageSize}&page=${pagination1.pageIndex + 1}&search=${globalFilter1}`,
+        //`http://localhost:4000/api/admin/console/kyc-unverified?perPage=${pagination1.pageSize}&page=${pagination1.pageIndex + 1}&search=${globalFilter1}`,
         {
           headers: {
             Authorization: user?.token,
@@ -146,7 +146,7 @@ function KycUsers() {
 
   const handlePageChange = (newPage) => {
     setPagination({ ...pagination, pageIndex: newPage });
-    refetch1();
+    refetch();
   };
 
   const handleRowsPerPageChange = (event) => {
@@ -155,7 +155,7 @@ function KycUsers() {
       pageSize: parseInt(event.target.value, 10),
       pageIndex: 0,
     });
-    refetch1();
+    refetch();
   };
 
   const handlePageChange1 = (newPage) => {
@@ -407,14 +407,14 @@ function KycUsers() {
                       ActionsComponent={(props) => (
                         <div style={{ display: "flex" }}>
                           <IconButton
-                            onClick={() => handlePageChange(null, 0)}
+                            onClick={() => handlePageChange(0)}
                             disabled={pagination.pageIndex === 0}
                           >
                             <FirstPageIcon />
                           </IconButton>
                           <IconButton
                             onClick={() =>
-                              handlePageChange(null, pagination.pageIndex - 1)
+                              handlePageChange(pagination.pageIndex - 1)
                             }
                             disabled={pagination.pageIndex === 0}
                           >
@@ -422,7 +422,7 @@ function KycUsers() {
                           </IconButton>
                           <IconButton
                             onClick={() =>
-                              handlePageChange(null, pagination.pageIndex + 1)
+                              handlePageChange(pagination.pageIndex + 1)
                             }
                             disabled={
                               pagination.pageIndex >=
@@ -437,7 +437,7 @@ function KycUsers() {
                           <IconButton
                             onClick={() =>
                               handlePageChange(
-                                null,
+                               
                                 Math.ceil(
                                   (data?.data?.count || 0) / pagination.pageSize
                                 ) - 1
@@ -666,14 +666,14 @@ function KycUsers() {
                       ActionsComponent={(props) => (
                         <div style={{ display: "flex" }}>
                           <IconButton
-                            onClick={() => handlePageChange1(null, 0)}
+                            onClick={() => handlePageChange1(0)}
                             disabled={pagination1.pageIndex === 0}
                           >
                             <FirstPageIcon />
                           </IconButton>
                           <IconButton
                             onClick={() =>
-                              handlePageChange1(null, pagination1.pageIndex - 1)
+                              handlePageChange1(pagination1.pageIndex - 1)
                             }
                             disabled={pagination1.pageIndex === 0}
                           >
@@ -681,7 +681,7 @@ function KycUsers() {
                           </IconButton>
                           <IconButton
                             onClick={() =>
-                              handlePageChange1(null, pagination1.pageIndex + 1)
+                              handlePageChange1(pagination1.pageIndex + 1)
                             }
                             disabled={
                               pagination1.pageIndex >=
@@ -696,7 +696,6 @@ function KycUsers() {
                           <IconButton
                             onClick={() =>
                               handlePageChange1(
-                                null,
                                 Math.ceil(
                                   (data1?.data?.count || 0) /
                                     pagination1.pageSize

@@ -112,6 +112,11 @@ const KPI = (props) => {
     },
     { id: "deleted_users", value: "totalDeletedUsers", label: "Deleted Users" },
     { id: "wallet", value: "totalWalletCount", label: "Wallet count" },
+    {
+      id: "kycCount",
+      value: "totalKyc",
+      label: "KYC count",
+    },
     { id: "emails", value: "totalVerifiedEmails", label: "Verified emails" },
     {
       id: "virtual_accounts",
@@ -189,7 +194,7 @@ const KPI = (props) => {
     {
       id: "place_promotion_revenue",
       value: "placePromotionRevenue",
-      label: "Place Promotion revenue"
+      label: "Place Promotion revenue",
     },
     {
       id: "total_revenue",
@@ -212,7 +217,7 @@ const KPI = (props) => {
 
   const handleCheckboxChange = (event) => {
     const { value, checked, id } = event.target;
-  
+
     if (checked) {
       // If checkbox is checked, add it to the state with value true
       setCheckedCheckboxes((prevState) => [
@@ -225,8 +230,8 @@ const KPI = (props) => {
         prevState.filter((item) => item.value !== value)
       );
     }
-  };  
-  
+  };
+
   // const handleCheckboxChange = (event) => {
   //   //console.log(event.target);
   //   const { value, checked, id } = event.target;

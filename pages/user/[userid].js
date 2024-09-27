@@ -170,6 +170,7 @@ const Users = () => {
   const [notificationText, setNotificationText] = useState("");
   const [isVerified, setIsverified] = React.useState("");
   const [tabValue, setTabValue] = React.useState(0);
+  const [tabWalletValue, setTabWalletValue] = React.useState(0);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
@@ -204,6 +205,10 @@ const Users = () => {
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
+  };
+
+  const handleTabWalletChange = (event, newValue) => {
+    setTabWalletValue(newValue);
   };
 
   const handleCreditChange = (event) => {
@@ -957,6 +962,14 @@ const Users = () => {
     "Payment",
   ];
 
+  // Function to filter and sort wallets by currency and default status
+  const organizeWallets = (wallets, currencyId) => {
+    const filteredWallets = wallets.filter(
+      (wallet) => wallet.WCId === currencyId
+    );
+    return filteredWallets.sort((a, b) => b.WIsDefault - a.WIsDefault);
+  };
+
   return (
     <>
       <Snackbar
@@ -1392,7 +1405,7 @@ const Users = () => {
 
               <Divider variant="middle" />
 
-              <Typography
+              {/* <Typography
                 align="center"
                 marginTop={1}
                 variant="body2"
@@ -1427,6 +1440,79 @@ const Users = () => {
                     </>
                   ))
                 : null}
+
+              <Divider variant="middle" /> */}
+
+              <Typography
+                align="center"
+                marginTop={1}
+                variant="body2"
+                color="text.secondary"
+              >
+                <b>Wallets</b>
+              </Typography>
+
+              {/* Naira Wallets */}
+              {userWallet && userWallet.data.length > 0 && (
+                <>
+                  <Typography variant="h6" marginTop={2} marginBottom={2}>
+                    Naira Wallets
+                  </Typography>
+                  {organizeWallets(userWallet.data, 175).map((wallet, id) => (
+                    <Stack
+                      key={id}
+                      direction="row"
+                      spacing={2}
+                      marginBottom={2}
+                    >
+                      <Chip
+                        label={`Wallet ${id + 1}`}
+                        size="small"
+                        variant="outlined"
+                      />
+                      <Typography
+                        align="center"
+                        marginTop={1}
+                        variant="body2"
+                        color="text.secondary"
+                      >
+                        {wallet.SCSymbol} {wallet.WBalance}
+                      </Typography>
+                    </Stack>
+                  ))}
+                </>
+              )}
+
+              {/* Dollar Wallets */}
+              {userWallet && userWallet.data.length > 0 && (
+                <>
+                  <Typography variant="h6" marginTop={2} marginBottom={2}>
+                    Dollar Wallets
+                  </Typography>
+                  {organizeWallets(userWallet.data, 251).map((wallet, id) => (
+                    <Stack
+                      key={id}
+                      direction="row"
+                      spacing={2}
+                      marginBottom={2}
+                    >
+                      <Chip
+                        label={`Wallet ${id + 1}`}
+                        size="small"
+                        variant="outlined"
+                      />
+                      <Typography
+                        align="center"
+                        marginTop={1}
+                        variant="body2"
+                        color="text.secondary"
+                      >
+                        {wallet.SCSymbol} {wallet.WBalance}
+                      </Typography>
+                    </Stack>
+                  ))}
+                </>
+              )}
 
               <Divider variant="middle" />
 
@@ -2500,8 +2586,8 @@ const Users = () => {
             <Box sx={{ width: "100%" }}>
               <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                 <Tabs
-                  value={tabValue}
-                  onChange={handleTabChange}
+                  value={tabWalletValue}
+                  onChange={handleTabWalletChange}
                   textColor="inherit"
                   centered
                   scrollButtons="auto"
@@ -2511,7 +2597,7 @@ const Users = () => {
                   <Tab label="Debit User" {...a11yProps(1)} />
                 </Tabs>
               </Box>
-              <TabPanel value={tabValue} index={0}>
+              <TabPanel value={tabWalletValue} index={0}>
                 <Box sx={{ pt: 3 }}>
                   <form>
                     <Card>
@@ -2649,7 +2735,7 @@ const Users = () => {
                   </form>
                 </Box>
               </TabPanel>
-              <TabPanel value={tabValue} index={1}>
+              <TabPanel value={tabWalletValue} index={1}>
                 <Box sx={{ pt: 3 }}>
                   <form>
                     <Card>
