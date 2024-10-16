@@ -65,7 +65,7 @@ const Users = () => {
     pageSize: 10,
   });
   const [transactionPagination, setTransactionPagination] = useState({
-    pageIndex: 1,
+    pageIndex: 0,
     pageSize: 10,
   });
 
@@ -150,7 +150,7 @@ const Users = () => {
     if (tabValue === 1) {
       fetchTransactions();
     }
-  }, [tabValue, userid, status, transactionPagination, globalFilter]);
+  }, [tabValue, status, transactionPagination, globalFilter]);
 
   const columns = useMemo(
     () => [

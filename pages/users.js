@@ -21,7 +21,8 @@ import Input from "@mui/material/Input";
 import { useRouter } from "next/router";
 import { format } from "date-fns";
 import Link from "next/link";
-
+import Slide from "@mui/material/Slide";
+import Snackbar from "@mui/material/Snackbar";
 import {
   QueryClient,
   QueryClientProvider,
@@ -39,7 +40,6 @@ import {
   Typography,
   TextField,
 } from "@mui/material";
-
 //Icons Imports
 import { AccountCircle, Send } from "@mui/icons-material";
 import { UserBalanceCard } from "../src/components/dashboard/userBalanceCard";
@@ -47,7 +47,7 @@ import { UserBio } from "../src/components/dashboard/userBio";
 import { TabContext, TabList } from "@mui/lab";
 import TabPanel from "@mui/lab/TabPanel";
 import { useEffect } from "react";
-
+import MuiAlert from "@mui/material/Alert";
 import Avatar from "@mui/material/Avatar";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -89,10 +89,18 @@ const Users = () => {
   const [wallet, setWallet] = React.useState("null");
   const [email, setEmail] = React.useState("");
   const [contactModal, setContactModal] = React.useState(false);
+  const [bulkModal, setBulkModal] = React.useState(false);
   const [rowSelection, setRowSelection] = useState({});
   const [contactUsers, setContactUsers] = useState([]);
   const [notificationText, setNotificationText] = useState("");
+  const [bulkNotificationText, setBulkNotificationText] = useState("");
+  const [bulkNotificationTitle, setBulkNotificationTitle] = useState("");
+  const [bulkNotificationLink, setBulkNotificationLink] = useState("");
   const [datalenght, setDatalenght] = useState(0);
+  const [bulkNotificationSuccessToast, setBulkNotificationSuccessToast] =
+    useState(false);
+  const [bulkNotificationErrorToast, setBulkNotificationErrorToast] =
+    useState(false);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -133,9 +141,25 @@ const Users = () => {
     setContactModal(false);
   };
 
+  const handleBulkClose = (value) => {
+    setBulkModal(false);
+  };
   const handleNotificationText = (event) => {
     setNotificationText(event.target.value);
   };
+
+  const handleBulkNotificationText = (event) => {
+    setBulkNotificationText(event.target.value);
+  };
+
+  const handleBulkNotificationTitle = (event) => {
+    setBulkNotificationTitle(event.target.value);
+  };
+
+  const handleBulkNotificationLink = (event) => {
+    setBulkNotificationLink(event.target.value);
+  };
+
   const handleNotify = () => {
     const userIds = contactUsers.map((user) => user.userId);
     notifyUserMutation.mutate({ users: userIds, message: notificationText });
@@ -269,6 +293,40 @@ const Users = () => {
     },
     onError: async (error) => {
       // setOpenToast(true);
+    },
+  });
+
+  const bulkNotifyUser = async ({ title, text, link }) => {
+    const notification = await axios.post(
+      //"http://localhost:4000/api/notifications/bulknotification",
+      "https://api.vigoplace.com/api/notifications/bulknotification",
+      { title, body: text, link },
+      {
+        headers: {
+          Authorization: user?.token,
+        },
+      }
+    );
+
+    if (notification.status === 200) {
+      toast.success(notification.data.message);
+    }
+
+    return notification;
+  };
+
+  const bulkNotifyUserMutation = useMutation({
+    mutationKey: ["bulkNotifyUser"],
+    mutationFn: bulkNotifyUser,
+    onSuccess: () => {
+      setBulkNotificationSuccessToast(true);
+      setBulkNotificationText("");
+      setBulkNotificationTitle("");
+      setBulkNotificationLink("");
+      handleBulkClose();
+    },
+    onError: async (error) => {
+      setBulkNotificationErrorToast(error.message);
     },
   });
 
@@ -448,6 +506,13 @@ const Users = () => {
   //   { keepPreviousData: true }
   // );
 
+  const handleBulkNotificationSuccessToastClose = (event, reason) => {
+    setBulkNotificationSuccessToast(false);
+  };
+  const handleBulkNotificationErrorToastClose = (event, reason) => {
+    setBulkNotificationErrorToast(false);
+  };
+
   const columns = useMemo(
     () => [
       {
@@ -606,8 +671,42 @@ const Users = () => {
     );
   }
 
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
+
   return (
     <>
+      <Snackbar
+        TransitionComponent={Slide}
+        open={bulkNotificationSuccessToast}
+        autoHideDuration={6000}
+        onClose={handleBulkNotificationSuccessToastClose}
+      >
+        <Alert
+          onClose={handleBulkNotificationSuccessToastClose}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {bulkNotifyUserMutation?.data?.data?.message}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        TransitionComponent={Slide}
+        open={bulkNotificationErrorToast}
+        autoHideDuration={6000}
+        onClose={handleBulkNotificationErrorToastClose}
+      >
+        <Alert
+          onClose={handleBulkNotificationErrorToastClose}
+          severity="warning"
+          sx={{ width: "100%" }}
+        >
+          {bulkNotifyUserMutation?.error?.response?.data?.message}
+        </Alert>
+      </Snackbar>
+
       <MaterialReactTable
         columns={columns}
         data={data?.data ?? []}
@@ -1135,6 +1234,88 @@ const Users = () => {
                   Add to Notification List
                 </Button>
               ) : null}
+
+              <Box
+                width={"100%"}
+                sx={{ marginTop: "10px", marginBottom: "10px" }}
+              >
+                <Button
+                  color="primary"
+                  onClick={() => setBulkModal(!bulkModal)}
+                  variant="contained"
+                  size="large"
+                  sx={{
+                    height: "100%",
+                    marginLeft: "10px",
+                    marginBottom: "10px",
+                  }}
+                >
+                  Send Bulk Notification
+                </Button>
+
+                <Dialog
+                  open={bulkModal}
+                  onClose={handleBulkClose}
+                  fullWidth
+                  maxWidth={"md"}
+                >
+                  <DialogTitle>Send Bulk Notification</DialogTitle>
+                  <DialogContent>
+                    <DialogContentText>
+                      Enter the details for the bulk notification:
+                    </DialogContentText>
+                    <TextField
+                      autoFocus
+                      margin="dense"
+                      id="title"
+                      label="Notification Title"
+                      type="text"
+                      fullWidth
+                      variant="outlined"
+                      value={bulkNotificationTitle}
+                      onChange={handleBulkNotificationTitle}
+                    />
+                    <TextField
+                      margin="dense"
+                      id="body"
+                      label="Notification Text"
+                      type="text"
+                      fullWidth
+                      variant="outlined"
+                      value={bulkNotificationText}
+                      onChange={handleBulkNotificationText}
+                    />
+                    <TextField
+                      margin="dense"
+                      id="body"
+                      label="Notification Link"
+                      type="text"
+                      fullWidth
+                      variant="outlined"
+                      value={bulkNotificationLink}
+                      onChange={handleBulkNotificationLink}
+                    />
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleBulkClose}>Cancel</Button>
+                    <Button
+                      onClick={() => {
+                        bulkNotifyUserMutation.mutate({
+                          title: bulkNotificationTitle,
+                          text: bulkNotificationText,
+                          link: bulkNotificationLink,
+                        });
+                      }}
+                    >
+                      {bulkNotifyUserMutation.isLoading ? (
+                        <CircularProgress size={23} color="inherit" />
+                      ) : (
+                        "Send Notification"
+                      )}
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+              </Box>
             </div>
           );
         }}

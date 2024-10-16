@@ -81,8 +81,12 @@ function Tickets() {
     pageIndex: 0,
     pageSize: 10,
   });
+  const [isLoading1, setIsLoading1] = useState(false);
+  const [isError1, setIsError1] = useState(false);
+  const [isFetching1, setIsFetching1] = useState(false);
   const [gender, setGender] = React.useState("");
   const [status, setStatus] = React.useState("");
+  const [closedTickets, setClosedTickets] = React.useState([]);
   const [isVerified, setIsverified] = React.useState("");
   const [ticketType, setTicketType] = React.useState("unassigned");
   const [ticketType1, setTicketType1] = React.useState("unassigned");
@@ -105,6 +109,142 @@ function Tickets() {
   };
 
   const columns = useMemo(
+    () => [
+      {
+        accessorKey: "username",
+        enableClickToCopy: false,
+        header: "Username",
+        muiTableBodyCellProps: ({ cell }) => ({
+          style: {
+            fontWeight: cell.row.original.isRead === 0 ? 700 : "inherit",
+          },
+        }),
+      },
+      {
+        accessorKey: "categoryName",
+        enableClickToCopy: false,
+        enableColumnFilter: false,
+        header: "Category",
+        muiTableBodyCellProps: ({ cell }) => ({
+          style: {
+            fontWeight: cell.row.original.isRead === 0 ? 700 : "inherit",
+          },
+        }),
+      },
+      {
+        accessorKey: "subject",
+        enableClickToCopy: false,
+        enableColumnFilter: false,
+        header: "Subject",
+        Cell: ({ cell }) => {
+          const subject = cell?.row?.original?.subject || "";
+
+          // Define the maximum number of words to display
+          const maxWords = 7;
+
+          // Split the description into words
+          const words = subject.split(" ");
+
+          // Truncate the description if it exceeds the maximum number of words
+          const truncatedSubject =
+            words.length > maxWords
+              ? words.slice(0, maxWords).join(" ") + "..."
+              : subject;
+
+          return <div>{truncatedSubject}</div>;
+        },
+        muiTableBodyCellProps: ({ cell }) => ({
+          style: {
+            fontWeight: cell.row.original.isRead === 0 ? 700 : "inherit",
+          },
+        }),
+      },
+      {
+        accessorKey: "message",
+        Cell: ({ cell }) => {
+          const message =
+            cell?.row?.original?.message || cell?.row?.original?.description;
+
+          let words;
+          if (message.includes("||")) {
+            // Split the message into sentences
+            const sentences = message.split("||");
+            // Get the last sentence
+            const lastSentence =
+              sentences.length > 0 ? sentences[sentences.length - 1] : "";
+            // Split the last sentence into words
+            words = lastSentence.split(" ");
+          } else {
+            words = message.split(" ");
+          }
+
+          // Define the maximum number of words to display
+          const maxWords = 7;
+
+          // Truncate the last sentence if it exceeds the maximum number of words
+          const truncatedMessage =
+            words.length > maxWords
+              ? words.slice(0, maxWords).join(" ") + "..."
+              : words.join(" ");
+
+          return <div>{truncatedMessage}</div>;
+        },
+        enableClickToCopy: false,
+        enableColumnFilter: false,
+        header: "Description",
+        muiTableBodyCellProps: ({ cell }) => ({
+          style: {
+            fontWeight: cell.row.original.isRead === 0 ? 700 : "inherit",
+          },
+        }),
+      },
+      {
+        accessorKey: "status",
+        enableClickToCopy: false,
+        // enableColumnFilter: false,
+        header: "Status",
+        filterFn: "equals",
+        filterSelectOptions: [
+          { text: "queued", value: "Queued" },
+          { text: "in-progress", value: "In-progress" },
+          { text: "resolved", value: "Resolved" },
+          { text: "closed", value: "Closed" },
+          { text: "permanently-closed", value: "Permanently-closed" },
+        ],
+        filterVariant: "select",
+        muiTableBodyCellProps: ({ cell }) => ({
+          style: {
+            fontWeight: cell.row.original.isRead === 0 ? 700 : "inherit",
+          },
+        }),
+      },
+      {
+        accessorKey: "ticketReference",
+        enableClickToCopy: false,
+        enableColumnFilter: false,
+        header: "Reference",
+        muiTableBodyCellProps: ({ cell }) => ({
+          style: {
+            fontWeight: cell.row.original.isRead === 0 ? 700 : "inherit",
+          },
+        }),
+      },
+      {
+        accessorFn: (row) => format(new Date(row.date), "Pp"),
+        id: "date",
+        enableClickToCopy: false,
+        header: "Date",
+        muiTableBodyCellProps: ({ cell }) => ({
+          style: {
+            fontWeight: cell.row.original.isRead === 0 ? 700 : "inherit",
+          },
+        }),
+      },
+    ],
+    []
+  );
+
+  const closedTicketColumns = useMemo(
     () => [
       {
         accessorKey: "username",
@@ -292,35 +432,16 @@ function Tickets() {
     }
   );
 
-  const {
-    data: data1,
-    isError: isError1,
-    isFetching: isFetching1,
-    isLoading: isLoading1,
-    refetch: refetch1,
-  } = useQuery(
-    [
-      "fetchClosedTickets",
-      columnFilters1, //refetch when columnFilters changes
-      globalFilter, //refetch when globalFilter changes
-      pagination1.pageIndex, //refetch when pagination.pageIndex changes
-      pagination1.pageSize, //refetch when pagination.pageSize changes
-      status,
-      ticketType1,
-    ],
-    async () => {
+  const fetchClosedTickets = async () => {
+    setIsFetching1(true);
+    setIsLoading1(true);
+    try {
       const { data } = await axios.get(
         `https://api.vigoplace.com/api/admin/tickets/${ticketType1}/close?limit=${1000}${
           columnFilters1?.length >= 1
             ? `&search=${JSON.stringify(columnFilters1)}`
             : ""
         }`,
-        // `http://localhost:4000/api/admin/tickets/${ticketType}?limit=${1000}${
-        //   columnFilters?.length >= 1
-        //     ? `&search=${JSON.stringify(columnFilters)}`
-        //     : ""
-        // }`,
-
         {
           headers: {
             Authorization: user?.token,
@@ -331,24 +452,31 @@ function Tickets() {
       //console.log(data);
 
       setDatalenght1(data?.count?.total);
+      // const sortedData = data?.data?.results?.sort(
+      //   (a, b) => Date.parse(b.date) - Date.parse(a.date)
+      // );
+      // const paginatedData = sortedData.slice(
+      //   pagination1.pageIndex * pagination1.pageSize,
+      //   (pagination1.pageIndex + 1) * pagination1.pageSize
+      // );
 
-      const sortedData = data?.data?.results?.sort(
-        (a, b) => Date.parse(b.date) - Date.parse(a.date)
-      );
-      const paginatedData = sortedData.slice(
-        pagination1.pageIndex * pagination1.pageSize,
-        (pagination1.pageIndex + 1) * pagination1.pageSize
-      );
-
-      return paginatedData;
-    },
-    {
-      onError: (err) => {
-        console.log(err, "err fetching closed users tickets");
-      },
-      enabled: !!user?.token,
+      //console.log(paginatedData);
+      setClosedTickets(data?.data?.results);
+      //return paginatedData;
+    } catch (err) {
+      setIsError1(true);
+      console.log(err, "err fetching closed ticket");
+    } finally {
+      setIsLoading1(false);
+      setIsFetching1(false);
     }
-  );
+  };
+
+  useEffect(() => {
+    if (tabValue === 1) {
+      fetchClosedTickets();
+    }
+  }, [tabValue, status, globalFilter, ticketType, columnFilters1]);
 
   const handleTicketType = (event) => {
     setTicketType(event.target.value);
@@ -499,8 +627,8 @@ function Tickets() {
             <TabPanel value={tabValue} index={1}>
               <Box sx={{ pt: 3 }}>
                 <MaterialReactTable
-                  columns={columns}
-                  data={data1 ?? []}
+                  columns={closedTicketColumns}
+                  data={closedTickets ?? []}
                   // enableColumnFilterModes
                   // enableColumnOrdering
                   // enableGrouping
@@ -509,8 +637,8 @@ function Tickets() {
                   // enableRowActions
                   enableStickyHeader
                   enableStickyFooter
-                  manualPagination={true}
-                  onPaginationChange={setPagination1}
+                  //manualPagination={true}
+                  //onPaginationChange={setPagination1}
                   rowCount={datalenght1 ?? 0}
                   onColumnFiltersChange={setColumnFilters1}
                   onGlobalFilterChange={setGlobalFilter}
@@ -518,7 +646,7 @@ function Tickets() {
                   positionToolbarAlertBanner="bottom"
                   enableGlobalFilter={false}
                   muiToolbarAlertBannerProps={
-                    isError
+                    isError1
                       ? {
                           color: "error",
                           children:
@@ -556,7 +684,7 @@ function Tickets() {
                     return (
                       <div style={{ display: "flex", gap: "0.5rem" }}>
                         <Tooltip arrow title="Refresh Data">
-                          <IconButton onClick={() => refetch1()}>
+                          <IconButton onClick={() => fetchClosedTickets()}>
                             <RefreshIcon />
                           </IconButton>
                         </Tooltip>
