@@ -103,7 +103,8 @@ function DailyReadings() {
   const [processionPalmsGospel2Text, setProcessionPalmsGospel2Text] =
     useState(null);
   const [responsorialPsalmVerse, setResponsorialPsalmVerse] = useState(null);
-  const [responsorialPsalmRespond, setResponsorialPsalmRespond] = useState(null);
+  const [responsorialPsalmRespond, setResponsorialPsalmRespond] =
+    useState(null);
   const [responsorialPsalmText1, setResponsorialPsalmText1] = useState(null);
   const [responsorialPsalmText2, setResponsorialPsalmText2] = useState(null);
   const [responsorialPsalmText3, setResponsorialPsalmText3] = useState(null);
@@ -150,11 +151,13 @@ function DailyReadings() {
   const [editTitle, setEditTitle] = useState(null);
   const [editReading1Verse, setEditReading1Verse] = useState(null);
   const [editReading1Text, setEditReading1Text] = useState(null);
-  const [editReading1Option2Verse, setEditReading1Option2Verse] = useState(null);
+  const [editReading1Option2Verse, setEditReading1Option2Verse] =
+    useState(null);
   const [editReading1TextOption2, setEditReading1TextOption2] = useState(null);
   const [editReading2Verse, setEditReading2Verse] = useState(null);
   const [editReading2Text, setEditReading2Text] = useState(null);
-  const [editReading2Option1Verse, setEditReading2Option1Verse] = useState(null);
+  const [editReading2Option1Verse, setEditReading2Option1Verse] =
+    useState(null);
   const [editReading2TextOption1, setEditReading2TextOption1] = useState(null);
   const [editReading3Verse, setEditReading3Verse] = useState(null);
   const [editReading3Text, setEditReading3Text] = useState(null);
@@ -913,60 +916,60 @@ function DailyReadings() {
     },
     onSuccess: () => {
       setDailyReadingToast({ ...dailyReadingToast, success: true });
-      // setTitle(null);
-      // setDate(null);
-      // setReading1Verse(null);
-      // setReading1Text(null);
-      // setReading1Option2Verse(null);
-      // setReading1TextOption2(null);
-      // setReading2Verse(null);
-      // setReading2Text(null);
-      // setReading2Option1Verse(null);
-      // setReading2TextOption1(null);
-      // setReading3Verse(null);
-      // setReading3Text(null);
-      // setReading4Verse(null);
-      // setReading4Text(null);
-      // setReading5Verse(null);
-      // setReading5Text(null);
-      // setReading6Verse(null);
-      // setReading6Text(null);
-      // setReading7Verse(null);
-      // setReading7Text(null);
-      // setProcessionPalmVerse(null);
-      // setProcessionPalmsGospel(null);
-      // setProcessionPalmsGospel2Verse(null);
-      // setProcessionPalmsGospel2Text(null);
-      // setResponsorialPsalmVerse(null);
-      // setResponsorialPsalmRespond(null);
-      // setResponsorialPsalmText1(null);
-      // setResponsorialPsalmText2(null);
-      // setResponsorialPsalmText3(null);
-      // setResponsorialPsalmText4(null);
-      // setResponsorialPsalmText5(null);
-      // setResponsorialPsalmText6(null);
-      // setResponsorialPsalmVerseOPT2(null);
-      // setResponsorialPsalmText1OPT2(null);
-      // setResponsorialPsalmText2OPT2(null);
-      // setResponsorialPsalmResponseOPT2(null);
-      // setResponsorialPsalmText3OPT2(null);
-      // setResponsorialPsalmText4OPT2(null);
-      // setResponsorialPsalmText5OPT2(null);
-      // setResponsorialText1(null);
-      // setResponsorialText2(null);
-      // setResponsorialText3(null);
-      // setBeforeGospelText(null);
-      // setVerseb4GospelOPT2(null);
-      // setB4GospelTextOPT2(null);
-      // setAlleluiaVerse(null);
-      // setAlleluiaText(null);
-      // setAlleluiaOPT2(null);
-      // setAlleluiaTextOPT2(null);
-      // setGospelVerse(null);
-      // setGospelText(null);
-      // setGospelVerse2(null);
-      // setGospelTextOption2(null);
-      // setVerseBeforeGospel(null);
+      setTitle(null);
+      setDate(null);
+      setReading1Verse(null);
+      setReading1Text(null);
+      setReading1Option2Verse(null);
+      setReading1TextOption2(null);
+      setReading2Verse(null);
+      setReading2Text(null);
+      setReading2Option1Verse(null);
+      setReading2TextOption1(null);
+      setReading3Verse(null);
+      setReading3Text(null);
+      setReading4Verse(null);
+      setReading4Text(null);
+      setReading5Verse(null);
+      setReading5Text(null);
+      setReading6Verse(null);
+      setReading6Text(null);
+      setReading7Verse(null);
+      setReading7Text(null);
+      setProcessionPalmVerse(null);
+      setProcessionPalmsGospel(null);
+      setProcessionPalmsGospel2Verse(null);
+      setProcessionPalmsGospel2Text(null);
+      setResponsorialPsalmVerse(null);
+      setResponsorialPsalmRespond(null);
+      setResponsorialPsalmText1(null);
+      setResponsorialPsalmText2(null);
+      setResponsorialPsalmText3(null);
+      setResponsorialPsalmText4(null);
+      setResponsorialPsalmText5(null);
+      setResponsorialPsalmText6(null);
+      setResponsorialPsalmVerseOPT2(null);
+      setResponsorialPsalmText1OPT2(null);
+      setResponsorialPsalmText2OPT2(null);
+      setResponsorialPsalmResponseOPT2(null);
+      setResponsorialPsalmText3OPT2(null);
+      setResponsorialPsalmText4OPT2(null);
+      setResponsorialPsalmText5OPT2(null);
+      setResponsorialText1(null);
+      setResponsorialText2(null);
+      setResponsorialText3(null);
+      setBeforeGospelText(null);
+      setVerseb4GospelOPT2(null);
+      setB4GospelTextOPT2(null);
+      setAlleluiaVerse(null);
+      setAlleluiaText(null);
+      setAlleluiaOPT2(null);
+      setAlleluiaTextOPT2(null);
+      setGospelVerse(null);
+      setGospelText(null);
+      setGospelVerse2(null);
+      setGospelTextOption2(null);
+      setVerseBeforeGospel(null);
     },
   });
 
@@ -2547,7 +2550,9 @@ function DailyReadings() {
                       color="primary"
                       loading={dailyReadingMutation.isLoading}
                       disabled={
-                        title === null || date === null || reading1Verse === null
+                        title === null ||
+                        date === null ||
+                        reading1Verse === null
                       }
                       onClick={() => {
                         dailyReadingMutation.mutate({
