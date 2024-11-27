@@ -74,157 +74,158 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 function DailyReadings() {
   const getUser = useSession();
   const user = getUser?.data?.user;
-  const [title, setTitle] = useState("");
-  const [date, setDate] = useState("");
-  const [reading1Verse, setReading1Verse] = useState("");
-  const [reading1Text, setReading1Text] = useState("");
-  const [reading1Option2Verse, setReading1Option2Verse] = useState("");
-  const [reading1TextOption2, setReading1TextOption2] = useState("");
-  const [reading2Verse, setReading2Verse] = useState("");
-  const [reading2Text, setReading2Text] = useState("");
-  const [reading2Option1Verse, setReading2Option1Verse] = useState("");
-  const [reading2TextOption1, setReading2TextOption1] = useState("");
-  const [reading3Verse, setReading3Verse] = useState("");
-  const [reading3Text, setReading3Text] = useState("");
-  const [reading4Verse, setReading4Verse] = useState("");
-  const [reading4Text, setReading4Text] = useState("");
-  const [reading5Verse, setReading5Verse] = useState("");
-  const [reading5Text, setReading5Text] = useState("");
-  const [reading6Verse, setReading6Verse] = useState("");
-  const [reading6Text, setReading6Text] = useState("");
-  const [reading7Verse, setReading7Verse] = useState("");
-  const [reading7Text, setReading7Text] = useState("");
+  const [title, setTitle] = useState(null);
+  const [date, setDate] = useState(null);
+  const [reading1Verse, setReading1Verse] = useState(null);
+  const [reading1Text, setReading1Text] = useState(null);
+  const [reading1Option2Verse, setReading1Option2Verse] = useState(null);
+  const [reading1TextOption2, setReading1TextOption2] = useState(null);
+  const [reading2Verse, setReading2Verse] = useState(null);
+  const [reading2Text, setReading2Text] = useState(null);
+  const [reading2Option1Verse, setReading2Option1Verse] = useState(null);
+  const [reading2TextOption1, setReading2TextOption1] = useState(null);
+  const [reading3Verse, setReading3Verse] = useState(null);
+  const [reading3Text, setReading3Text] = useState(null);
+  const [reading4Verse, setReading4Verse] = useState(null);
+  const [reading4Text, setReading4Text] = useState(null);
+  const [reading5Verse, setReading5Verse] = useState(null);
+  const [reading5Text, setReading5Text] = useState(null);
+  const [reading6Verse, setReading6Verse] = useState(null);
+  const [reading6Text, setReading6Text] = useState(null);
+  const [reading7Verse, setReading7Verse] = useState(null);
+  const [reading7Text, setReading7Text] = useState(null);
 
   //2ND BATCH
-  const [processionPalmVerse, setProcessionPalmVerse] = useState("");
-  const [processionPalmsGospel, setProcessionPalmsGospel] = useState("");
+  const [processionPalmVerse, setProcessionPalmVerse] = useState(null);
+  const [processionPalmsGospel, setProcessionPalmsGospel] = useState(null);
   const [processionPalmsGospel2Verse, setProcessionPalmsGospel2Verse] =
-    useState("");
+    useState(null);
   const [processionPalmsGospel2Text, setProcessionPalmsGospel2Text] =
-    useState("");
-  const [responsorialPsalmVerse, setResponsorialPsalmVerse] = useState("");
-  const [responsorialPsalmRespond, setResponsorialPsalmRespond] = useState("");
-  const [responsorialPsalmText1, setResponsorialPsalmText1] = useState("");
-  const [responsorialPsalmText2, setResponsorialPsalmText2] = useState("");
-  const [responsorialPsalmText3, setResponsorialPsalmText3] = useState("");
-  const [responsorialPsalmText4, setResponsorialPsalmText4] = useState("");
-  const [responsorialPsalmText5, setResponsorialPsalmText5] = useState("");
-  const [responsorialPsalmText6, setResponsorialPsalmText6] = useState("");
+    useState(null);
+  const [responsorialPsalmVerse, setResponsorialPsalmVerse] = useState(null);
+  const [responsorialPsalmRespond, setResponsorialPsalmRespond] = useState(null);
+  const [responsorialPsalmText1, setResponsorialPsalmText1] = useState(null);
+  const [responsorialPsalmText2, setResponsorialPsalmText2] = useState(null);
+  const [responsorialPsalmText3, setResponsorialPsalmText3] = useState(null);
+  const [responsorialPsalmText4, setResponsorialPsalmText4] = useState(null);
+  const [responsorialPsalmText5, setResponsorialPsalmText5] = useState(null);
+  const [responsorialPsalmText6, setResponsorialPsalmText6] = useState(null);
   const [responsorialPsalmVerseOPT2, setResponsorialPsalmVerseOPT2] =
-    useState("");
+    useState(null);
   const [responsorialPsalmText1OPT2, setResponsorialPsalmText1OPT2] =
-    useState("");
+    useState(null);
   const [responsorialPsalmText2OPT2, setResponsorialPsalmText2OPT2] =
-    useState("");
+    useState(null);
   const [responsorialPsalmResponseOPT2, setResponsorialPsalmResponseOPT2] =
-    useState("");
+    useState(null);
   const [responsorialPsalmText3OPT2, setResponsorialPsalmText3OPT2] =
-    useState("");
+    useState(null);
   const [responsorialPsalmText4OPT2, setResponsorialPsalmText4OPT2] =
-    useState("");
+    useState(null);
   const [responsorialPsalmText5OPT2, setResponsorialPsalmText5OPT2] =
-    useState("");
+    useState(null);
 
   ////3RD BATCH
-  const [responsorialText1, setResponsorialText1] = useState("");
-  const [responsorialText2, setResponsorialText2] = useState("");
-  const [responsorialText3, setResponsorialText3] = useState("");
-  const [beforeGospelText, setBeforeGospelText] = useState("");
-  const [verseb4GospelOPT2, setVerseb4GospelOPT2] = useState("");
-  const [b4GospelTextOPT2, setB4GospelTextOPT2] = useState("");
-  const [alleluiaVerse, setAlleluiaVerse] = useState("");
-  const [alleluiaText, setAlleluiaText] = useState("");
-  const [alleluiaOPT2, setAlleluiaOPT2] = useState("");
-  const [alleluiaTextOPT2, setAlleluiaTextOPT2] = useState("");
-  const [gospelVerse, setGospelVerse] = useState("");
-  const [gospelText, setGospelText] = useState("");
-  const [gospelVerse2, setGospelVerse2] = useState("");
-  const [gospelTextOption2, setGospelTextOption2] = useState("");
-  const [verseBeforeGospel, setVerseBeforeGospel] = useState("");
+  const [responsorialText1, setResponsorialText1] = useState(null);
+  const [responsorialText2, setResponsorialText2] = useState(null);
+  const [responsorialText3, setResponsorialText3] = useState(null);
+  const [beforeGospelText, setBeforeGospelText] = useState(null);
+  const [verseb4GospelOPT2, setVerseb4GospelOPT2] = useState(null);
+  const [b4GospelTextOPT2, setB4GospelTextOPT2] = useState(null);
+  const [alleluiaVerse, setAlleluiaVerse] = useState(null);
+  const [alleluiaText, setAlleluiaText] = useState(null);
+  const [alleluiaOPT2, setAlleluiaOPT2] = useState(null);
+  const [alleluiaTextOPT2, setAlleluiaTextOPT2] = useState(null);
+  const [gospelVerse, setGospelVerse] = useState(null);
+  const [gospelText, setGospelText] = useState(null);
+  const [gospelVerse2, setGospelVerse2] = useState(null);
+  const [gospelTextOption2, setGospelTextOption2] = useState(null);
+  const [verseBeforeGospel, setVerseBeforeGospel] = useState(null);
 
   /////////////////////////////////////////////////////EDIT SECTION///////////////////////////////////////////////
-  const [fetchDate, setFetchDate] = useState("");
-  const [id, setId] = useState("");
-  const [editDate, setEditDate] = useState("");
-  const [editTitle, setEditTitle] = useState("");
-  const [editReading1Verse, setEditReading1Verse] = useState("");
-  const [editReading1Text, setEditReading1Text] = useState("");
-  const [editReading1Option2Verse, setEditReading1Option2Verse] = useState("");
-  const [editReading1TextOption2, setEditReading1TextOption2] = useState("");
-  const [editReading2Verse, setEditReading2Verse] = useState("");
-  const [editReading2Text, setEditReading2Text] = useState("");
-  const [editReading2Option1Verse, setEditReading2Option1Verse] = useState("");
-  const [editReading2TextOption1, setEditReading2TextOption1] = useState("");
-  const [editReading3Verse, setEditReading3Verse] = useState("");
-  const [editReading3Text, setEditReading3Text] = useState("");
-  const [editReading4Verse, setEditReading4Verse] = useState("");
-  const [editReading4Text, setEditReading4Text] = useState("");
-  const [editReading5Verse, setEditReading5Verse] = useState("");
-  const [editReading5Text, setEditReading5Text] = useState("");
-  const [editReading6Verse, setEditReading6Verse] = useState("");
-  const [editReading6Text, setEditReading6Text] = useState("");
-  const [editReading7Verse, setEditReading7Verse] = useState("");
-  const [editReading7Text, setEditReading7Text] = useState("");
+  const [fetchDate, setFetchDate] = useState(null);
+  const [id, setId] = useState(null);
+  const [editBibleReadingId, setEditBibleReadingId] = useState(null);
+  const [editDate, setEditDate] = useState(null);
+  const [editTitle, setEditTitle] = useState(null);
+  const [editReading1Verse, setEditReading1Verse] = useState(null);
+  const [editReading1Text, setEditReading1Text] = useState(null);
+  const [editReading1Option2Verse, setEditReading1Option2Verse] = useState(null);
+  const [editReading1TextOption2, setEditReading1TextOption2] = useState(null);
+  const [editReading2Verse, setEditReading2Verse] = useState(null);
+  const [editReading2Text, setEditReading2Text] = useState(null);
+  const [editReading2Option1Verse, setEditReading2Option1Verse] = useState(null);
+  const [editReading2TextOption1, setEditReading2TextOption1] = useState(null);
+  const [editReading3Verse, setEditReading3Verse] = useState(null);
+  const [editReading3Text, setEditReading3Text] = useState(null);
+  const [editReading4Verse, setEditReading4Verse] = useState(null);
+  const [editReading4Text, setEditReading4Text] = useState(null);
+  const [editReading5Verse, setEditReading5Verse] = useState(null);
+  const [editReading5Text, setEditReading5Text] = useState(null);
+  const [editReading6Verse, setEditReading6Verse] = useState(null);
+  const [editReading6Text, setEditReading6Text] = useState(null);
+  const [editReading7Verse, setEditReading7Verse] = useState(null);
+  const [editReading7Text, setEditReading7Text] = useState(null);
 
   //EDIT2ND BATCH
 
-  const [editProcessionPalmVerse, setEditProcessionPalmVerse] = useState("");
+  const [editProcessionPalmVerse, setEditProcessionPalmVerse] = useState(null);
   const [editProcessionPalmsGospel, setEditProcessionPalmsGospel] =
-    useState("");
+    useState(null);
   const [editProcessionPalmsGospel2Verse, setEditProcessionPalmsGospel2Verse] =
-    useState("");
+    useState(null);
   const [editProcessionPalmsGospel2Text, setEditProcessionPalmsGospel2Text] =
-    useState("");
+    useState(null);
   const [editResponsorialPsalmVerse, setEditResponsorialPsalmVerse] =
-    useState("");
+    useState(null);
   const [editResponsorialPsalmRespond, setEditResponsorialPsalmRespond] =
-    useState("");
+    useState(null);
   const [editResponsorialPsalmText1, setEditResponsorialPsalmText1] =
-    useState("");
+    useState(null);
   const [editResponsorialPsalmText2, setEditResponsorialPsalmText2] =
-    useState("");
+    useState(null);
   const [editResponsorialPsalmText3, setEditResponsorialPsalmText3] =
-    useState("");
+    useState(null);
   const [editResponsorialPsalmText4, setEditResponsorialPsalmText4] =
-    useState("");
+    useState(null);
   const [editResponsorialPsalmText5, setEditResponsorialPsalmText5] =
-    useState("");
+    useState(null);
   const [editResponsorialPsalmText6, setEditResponsorialPsalmText6] =
-    useState("");
+    useState(null);
   const [editResponsorialPsalmVerseOPT2, setEditResponsorialPsalmVerseOPT2] =
-    useState("");
+    useState(null);
   const [editResponsorialPsalmText1OPT2, setEditResponsorialPsalmText1OPT2] =
-    useState("");
+    useState(null);
   const [editResponsorialPsalmText2OPT2, setEditResponsorialPsalmText2OPT2] =
-    useState("");
+    useState(null);
   const [
     editResponsorialPsalmResponseOPT2,
     setEditResponsorialPsalmResponseOPT2,
-  ] = useState("");
+  ] = useState(null);
 
   const [editResponsorialPsalmText3OPT2, setEditResponsorialPsalmText3OPT2] =
-    useState("");
+    useState(null);
   const [editResponsorialPsalmText4OPT2, setEditResponsorialPsalmText4OPT2] =
-    useState("");
+    useState(null);
   const [editResponsorialPsalmText5OPT2, setEditResponsorialPsalmText5OPT2] =
-    useState("");
+    useState(null);
 
   ////EDIT 3RD BATCH
-  const [editResponsorialText1, setEditResponsorialText1] = useState("");
-  const [editResponsorialText2, setEditResponsorialText2] = useState("");
-  const [editResponsorialText3, setEditResponsorialText3] = useState("");
-  const [editBeforeGospelText, setEditBeforeGospelText] = useState("");
-  const [editVerseb4GospelOPT2, setEditVerseb4GospelOPT2] = useState("");
-  const [editB4GospelTextOPT2, setEditB4GospelTextOPT2] = useState("");
-  const [editAlleluiaVerse, setEditAlleluiaVerse] = useState("");
-  const [editAlleluiaText, setEditAlleluiaText] = useState("");
-  const [editAlleluiaOPT2, setEditAlleluiaOPT2] = useState("");
-  const [editAlleluiaTextOPT2, setEditAlleluiaTextOPT2] = useState("");
-  const [editGospelVerse, setEditGospelVerse] = useState("");
-  const [editGospelText, setEditGospelText] = useState("");
-  const [editGospelVerse2, setEditGospelVerse2] = useState("");
-  const [editGospelTextOption2, setEditGospelTextOption2] = useState("");
-  const [editVerseBeforeGospel, setEditVerseBeforeGospel] = useState("");
+  const [editResponsorialText1, setEditResponsorialText1] = useState(null);
+  const [editResponsorialText2, setEditResponsorialText2] = useState(null);
+  const [editResponsorialText3, setEditResponsorialText3] = useState(null);
+  const [editBeforeGospelText, setEditBeforeGospelText] = useState(null);
+  const [editVerseb4GospelOPT2, setEditVerseb4GospelOPT2] = useState(null);
+  const [editB4GospelTextOPT2, setEditB4GospelTextOPT2] = useState(null);
+  const [editAlleluiaVerse, setEditAlleluiaVerse] = useState(null);
+  const [editAlleluiaText, setEditAlleluiaText] = useState(null);
+  const [editAlleluiaOPT2, setEditAlleluiaOPT2] = useState(null);
+  const [editAlleluiaTextOPT2, setEditAlleluiaTextOPT2] = useState(null);
+  const [editGospelVerse, setEditGospelVerse] = useState(null);
+  const [editGospelText, setEditGospelText] = useState(null);
+  const [editGospelVerse2, setEditGospelVerse2] = useState(null);
+  const [editGospelTextOption2, setEditGospelTextOption2] = useState(null);
+  const [editVerseBeforeGospel, setEditVerseBeforeGospel] = useState(null);
 
   const [dailyReadingToast, setDailyReadingToast] = useState({
     error: false,
@@ -696,7 +697,7 @@ function DailyReadings() {
     async () => {
       const { data } = await axios.get(
         `https://api.vigoplace.com/api/admin/console/daily-reading?date=${fetchDate}`,
-        //`http://localhost:4000/api/admin/console/daily-reading?date=${fetchDate}`,
+        //`http://localhost:7000/api/admin/console/daily-reading?date=${fetchDate}`,
         {
           headers: {
             Authorization: user?.token,
@@ -704,11 +705,12 @@ function DailyReadings() {
         }
       );
 
-      //console.log(data);
+      console.log(data);
 
       setId(data?.data?.id);
       const fullDate = data?.data?.date;
       const dateOnly = fullDate.substring(0, 10);
+      setEditBibleReadingId(data?.data?.bibleReadingId);
       setEditDate(dateOnly);
       setEditTitle(data?.data?.title);
       setEditReading1Verse(data?.data?.reading1Verse);
@@ -834,7 +836,7 @@ function DailyReadings() {
     verseBeforeGospel,
   }) => {
     const setData = await axios.post(
-      //"http://localhost:4000/api/admin/console/daily-reading",
+      //"http://localhost:7000/api/admin/console/daily-reading",
       "https://api.vigoplace.com/api/admin/console/daily-reading",
       {
         title,
@@ -911,64 +913,66 @@ function DailyReadings() {
     },
     onSuccess: () => {
       setDailyReadingToast({ ...dailyReadingToast, success: true });
-      setTitle("");
-      setDate("");
-      setReading1Verse("");
-      setReading1Text("");
-      setReading1Option2Verse("");
-      setReading1TextOption2("");
-      setReading1Text("");
-      setReading1Option2Verse("");
-      setReading2TextOption1("");
-      setReading3Verse("");
-      setReading3Text("");
-      setReading4Verse("");
-      setReading4Text("");
-      setReading5Verse("");
-      setReading5Text("");
-      setReading6Verse("");
-      setReading6Text("");
-      setReading7Verse("");
-      setReading7Text("");
-      setProcessionPalmVerse("");
-      setProcessionPalmsGospel("");
-      setProcessionPalmsGospel2Verse("");
-      setProcessionPalmsGospel2Text("");
-      setResponsorialPsalmVerse("");
-      setResponsorialPsalmRespond("");
-      setResponsorialPsalmText1("");
-      setResponsorialPsalmText2("");
-      setResponsorialPsalmText3("");
-      setResponsorialPsalmText4("");
-      setResponsorialPsalmText5("");
-      setResponsorialPsalmText6("");
-      setResponsorialPsalmVerseOPT2("");
-      setResponsorialPsalmText1OPT2("");
-      setResponsorialPsalmText2OPT2("");
-      setResponsorialPsalmResponseOPT2("");
-      setResponsorialPsalmText3OPT2("");
-      setResponsorialPsalmText4OPT2("");
-      setResponsorialPsalmText5OPT2("");
-      setResponsorialText1("");
-      setResponsorialText2("");
-      setResponsorialText3("");
-      setBeforeGospelText("");
-      setVerseb4GospelOPT2("");
-      setB4GospelTextOPT2("");
-      setAlleluiaVerse("");
-      setAlleluiaText("");
-      setAlleluiaOPT2("");
-      setAlleluiaTextOPT2("");
-      setGospelVerse("");
-      setGospelText("");
-      setGospelVerse2("");
-      setGospelTextOption2("");
-      setVerseBeforeGospel("");
+      // setTitle(null);
+      // setDate(null);
+      // setReading1Verse(null);
+      // setReading1Text(null);
+      // setReading1Option2Verse(null);
+      // setReading1TextOption2(null);
+      // setReading2Verse(null);
+      // setReading2Text(null);
+      // setReading2Option1Verse(null);
+      // setReading2TextOption1(null);
+      // setReading3Verse(null);
+      // setReading3Text(null);
+      // setReading4Verse(null);
+      // setReading4Text(null);
+      // setReading5Verse(null);
+      // setReading5Text(null);
+      // setReading6Verse(null);
+      // setReading6Text(null);
+      // setReading7Verse(null);
+      // setReading7Text(null);
+      // setProcessionPalmVerse(null);
+      // setProcessionPalmsGospel(null);
+      // setProcessionPalmsGospel2Verse(null);
+      // setProcessionPalmsGospel2Text(null);
+      // setResponsorialPsalmVerse(null);
+      // setResponsorialPsalmRespond(null);
+      // setResponsorialPsalmText1(null);
+      // setResponsorialPsalmText2(null);
+      // setResponsorialPsalmText3(null);
+      // setResponsorialPsalmText4(null);
+      // setResponsorialPsalmText5(null);
+      // setResponsorialPsalmText6(null);
+      // setResponsorialPsalmVerseOPT2(null);
+      // setResponsorialPsalmText1OPT2(null);
+      // setResponsorialPsalmText2OPT2(null);
+      // setResponsorialPsalmResponseOPT2(null);
+      // setResponsorialPsalmText3OPT2(null);
+      // setResponsorialPsalmText4OPT2(null);
+      // setResponsorialPsalmText5OPT2(null);
+      // setResponsorialText1(null);
+      // setResponsorialText2(null);
+      // setResponsorialText3(null);
+      // setBeforeGospelText(null);
+      // setVerseb4GospelOPT2(null);
+      // setB4GospelTextOPT2(null);
+      // setAlleluiaVerse(null);
+      // setAlleluiaText(null);
+      // setAlleluiaOPT2(null);
+      // setAlleluiaTextOPT2(null);
+      // setGospelVerse(null);
+      // setGospelText(null);
+      // setGospelVerse2(null);
+      // setGospelTextOption2(null);
+      // setVerseBeforeGospel(null);
     },
   });
 
   const editDailyReading = async ({
     id,
+    editBibleReadingId,
     editTitle,
     editDate,
     editReading1Verse,
@@ -1026,9 +1030,10 @@ function DailyReadings() {
   }) => {
     const parsed = await axios.patch(
       "https://api.vigoplace.com/api/admin/console/daily-reading",
-      //"http://localhost:4000/api/admin/console/daily-reading",
+      //"http://localhost:7000/api/admin/console/daily-reading",
       {
         id,
+        editBibleReadingId,
         editTitle,
         editDate,
         editReading1Verse,
@@ -1098,61 +1103,65 @@ function DailyReadings() {
     mutationFn: editDailyReading,
     onSuccess: () => {
       setEditDailyReadingToast({ ...editDailyReadingToast, success: true });
-      setId("");
-      setEditDate("");
-      setEditTitle("");
-      setEditReading1Verse("");
-      setEditReading1Text("");
-      setEditReading1Option2Verse("");
-      setEditReading1TextOption2("");
-      setEditReading2Verse("");
-      setEditReading2Text("");
-      setEditReading2Option1Verse("");
-      setEditReading2TextOption1("");
-      setEditReading3Verse("");
-      setEditReading3Text("");
-      setEditReading4Verse("");
-      setEditReading4Text("");
-      setEditReading5Verse("");
-      setEditReading5Text("");
-      setEditReading6Verse("");
-      setEditReading6Text("");
-      setEditReading7Verse("");
-      setEditReading7Text("");
-      setEditProcessionPalmVerse("");
-      setEditProcessionPalmsGospel("");
-      setEditProcessionPalmsGospel2Verse("");
-      setEditProcessionPalmsGospel2Text("");
-      setEditResponsorialPsalmVerse("");
-      setEditResponsorialPsalmRespond("");
-      setEditResponsorialPsalmText1("");
-      setEditResponsorialPsalmText2("");
-      setEditResponsorialPsalmText3("");
-      setEditResponsorialPsalmText4("");
-      setEditResponsorialPsalmText5("");
-      setEditResponsorialPsalmText6("");
-      setEditResponsorialPsalmVerseOPT2("");
-      setEditResponsorialPsalmText1OPT2("");
-      setEditResponsorialPsalmText2OPT2("");
-      setEditResponsorialPsalmResponseOPT2("");
-      setEditResponsorialPsalmText3OPT2("");
-      setEditResponsorialPsalmText4OPT2("");
-      setEditResponsorialPsalmText5OPT2("");
-      setEditResponsorialText1("");
-      setEditResponsorialText2("");
-      setEditResponsorialText3("");
-      setEditBeforeGospelText("");
-      setEditVerseb4GospelOPT2("");
-      setEditB4GospelTextOPT2("");
-      setEditAlleluiaVerse("");
-      setEditAlleluiaText("");
-      setEditAlleluiaOPT2("");
-      setEditAlleluiaTextOPT2("");
-      setEditGospelVerse("");
-      setEditGospelText("");
-      setEditGospelVerse2("");
-      setEditGospelTextOption2("");
-      setEditVerseBeforeGospel("");
+      setTimeout(() => {
+        setEditDailyReadingToast({ ...editDailyReadingToast, success: false });
+      }, 3000);
+      setId(null);
+      setEditBibleReadingId(null);
+      setEditDate(null);
+      setEditTitle(null);
+      setEditReading1Verse(null);
+      setEditReading1Text(null);
+      setEditReading1Option2Verse(null);
+      setEditReading1TextOption2(null);
+      setEditReading2Verse(null);
+      setEditReading2Text(null);
+      setEditReading2Option1Verse(null);
+      setEditReading2TextOption1(null);
+      setEditReading3Verse(null);
+      setEditReading3Text(null);
+      setEditReading4Verse(null);
+      setEditReading4Text(null);
+      setEditReading5Verse(null);
+      setEditReading5Text(null);
+      setEditReading6Verse(null);
+      setEditReading6Text(null);
+      setEditReading7Verse(null);
+      setEditReading7Text(null);
+      setEditProcessionPalmVerse(null);
+      setEditProcessionPalmsGospel(null);
+      setEditProcessionPalmsGospel2Verse(null);
+      setEditProcessionPalmsGospel2Text(null);
+      setEditResponsorialPsalmVerse(null);
+      setEditResponsorialPsalmRespond(null);
+      setEditResponsorialPsalmText1(null);
+      setEditResponsorialPsalmText2(null);
+      setEditResponsorialPsalmText3(null);
+      setEditResponsorialPsalmText4(null);
+      setEditResponsorialPsalmText5(null);
+      setEditResponsorialPsalmText6(null);
+      setEditResponsorialPsalmVerseOPT2(null);
+      setEditResponsorialPsalmText1OPT2(null);
+      setEditResponsorialPsalmText2OPT2(null);
+      setEditResponsorialPsalmResponseOPT2(null);
+      setEditResponsorialPsalmText3OPT2(null);
+      setEditResponsorialPsalmText4OPT2(null);
+      setEditResponsorialPsalmText5OPT2(null);
+      setEditResponsorialText1(null);
+      setEditResponsorialText2(null);
+      setEditResponsorialText3(null);
+      setEditBeforeGospelText(null);
+      setEditVerseb4GospelOPT2(null);
+      setEditB4GospelTextOPT2(null);
+      setEditAlleluiaVerse(null);
+      setEditAlleluiaText(null);
+      setEditAlleluiaOPT2(null);
+      setEditAlleluiaTextOPT2(null);
+      setEditGospelVerse(null);
+      setEditGospelText(null);
+      setEditGospelVerse2(null);
+      setEditGospelTextOption2(null);
+      setEditVerseBeforeGospel(null);
     },
     onError: async (error) => {
       console.log(error);
@@ -2538,7 +2547,7 @@ function DailyReadings() {
                       color="primary"
                       loading={dailyReadingMutation.isLoading}
                       disabled={
-                        title === "" || date === "" || reading1Verse === ""
+                        title === null || date === null || reading1Verse === null
                       }
                       onClick={() => {
                         dailyReadingMutation.mutate({
@@ -3928,13 +3937,14 @@ function DailyReadings() {
                         color="primary"
                         loading={editDailyReadingMutation.isLoading}
                         disabled={
-                          editTitle === "" ||
-                          editDate === "" ||
-                          editReading1Verse === ""
+                          editTitle === null ||
+                          editDate === null ||
+                          editReading1Verse === null
                         }
                         onClick={() => {
                           editDailyReadingMutation.mutate({
                             id,
+                            editBibleReadingId,
                             editTitle,
                             editDate,
                             editReading1Verse,
