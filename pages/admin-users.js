@@ -336,20 +336,34 @@ export default function Admin() {
               <Table>
                 <TableHead>
                   <TableRow>
+                  <TableCell
+                      sx={{
+                        borderRight: 1,
+                        borderColor: "divider",
+                        fontWeight: "bold",
+                        marginLeft: "10px",
+                        //display: "flex",
+                        alignContent: "center",
+                        justifyContent: "center",
+                        textAlign: "center",
+                      }}
+                    >
+                      S/N
+                    </TableCell>
                     <TableCell
                       sx={{
                         borderRight: 1,
                         borderColor: "divider",
                         fontWeight: "bold",
                         marginLeft: "10px",
-                        display: "flex",
+                        //display: "flex",
                         alignContent: "center",
-                        justifyContent: "center",
+                        justifyContent: "left",
                       }}
                     >
                       Admins
                     </TableCell>
-                    <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
+                    <TableCell sx={{ fontWeight: "bold", textAlign: "left" }}>
                       Privileges
                     </TableCell>
                     {users?.role === "root" && (
@@ -372,11 +386,20 @@ export default function Admin() {
                   {/* Display the first 3 most active users */}
                   {adminUsers?.map((user, index) => (
                     <TableRow key={user.UFullName}>
+                    <TableCell
+                        sx={{
+                          textAlign: "center",
+                          borderRight: 1,
+                          borderColor: "divider",
+                        }}
+                      >
+                        {index + 1}
+                      </TableCell>
                       <TableCell
                         sx={{
                           borderRight: 1,
                           borderColor: "divider",
-                          //textAlign: "center",
+                          textAlign: "left",
                         }}
                       >
                         <a
@@ -407,11 +430,11 @@ export default function Admin() {
                             e.target.style.textDecoration = "none";
                           }}
                         >
-                          {index + 1}. {user.UFullName}
+                          {user.UFullName}
                         </a>
                       </TableCell>
 
-                      <TableCell sx={{ textAlign: "center" }}>
+                      <TableCell sx={{ textAlign: "left" }}>
                         {user.UPrivilege}
                       </TableCell>
                       {users?.role === "root" && (

@@ -182,14 +182,29 @@ export default function Wallet() {
                         borderColor: "divider",
                         fontWeight: "bold",
                         marginLeft: "10px",
-                        display: "flex",
+                        //display: "flex",
+                        alignContent: "center",
+                        justifyContent: "center",
+                        textAlign: "center",
+                      }}
+                    >
+                      S/N
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        borderRight: 1,
+                        borderColor: "divider",
+                        fontWeight: "bold",
+                        marginLeft: "10px",
+                        //display: "flex",
+                        textAlign: "left",
                         alignContent: "center",
                         justifyContent: "center",
                       }}
                     >
                       Users
                     </TableCell>
-                    <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
+                    <TableCell sx={{ fontWeight: "bold", textAlign: "left" }}>
                       {currency === "Naira" ? "Naira" : "Dollar"} Wallet Balance
                     </TableCell>
                   </TableRow>
@@ -199,9 +214,18 @@ export default function Wallet() {
                     <TableRow key={user.userId}>
                       <TableCell
                         sx={{
+                          textAlign: "center",
                           borderRight: 1,
                           borderColor: "divider",
-                          //textAlign: "center",
+                        }}
+                      >
+                        {pagination.pageIndex * pagination.pageSize + index + 1}
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          borderRight: 1,
+                          borderColor: "divider",
+                          textAlign: "left",
                         }}
                       >
                         <a
@@ -232,14 +256,11 @@ export default function Wallet() {
                             e.target.style.textDecoration = "none";
                           }}
                         >
-                          {pagination.pageIndex * pagination.pageSize +
-                            index +
-                            1}
-                          . {user.fullName}
+                          {user.fullName}
                         </a>
                       </TableCell>
 
-                      <TableCell sx={{ textAlign: "center" }}>
+                      <TableCell sx={{ textAlign: "left" }}>
                         {formatCurrency(user.balance, currency)}
                       </TableCell>
                     </TableRow>

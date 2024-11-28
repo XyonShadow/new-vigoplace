@@ -276,7 +276,21 @@ function KycUsers() {
                                 borderColor: "divider",
                                 fontWeight: "bold",
                                 marginLeft: "10px",
+                                //display: "flex",
+                                alignContent: "center",
+                                justifyContent: "center",
                                 textAlign: "center",
+                              }}
+                            >
+                              S/N
+                            </TableCell>
+                            <TableCell
+                              sx={{
+                                borderRight: 1,
+                                borderColor: "divider",
+                                fontWeight: "bold",
+                                marginLeft: "10px",
+                                textAlign: "left",
                               }}
                             >
                               FullName
@@ -287,7 +301,7 @@ function KycUsers() {
                                 borderColor: "divider",
                                 fontWeight: "bold",
                                 marginLeft: "10px",
-                                textAlign: "center",
+                                textAlign: "left",
                               }}
                             >
                               Email
@@ -298,7 +312,7 @@ function KycUsers() {
                                 borderColor: "divider",
                                 fontWeight: "bold",
                                 marginLeft: "10px",
-                                textAlign: "center",
+                                textAlign: "left",
                               }}
                             >
                               UserName
@@ -309,7 +323,7 @@ function KycUsers() {
                                 borderColor: "divider",
                                 fontWeight: "bold",
                                 marginLeft: "10px",
-                                textAlign: "center",
+                                textAlign: "left",
                               }}
                             >
                               Phone
@@ -321,9 +335,20 @@ function KycUsers() {
                             <TableRow key={user.id}>
                               <TableCell
                                 sx={{
+                                  textAlign: "center",
                                   borderRight: 1,
                                   borderColor: "divider",
-                                  textAlign: "center",
+                                }}
+                              >
+                                {pagination.pageIndex * pagination.pageSize +
+                                  index +
+                                  1}
+                              </TableCell>
+                              <TableCell
+                                sx={{
+                                  borderRight: 1,
+                                  borderColor: "divider",
+                                  textAlign: "left",
                                 }}
                               >
                                 <a
@@ -354,10 +379,7 @@ function KycUsers() {
                                     e.target.style.textDecoration = "none";
                                   }}
                                 >
-                                  {pagination.pageIndex * pagination.pageSize +
-                                    index +
-                                    1}
-                                  . {user.fullname}
+                                  {user.fullname}
                                 </a>
                               </TableCell>
 
@@ -365,30 +387,28 @@ function KycUsers() {
                                 sx={{
                                   borderRight: 1,
                                   borderColor: "divider",
-                                  textAlign: "center",
+                                  textAlign: "left",
                                 }}
                               >
-                                {user.email}
+                                {user?.email?.split("-")[0]}
                               </TableCell>
                               <TableCell
                                 sx={{
                                   borderRight: 1,
                                   borderColor: "divider",
-                                  textAlign: "center",
+                                  textAlign: "left",
                                 }}
                               >
-                                {user.username}
+                                {user?.username?.split("-")[0]}
                               </TableCell>
                               <TableCell
                                 sx={{
                                   borderRight: 1,
                                   borderColor: "divider",
-                                  textAlign: "center",
+                                  textAlign: "left",
                                 }}
                               >
-                                {user.phone === null
-                                  ? "Not Applicable"
-                                  : user.phone}
+                                {user?.phone?.split("-")[0]}
                               </TableCell>
                             </TableRow>
                           ))}
@@ -437,7 +457,6 @@ function KycUsers() {
                           <IconButton
                             onClick={() =>
                               handlePageChange(
-                               
                                 Math.ceil(
                                   (data?.data?.count || 0) / pagination.pageSize
                                 ) - 1
@@ -535,7 +554,21 @@ function KycUsers() {
                                 borderColor: "divider",
                                 fontWeight: "bold",
                                 marginLeft: "10px",
+                                //display: "flex",
+                                alignContent: "center",
+                                justifyContent: "center",
                                 textAlign: "center",
+                              }}
+                            >
+                              S/N
+                            </TableCell>
+                            <TableCell
+                              sx={{
+                                borderRight: 1,
+                                borderColor: "divider",
+                                fontWeight: "bold",
+                                marginLeft: "10px",
+                                textAlign: "left",
                               }}
                             >
                               FullName
@@ -546,7 +579,7 @@ function KycUsers() {
                                 borderColor: "divider",
                                 fontWeight: "bold",
                                 marginLeft: "10px",
-                                textAlign: "center",
+                                textAlign: "left",
                               }}
                             >
                               Email
@@ -557,7 +590,7 @@ function KycUsers() {
                                 borderColor: "divider",
                                 fontWeight: "bold",
                                 marginLeft: "10px",
-                                textAlign: "center",
+                                textAlign: "left",
                               }}
                             >
                               UserName
@@ -568,7 +601,7 @@ function KycUsers() {
                                 borderColor: "divider",
                                 fontWeight: "bold",
                                 marginLeft: "10px",
-                                textAlign: "center",
+                                textAlign: "left",
                               }}
                             >
                               Phone
@@ -581,8 +614,21 @@ function KycUsers() {
                               <TableRow key={user.id}>
                                 <TableCell
                                   sx={{
+                                    textAlign: "center",
                                     borderRight: 1,
                                     borderColor: "divider",
+                                  }}
+                                >
+                                  {pagination1.pageIndex *
+                                    pagination1.pageSize +
+                                    index +
+                                    1}
+                                </TableCell>
+                                <TableCell
+                                  sx={{
+                                    borderRight: 1,
+                                    borderColor: "divider",
+                                    textAlign: "left",
                                   }}
                                 >
                                   <a
@@ -614,11 +660,7 @@ function KycUsers() {
                                       e.target.style.textDecoration = "none";
                                     }}
                                   >
-                                    {pagination1.pageIndex *
-                                      pagination1.pageSize +
-                                      index +
-                                      1}
-                                    . {user.fullname}
+                                    {user.fullname}
                                   </a>
                                 </TableCell>
 
@@ -626,9 +668,10 @@ function KycUsers() {
                                   sx={{
                                     borderRight: 1,
                                     borderColor: "divider",
+                                    textAlign: "left",
                                   }}
                                 >
-                                  {user.email}
+                                  {user?.email?.split("-")[0]}
                                 </TableCell>
                                 <TableCell
                                   sx={{
@@ -636,7 +679,7 @@ function KycUsers() {
                                     borderColor: "divider",
                                   }}
                                 >
-                                  {user.username}
+                                  {user?.username?.split("-")[0]}
                                 </TableCell>
                                 <TableCell
                                   sx={{
@@ -644,9 +687,7 @@ function KycUsers() {
                                     borderColor: "divider",
                                   }}
                                 >
-                                  {user.phone === null
-                                    ? "Not Applicable"
-                                    : user.phone}
+                                  {user?.phone?.split("-")[0]}
                                 </TableCell>
                               </TableRow>
                             )

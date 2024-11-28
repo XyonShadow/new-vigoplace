@@ -205,7 +205,6 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
       SCPCreatedAt: "2022-12-19T06:46:44.000Z",
       SCPUpdatedAt: null,
     },
-
     {
       id: 2,
       title: "Transactions",
@@ -422,6 +421,15 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
           SCPUpdatedAt: null,
         },
       ],
+    },
+    {
+      id: 23,
+      title: "Virtual-Accounts",
+      icon: "home",
+      href: "/virtual-accounts",
+      roles: ["admin", "root"],
+      SCPCreatedAt: "2024-11-27T06:46:44.000Z",
+      SCPUpdatedAt: null,
     },
   ];
 

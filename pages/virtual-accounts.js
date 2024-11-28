@@ -26,18 +26,15 @@ import {
   useTheme,
   IconButton,
   Tooltip,
-  TextField,
-  InputAdornment,
 } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
-import RefreshIcon from "@mui/icons-material/Refresh";
 import FirstPageIcon from "@mui/icons-material/FirstPage";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import LastPageIcon from "@mui/icons-material/LastPage";
-import SearchIcon from "@mui/icons-material/Search";
+import { format } from "date-fns";
 
-export default function AutoPayout() {
+export default function Virtual() {
   const queryClient = useQueryClient();
   const getUser = useSession();
   const users = getUser?.data?.user;
@@ -46,22 +43,15 @@ export default function AutoPayout() {
     pageSize: 10,
     pageIndex: 0,
   });
-  const [globalFilter, setGlobalFilter] = React.useState("");
 
-  const {
-    data: data,
-    isError,
-    isFetching,
-    isLoading,
-    refetch,
-  } = useQuery(
-    ["AutoPayoutUsers", globalFilter, pagination],
+  const { data, isError, isFetching, isLoading, refetch } = useQuery(
+    ["fetchVirtualAccounts", pagination],
     async () => {
       const { data } = await axios.get(
-        `https://api.vigoplace.com/api/admin/console/auto-payout?pageSize=${
+        `https://api.vigoplace.com/api/admin/console/virtual-accounts?pageSize=${
           pagination.pageSize
-        }&page=${pagination.pageIndex + 1}&search=${globalFilter}`,
-        //`http://localhost:4000/api/admin/console/auto-payout?pageSize=${pagination.pageSize}&page=${pagination.pageIndex}&search=${globalFilter}`,
+        }&page=${pagination.pageIndex + 1}`,
+        //`http://localhost:7000/api/admin/console/virtual-accounts?pageSize=${pagination.pageSize}&page=${pagination.pageIndex}`,
         {
           headers: {
             Authorization: users?.token,
@@ -74,7 +64,7 @@ export default function AutoPayout() {
     },
     {
       onError: (err) => {
-        console.log(err, "err fetching auto payout users");
+        console.log(err, "err fetching user virtual accounts");
       },
       enabled: !!users?.token,
     },
@@ -95,79 +85,28 @@ export default function AutoPayout() {
     refetch();
   };
 
-  const handleSearchChange = (event) => {
-    setGlobalFilter(event.target.value);
-    refetch();
+  const formatDateTime = (dateTime) => {
+    if (!dateTime) return "-";
+    try {
+      return format(new Date(dateTime), "dd/MM/yyyy hh:mm a");
+    } catch (error) {
+      return "-";
+    }
   };
 
   return (
     <>
-      <Box sx={{ padding: 3 }}>
+      <Box sx={{ padding: 5 }}>
         <Grid container spacing={0}>
           <Grid item sm={12} xs={12} lg={12}>
-            <Grid container spacing={2} alignItems="center" marginBottom={2}>
-              <Grid item xs={12} sm={6}>
-                <Typography
-                  variant="h4"
-                  color="text.primary"
-                  sx={{ fontWeight: "bold" }}
-                >
-                  Auto Payout Users
-                </Typography>
-              </Grid>
-              <Grid
-                item
-                xs={12}
-                sm={6}
-                container
-                justifyContent="flex-end"
-                alignItems="center"
-                spacing={1}
-              >
-                <Grid item>
-                  <TextField
-                    label="Search"
-                    variant="outlined"
-                    value={globalFilter}
-                    onChange={handleSearchChange}
-                    InputLabelProps={{
-                      sx: {
-                        lineHeight: "0.8em",
-                        "&.Mui-focused": {
-                          lineHeight: "0.8em",
-                        },
-                      },
-                    }}
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <SearchIcon />
-                        </InputAdornment>
-                      ),
-                      sx: {
-                        height: "36px",
-                        "& .MuiOutlinedInput-input": {
-                          py: "8px",
-                        },
-                      },
-                    }}
-                    sx={{
-                      height: "36px",
-                      "& .MuiOutlinedInput-root": {
-                        height: "36px",
-                      },
-                    }}
-                  />
-                </Grid>
-                <Grid item>
-                  <Tooltip arrow title="Refresh Data">
-                    <IconButton onClick={() => refetch()}>
-                      <RefreshIcon />
-                    </IconButton>
-                  </Tooltip>
-                </Grid>
-              </Grid>
-            </Grid>
+            <Typography
+              variant="h4"
+              color="text.primary"
+              marginBottom={2}
+              sx={{ fontWeight: "bold" }}
+            >
+              Users Virtual Accounts
+            </Typography>
 
             <TableContainer
               component={Paper}
@@ -176,7 +115,7 @@ export default function AutoPayout() {
               <Table>
                 <TableHead>
                   <TableRow>
-                  <TableCell
+                    <TableCell
                       sx={{
                         borderRight: 1,
                         borderColor: "divider",
@@ -190,54 +129,57 @@ export default function AutoPayout() {
                     >
                       S/N
                     </TableCell>
+
                     <TableCell
                       sx={{
+                        textAlign: "left",
                         borderRight: 1,
                         borderColor: "divider",
                         fontWeight: "bold",
-                        textAlign: "left",
+                        marginLeft: "10px",
+                        //display: "flex",
+                        alignContent: "center",
+                        justifyContent: "center",
                       }}
                     >
-                      FullName
+                      Account Name
                     </TableCell>
                     <TableCell
                       sx={{
+                        textAlign: "left",
                         borderRight: 1,
                         borderColor: "divider",
                         fontWeight: "bold",
-                        textAlign: "left",
+                        marginLeft: "10px",
+                        //display: "flex",
+                        alignContent: "center",
+                        justifyContent: "center",
                       }}
                     >
-                      Email
+                      Account Number
                     </TableCell>
                     <TableCell
                       sx={{
+                        textAlign: "left",
                         borderRight: 1,
                         borderColor: "divider",
                         fontWeight: "bold",
-                        textAlign: "left",
+                        marginLeft: "10px",
+                        //display: "flex",
+                        alignContent: "center",
+                        justifyContent: "center",
                       }}
                     >
-                      UserName
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        borderRight: 1,
-                        borderColor: "divider",
-                        fontWeight: "bold",
-                        textAlign: "left",
-                      }}
-                    >
-                      Phone
+                      Date Issued
                     </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {data?.data?.AutoPayoutUsers?.map((user, index) => (
-                    <TableRow key={user.id}>
+                  {data?.data?.result?.map((user, index) => (
+                    <TableRow key={user?.OVAUserId}>
                       <TableCell
                         sx={{
-                          textAlign: "center",
+                          textAlign: "left",
                           borderRight: 1,
                           borderColor: "divider",
                         }}
@@ -252,7 +194,7 @@ export default function AutoPayout() {
                         }}
                       >
                         <a
-                          href={user.link}
+                          href={`/user/${user?.OVAUserId}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           style={{
@@ -268,7 +210,7 @@ export default function AutoPayout() {
                           }}
                           onClick={(e) => {
                             e.preventDefault();
-                            const userId = user.id;
+                            const userId = user.OVAUserId;
                             const url = `/user/${userId}`;
                             window.open(url, "_blank");
                           }}
@@ -279,36 +221,27 @@ export default function AutoPayout() {
                             e.target.style.textDecoration = "none";
                           }}
                         >
-                          {user.fullname}
+                          {user?.OVAAccountName}
                         </a>
                       </TableCell>
 
                       <TableCell
                         sx={{
+                          textAlign: "left",
                           borderRight: 1,
                           borderColor: "divider",
-                          textAlign: "left",
                         }}
                       >
-                        {user.email}
+                        {user?.OVAAccountNumber}
                       </TableCell>
                       <TableCell
                         sx={{
+                          textAlign: "left",
                           borderRight: 1,
                           borderColor: "divider",
-                          textAlign: "left",
                         }}
                       >
-                        {user.username}
-                      </TableCell>
-                      <TableCell
-                        sx={{
-                          borderRight: 1,
-                          borderColor: "divider",
-                          textAlign: "left",
-                        }}
-                      >
-                        {user.phone}
+                        {formatDateTime(user?.OVACreatedAt)}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -317,7 +250,7 @@ export default function AutoPayout() {
             </TableContainer>
 
             <TablePagination
-              rowsPerPageOptions={[10, 25, 50]}
+              rowsPerPageOptions={[10, 25, 50, 100]}
               component="div"
               count={data?.data?.count || 0}
               rowsPerPage={pagination.pageSize}
@@ -386,7 +319,7 @@ export default function AutoPayout() {
               variant="h3"
               color="text.secondary"
             >
-              <b>Auto Payout Users</b>
+              <b>Users Virtual Accounts</b>
             </Typography>
           </Grid>
         </Grid>
@@ -395,4 +328,4 @@ export default function AutoPayout() {
   );
 }
 
-AutoPayout.auth = true;
+Virtual.auth = true;
