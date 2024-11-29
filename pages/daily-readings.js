@@ -708,7 +708,7 @@ function DailyReadings() {
         }
       );
 
-      console.log(data);
+      //console.log(data);
 
       setId(data?.data?.id);
       const fullDate = data?.data?.date;
