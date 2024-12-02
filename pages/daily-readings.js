@@ -270,211 +270,211 @@ function DailyReadings() {
   };
 
   const handleReading1Verse = (event) => {
-    setReading1Verse(event.target.value);
+    setReading1Verse(event.target.value || null);
   };
 
   const handleReading1Text = (event) => {
-    setReading1Text(event.target.value);
+    setReading1Text(event.target.value || null);
   };
 
   const handleReading1Option2Verse = (event) => {
-    setReading1Option2Verse(event.target.value);
+    setReading1Option2Verse(event.target.value || null);
   };
 
   const handleReading1TextOption2 = (event) => {
-    setReading1TextOption2(event.target.value);
+    setReading1TextOption2(event.target.value || null);
   };
 
   const handleReading2Verse = (event) => {
-    setReading2Verse(event.target.value);
+    setReading2Verse(event.target.value || null);
   };
 
   const handleReading2Text = (event) => {
-    setReading2Text(event.target.value);
+    setReading2Text(event.target.value || null);
   };
 
   const handleReading2Option1Verse = (event) => {
-    setReading2Option1Verse(event.target.value);
+    setReading2Option1Verse(event.target.value || null);
   };
 
   const handleReading2TextOption1 = (event) => {
-    setReading2TextOption1(event.target.value);
+    setReading2TextOption1(event.target.value || null);
   };
 
   const handleReading3Verse = (event) => {
-    setReading3Verse(event.target.value);
+    setReading3Verse(event.target.value || null);
   };
 
   const handleReading3Text = (event) => {
-    setReading3Text(event.target.value);
+    setReading3Text(event.target.value || null);
   };
 
   const handleReading4Verse = (event) => {
-    setReading4Verse(event.target.value);
+    setReading4Verse(event.target.value || null);
   };
 
   const handleReading4Text = (event) => {
-    setReading4Text(event.target.value);
+    setReading4Text(event.target.value || null);
   };
 
   const handleReading5Verse = (event) => {
-    setReading5Verse(event.target.value);
+    setReading5Verse(event.target.value || null);
   };
 
   const handleReading5Text = (event) => {
-    setReading5Text(event.target.value);
+    setReading5Text(event.target.value || null);
   };
 
   const handleReading6Verse = (event) => {
-    setReading6Verse(event.target.value);
+    setReading6Verse(event.target.value || null);
   };
 
   const handleReading6Text = (event) => {
-    setReading6Text(event.target.value);
+    setReading6Text(event.target.value || null);
   };
 
   const handleReading7Verse = (event) => {
-    setReading7Verse(event.target.value);
+    setReading7Verse(event.target.value || null);
   };
 
   const handleReading7Text = (event) => {
-    setReading7Text(event.target.value);
+    setReading7Text(event.target.value || null);
   };
 
   const handleProcessionPalmVerse = (event) => {
-    setProcessionPalmVerse(event.target.value);
+    setProcessionPalmVerse(event.target.value || null);
   };
 
   const handleProcessionPalmsGospel = (event) => {
-    setProcessionPalmsGospel(event.target.value);
+    setProcessionPalmsGospel(event.target.value || null);
   };
 
   const handleProcessionPalmsGospel2Verse = (event) => {
-    setProcessionPalmsGospel2Verse(event.target.value);
+    setProcessionPalmsGospel2Verse(event.target.value || null);
   };
 
   const handleProcessionPalmsGospel2Text = (event) => {
-    setProcessionPalmsGospel2Text(event.target.value);
+    setProcessionPalmsGospel2Text(event.target.value || null);
   };
 
   const handleResponsorialPsalmVerse = (event) => {
-    setResponsorialPsalmVerse(event.target.value);
+    setResponsorialPsalmVerse(event.target.value || null);
   };
 
   const handleResponsorialPsalmRespond = (event) => {
-    setResponsorialPsalmRespond(event.target.value);
+    setResponsorialPsalmRespond(event.target.value || null);
   };
 
   const handleResponsorialPsalmText1 = (event) => {
-    setResponsorialPsalmText1(event.target.value);
+    setResponsorialPsalmText1(event.target.value || null);
   };
 
   const handleResponsorialPsalmText2 = (event) => {
-    setResponsorialPsalmText2(event.target.value);
+    setResponsorialPsalmText2(event.target.value || null);
   };
 
   const handleResponsorialPsalmText3 = (event) => {
-    setResponsorialPsalmText3(event.target.value);
+    setResponsorialPsalmText3(event.target.value || null);
   };
 
   const handleResponsorialPsalmText4 = (event) => {
-    setResponsorialPsalmText4(event.target.value);
+    setResponsorialPsalmText4(event.target.value || null);
   };
 
   const handleResponsorialPsalmText5 = (event) => {
-    setResponsorialPsalmText5(event.target.value);
+    setResponsorialPsalmText5(event.target.value || null);
   };
 
   const handleResponsorialPsalmText6 = (event) => {
-    setResponsorialPsalmText6(event.target.value);
+    setResponsorialPsalmText6(event.target.value || null);
   };
 
   const handleResponsorialPsalmVerseOPT2 = (event) => {
-    setResponsorialPsalmVerseOPT2(event.target.value);
+    setResponsorialPsalmVerseOPT2(event.target.value || null);
   };
 
   const handleResponsorialPsalmText1OPT2 = (event) => {
-    setResponsorialPsalmText1OPT2(event.target.value);
+    setResponsorialPsalmText1OPT2(event.target.value || null);
   };
 
   const handleResponsorialPsalmText2OPT2 = (event) => {
-    setResponsorialPsalmText2OPT2(event.target.value);
+    setResponsorialPsalmText2OPT2(event.target.value || null);
   };
 
   const handleResponsorialPsalmResponseOPT2 = (event) => {
-    setResponsorialPsalmResponseOPT2(event.target.value);
+    setResponsorialPsalmResponseOPT2(event.target.value || null);
   };
 
   const handleResponsorialPsalmText3OPT2 = (event) => {
-    setResponsorialPsalmText3OPT2(event.target.value);
+    setResponsorialPsalmText3OPT2(event.target.value || null);
   };
 
   const handleResponsorialPsalmText4OPT2 = (event) => {
-    setResponsorialPsalmText4OPT2(event.target.value);
+    setResponsorialPsalmText4OPT2(event.target.value || null);
   };
 
   const handleResponsorialPsalmText5OPT2 = (event) => {
-    setResponsorialPsalmText5OPT2(event.target.value);
+    setResponsorialPsalmText5OPT2(event.target.value || null);
   };
 
   const handleResponsorialText1 = (event) => {
-    setResponsorialText1(event.target.value);
+    setResponsorialText1(event.target.value || null);
   };
 
   const handleResponsorialText2 = (event) => {
-    setResponsorialText2(event.target.value);
+    setResponsorialText2(event.target.value || null);
   };
 
   const handleResponsorialText3 = (event) => {
-    setResponsorialText3(event.target.value);
+    setResponsorialText3(event.target.value || null);
   };
 
   const handleBeforeGospelText = (event) => {
-    setBeforeGospelText(event.target.value);
+    setBeforeGospelText(event.target.value || null);
   };
 
   const handleVerseb4GospelOPT2 = (event) => {
-    setVerseb4GospelOPT2(event.target.value);
+    setVerseb4GospelOPT2(event.target.value || null);
   };
 
   const handleB4GospelTextOPT2 = (event) => {
-    setB4GospelTextOPT2(event.target.value);
+    setB4GospelTextOPT2(event.target.value || null);
   };
 
   const handleAlleluiaVerse = (event) => {
-    setAlleluiaVerse(event.target.value);
+    setAlleluiaVerse(event.target.value || null);
   };
 
   const handleAlleluiaText = (event) => {
-    setAlleluiaText(event.target.value);
+    setAlleluiaText(event.target.value || null);
   };
 
   const handleAlleluiaOPT2 = (event) => {
-    setAlleluiaOPT2(event.target.value);
+    setAlleluiaOPT2(event.target.value || null);
   };
 
   const handleAlleluiaTextOPT2 = (event) => {
-    setAlleluiaTextOPT2(event.target.value);
+    setAlleluiaTextOPT2(event.target.value || null);
   };
 
   const handleGospelVerse = (event) => {
-    setGospelVerse(event.target.value);
+    setGospelVerse(event.target.value || null);
   };
 
   const handleGospelText = (event) => {
-    setGospelText(event.target.value);
+    setGospelText(event.target.value || null);
   };
 
   const handleGospelVerse2 = (event) => {
-    setGospelVerse2(event.target.value);
+    setGospelVerse2(event.target.value || null);
   };
 
   const handleGospelTextOption2 = (event) => {
-    setGospelTextOption2(event.target.value);
+    setGospelTextOption2(event.target.value || null);
   };
 
   const handleVerseBeforeGospel = (event) => {
-    setVerseBeforeGospel(event.target.value);
+    setVerseBeforeGospel(event.target.value || null);
   };
 
   ////////////////ONCHANGE EDIT SECTION////////////////////////
@@ -906,6 +906,8 @@ function DailyReadings() {
     return setData;
   };
 
+  console.log(reading1Option2Verse);
+  
   const dailyReadingMutation = useMutation({
     mutationKey: ["postdailyreading"],
     mutationFn: dailyReading,
@@ -1280,7 +1282,7 @@ function DailyReadings() {
                           onChange={handleDate}
                           type="date"
                           multiline
-                          value={date}
+                          value={date ?? ""}
                           variant="outlined"
                           sx={{
                             "& .MuiInputLabel-root": {
@@ -1312,7 +1314,7 @@ function DailyReadings() {
                           onChange={handleTitle}
                           type="text"
                           multiline
-                          value={title}
+                          value={title ?? ""}
                           variant="outlined"
                           sx={{
                             "& .MuiInputLabel-root": {
@@ -1339,7 +1341,7 @@ function DailyReadings() {
                             type="text"
                             multiline
                             onChange={handleReading1Verse}
-                            value={reading1Verse}
+                            value={reading1Verse ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -1357,7 +1359,7 @@ function DailyReadings() {
                               multiline
                               onChange={handleReading1Text}
                               type="text"
-                              value={reading1Text}
+                              value={reading1Text ?? ""}
                               variant="outlined"
                               sx={{
                                 "& .MuiInputLabel-root": {
@@ -1383,7 +1385,7 @@ function DailyReadings() {
                             onChange={handleReading1Option2Verse}
                             type="text"
                             multiline
-                            value={reading1Option2Verse}
+                            value={reading1Option2Verse ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -1401,7 +1403,7 @@ function DailyReadings() {
                               onChange={handleReading1TextOption2}
                               type="text"
                               multiline
-                              value={reading1TextOption2}
+                              value={reading1TextOption2 ?? ""}
                               variant="outlined"
                               sx={{
                                 "& .MuiInputLabel-root": {
@@ -1428,7 +1430,7 @@ function DailyReadings() {
                             onChange={handleReading2Verse}
                             type="text"
                             multiline
-                            value={reading2Verse}
+                            value={reading2Verse ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -1446,7 +1448,7 @@ function DailyReadings() {
                               onChange={handleReading2Text}
                               type="text"
                               multiline
-                              value={reading2Text}
+                              value={reading2Text ?? ""}
                               variant="outlined"
                               sx={{
                                 "& .MuiInputLabel-root": {
@@ -1472,7 +1474,7 @@ function DailyReadings() {
                             onChange={handleReading2Option1Verse}
                             type="text"
                             multiline
-                            value={reading2Option1Verse}
+                            value={reading2Option1Verse ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -1490,7 +1492,7 @@ function DailyReadings() {
                               onChange={handleReading2TextOption1}
                               type="text"
                               multiline
-                              value={reading2TextOption1}
+                              value={reading2TextOption1 ?? ""}
                               variant="outlined"
                               sx={{
                                 "& .MuiInputLabel-root": {
@@ -1516,7 +1518,7 @@ function DailyReadings() {
                             onChange={handleReading3Verse}
                             type="text"
                             multiline
-                            value={reading3Verse}
+                            value={reading3Verse ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -1534,7 +1536,7 @@ function DailyReadings() {
                               onChange={handleReading3Text}
                               type="text"
                               multiline
-                              value={reading3Text}
+                              value={reading3Text ?? ""}
                               variant="outlined"
                               sx={{
                                 "& .MuiInputLabel-root": {
@@ -1560,7 +1562,7 @@ function DailyReadings() {
                             onChange={handleReading4Verse}
                             type="text"
                             multiline
-                            value={reading4Verse}
+                            value={reading4Verse ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -1578,7 +1580,7 @@ function DailyReadings() {
                               onChange={handleReading4Text}
                               type="text"
                               multiline
-                              value={reading4Text}
+                              value={reading4Text ?? ""}
                               variant="outlined"
                               sx={{
                                 "& .MuiInputLabel-root": {
@@ -1604,7 +1606,7 @@ function DailyReadings() {
                             onChange={handleReading5Verse}
                             type="text"
                             multiline
-                            value={reading5Verse}
+                            value={reading5Verse ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -1622,7 +1624,7 @@ function DailyReadings() {
                               onChange={handleReading5Text}
                               type="text"
                               multiline
-                              value={reading5Text}
+                              value={reading5Text ?? ""}
                               variant="outlined"
                               sx={{
                                 "& .MuiInputLabel-root": {
@@ -1648,7 +1650,7 @@ function DailyReadings() {
                             onChange={handleReading6Verse}
                             type="text"
                             multiline
-                            value={reading6Verse}
+                            value={reading6Verse ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -1666,7 +1668,7 @@ function DailyReadings() {
                               onChange={handleReading6Text}
                               type="text"
                               multiline
-                              value={reading6Text}
+                              value={reading6Text ?? ""}
                               variant="outlined"
                               sx={{
                                 "& .MuiInputLabel-root": {
@@ -1692,7 +1694,7 @@ function DailyReadings() {
                             onChange={handleReading7Verse}
                             type="text"
                             multiline
-                            value={reading7Verse}
+                            value={reading7Verse ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -1710,7 +1712,7 @@ function DailyReadings() {
                               onChange={handleReading7Text}
                               type="text"
                               multiline
-                              value={reading7Text}
+                              value={reading7Text ?? ""}
                               variant="outlined"
                               sx={{
                                 "& .MuiInputLabel-root": {
@@ -1737,7 +1739,7 @@ function DailyReadings() {
                             onChange={handleProcessionPalmVerse}
                             type="text"
                             multiline
-                            value={processionPalmVerse}
+                            value={processionPalmVerse ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -1762,7 +1764,7 @@ function DailyReadings() {
                             onChange={handleProcessionPalmsGospel}
                             type="text"
                             multiline
-                            value={processionPalmsGospel}
+                            value={processionPalmsGospel ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -1787,7 +1789,7 @@ function DailyReadings() {
                             onChange={handleProcessionPalmsGospel2Verse}
                             type="text"
                             multiline
-                            value={processionPalmsGospel2Verse}
+                            value={processionPalmsGospel2Verse ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -1812,7 +1814,7 @@ function DailyReadings() {
                             onChange={handleProcessionPalmsGospel2Text}
                             type="text"
                             multiline
-                            value={processionPalmsGospel2Text}
+                            value={processionPalmsGospel2Text ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -1837,7 +1839,7 @@ function DailyReadings() {
                             onChange={handleResponsorialPsalmVerse}
                             type="text"
                             multiline
-                            value={responsorialPsalmVerse}
+                            value={responsorialPsalmVerse ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -1857,7 +1859,7 @@ function DailyReadings() {
                                 onChange={handleResponsorialPsalmRespond}
                                 type="text"
                                 multiline
-                                value={responsorialPsalmRespond}
+                                value={responsorialPsalmRespond ?? ""}
                                 variant="outlined"
                                 sx={{
                                   "& .MuiInputLabel-root": {
@@ -1875,7 +1877,7 @@ function DailyReadings() {
                                 onChange={handleResponsorialPsalmText1}
                                 type="text"
                                 multiline
-                                value={responsorialPsalmText1}
+                                value={responsorialPsalmText1 ?? ""}
                                 variant="outlined"
                                 sx={{
                                   "& .MuiInputLabel-root": {
@@ -1902,7 +1904,7 @@ function DailyReadings() {
                             onChange={handleResponsorialPsalmText2}
                             type="text"
                             multiline
-                            value={responsorialPsalmText2}
+                            value={responsorialPsalmText2 ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -1927,7 +1929,7 @@ function DailyReadings() {
                             onChange={handleResponsorialPsalmText3}
                             type="text"
                             multiline
-                            value={responsorialPsalmText3}
+                            value={responsorialPsalmText3 ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -1952,7 +1954,7 @@ function DailyReadings() {
                             onChange={handleResponsorialPsalmText4}
                             type="text"
                             multiline
-                            value={responsorialPsalmText4}
+                            value={responsorialPsalmText4 ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -1977,7 +1979,7 @@ function DailyReadings() {
                             onChange={handleResponsorialPsalmText5}
                             type="text"
                             multiline
-                            value={responsorialPsalmText5}
+                            value={responsorialPsalmText5 ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -2002,7 +2004,7 @@ function DailyReadings() {
                             onChange={handleResponsorialPsalmText6}
                             type="text"
                             multiline
-                            value={responsorialPsalmText6}
+                            value={responsorialPsalmText6 ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -2027,7 +2029,7 @@ function DailyReadings() {
                             onChange={handleResponsorialPsalmVerseOPT2}
                             type="text"
                             multiline
-                            value={responsorialPsalmVerseOPT2}
+                            value={responsorialPsalmVerseOPT2 ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -2045,7 +2047,7 @@ function DailyReadings() {
                               onChange={handleResponsorialPsalmText1OPT2}
                               type="text"
                               multiline
-                              value={responsorialPsalmText1OPT2}
+                              value={responsorialPsalmText1OPT2 ?? ""}
                               variant="outlined"
                               sx={{
                                 "& .MuiInputLabel-root": {
@@ -2071,7 +2073,7 @@ function DailyReadings() {
                             onChange={handleResponsorialPsalmText2OPT2}
                             type="text"
                             multiline
-                            value={responsorialPsalmText2OPT2}
+                            value={responsorialPsalmText2OPT2 ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -2096,7 +2098,7 @@ function DailyReadings() {
                             onChange={handleResponsorialPsalmResponseOPT2}
                             type="text"
                             multiline
-                            value={responsorialPsalmResponseOPT2}
+                            value={responsorialPsalmResponseOPT2 ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -2122,7 +2124,7 @@ function DailyReadings() {
                             onChange={handleResponsorialPsalmText3OPT2}
                             type="text"
                             multiline
-                            value={responsorialPsalmText3OPT2}
+                            value={responsorialPsalmText3OPT2 ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -2147,7 +2149,7 @@ function DailyReadings() {
                             onChange={handleResponsorialPsalmText4OPT2}
                             type="text"
                             multiline
-                            value={responsorialPsalmText4OPT2}
+                            value={responsorialPsalmText4OPT2 ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -2172,7 +2174,7 @@ function DailyReadings() {
                             onChange={handleResponsorialPsalmText5OPT2}
                             type="text"
                             multiline
-                            value={responsorialPsalmText5OPT2}
+                            value={responsorialPsalmText5OPT2 ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -2197,7 +2199,7 @@ function DailyReadings() {
                             onChange={handleResponsorialText1}
                             type="text"
                             multiline
-                            value={responsorialText1}
+                            value={responsorialText1 ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -2222,7 +2224,7 @@ function DailyReadings() {
                             onChange={handleResponsorialText2}
                             type="text"
                             multiline
-                            value={responsorialText2}
+                            value={responsorialText2 ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -2247,7 +2249,7 @@ function DailyReadings() {
                             onChange={handleResponsorialText3}
                             type="text"
                             multiline
-                            value={responsorialText3}
+                            value={responsorialText3 ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -2272,7 +2274,7 @@ function DailyReadings() {
                             onChange={handleBeforeGospelText}
                             type="text"
                             multiline
-                            value={beforeGospelText}
+                            value={beforeGospelText ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -2297,7 +2299,7 @@ function DailyReadings() {
                             onChange={handleVerseb4GospelOPT2}
                             type="text"
                             multiline
-                            value={verseb4GospelOPT2}
+                            value={verseb4GospelOPT2 ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -2315,7 +2317,7 @@ function DailyReadings() {
                               onChange={handleB4GospelTextOPT2}
                               type="text"
                               multiline
-                              value={b4GospelTextOPT2}
+                              value={b4GospelTextOPT2 ?? ""}
                               variant="outlined"
                               sx={{
                                 "& .MuiInputLabel-root": {
@@ -2341,7 +2343,7 @@ function DailyReadings() {
                             onChange={handleAlleluiaVerse}
                             type="text"
                             multiline
-                            value={alleluiaVerse}
+                            value={alleluiaVerse ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -2359,7 +2361,7 @@ function DailyReadings() {
                               onChange={handleAlleluiaText}
                               type="text"
                               multiline
-                              value={alleluiaText}
+                              value={alleluiaText ?? ""}
                               variant="outlined"
                               sx={{
                                 "& .MuiInputLabel-root": {
@@ -2385,7 +2387,7 @@ function DailyReadings() {
                             onChange={handleAlleluiaOPT2}
                             type="text"
                             multiline
-                            value={alleluiaOPT2}
+                            value={alleluiaOPT2 ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -2410,7 +2412,7 @@ function DailyReadings() {
                             onChange={handleAlleluiaTextOPT2}
                             type="text"
                             multiline
-                            value={alleluiaTextOPT2}
+                            value={alleluiaTextOPT2 ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -2435,7 +2437,7 @@ function DailyReadings() {
                             onChange={handleGospelVerse}
                             type="text"
                             multiline
-                            value={gospelVerse}
+                            value={gospelVerse ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -2453,7 +2455,7 @@ function DailyReadings() {
                               onChange={handleGospelText}
                               type="text"
                               multiline
-                              value={gospelText}
+                              value={gospelText ?? ""}
                               variant="outlined"
                               sx={{
                                 "& .MuiInputLabel-root": {
@@ -2480,7 +2482,7 @@ function DailyReadings() {
                             onChange={handleGospelVerse2}
                             type="text"
                             multiline
-                            value={gospelVerse2}
+                            value={gospelVerse2 ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -2498,7 +2500,7 @@ function DailyReadings() {
                               onChange={handleGospelTextOption2}
                               type="text"
                               multiline
-                              value={gospelTextOption2}
+                              value={gospelTextOption2 ?? ""}
                               variant="outlined"
                               sx={{
                                 "& .MuiInputLabel-root": {
@@ -2524,7 +2526,7 @@ function DailyReadings() {
                             onChange={handleVerseBeforeGospel}
                             type="text"
                             multiline
-                            value={verseBeforeGospel}
+                            value={verseBeforeGospel ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {

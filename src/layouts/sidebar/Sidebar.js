@@ -425,7 +425,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
     {
       id: 23,
       title: "Virtual-Accounts",
-      icon: "home",
+      icon: "credit-card",
       href: "/virtual-accounts",
       roles: ["admin", "root"],
       SCPCreatedAt: "2024-11-27T06:46:44.000Z",
