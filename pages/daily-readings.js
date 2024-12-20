@@ -906,8 +906,6 @@ function DailyReadings() {
     return setData;
   };
 
-  console.log(reading1Option2Verse);
-  
   const dailyReadingMutation = useMutation({
     mutationKey: ["postdailyreading"],
     mutationFn: dailyReading,

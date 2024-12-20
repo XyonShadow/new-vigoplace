@@ -74,7 +74,6 @@ const Users = () => {
   const user = getUser?.data?.user;
   const [value, setValue] = React.useState("1");
   const [walletId, setWalletId] = React.useState(null);
-
   const [columnFilters, setColumnFilters] = useState([]);
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState([]);

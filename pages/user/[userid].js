@@ -78,6 +78,7 @@ import Notification from "./notification";
 import Kyc from "./kyc";
 import Transaction from "./transaction";
 import Tickets from "./ticket";
+import ImageUploader from "../../src/components/ImageUploader";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -130,6 +131,12 @@ const Users = () => {
   const [creditErrorToast, setCreditErrorToast] = React.useState(false);
   const [debitSuccessToast, setDebitSuccessToast] = React.useState(false);
   const [debitErrorToast, setDebitErrorToast] = React.useState(false);
+  const [uploadKycErrorToast, setUploadKycErrorToast] = React.useState(false);
+  const [uploadKycSuccessToast, setUploadKycSuccessToast] =
+    React.useState(false);
+  const [uploadUsKycErrorToast, setUploadUsKycErrorToast] = React.useState(false);
+  const [uploadUsKycSuccessToast, setUploadUsKycSuccessToast] =
+    React.useState(false);
   const [notifySuccessToast, setNotifySuccessToast] = React.useState(false);
   const [notifyErrorToast, setNotifyErrorToast] = React.useState(false);
   const [kycSuccessToast, setKycSuccessToast] = React.useState(false);
@@ -161,7 +168,7 @@ const Users = () => {
   const [kycModal, setKycModal] = React.useState(false);
   const [emailModal, setEmailModal] = React.useState(false);
   const [status, setStatus] = React.useState("");
-  const [pin, setPin] = React.useState(null);
+  const [pin, setPin] = React.useState("");
   const [reason, setReason] = React.useState("");
   const [duration, setDuration] = React.useState("");
   const [categoryId, setCategoryId] = React.useState("");
@@ -171,9 +178,14 @@ const Users = () => {
   const [isVerified, setIsverified] = React.useState("");
   const [tabValue, setTabValue] = React.useState(0);
   const [tabWalletValue, setTabWalletValue] = React.useState(0);
+  const [tabKycValue, setTabKycValue] = React.useState(0);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const [nin, setNin] = useState("");
+  const [bvn, setBvn] = useState("");
+  const [license, setLicense] = useState("");
+  const [images, setImages] = useState([]);
   const [creditDetails, setCreditDetails] = useState({
     amount: "",
     approvalPin: "",
@@ -209,6 +221,10 @@ const Users = () => {
 
   const handleTabWalletChange = (event, newValue) => {
     setTabWalletValue(newValue);
+  };
+
+  const handleTabKycChange = (event, newValue) => {
+    setTabKycValue(newValue);
   };
 
   const handleCreditChange = (event) => {
@@ -275,6 +291,16 @@ const Users = () => {
 
   const handleMenuClose = () => {
     setMenuAnchorEl(null);
+  };
+
+  const handleDrop = (acceptedFiles) => {
+    setImages(
+      acceptedFiles.map((file) =>
+        Object.assign(file, {
+          preview: URL.createObjectURL(file),
+        })
+      )
+    );
   };
 
   const handleGenerateReceipt = async () => {
@@ -428,6 +454,68 @@ const Users = () => {
       queryClient.invalidateQueries("fetchUserWallet");
       setCreditDetails({ amount: "", approvalPin: "" });
       setWalletId(null);
+    },
+  });
+
+  const uploadUserKyc = async ({ userId, verificationId, bvn, pin }) => {
+    const uploadKyc = await axios.post(
+      //"http://localhost:4000/api/admin/console/add-userkyc",
+      "https://api.vigoplace.com/api/admin/console/add-userkyc",
+      { userId, verificationId, bvn, approvalPin: pin },
+      {
+        headers: {
+          Authorization: user?.token,
+        },
+      }
+    );
+    return uploadKyc;
+  };
+
+  const uploadUserKycMutation = useMutation({
+    mutationKey: ["uploadKyc"],
+    mutationFn: uploadUserKyc,
+    onError: async (error) => {
+      // setPinToast({ ...pinToast, error: true });
+      setUploadKycErrorToast(true);
+    },
+    onSuccess: () => {
+      setUploadKycSuccessToast(true);
+      queryClient.invalidateQueries("fetchSingleUser");
+      setNin("");
+      setBvn("");
+      setPin("");
+    },
+  });
+
+  const uploadUsUserKyc = async ( formData ) => {
+    //console.log(formData);
+    const uploadUsKyc = await axios.post(
+      //"http://localhost:4000/api/admin/console/add-us-userkyc",
+      "https://api.vigoplace.com/api/admin/console/add-us-userkyc",
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: user?.token,
+        },
+      }
+    );
+    return uploadUsKyc;
+  };
+
+  const uploadUsUserKycMutation = useMutation({
+    mutationKey: ["uploadUsKyc"],
+    mutationFn: uploadUsUserKyc,
+    onError: async (error) => {
+      // setPinToast({ ...pinToast, error: true });
+      setUploadUsKycErrorToast(true);
+    },
+    onSuccess: () => {
+      setUploadUsKycSuccessToast(true);
+      queryClient.invalidateQueries("fetchSingleUser");
+      setImages([]);
+      setLicense("");
+      setPin("");
     },
   });
 
@@ -700,7 +788,7 @@ const Users = () => {
     mutationKey: ["verifyKyc"],
     mutationFn: verifyKyc,
     onSuccess: () => {
-      setPin(null);
+      setPin("");
       setKycSuccessToast(true);
       queryClient.invalidateQueries("fetchSingleUser");
       setTimeout(() => {
@@ -732,7 +820,7 @@ const Users = () => {
     mutationKey: ["verifyEmail"],
     mutationFn: verifyEmail,
     onSuccess: () => {
-      setPin(null);
+      setPin("");
       setEmailSuccessToast(true);
       queryClient.invalidateQueries("fetchSingleUser");
       setTimeout(() => {
@@ -764,7 +852,7 @@ const Users = () => {
     mutationKey: ["autoPayout"],
     mutationFn: autoPayout,
     onSuccess: () => {
-      setPin(null);
+      setPin("");
       setAutoPayoutSuccessToast(true);
       queryClient.invalidateQueries("fetchSingleUser");
       setTimeout(() => {
@@ -774,7 +862,7 @@ const Users = () => {
     onError: async (error) => {
       console.log(error);
       setAutoPayoutErrorToast(true);
-      setPin(null);
+      setPin("");
     },
   });
 
@@ -797,7 +885,7 @@ const Users = () => {
     mutationKey: ["offAutoPayout"],
     mutationFn: offAutoPayout,
     onSuccess: () => {
-      setPin(null);
+      setPin("");
       setoffAutoPayoutSuccessToast(true);
       queryClient.invalidateQueries("fetchSingleUser");
       setTimeout(() => {
@@ -807,7 +895,7 @@ const Users = () => {
     onError: async (error) => {
       console.log(error);
       setoffAutoPayoutErrorToast(true);
-      setPin(null);
+      setPin("");
     },
   });
 
@@ -830,7 +918,7 @@ const Users = () => {
     mutationKey: ["autoEarning"],
     mutationFn: autoEarning,
     onSuccess: () => {
-      setPin(null);
+      setPin("");
       setAutoEarningSuccessToast(true);
       queryClient.invalidateQueries("fetchSingleUser");
       setTimeout(() => {
@@ -840,7 +928,7 @@ const Users = () => {
     onError: async (error) => {
       console.log(error);
       setAutoEarningErrorToast(true);
-      setPin(null);
+      setPin("");
     },
   });
 
@@ -863,7 +951,7 @@ const Users = () => {
     mutationKey: ["offAutoEarning"],
     mutationFn: offAutoEarning,
     onSuccess: () => {
-      setPin(null);
+      setPin("");
       setoffAutoEarningSuccessToast(true);
       queryClient.invalidateQueries("fetchSingleUser");
       setTimeout(() => {
@@ -873,7 +961,7 @@ const Users = () => {
     onError: async (error) => {
       console.log(error);
       setoffAutoEarningErrorToast(true);
-      setPin(null);
+      setPin("");
     },
   });
 
@@ -889,6 +977,20 @@ const Users = () => {
   };
   const handleDebitErrorToastClose = (event, reason) => {
     setDebitErrorToast(false);
+  };
+
+  const handleUploadKycSuccessToastClose = (event, reason) => {
+    setUploadKycSuccessToast(false);
+  };
+  const handleUploadKycErrorToastClose = (event, reason) => {
+    setUploadKycSuccessToast(false);
+  };
+
+  const handleUploadUsKycSuccessToastClose = (event, reason) => {
+    setUploadKycSuccessToast(false);
+  };
+  const handleUploadUsKycErrorToastClose = (event, reason) => {
+    setUploadKycSuccessToast(false);
   };
 
   const handleNotifySuccessToastClose = (event, reason) => {
@@ -1029,6 +1131,66 @@ const Users = () => {
           sx={{ width: "100%" }}
         >
           {debitUserMutation?.error?.response?.data?.message}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        TransitionComponent={Slide}
+        open={uploadKycSuccessToast}
+        autoHideDuration={6000}
+        onClose={handleUploadKycSuccessToastClose}
+      >
+        <Alert
+          onClose={handleUploadKycSuccessToastClose}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {uploadUserKycMutation?.data?.data?.message}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        TransitionComponent={Slide}
+        open={uploadKycErrorToast}
+        autoHideDuration={6000}
+        onClose={handleUploadKycErrorToastClose}
+      >
+        <Alert
+          onClose={handleUploadKycErrorToastClose}
+          severity="warning"
+          sx={{ width: "100%" }}
+        >
+          {uploadUserKycMutation?.error?.response?.data?.message}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        TransitionComponent={Slide}
+        open={uploadUsKycSuccessToast}
+        autoHideDuration={6000}
+        onClose={handleUploadUsKycSuccessToastClose}
+      >
+        <Alert
+          onClose={handleUploadUsKycSuccessToastClose}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {uploadUsUserKycMutation?.data?.data?.message}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        TransitionComponent={Slide}
+        open={uploadUsKycErrorToast}
+        autoHideDuration={6000}
+        onClose={handleUploadUsKycErrorToastClose}
+      >
+        <Alert
+          onClose={handleUploadUsKycErrorToastClose}
+          severity="warning"
+          sx={{ width: "100%" }}
+        >
+          {uploadUsUserKycMutation?.error?.response?.data?.message}
         </Alert>
       </Snackbar>
 
@@ -1760,7 +1922,7 @@ const Users = () => {
                         open={lienModal}
                         onClose={() => {
                           setLienModal(false);
-                          setPin(null);
+                          setPin("");
                         }}
                       >
                         <DialogTitle>Activate Wallet</DialogTitle>
@@ -1802,7 +1964,7 @@ const Users = () => {
                           <Button
                             onClick={() => {
                               setLienModal(false);
-                              setPin(null);
+                              setPin("");
                               setReason("");
                             }}
                           >
@@ -1822,7 +1984,7 @@ const Users = () => {
                               });
                               setReason("");
                               setLienModal(false);
-                              setPin(null);
+                              setPin("");
                             }}
                           >
                             Activate
@@ -1855,7 +2017,7 @@ const Users = () => {
                         open={lienModal}
                         onClose={() => {
                           setLienModal(false);
-                          setPin(null);
+                          setPin("");
                         }}
                       >
                         <DialogTitle>Lien Wallet</DialogTitle>
@@ -1908,7 +2070,7 @@ const Users = () => {
                           <Button
                             onClick={() => {
                               setLienModal(false);
-                              setPin(null);
+                              setPin("");
                               setReason("");
                               setDuration("");
                             }}
@@ -1931,7 +2093,7 @@ const Users = () => {
                                 reason: reason,
                                 duration: duration,
                               });
-                              setPin(null);
+                              setPin("");
                               setReason("");
                               setDuration("");
                               setLienModal(false);
@@ -1995,7 +2157,7 @@ const Users = () => {
                         <DialogActions>
                           <Button
                             onClick={() => {
-                              setPin(null);
+                              setPin("");
                               setAutoPayoutModal(false);
                             }}
                           >
@@ -2069,7 +2231,7 @@ const Users = () => {
                         <DialogActions>
                           <Button
                             onClick={() => {
-                              setPin(null);
+                              setPin("");
                               setOffAutoPayoutModal(false);
                             }}
                           >
@@ -2145,7 +2307,7 @@ const Users = () => {
                         <DialogActions>
                           <Button
                             onClick={() => {
-                              setPin(null);
+                              setPin("");
                               setAutoEarningModal(false);
                             }}
                           >
@@ -2219,7 +2381,7 @@ const Users = () => {
                         <DialogActions>
                           <Button
                             onClick={() => {
-                              setPin(null);
+                              setPin("");
                               setOffAutoEarningModal(false);
                             }}
                           >
@@ -2474,7 +2636,7 @@ const Users = () => {
                         <DialogActions>
                           <Button
                             onClick={() => {
-                              setPin(null);
+                              setPin("");
                               setKycModal(false);
                             }}
                           >
@@ -2550,7 +2712,7 @@ const Users = () => {
                         <DialogActions>
                           <Button
                             onClick={() => {
-                              setPin(null);
+                              setPin("");
                               setEmailModal(false);
                             }}
                           >
@@ -2595,8 +2757,10 @@ const Users = () => {
                 >
                   <Tab label="Credit User" {...a11yProps(0)} />
                   <Tab label="Debit User" {...a11yProps(1)} />
+                  <Tab label="Upload User Kyc" {...a11yProps(2)} />
                 </Tabs>
               </Box>
+
               <TabPanel value={tabWalletValue} index={0}>
                 <Box sx={{ pt: 3 }}>
                   <form>
@@ -2735,6 +2899,7 @@ const Users = () => {
                   </form>
                 </Box>
               </TabPanel>
+
               <TabPanel value={tabWalletValue} index={1}>
                 <Box sx={{ pt: 3 }}>
                   <form>
@@ -2865,6 +3030,199 @@ const Users = () => {
                     </Card>
                   </form>
                 </Box>
+              </TabPanel>
+
+              <TabPanel value={tabWalletValue} index={2}>
+                {userDetails?.data?.user?.kycVerified === "unverified" ? (
+                  <Box sx={{ width: "100%" }}>
+                    <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                      <Tabs
+                        value={tabKycValue}
+                        onChange={handleTabKycChange}
+                        textColor="inherit"
+                        centered
+                        scrollButtons="auto"
+                        aria-label=""
+                      >
+                        <Tab label="Nigeria" {...a11yProps(0)} />
+                        <Tab label="United State" {...a11yProps(1)} />
+                      </Tabs>
+                    </Box>
+
+                    <TabPanel value={tabKycValue} index={0}>
+                      <Box sx={{ pt: 3 }}>
+                        <form>
+                          <Card>
+                            <CardHeader
+                              subheader=""
+                              sx={{ color: "green" }}
+                              title="Upload User KYC Details"
+                            />
+                            <Divider />
+                            <CardContent>
+                              <TextField
+                                autoComplete={false}
+                                fullWidth
+                                label="NIN"
+                                margin="normal"
+                                name="nin"
+                                onChange={(e) => setNin(e.target.value)}
+                                type="number"
+                                value={nin}
+                                variant="outlined"
+                              />
+                              <TextField
+                                fullWidth
+                                label="BVN"
+                                margin="normal"
+                                name="bvn"
+                                onChange={(e) => setBvn(e.target.value)}
+                                type="number"
+                                value={bvn}
+                                variant="outlined"
+                              />
+                              <TextField
+                                fullWidth
+                                label="Approval Pin"
+                                margin="normal"
+                                name="approvalPin"
+                                onChange={(e) => setPin(e.target.value)}
+                                type="password"
+                                value={pin}
+                                variant="outlined"
+                              />
+                            </CardContent>
+
+                            <Divider />
+                            <Box
+                              sx={{
+                                display: "flex",
+                                justifyContent: "flex-end",
+                                p: 2,
+                              }}
+                            >
+                              <LoadingButton
+                                variant="contained"
+                                color="primary"
+                                loading={uploadUserKycMutation.isLoading}
+                                disabled={
+                                  nin === "" || bvn === "" || pin.length <= 5
+                                }
+                                onClick={() => {
+                                  uploadUserKycMutation.mutate({
+                                    userId: userDetails?.data?.user?.id,
+                                    nin,
+                                    bvn,
+                                    pin,
+                                  });
+                                }}
+                              >
+                                Upload
+                              </LoadingButton>
+                            </Box>
+                          </Card>
+                        </form>
+                      </Box>
+                    </TabPanel>
+
+                    <TabPanel value={tabKycValue} index={1}>
+                      <Box sx={{ pt: 3 }}>
+                        <form>
+                          <Card>
+                            <CardHeader
+                              subheader=""
+                              sx={{ color: "green" }}
+                              title="Upload User KYC Details"
+                            />
+                            <Divider />
+                            <CardContent>
+                              <Box sx={{ mt: 2 }}>
+                                <Typography
+                                  variant="h5"
+                                  sx={{
+                                    fontWeight: "bold",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  Upload Drivers License
+                                </Typography>
+                                <ImageUploader
+                                  onDrop={handleDrop}
+                                  images={images}
+                                  setImages={setImages}
+                                />
+                              </Box>
+
+                              <TextField
+                                fullWidth
+                                label="Drivers License Number"
+                                margin="normal"
+                                name="license"
+                                onChange={(e) => setLicense(e.target.value)}
+                                type="number"
+                                value={license}
+                                variant="outlined"
+                              />
+
+                              <TextField
+                                fullWidth
+                                label="Approval Pin"
+                                margin="normal"
+                                name="approvalPin"
+                                onChange={(e) => setPin(e.target.value)}
+                                type="password"
+                                value={pin}
+                                variant="outlined"
+                              />
+                            </CardContent>
+
+                            <Divider />
+                            <Box
+                              sx={{
+                                display: "flex",
+                                justifyContent: "flex-end",
+                                p: 2,
+                              }}
+                            >
+                              <LoadingButton
+                                variant="contained"
+                                color="primary"
+                                loading={uploadUsUserKycMutation.isLoading}
+                                disabled={
+                                  images.length === 0 ||
+                                  license === "" ||
+                                  pin.length <= 5
+                                }
+                                onClick={() => {
+                                  const formData = new FormData();
+                                  formData.append(
+                                    "userId",
+                                    userDetails?.data?.user?.id
+                                  );
+                                  formData.append("license", license);
+                                  formData.append("pin", pin);
+                                  images.forEach((file, index) => {
+                                    formData.append("images", file);
+                                  });
+
+                                  uploadUsUserKycMutation.mutate(formData);
+                                }}
+                              >
+                                Upload
+                              </LoadingButton>
+                            </Box>
+                          </Card>
+                        </form>
+                      </Box>
+                    </TabPanel>
+                  </Box>
+                ) : (
+                  <Box sx={{ pt: 3 }}>
+                    <Typography variant="h5" sx={{ color: "green" }}>
+                      KYC Verified
+                    </Typography>
+                  </Box>
+                )}
               </TabPanel>
             </Box>
           </Grid>
