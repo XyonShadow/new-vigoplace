@@ -700,7 +700,7 @@ function DailyReadings() {
     async () => {
       const { data } = await axios.get(
         `https://api.vigoplace.com/api/admin/console/daily-reading?date=${fetchDate}`,
-        //`http://localhost:7000/api/admin/console/daily-reading?date=${fetchDate}`,
+        //`http://localhost:4000/api/admin/console/daily-reading?date=${fetchDate}`,
         {
           headers: {
             Authorization: user?.token,
@@ -839,7 +839,7 @@ function DailyReadings() {
     verseBeforeGospel,
   }) => {
     const setData = await axios.post(
-      //"http://localhost:7000/api/admin/console/daily-reading",
+      //"http://localhost:4000/api/admin/console/daily-reading",
       "https://api.vigoplace.com/api/admin/console/daily-reading",
       {
         title,
@@ -1033,7 +1033,7 @@ function DailyReadings() {
   }) => {
     const parsed = await axios.patch(
       "https://api.vigoplace.com/api/admin/console/daily-reading",
-      //"http://localhost:7000/api/admin/console/daily-reading",
+      //"http://localhost:4000/api/admin/console/daily-reading",
       {
         id,
         editBibleReadingId,

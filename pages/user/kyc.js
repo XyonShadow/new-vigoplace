@@ -46,6 +46,8 @@ export default function Kyc() {
   const [isFetching, setIsFetching] = useState(false);
   const [showData, setShowData] = useState({ bvn: false, nin: false });
   const [imageSrc, setImageSrc] = useState("");
+  const [nin, setNin] = useState("");
+  const [selfie, setSelfie] = useState("");
 
   const fetchUserKycDetails = async () => {
     setIsFetching(true);
@@ -95,6 +97,12 @@ export default function Kyc() {
   useEffect(() => {
     if (kyc.length > 0) {
       decodeBase64Image(kyc[0]?.verifiedData?.entity?.image);
+      //nin
+      //setImageSrc(kyc[0]?.metadata?.governmentData?.image_url);
+      //selfie
+      setSelfie(kyc[0]?.selfie);
+      //nin
+      setNin(kyc[0]?.ninSlip);
     }
   }, [kyc]);
 
@@ -406,65 +414,185 @@ export default function Kyc() {
         <Box
           key={index}
           sx={{
-            display: "grid",
-            gridTemplateColumns: "auto 1fr",
+            display: "flex",
+            flexDirection: "column",
             gap: "1rem",
-            alignItems: "center",
           }}
         >
+          <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+            Click the image to view the full image
+          </Typography>
           <Box
-            style={{ height: "60vh", marginTop: "20px", marginRight: "30px" }}
+            sx={{
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "1fr",
+                sm: "1fr",
+                md: "repeat(3, 1fr)",
+              },
+              gap: "1rem",
+              alignItems: "center",
+            }}
           >
-            {imageSrc ? (
-              <img
-                alt="User Image"
-                style={{ height: "100%", borderRadius: "4%" }}
-                src={imageSrc}
-                loading="lazy"
-              />
-            ) : (
-              <AccountCircleIcon sx={{ fontSize: "100px" }} />
-            )}
-          </Box>
-
-          <Box>
+            <Box
+              style={{ height: "45vh", marginTop: "20px" }}
+              onClick={() => window.open(imageSrc, "_blank")}
+              sx={{
+                cursor: "pointer",
+                marginRight: {
+                  xs: "0",
+                  md: "30px",
+                },
+              }}
+            >
+              <Typography variant="subtitle1" gutterBottom>
+                Bvn Image
+              </Typography>
+              {imageSrc ? (
+                <img
+                  alt="Bvn Image"
+                  style={{
+                    height: "100%",
+                    borderRadius: "4%",
+                    width: "100%",
+                    objectFit: "cover",
+                  }}
+                  src={imageSrc}
+                  loading="lazy"
+                />
+              ) : (
+                <AccountCircleIcon sx={{ fontSize: "100px" }} />
+              )}
+            </Box>
+            <Box
+              style={{ height: "45vh", marginTop: "20px" }}
+              onClick={() => window.open(nin, "_blank")}
+              sx={{
+                cursor: "pointer",
+                marginRight: {
+                  xs: "0",
+                  md: "30px",
+                },
+              }}
+            >
+              <Typography variant="subtitle1" gutterBottom>
+                NIN
+              </Typography>
+              {nin ? (
+                <img
+                  alt="NIN"
+                  style={{
+                    height: "100%",
+                    borderRadius: "4%",
+                    width: "100%",
+                    objectFit: "cover",
+                  }}
+                  src={nin}
+                  loading="lazy"
+                />
+              ) : (
+                <AccountCircleIcon sx={{ fontSize: "100px" }} />
+              )}
+            </Box>
+            <Box
+              style={{ height: "45vh", marginTop: "20px" }}
+              onClick={() => window.open(selfie, "_blank")}
+              sx={{
+                cursor: "pointer",
+                marginRight: {
+                  xs: "0",
+                  md: "30px",
+                },
+              }}
+            >
+              <Typography variant="subtitle1" gutterBottom>
+                Selfie
+              </Typography>
+              {selfie ? (
+                <img
+                  alt="Selfie"
+                  style={{
+                    height: "100%",
+                    borderRadius: "4%",
+                    width: "100%",
+                    objectFit: "cover",
+                  }}
+                  src={selfie}
+                  loading="lazy"
+                />
+              ) : (
+                <AccountCircleIcon sx={{ fontSize: "100px" }} />
+              )}
+            </Box>
+          </Box>{" "}
+          <Box
+            sx={{
+              width: {
+                xs: "100%",
+                sm: "80%",
+                md: "50%",
+                lg: "35%",
+              },
+              mt: 2,
+            }}
+          >
             <Typography
               variant="h5"
-              style={{ marginBottom: "15px", fontSize: "30px" }}
+              style={{
+                marginBottom: "15px",
+                marginTop: "20px",
+                fontSize: "25px",
+                fontWeight: "bold",
+              }}
             >
               {`${
                 row?.metadata?.governmentData?.surname ||
                 row?.verifiedData?.entity?.last_name ||
-                "Not applicable"
+                ""
               } 
              ${
                row?.metadata?.governmentData?.firstname ||
                row?.verifiedData?.entity?.first_name ||
-               "Not applicable"
+               ""
              } 
             ${
               row?.metadata?.governmentData?.middlename ||
               row?.verifiedData?.entity?.middle_name ||
-              "Not applicable"
+              ""
             }`.trim()}
             </Typography>
 
-            <Typography style={{ marginBottom: "10px" }}>
-              Phone Number:{" "}
-              {row?.metadata?.governmentData?.telephoneno ||
-                row?.verifiedData?.entity?.phone_number1}
-            </Typography>
-            <Grid
-              container
-              alignItems="center"
-              style={{ marginBottom: "10px" }}
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginBottom: "10px",
+              }}
             >
-              <Grid item>
+              <Typography>
+                <span style={{ fontWeight: "bold" }}>Phone Number:</span>
+              </Typography>
+              <Typography>
+                {row?.metadata?.governmentData?.telephoneno ||
+                  row?.verifiedData?.entity?.phone_number1}
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginBottom: "10px",
+              }}
+            >
+              <Box sx={{ display: "flex", alignItems: "center" }}>
                 <Typography>
-                  BVN: {renderData(row?.bvn, "bvn") || "Not applicable"}
+                  <span style={{ fontWeight: "bold" }}>BVN:</span>
                 </Typography>
-              </Grid>
-              <Grid item>
+              </Box>
+              <Typography
+                sx={{ display: "flex", alignItems: "center", gap: "4px" }}
+              >
+                {renderData(row?.bvn, "bvn") || "Not applicable"}
                 <IconButton onClick={() => toggleDataVisibility("bvn")}>
                   {showData.bvn ? (
                     <VisibilityOff fontSize="small" />
@@ -472,19 +600,23 @@ export default function Kyc() {
                     <Visibility fontSize="small" />
                   )}
                 </IconButton>
-              </Grid>
-            </Grid>
-            <Grid
-              container
-              alignItems="center"
-              style={{ marginBottom: "10px" }}
+              </Typography>
+            </Box>
+
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginBottom: "10px",
+              }}
             >
-              <Grid item>
+              <Box sx={{ display: "flex", alignItems: "center" }}>
                 <Typography>
-                  NIN: {renderData(row?.nin, "nin") || "Not applicable"}
+                  <span style={{ fontWeight: "bold" }}>NIN:</span>
                 </Typography>
-              </Grid>
-              <Grid item>
+              </Box>
+              <Typography>
+                {renderData(row?.nin, "nin") || "Not applicable"}
                 <IconButton onClick={() => toggleDataVisibility("nin")}>
                   {showData.nin ? (
                     <VisibilityOff fontSize="small" />
@@ -492,36 +624,96 @@ export default function Kyc() {
                     <Visibility fontSize="small" />
                   )}
                 </IconButton>
-              </Grid>
-            </Grid>
-            <Typography style={{ marginBottom: "10px" }}>
-              Passport: {row?.passport || "Not applicable"}
-            </Typography>
-            <Typography style={{ marginBottom: "10px" }}>
-              Driver's License: {row?.drivers_license || "Not applicable"}
-            </Typography>
-            <Typography style={{ marginBottom: "10px" }}>
-              Birthday:{" "}
-              {row?.metadata?.governmentData?.birthdate ||
-                row?.verifiedData?.entity?.date_of_birth ||
-                "Not applicable"}
-            </Typography>
-            <Typography style={{ marginBottom: "10px" }}>
-              Profession:{" "}
-              {row?.metadata?.governmentData?.profession || "Not applicable"}
-            </Typography>
-            <Typography style={{ marginBottom: "10px" }}>
-              Address:{" "}
-              {row?.metadata?.governmentData?.residence_AddressLine1 ||
-                "Not applicable"}
-            </Typography>
-            <Typography style={{ marginBottom: "10px" }}>
-              Date:{" "}
-              {row?.createdAt
-                ? format(new Date(row.createdAt), "MM/dd/yyyy hh:mm a")
-                : ""}
-            </Typography>
-          </Box>
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginBottom: "10px",
+              }}
+            >
+              <Typography>
+                <span style={{ fontWeight: "bold" }}>Passport:</span>
+              </Typography>
+              <Typography>{row?.passport || "Not applicable"}</Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginBottom: "10px",
+              }}
+            >
+              <Typography>
+                <span style={{ fontWeight: "bold" }}>Driver's License:</span>
+              </Typography>
+              <Typography>
+                {row?.drivers_license || "Not applicable"}
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginBottom: "10px",
+              }}
+            >
+              <Typography>
+                <span style={{ fontWeight: "bold" }}>Birthday:</span>
+              </Typography>
+              <Typography>
+                {row?.metadata?.governmentData?.birthdate ||
+                  row?.verifiedData?.entity?.date_of_birth ||
+                  "Not applicable"}
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginBottom: "10px",
+              }}
+            >
+              <Typography>
+                <span style={{ fontWeight: "bold" }}>Profession:</span>
+              </Typography>
+              <Typography>
+                {row?.metadata?.governmentData?.profession || "Not applicable"}
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginBottom: "10px",
+              }}
+            >
+              <Typography>
+                <span style={{ fontWeight: "bold" }}>Address:</span>
+              </Typography>
+              <Typography>
+                {row?.metadata?.governmentData?.residence_AddressLine1 ||
+                  "Not applicable"}
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginBottom: "10px",
+              }}
+            >
+              <Typography>
+                <span style={{ fontWeight: "bold" }}>Date:</span>
+              </Typography>
+              <Typography>
+                {row?.createdAt
+                  ? format(new Date(row.createdAt), "MM/dd/yyyy hh:mm a")
+                  : ""}
+              </Typography>
+            </Box>
+          </Box>{" "}
         </Box>
       ))}
       {isLoading && <Typography>Loading...</Typography>}

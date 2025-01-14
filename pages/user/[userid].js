@@ -78,6 +78,7 @@ import Notification from "./notification";
 import Kyc from "./kyc";
 import Transaction from "./transaction";
 import Tickets from "./ticket";
+import Referals from "./referals";
 import ImageUploader from "../../src/components/ImageUploader";
 
 function TabPanel(props) {
@@ -134,7 +135,8 @@ const Users = () => {
   const [uploadKycErrorToast, setUploadKycErrorToast] = React.useState(false);
   const [uploadKycSuccessToast, setUploadKycSuccessToast] =
     React.useState(false);
-  const [uploadUsKycErrorToast, setUploadUsKycErrorToast] = React.useState(false);
+  const [uploadUsKycErrorToast, setUploadUsKycErrorToast] =
+    React.useState(false);
   const [uploadUsKycSuccessToast, setUploadUsKycSuccessToast] =
     React.useState(false);
   const [notifySuccessToast, setNotifySuccessToast] = React.useState(false);
@@ -186,6 +188,8 @@ const Users = () => {
   const [bvn, setBvn] = useState("");
   const [license, setLicense] = useState("");
   const [images, setImages] = useState([]);
+  const [selfieImages, setSelfieImages] = useState([]);
+  const [ninSlipImages, setNinSlipImages] = useState([]);
   const [creditDetails, setCreditDetails] = useState({
     amount: "",
     approvalPin: "",
@@ -295,6 +299,26 @@ const Users = () => {
 
   const handleDrop = (acceptedFiles) => {
     setImages(
+      acceptedFiles.map((file) =>
+        Object.assign(file, {
+          preview: URL.createObjectURL(file),
+        })
+      )
+    );
+  };
+
+  const handleDropNinSlip = (acceptedFiles) => {
+    setNinSlipImages(
+      acceptedFiles.map((file) =>
+        Object.assign(file, {
+          preview: URL.createObjectURL(file),
+        })
+      )
+    );
+  };
+
+  const handleDropSelfie = (acceptedFiles) => {
+    setSelfieImages(
       acceptedFiles.map((file) =>
         Object.assign(file, {
           preview: URL.createObjectURL(file),
@@ -457,11 +481,11 @@ const Users = () => {
     },
   });
 
-  const uploadUserKyc = async ({ userId, verificationId, bvn, pin }) => {
+  const uploadUserKyc = async (formData) => {
     const uploadKyc = await axios.post(
       //"http://localhost:4000/api/admin/console/add-userkyc",
       "https://api.vigoplace.com/api/admin/console/add-userkyc",
-      { userId, verificationId, bvn, approvalPin: pin },
+      formData,
       {
         headers: {
           Authorization: user?.token,
@@ -475,6 +499,7 @@ const Users = () => {
     mutationKey: ["uploadKyc"],
     mutationFn: uploadUserKyc,
     onError: async (error) => {
+      console.log(error);
       // setPinToast({ ...pinToast, error: true });
       setUploadKycErrorToast(true);
     },
@@ -484,10 +509,12 @@ const Users = () => {
       setNin("");
       setBvn("");
       setPin("");
+      setNinSlipImages([]);
+      setSelfieImages([]);
     },
   });
 
-  const uploadUsUserKyc = async ( formData ) => {
+  const uploadUsUserKyc = async (formData) => {
     //console.log(formData);
     const uploadUsKyc = await axios.post(
       //"http://localhost:4000/api/admin/console/add-us-userkyc",
@@ -495,7 +522,7 @@ const Users = () => {
       formData,
       {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
           Authorization: user?.token,
         },
       }
@@ -1268,31 +1295,33 @@ const Users = () => {
 
       <Snackbar
         TransitionComponent={Slide}
-        open={kycSuccessToast}
+        open={uploadKycSuccessToast}
         autoHideDuration={6000}
-        onClose={handleKycSuccessToastClose}
+        onClose={handleUploadKycSuccessToastClose}
       >
         <Alert
-          onClose={handleKycSuccessToastClose}
+          onClose={handleUploadKycSuccessToastClose}
           severity="success"
           sx={{ width: "100%" }}
         >
-          {verifyKycMutation?.data?.data?.message}
+          {uploadUserKycMutation?.data?.data?.message ||
+            "KYC uploaded successfully"}
         </Alert>
       </Snackbar>
 
       <Snackbar
         TransitionComponent={Slide}
-        open={kycErrorToast}
+        open={uploadKycErrorToast}
         autoHideDuration={6000}
-        onClose={handleKycErrorToastClose}
+        onClose={handleUploadKycErrorToastClose}
       >
         <Alert
-          onClose={handleKycErrorToastClose}
+          onClose={handleUploadKycErrorToastClose}
           severity="warning"
           sx={{ width: "100%" }}
         >
-          {verifyKycMutation?.error?.response?.data?.message}
+          {uploadUserKycMutation?.error?.response?.data?.message ||
+            "Error uploading KYC"}
         </Alert>
       </Snackbar>
 
@@ -3060,6 +3089,40 @@ const Users = () => {
                             />
                             <Divider />
                             <CardContent>
+                              <Box sx={{ mt: 2 }}>
+                                <Typography
+                                  variant="h5"
+                                  sx={{
+                                    fontWeight: "bold",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  Upload Selfie
+                                </Typography>
+                                <ImageUploader
+                                  onDrop={handleDropSelfie}
+                                  images={selfieImages}
+                                  setImages={setSelfieImages}
+                                />
+                              </Box>
+
+                              <Box sx={{ mt: 2 }}>
+                                <Typography
+                                  variant="h5"
+                                  sx={{
+                                    fontWeight: "bold",
+                                    marginBottom: "10px",
+                                  }}
+                                >
+                                  Upload NIN Slip
+                                </Typography>
+                                <ImageUploader
+                                  onDrop={handleDropNinSlip}
+                                  images={ninSlipImages}
+                                  setImages={setNinSlipImages}
+                                />
+                              </Box>
+
                               <TextField
                                 autoComplete={false}
                                 fullWidth
@@ -3092,7 +3155,6 @@ const Users = () => {
                                 variant="outlined"
                               />
                             </CardContent>
-
                             <Divider />
                             <Box
                               sx={{
@@ -3106,20 +3168,32 @@ const Users = () => {
                                 color="primary"
                                 loading={uploadUserKycMutation.isLoading}
                                 disabled={
-                                  nin === "" || bvn === "" || pin.length <= 5
+                                  nin === "" ||
+                                  bvn === "" ||
+                                  pin.length <= 5 ||
+                                  selfieImages.length === 0
                                 }
                                 onClick={() => {
-                                  uploadUserKycMutation.mutate({
-                                    userId: userDetails?.data?.user?.id,
-                                    nin,
-                                    bvn,
-                                    pin,
+                                  const formData = new FormData();
+                                  formData.append("userId", 72);
+                                  formData.append("nin", nin);
+                                  formData.append("bvn", bvn);
+                                  formData.append("pin", pin);
+                                  selfieImages.forEach((file, index) => {
+                                    formData.append("selfie", file);
                                   });
+                                  if (ninSlipImages.length > 0) {
+                                    ninSlipImages.forEach((file) => {
+                                      formData.append("ninSlip", file);
+                                    });
+                                  }
+
+                                  uploadUserKycMutation.mutate(formData);
                                 }}
                               >
                                 Upload
                               </LoadingButton>
-                            </Box>
+                            </Box>{" "}
                           </Card>
                         </form>
                       </Box>
@@ -3259,6 +3333,7 @@ const Users = () => {
                 <Tab label="Notifications" {...a11yProps(6)} />
                 <Tab label="Kyc" {...a11yProps(7)} />
                 <Tab label="Tickets" {...a11yProps(8)} />
+                <Tab label="Referals" {...a11yProps(9)} />
               </Tabs>
             </Box>
 
@@ -3344,7 +3419,11 @@ const Users = () => {
               <Box sx={{ pt: 3 }}>
                 <form>
                   <Card>
-                    <CardHeader subheader="" title="User Kyc Details" />
+                    <CardHeader
+                      subheader=""
+                      title="User Kyc Details"
+                      sx={{ "& .MuiCardHeader-title": { fontWeight: "bold" } }}
+                    />
                     <Divider />
                     <CardContent>
                       <Kyc />
@@ -3362,6 +3441,20 @@ const Users = () => {
                     <Divider />
                     <CardContent>
                       <Tickets />
+                    </CardContent>
+                  </Card>
+                </form>
+              </Box>
+            </TabPanel>
+
+            <TabPanel value={tabValue} index={9}>
+              <Box sx={{ pt: 3 }}>
+                <form>
+                  <Card>
+                    <CardHeader subheader="" title="Referals" />
+                    <Divider />
+                    <CardContent>
+                      <Referals />
                     </CardContent>
                   </Card>
                 </form>

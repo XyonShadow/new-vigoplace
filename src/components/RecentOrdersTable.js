@@ -982,6 +982,11 @@ function Row({ payout, isPayoutSelected }) {
     return parsed;
   };
 
+  console.log(queryClient.getQueryData([
+    "payoutRequest",
+    payout.payoutRequestId,
+  ])?.data)
+
   const declinePayOutMutation = useMutation({
     mutationKey: ["declinePayOut"],
     mutationFn: declinePayOut,
