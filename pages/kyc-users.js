@@ -81,9 +81,14 @@ function KycUsers() {
     pageIndex: 0,
     pageSize: 10,
   });
+  const [pagination2, setPagination2] = React.useState({
+    pageIndex: 0,
+    pageSize: 10,
+  });
   const [tabValue, setTabValue] = React.useState(0);
   const [globalFilter, setGlobalFilter] = React.useState("");
   const [globalFilter1, setGlobalFilter1] = React.useState("");
+  const [globalFilter2, setGlobalFilter2] = React.useState("");
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -123,7 +128,7 @@ function KycUsers() {
     ["fetchUnVerifiedKycUsers", globalFilter1, pagination1],
     async () => {
       const { data } = await axios.get(
-        `https://api.vigoplace.com/api/admin/console/kyc-unverified?perPage=${pagination1.pageSize}&page=${pagination1.pageIndex}&search=${globalFilter}`,
+        `https://api.vigoplace.com/api/admin/console/kyc-unverified?perPage=${pagination1.pageSize}&page=${pagination1.pageIndex}&search=${globalFilter1}`,
         //`http://localhost:4000/api/admin/console/kyc-unverified?perPage=${pagination1.pageSize}&page=${pagination1.pageIndex + 1}&search=${globalFilter1}`,
         {
           headers: {
@@ -143,6 +148,38 @@ function KycUsers() {
       enabled: !!user?.token,
     }
   );
+
+  const {
+    data: data2,
+    isError: isError2,
+    isFetching: isFetching2,
+    isLoading: isLoading2,
+    refetch: refetch2,
+  } = useQuery(
+    ["manualVerificationKycUsers", globalFilter2, pagination2],
+    async () => {
+      const { data } = await axios.get(
+        `https://api.vigoplace.com/api/admin/console/kyc-slip-status?perPage=${pagination2.pageSize}&page=${pagination2.pageIndex}&search=${globalFilter2}`,
+        //`http://localhost:4000/api/admin/console/kyc-unverified?perPage=${pagination1.pageSize}&page=${pagination1.pageIndex + 1}&search=${globalFilter1}`,
+        {
+          headers: {
+            Authorization: user?.token,
+          },
+        }
+      );
+
+      //console.log(data);
+
+      return data;
+    },
+    {
+      keepPreviousData: true,
+      onError: (err) => {
+        console.log(err, "err fetching manual verification kyc users");
+      },
+      enabled: !!user?.token,
+    }
+    );
 
   const handlePageChange = (newPage) => {
     setPagination({ ...pagination, pageIndex: newPage });
@@ -172,6 +209,22 @@ function KycUsers() {
     refetch1();
   };
 
+  const handlePageChange2 = (newPage) => {
+    setPagination2({ ...pagination2, pageIndex: newPage });
+    refetch2();
+  };
+
+  const handleRowsPerPageChange2 = (event) => {
+    setPagination2({
+      ...pagination2,
+      pageSize: parseInt(event.target.value, 10),
+      pageIndex: 0,
+    });
+    setTimeout(() => {
+      refetch2();
+    }, 0);
+  };
+
   const handleSearchChange = (event) => {
     setGlobalFilter(event.target.value);
     refetch(); // Refetch data whenever the search input changes
@@ -180,6 +233,11 @@ function KycUsers() {
   const handleSearchChange1 = (event) => {
     setGlobalFilter1(event.target.value);
     refetch1(); // Refetch data whenever the search input changes
+  };
+
+  const handleSearchChange2 = (event) => {
+    setGlobalFilter2(event.target.value);
+    refetch2(); // Refetch data whenever the search input changes
   };
 
   return (
@@ -207,6 +265,7 @@ function KycUsers() {
               >
                 <Tab label="Verified KYC Users" {...a11yProps(0)} />
                 <Tab label="UnVerified KYC Users" {...a11yProps(1)} />
+                <Tab label="Manual Verification KYC Users" {...a11yProps(2)} />
               </Tabs>
             </Box>
 
@@ -764,6 +823,286 @@ function KycUsers() {
                       color="text.secondary"
                     >
                       <b>UnVerified Kyc Users</b>
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </Box>
+            </TabPanel>
+
+            <TabPanel value={tabValue} index={2}>
+              <Box sx={{ padding: 3 }}>
+                <Grid container spacing={0}>
+                  <Grid item sm={12} xs={12} lg={12}>
+                    <Grid
+                      container
+                      spacing={2}
+                      justifyContent="right"
+                      marginBottom={2}
+                    >
+                      <Grid item>
+                        <Box sx={{ display: "flex", alignItems: "center" }}>
+                          <TextField
+                            label="Search"
+                            variant="outlined"
+                            fullWidth
+                            value={globalFilter2}
+                            onChange={handleSearchChange2}
+                            InputLabelProps={{
+                              sx: {
+                                lineHeight: "0.8em",
+                                "&.Mui-focused": {
+                                  lineHeight: "0.8em",
+                                },
+                              },
+                            }}
+                            InputProps={{
+                              endAdornment: (
+                                <InputAdornment position="end">
+                                  <SearchIcon />
+                                </InputAdornment>
+                              ),
+                              sx: {
+                                pr: "32px",
+                                height: "36px",
+                                "& .MuiOutlinedInput-input": {
+                                  py: "10px",
+                                },
+                              },
+                            }}
+                          />
+
+                          <div style={{ display: "flex", gap: "0.5rem" }}>
+                            <Tooltip arrow title="Refresh Data">
+                              <IconButton onClick={() => refetch2()}>
+                                <RefreshIcon />
+                              </IconButton>
+                            </Tooltip>
+                          </div>
+                        </Box>
+                      </Grid>
+                    </Grid>
+                    <TableContainer
+                      component={Paper}
+                      sx={{ width: "100%", marginBottom: 4 }}
+                    >
+                      <Table>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell
+                              sx={{
+                                borderRight: 1,
+                                borderColor: "divider",
+                                fontWeight: "bold",
+                                marginLeft: "10px",
+                                //display: "flex",
+                                alignContent: "center",
+                                justifyContent: "center",
+                                textAlign: "center",
+                              }}
+                            >
+                              S/N
+                            </TableCell>
+                            <TableCell
+                              sx={{
+                                borderRight: 1,
+                                borderColor: "divider",
+                                fontWeight: "bold",
+                                marginLeft: "10px",
+                                textAlign: "left",
+                              }}
+                            >
+                              FullName
+                            </TableCell>
+                            <TableCell
+                              sx={{
+                                borderRight: 1,
+                                borderColor: "divider",
+                                fontWeight: "bold",
+                                marginLeft: "10px",
+                                textAlign: "left",
+                              }}
+                            >
+                              Email
+                            </TableCell>
+                            <TableCell
+                              sx={{
+                                borderRight: 1,
+                                borderColor: "divider",
+                                fontWeight: "bold",
+                                marginLeft: "10px",
+                                textAlign: "left",
+                              }}
+                            >
+                              UserName
+                            </TableCell>
+                            <TableCell
+                              sx={{
+                                borderRight: 1,
+                                borderColor: "divider",
+                                fontWeight: "bold",
+                                marginLeft: "10px",
+                                textAlign: "left",
+                              }}
+                            >
+                              Phone
+                            </TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {data2?.data?.result?.map((user, index) => (
+                            <TableRow key={user.userId}>
+                              <TableCell
+                                sx={{
+                                  textAlign: "center",
+                                  borderRight: 1,
+                                  borderColor: "divider",
+                                }}
+                              >
+                                {pagination2.pageIndex * pagination2.pageSize +
+                                  index +
+                                  1}
+                              </TableCell>
+                              <TableCell
+                                sx={{
+                                  borderRight: 1,
+                                  borderColor: "divider",
+                                  textAlign: "left",
+                                }}
+                              >
+                                <a
+                                  href={user.link}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  style={{
+                                    cursor: "pointer",
+                                    textDecoration: "none",
+                                    color: "inherit",
+                                    borderBottom: "1px solid transparent",
+                                    transition: "border-color 0.2s ease",
+                                    "&:hover": {
+                                      borderBottomColor: "blue",
+                                      textDecoration: "underline",
+                                    },
+                                  }}
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    const userId = user.userId;
+                                    const url = `/user/${userId}`;
+                                    window.open(url, "_blank");
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    e.target.style.textDecoration = "underline";
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.target.style.textDecoration = "none";
+                                  }}
+                                >
+                                  {user.fullName}
+                                </a>
+                              </TableCell>
+
+                              <TableCell
+                                sx={{
+                                  borderRight: 1,
+                                  borderColor: "divider",
+                                  textAlign: "left",
+                                }}
+                              >
+                                {user?.email?.split("-")[0]}
+                              </TableCell>
+                              <TableCell
+                                sx={{
+                                  borderRight: 1,
+                                  borderColor: "divider",
+                                }}
+                              >
+                                {user?.username?.split("-")[0]}
+                              </TableCell>
+                              <TableCell
+                                sx={{
+                                  borderRight: 1,
+                                  borderColor: "divider",
+                                }}
+                              >
+                                {user?.phone?.split("-")[0]}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+
+                    <TablePagination
+                      rowsPerPageOptions={[10, 25, 50]}
+                      component="div"
+                      count={data2?.data?.count || 0}
+                      rowsPerPage={pagination2.pageSize}
+                      page={pagination2.pageIndex}
+                      onPageChange={handlePageChange2}
+                      onRowsPerPageChange={handleRowsPerPageChange2}
+                      ActionsComponent={(props) => (
+                        <div style={{ display: "flex" }}>
+                          <IconButton
+                            onClick={() => handlePageChange2(0)}
+                            disabled={pagination2.pageIndex === 0}
+                          >
+                            <FirstPageIcon />
+                          </IconButton>
+
+                          <IconButton
+                            onClick={() =>
+                              handlePageChange2(pagination2.pageIndex - 1)
+                            }
+                            disabled={pagination2.pageIndex === 0}
+                          >
+                            <NavigateBeforeIcon />
+                          </IconButton>
+
+                          <IconButton
+                            onClick={() =>
+                              handlePageChange2(pagination2.pageIndex + 1)
+                            }
+                            disabled={
+                              pagination2.pageIndex >=
+                              Math.ceil(
+                                (data2?.data?.count || 0) / pagination2.pageSize
+                              ) -
+                                1
+                            }
+                          >
+                            <NavigateNextIcon />
+                          </IconButton>
+
+                          <IconButton
+                            onClick={() =>
+                              handlePageChange2(
+                                Math.ceil(
+                                  (data2?.data?.count || 0) /
+                                    pagination2.pageSize
+                                ) - 1
+                              )
+                            }
+                            disabled={
+                              pagination2.pageIndex >=
+                              Math.ceil(
+                                (data2?.data?.count || 0) / pagination2.pageSize
+                              ) -
+                                1
+                            }
+                          >
+                            <LastPageIcon />
+                          </IconButton>
+                        </div>
+                      )}
+                    />
+
+                    <Typography
+                      align="center"
+                      //marginTop={1}
+                      variant="h3"
+                      color="text.secondary"
+                    >
+                      <b>Manual Verification Kyc Users</b>
                     </Typography>
                   </Grid>
                 </Grid>

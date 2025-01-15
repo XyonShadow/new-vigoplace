@@ -7,6 +7,7 @@ import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { LoadingButton } from "@mui/lab";
 //Material UI Imports
 import {
   IconButton,
@@ -15,12 +16,23 @@ import {
   Select,
   MenuItem,
   FormControl,
+  TextField,
   Typography,
   Box,
   Button,
   Grid,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  CircularProgress,
 } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import CheckIcon from "@mui/icons-material/Check";
+import MuiAlert from "@mui/material/Alert";
+import Slide from "@mui/material/Slide";
+import Snackbar from "@mui/material/Snackbar";
 
 //useQuery Imports
 import {
@@ -32,9 +44,13 @@ import {
 } from "@tanstack/react-query";
 import { getSession, useSession } from "next-auth/react";
 
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 const API_BASE_URL = "https://api.vigoplace.com";
 //const API_BASE_URL = "http://localhost:4000";
-export default function Kyc() {
+export default function Kyc({ isVerified }) {
   const router = useRouter();
   const { userid } = router.query;
   const queryClient = useQueryClient();
@@ -48,7 +64,18 @@ export default function Kyc() {
   const [imageSrc, setImageSrc] = useState("");
   const [nin, setNin] = useState("");
   const [selfie, setSelfie] = useState("");
+  const [rejectKycModal, setRejectKycModal] = useState(false);
+  const [notificationText, setNotificationText] = useState("");
+  const [kycApproveStatusErrorToast, setKycApproveStatusErrorToast] =
+    useState(false);
+  const [kycApproveStatusSuccessToast, setKycApproveStatusSuccessToast] =
+    useState(false);
+  const [kycRejectStatusSuccessToast, setKycRejectStatusSuccessToast] =
+    useState(false);
+  const [kycRejectStatusErrorToast, setKycRejectStatusErrorToast] =
+    useState(false);
 
+  console.log(isVerified);
   const fetchUserKycDetails = async () => {
     setIsFetching(true);
     setIsLoading(true);
@@ -76,6 +103,68 @@ export default function Kyc() {
   useEffect(() => {
     fetchUserKycDetails();
   }, [userid]);
+
+  const kycStatusChange = async ({ users, message, type }) => {
+    const kycChange = await axios.post(
+      //"http://localhost:4000/api/admin/notifications/kyc-verification",
+      "https://api.vigoplace.com/api/admin/notifications/kyc-verification",
+      { users, message, type },
+      {
+        headers: {
+          Authorization: user?.token,
+        },
+      }
+    );
+    return kycChange;
+  };
+
+  const kycStatusChangeMutation = useMutation({
+    mutationKey: ["kycChange"],
+    mutationFn: kycStatusChange,
+    onError: async (error) => {
+      setKycApproveStatusErrorToast(true);
+      console.log(error);
+    },
+    onSuccess: () => {
+      setKycApproveStatusSuccessToast(true);
+      queryClient.invalidateQueries("kycChange");
+      setTimeout(() => {
+        kycStatusChangeMutation.reset(); // Reset the mutation
+      }, 6000);
+      setNotificationText("");
+    },
+  });
+
+  const kycRejectStatusChange = async ({ users, message, type }) => {
+    const kycChange = await axios.post(
+      //"http://localhost:4000/api/admin/notifications/kyc-verification",
+      "https://api.vigoplace.com/api/admin/notifications/kyc-verification",
+      { users, message, type },
+      {
+        headers: {
+          Authorization: user?.token,
+        },
+      }
+    );
+    return kycChange;
+  };
+
+  const kycRejectStatusChangeMutation = useMutation({
+    mutationKey: ["kycRejectChange"],
+    mutationFn: kycRejectStatusChange,
+    onError: async (error) => {
+      setKycRejectStatusErrorToast(true);
+      console.log(error);
+    },
+    onSuccess: () => {
+      setKycRejectStatusSuccessToast(true);
+      queryClient.invalidateQueries("kycChange");
+      setTimeout(() => {
+        kycRejectStatusChangeMutation.reset(); // Reset the mutation
+      }, 6000);
+      setNotificationText("");
+    },
+  });
 
   const decodeBase64Image = (base64String) => {
     if (base64String) {
@@ -321,25 +410,25 @@ export default function Kyc() {
       );
       drawTexts(
         "BVN",
-        `${kycData[0]?.bvn || "Not applicable"}`,
+        `${kycData[0]?.bvn || "N/A"}`,
         50, // Calculate the y-coordinate for the data
         imageUrl ? dataYCoordinate - 195 : dataYCoordinate - 80
       );
       drawTexts(
         "NIN",
-        `${kycData[0]?.nin || "Not applicable"}`,
+        `${kycData[0]?.nin || "N/A"}`,
         50, // Calculate the y-coordinate for the data
         imageUrl ? dataYCoordinate - 235 : dataYCoordinate - 120
       );
       drawTexts(
         "Passport",
-        `${kycData[0]?.passport || "Not applicable"}`,
+        `${kycData[0]?.passport || "N/A"}`,
         50, // Calculate the y-coordinate for the data
         imageUrl ? dataYCoordinate - 275 : dataYCoordinate - 160
       );
       drawTexts(
         "Driver's Licence",
-        `${kycData[0]?.driversLicense || "Not applicable"}`,
+        `${kycData[0]?.driversLicense || "N/A"}`,
         50, // Calculate the y-coordinate for the data
         imageUrl ? dataYCoordinate - 315 : dataYCoordinate - 200
       );
@@ -357,7 +446,7 @@ export default function Kyc() {
       drawTexts(
         "Profession",
         `${
-          kycData[0]?.metadata?.governmentData?.profession || "Not applicable"
+          kycData[0]?.metadata?.governmentData?.profession || "N/A"
         }`,
         50, // Calculate the y-coordinate for the data
         imageUrl ? dataYCoordinate - 395 : dataYCoordinate - 280
@@ -366,7 +455,7 @@ export default function Kyc() {
         "Address",
         `${
           kycData[0]?.metadata?.governmentData?.residence_AddressLine1 ||
-          "Not applicable"
+          "N/A"
         }`,
         50, // Calculate the y-coordinate for the data
         imageUrl ? dataYCoordinate - 435 : dataYCoordinate - 320
@@ -408,8 +497,81 @@ export default function Kyc() {
     }
   };
 
+  const handleKycApproveStatusSuccess = (event, reason) => {
+    setKycApproveStatusSuccessToast(false);
+  };
+  const handleKycApproveStatusError = (event, reason) => {
+    setKycApproveStatusErrorToast(false);
+  };
+
+  const handleKycRejectStatusSuccess = (event, reason) => {
+    setKycRejectStatusSuccessToast(false);
+  };
+  const handleKycRejectStatusError = (event, reason) => {
+    setKycRejectStatusErrorToast(false);
+  };
   return (
     <>
+      <Snackbar
+        TransitionComponent={Slide}
+        open={kycApproveStatusSuccessToast}
+        autoHideDuration={6000}
+        onClose={handleKycApproveStatusSuccess}
+      >
+        <Alert
+          onClose={handleKycApproveStatusSuccess}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {kycStatusChangeMutation?.data?.data?.message}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        TransitionComponent={Slide}
+        open={kycApproveStatusErrorToast}
+        autoHideDuration={6000}
+        onClose={handleKycApproveStatusError}
+      >
+        <Alert
+          onClose={handleKycApproveStatusError}
+          severity="warning"
+          sx={{ width: "100%" }}
+        >
+          {kycStatusChangeMutation?.error?.response?.data?.message}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        TransitionComponent={Slide}
+        open={kycRejectStatusSuccessToast}
+        autoHideDuration={6000}
+        onClose={handleKycRejectStatusSuccess}
+      >
+        <Alert
+          onClose={handleKycRejectStatusSuccess}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {kycRejectStatusChangeMutation?.data?.data?.message}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        TransitionComponent={Slide}
+        open={kycRejectStatusErrorToast}
+        autoHideDuration={6000}
+        onClose={handleKycRejectStatusError}
+      >
+        <Alert
+          onClose={handleKycRejectStatusError}
+          severity="warning"
+          sx={{ width: "100%" }}
+        >
+          {kycRejectStatusChangeMutation?.error?.response?.data?.message}
+        </Alert>
+      </Snackbar>
+
       {kyc.map((row, index) => (
         <Box
           key={index}
@@ -592,7 +754,7 @@ export default function Kyc() {
               <Typography
                 sx={{ display: "flex", alignItems: "center", gap: "4px" }}
               >
-                {renderData(row?.bvn, "bvn") || "Not applicable"}
+                {renderData(row?.bvn, "bvn") || "N/A"}
                 <IconButton onClick={() => toggleDataVisibility("bvn")}>
                   {showData.bvn ? (
                     <VisibilityOff fontSize="small" />
@@ -616,7 +778,7 @@ export default function Kyc() {
                 </Typography>
               </Box>
               <Typography>
-                {renderData(row?.nin, "nin") || "Not applicable"}
+                {renderData(row?.nin, "nin") || "N/A"}
                 <IconButton onClick={() => toggleDataVisibility("nin")}>
                   {showData.nin ? (
                     <VisibilityOff fontSize="small" />
@@ -636,7 +798,7 @@ export default function Kyc() {
               <Typography>
                 <span style={{ fontWeight: "bold" }}>Passport:</span>
               </Typography>
-              <Typography>{row?.passport || "Not applicable"}</Typography>
+              <Typography>{row?.passport || "N/A"}</Typography>
             </Box>
             <Box
               sx={{
@@ -649,7 +811,7 @@ export default function Kyc() {
                 <span style={{ fontWeight: "bold" }}>Driver's License:</span>
               </Typography>
               <Typography>
-                {row?.drivers_license || "Not applicable"}
+                {row?.drivers_license || "N/A"}
               </Typography>
             </Box>
             <Box
@@ -665,7 +827,7 @@ export default function Kyc() {
               <Typography>
                 {row?.metadata?.governmentData?.birthdate ||
                   row?.verifiedData?.entity?.date_of_birth ||
-                  "Not applicable"}
+                  "N/A"}
               </Typography>
             </Box>
             <Box
@@ -679,7 +841,7 @@ export default function Kyc() {
                 <span style={{ fontWeight: "bold" }}>Profession:</span>
               </Typography>
               <Typography>
-                {row?.metadata?.governmentData?.profession || "Not applicable"}
+                {row?.metadata?.governmentData?.profession || "N/A"}
               </Typography>
             </Box>
             <Box
@@ -694,7 +856,7 @@ export default function Kyc() {
               </Typography>
               <Typography>
                 {row?.metadata?.governmentData?.residence_AddressLine1 ||
-                  "Not applicable"}
+                  "N/A"}
               </Typography>
             </Box>
             <Box
@@ -719,14 +881,124 @@ export default function Kyc() {
       {isLoading && <Typography>Loading...</Typography>}
       {isFetching && <Typography>Fetching data...</Typography>}
       {kyc.length > 0 && (
-        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => generatePDFReceipt(kyc)}
-          >
-            Download report
-          </Button>
+        <Box>
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => generatePDFReceipt(kyc)}
+            >
+              Download report
+            </Button>
+          </Box>
+          {isVerified === "unverified" && (
+            <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+              <Button
+                variant="contained"
+                color="danger"
+                onClick={() => setRejectKycModal(true)}
+                sx={{ marginRight: "10px" }}
+              >
+                {/* Reject KYC */}
+
+                {kycRejectStatusChangeMutation.isLoading ? (
+                  <CircularProgress size={23} color="inherit" />
+                ) : kycRejectStatusChangeMutation.isSuccess ? (
+                  <CheckIcon />
+                ) : (
+                  "Reject KYC"
+                )}
+              </Button>
+
+              {/* <MenuItem sx={{ width: "100%", marginRight: "auto" }}>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                onClick={() => setNotifyModal(true)}
+              >
+                {notifyUserMutation.isLoading ? (
+                  <CircularProgress size={23} color="inherit" />
+                ) : notifyUserMutation.isSuccess ? (
+                  <CheckIcon />
+                ) : (
+                  "Send Notification"
+                )}
+              </Typography>
+            </MenuItem> */}
+
+              <Dialog
+                open={rejectKycModal}
+                onClose={() => {
+                  setRejectKycModal(false);
+                }}
+              >
+                <DialogTitle>Reject KYC</DialogTitle>
+                <DialogContent>
+                  <DialogContentText>
+                    Enter Notification Text You Wish To Send To This User For
+                    Rejecting his/her KYC
+                  </DialogContentText>
+
+                  <TextField
+                    autoFocus
+                    margin="normal"
+                    id="name"
+                    label="Enter Notification Text"
+                    multiline
+                    fullWidth
+                    variant="standard"
+                    onChange={(e) => setNotificationText(e.target.value)}
+                  />
+                </DialogContent>
+                <DialogActions>
+                  <Button
+                    onClick={() => {
+                      setNotificationText("");
+                      setRejectKycModal(false);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <LoadingButton
+                    variant="contained"
+                    loading={kycRejectStatusChangeMutation.isLoading}
+                    disabled={notificationText === ""}
+                    onClick={() => {
+                      kycRejectStatusChangeMutation.mutate({
+                        users: userid,
+                        message: notificationText,
+                        type: "reject",
+                      });
+                      setNotificationText("");
+                      setRejectKycModal(false);
+                    }}
+                  >
+                    Notify
+                  </LoadingButton>
+                </DialogActions>
+              </Dialog>
+
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  kycStatusChangeMutation.mutate({
+                    users: userid,
+                    message: "Your KYC request has been successfully approved",
+                    type: "approve",
+                  });
+                }}
+              >
+                {kycStatusChangeMutation.isLoading ? (
+                  <CircularProgress size={23} color="inherit" />
+                ) : kycStatusChangeMutation.isSuccess ? (
+                  <CheckIcon />
+                ) : (
+                  "Approve Kyc"
+                )}
+              </Button>
+            </Box>
+          )}
         </Box>
       )}
     </>

@@ -3426,7 +3426,7 @@ const Users = () => {
                     />
                     <Divider />
                     <CardContent>
-                      <Kyc />
+                      <Kyc isVerified={userDetails?.data?.user?.kycVerified} />
                     </CardContent>
                   </Card>
                 </form>
