@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useCallback } from "react";
 import MaterialReactTable from "material-react-table";
 import {
   IconButton,
@@ -90,6 +90,10 @@ function KycUsers() {
   const [globalFilter1, setGlobalFilter1] = React.useState("");
   const [globalFilter2, setGlobalFilter2] = React.useState("");
 
+  const [data2, setData2] = useState(null);
+const [isLoading2, setIsLoading2] = useState(false);
+const [isError2, setIsError2] = useState(false);
+
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
@@ -149,37 +153,71 @@ function KycUsers() {
     }
   );
 
-  const {
-    data: data2,
-    isError: isError2,
-    isFetching: isFetching2,
-    isLoading: isLoading2,
-    refetch: refetch2,
-  } = useQuery(
-    ["manualVerificationKycUsers", globalFilter2, pagination2],
-    async () => {
+  // const {
+  //   data: data2,
+  //   isError: isError2,
+  //   isFetching: isFetching2,
+  //   isLoading: isLoading2,
+  //   refetch: refetch2,
+  // } = useQuery(
+  //   ["manualVerificationKycUsers", globalFilter2, pagination2],
+  //   async () => {
+  //     const { data } = await axios.get(
+  //       `https://api.vigoplace.com/api/admin/console/kyc-slip-status?perPage=${pagination2.pageSize}&page=${pagination2.pageIndex}&search=${globalFilter2}`,
+  //       //`http://localhost:4000/api/admin/console/kyc-unverified?perPage=${pagination1.pageSize}&page=${pagination1.pageIndex + 1}&search=${globalFilter1}`,
+  //       {
+  //         headers: {
+  //           Authorization: user?.token,
+  //         },
+  //       }
+  //     );
+
+  //     //console.log(data);
+
+  //     return data;
+  //   },
+  //   {
+  //     keepPreviousData: true,
+  //     onError: (err) => {
+  //       console.log(err, "err fetching manual verification kyc users");
+  //     },
+  //     enabled: !!user?.token,
+  //   }
+  //   );
+
+  const fetchData = useCallback(async () => {
+    setIsLoading2(true);
+    try {
       const { data } = await axios.get(
-        `https://api.vigoplace.com/api/admin/console/kyc-slip-status?perPage=${pagination2.pageSize}&page=${pagination2.pageIndex}&search=${globalFilter2}`,
-        //`http://localhost:4000/api/admin/console/kyc-unverified?perPage=${pagination1.pageSize}&page=${pagination1.pageIndex + 1}&search=${globalFilter1}`,
+        //`http://localhost:4000/api/admin/console/kyc-slip-status?perPage=${pagination2.pageSize}&page=${pagination2.pageIndex + 1}&search=${globalFilter2}`,
+        `https://api.vigoplace.com/api/admin/console/kyc-slip-status?perPage=${pagination2.pageSize}&page=${pagination2.pageIndex + 1}&search=${globalFilter2}`,
         {
           headers: {
             Authorization: user?.token,
           },
         }
       );
-
-      //console.log(data);
-
-      return data;
-    },
-    {
-      keepPreviousData: true,
-      onError: (err) => {
-        console.log(err, "err fetching manual verification kyc users");
-      },
-      enabled: !!user?.token,
+      setData2(data);
+      setIsError2(false);
+    } catch (error) {
+      console.log(error, "err fetching manual verification kyc users");
+      setIsError2(true);
+    } finally {
+      setIsLoading2(false);
     }
-    );
+  }, [pagination2, globalFilter2, user?.token]);
+  
+  useEffect(() => {
+    if (user?.token) {
+      fetchData();
+    }
+  }, [fetchData]);
+  
+  const refetch2 = useCallback(() => {
+    if (user?.token) {
+      fetchData();
+    }
+  }, [fetchData, user?.token]);
 
   const handlePageChange = (newPage) => {
     setPagination({ ...pagination, pageIndex: newPage });
@@ -873,7 +911,7 @@ function KycUsers() {
 
                           <div style={{ display: "flex", gap: "0.5rem" }}>
                             <Tooltip arrow title="Refresh Data">
-                              <IconButton onClick={() => refetch2()}>
+                              <IconButton onClick={() => fetchData()}>
                                 <RefreshIcon />
                               </IconButton>
                             </Tooltip>
