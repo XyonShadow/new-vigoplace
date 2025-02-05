@@ -23,6 +23,7 @@ import {
   AccordionDetails,
 } from "@mui/material";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { format, parse } from "date-fns";
 import {
   QueryClient,
@@ -73,6 +74,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 function DailyReadings() {
   const getUser = useSession();
+  const router = useRouter();
   const user = getUser?.data?.user;
   const [title, setTitle] = useState(null);
   const [date, setDate] = useState(null);
@@ -1109,6 +1111,8 @@ function DailyReadings() {
       setTimeout(() => {
         setEditDailyReadingToast({ ...editDailyReadingToast, success: false });
       }, 3000);
+      localStorage.setItem("readingTabValue", String(1));
+      router.refresh();
       setId(null);
       setEditBibleReadingId(null);
       setEditDate(null);
@@ -1328,7 +1332,7 @@ function DailyReadings() {
                       {/********************* READING 1 VERSE ********************/}
                       <Accordion>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          Reading 1 verse
+                          Reading 1
                         </AccordionSummary>
                         <AccordionDetails>
                           <TextField
@@ -1372,7 +1376,7 @@ function DailyReadings() {
                       {/********************* READING 1 OPTION 2 VERSE ********************/}
                       <Accordion>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          Reading 1 option 2 verse
+                          Reading 1 option 2
                         </AccordionSummary>
                         <AccordionDetails>
                           <TextField
@@ -1417,7 +1421,7 @@ function DailyReadings() {
                       {/********************* READING 2 VERSE ********************/}
                       <Accordion>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          Reading 2 verse
+                          Reading 2
                         </AccordionSummary>
                         <AccordionDetails>
                           <TextField
@@ -1461,7 +1465,7 @@ function DailyReadings() {
                       {/********************* READING 2 OPTION 1 VERSE ********************/}
                       <Accordion>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          Reading 2 Option 1 Verse
+                          Reading 2 Option 1
                         </AccordionSummary>
                         <AccordionDetails>
                           <TextField
@@ -1505,7 +1509,7 @@ function DailyReadings() {
                       {/********************* READING 3 VERSE ********************/}
                       <Accordion>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          Reading 3 Verse
+                          Reading 3
                         </AccordionSummary>
                         <AccordionDetails>
                           <TextField
@@ -1549,7 +1553,7 @@ function DailyReadings() {
                       {/********************* READING 4 VERSE ********************/}
                       <Accordion>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          Reading 4 Verse
+                          Reading 4
                         </AccordionSummary>
                         <AccordionDetails>
                           <TextField
@@ -1593,7 +1597,7 @@ function DailyReadings() {
                       {/********************* READING 5 VERSE ********************/}
                       <Accordion>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          Reading 5 Verse
+                          Reading 5
                         </AccordionSummary>
                         <AccordionDetails>
                           <TextField
@@ -1637,7 +1641,7 @@ function DailyReadings() {
                       {/********************* READING 6 VERSE ********************/}
                       <Accordion>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          Reading 6 Verse
+                          Reading 6
                         </AccordionSummary>
                         <AccordionDetails>
                           <TextField
@@ -1681,7 +1685,7 @@ function DailyReadings() {
                       {/********************* READING 7 VERSE ********************/}
                       <Accordion>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          Reading 7 Verse
+                          Reading 7
                         </AccordionSummary>
                         <AccordionDetails>
                           <TextField
@@ -1726,7 +1730,7 @@ function DailyReadings() {
                       {/* START FROM HERE  */}
                       <Accordion>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          Procession Psalm Verse
+                          Procession Psalm
                         </AccordionSummary>
                         <AccordionDetails>
                           <TextField
@@ -1776,7 +1780,7 @@ function DailyReadings() {
 
                       <Accordion>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          Procession Psalms Gospel 2 Verse
+                          Procession Psalms Gospel 2
                         </AccordionSummary>
                         <AccordionDetails>
                           <TextField
@@ -1826,7 +1830,7 @@ function DailyReadings() {
                       {/*PROCESSIONAL PSALMS GOSPEL2 VERSE*/}
                       <Accordion>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          Responsorial Psalm Verse
+                          Responsorial Psalm
                         </AccordionSummary>
                         <AccordionDetails>
                           <TextField
@@ -2016,7 +2020,7 @@ function DailyReadings() {
                       {/*RESPONSIAL PSALM VERSE OPT2*/}
                       <Accordion>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          Responsorial Psalm Verse OPT2
+                          Responsorial Psalm OPT2
                         </AccordionSummary>
                         <AccordionDetails>
                           <TextField
@@ -2037,23 +2041,43 @@ function DailyReadings() {
                             }}
                           />
                           {responsorialPsalmVerseOPT2 && (
-                            <TextField
-                              fullWidth
-                              label="Responsorial Psalm Text1 OPT2"
-                              margin="normal"
-                              name="responsorialPsalmText1OPT2"
-                              onChange={handleResponsorialPsalmText1OPT2}
-                              type="text"
-                              multiline
-                              value={responsorialPsalmText1OPT2 ?? ""}
-                              variant="outlined"
-                              sx={{
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "15px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            />
+                            <>
+                              <TextField
+                                fullWidth
+                                label="Responsorial Psalm Response OPT2"
+                                margin="normal"
+                                name="responsorialPsalmResponseOPT2"
+                                onChange={handleResponsorialPsalmResponseOPT2}
+                                type="text"
+                                multiline
+                                value={responsorialPsalmResponseOPT2 ?? ""}
+                                variant="outlined"
+                                sx={{
+                                  "& .MuiInputLabel-root": {
+                                    lineHeight: "15px",
+                                    fontSize: "smaller",
+                                  },
+                                }}
+                              />
+
+                              <TextField
+                                fullWidth
+                                label="Responsorial Psalm Text1 OPT2"
+                                margin="normal"
+                                name="responsorialPsalmText1OPT2"
+                                onChange={handleResponsorialPsalmText1OPT2}
+                                type="text"
+                                multiline
+                                value={responsorialPsalmText1OPT2 ?? ""}
+                                variant="outlined"
+                                sx={{
+                                  "& .MuiInputLabel-root": {
+                                    lineHeight: "15px",
+                                    fontSize: "smaller",
+                                  },
+                                }}
+                              />
+                            </>
                           )}
                         </AccordionDetails>
                       </Accordion>
@@ -2072,31 +2096,6 @@ function DailyReadings() {
                             type="text"
                             multiline
                             value={responsorialPsalmText2OPT2 ?? ""}
-                            variant="outlined"
-                            sx={{
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
-                        </AccordionDetails>
-                      </Accordion>
-
-                      <Accordion>
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          Responsorial Psalm Response OPT2
-                        </AccordionSummary>
-                        <AccordionDetails>
-                          <TextField
-                            fullWidth
-                            label="Responsorial Psalm Response OPT2"
-                            margin="normal"
-                            name="responsorialPsalmResponseOPT2"
-                            onChange={handleResponsorialPsalmResponseOPT2}
-                            type="text"
-                            multiline
-                            value={responsorialPsalmResponseOPT2 ?? ""}
                             variant="outlined"
                             sx={{
                               "& .MuiInputLabel-root": {
@@ -2330,7 +2329,7 @@ function DailyReadings() {
                       {/* ALLELULIA VERSE*/}
                       <Accordion>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          Alleluia Verse
+                          Alleluia
                         </AccordionSummary>
                         <AccordionDetails>
                           <TextField
@@ -2424,7 +2423,7 @@ function DailyReadings() {
                       {/*       GOSPEL VERSE        */}
                       <Accordion>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          Gospel Verse
+                          Gospel
                         </AccordionSummary>
                         <AccordionDetails>
                           <TextField
@@ -2469,7 +2468,7 @@ function DailyReadings() {
                       {/*      GOSPEL VERSE 2       */}
                       <Accordion>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          Gospel Verse 2
+                          Gospel 2
                         </AccordionSummary>
                         <AccordionDetails>
                           <TextField
@@ -2673,7 +2672,7 @@ function DailyReadings() {
                         <AccordionDetails>
                           <TextField
                             fullWidth
-                            label="Title"
+                            label={editTitle ? "" : "Title"}
                             margin="normal"
                             name="title"
                             onChange={handleEditTitle}
@@ -2691,44 +2690,22 @@ function DailyReadings() {
                         </AccordionDetails>
                       </Accordion>
 
-                      {/* <TabPanel value={editTabValue} index={1}>
-                        <TextField
-                          fullWidth
-                          //label="Old Password"
-                          margin="normal"
-                          name="date"
-                          onChange={handleEditDate}
-                          type="date"
-                          value={editDate}
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiOutlinedInput-root": {
-                              height: "40px",
-                            },
-                            "& .MuiInputLabel-root": {
-                              lineHeight: "15px",
-                              fontSize: "smaller",
-                            },
-                          }}
-                        />
-                      </TabPanel> */}
                       <>
                         {/********************* READING 1 VERSE ********************/}
                         <Accordion>
                           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                            Reading 1 Verse
+                            Reading 1
                           </AccordionSummary>
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Reading1 Verse"
+                              label={editReading1Verse ? "" : "Reading1 Verse"}
                               margin="normal"
                               name="reading1Verse"
                               type="text"
                               multiline
                               onChange={handleEditReading1Verse}
-                              value={editReading1Verse}
+                              value={editReading1Verse || ""}
                               variant="outlined"
                               sx={{
                                 "& .MuiInputLabel-root": {
@@ -2737,37 +2714,39 @@ function DailyReadings() {
                                 },
                               }}
                             />
-                            {editReading1Verse && (
-                              <TextField
-                                fullWidth
-                                label="Reading1 Text"
-                                margin="normal"
-                                name="reading1Text"
-                                onChange={handleEditReading1Text}
-                                type="text"
-                                multiline
-                                value={editReading1Text}
-                                variant="outlined"
-                                sx={{
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "15px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              />
-                            )}
+                            <TextField
+                              fullWidth
+                              label={editReading1Text ? "" : "Reading1 Text"}
+                              margin="normal"
+                              name="reading1Text"
+                              onChange={handleEditReading1Text}
+                              type="text"
+                              multiline
+                              value={editReading1Text || ""}
+                              variant="outlined"
+                              sx={{
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
                           </AccordionDetails>
                         </Accordion>
 
                         {/********************* READING 1 OPTION 2 VERSE ********************/}
                         <Accordion>
                           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                            Reading 1 Option 2 Verse
+                            Reading 1 Option 2
                           </AccordionSummary>
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Reading1 Option2 Verse"
+                              label={
+                                editReading1Option2Verse
+                                  ? ""
+                                  : "Reading1 Option2 Verse"
+                              }
                               margin="normal"
                               name="reading1Option2Verse"
                               onChange={handleEditReading1Option2Verse}
@@ -2782,37 +2761,40 @@ function DailyReadings() {
                                 },
                               }}
                             />
-                            {editReading1Option2Verse && (
-                              <TextField
-                                fullWidth
-                                label="Reading1 Text Option2"
-                                margin="normal"
-                                name="reading1TextOption2"
-                                onChange={handleEditReading1TextOption2}
-                                type="text"
-                                multiline
-                                value={editReading1TextOption2}
-                                variant="outlined"
-                                sx={{
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "15px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              />
-                            )}
+
+                            <TextField
+                              fullWidth
+                              label={
+                                editReading1TextOption2
+                                  ? ""
+                                  : "Reading1 Text Option2"
+                              }
+                              margin="normal"
+                              name="reading1TextOption2"
+                              onChange={handleEditReading1TextOption2}
+                              type="text"
+                              multiline
+                              value={editReading1TextOption2}
+                              variant="outlined"
+                              sx={{
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
                           </AccordionDetails>
                         </Accordion>
 
                         {/********************* READING 2 VERSE ********************/}
                         <Accordion>
                           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                            Reading 2 Verse
+                            Reading 2
                           </AccordionSummary>
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Reading2 Verse"
+                              label={editReading2Verse ? "" : "Reading2 Verse"}
                               margin="normal"
                               name="reading2Verse"
                               onChange={handleEditReading2Verse}
@@ -2827,37 +2809,40 @@ function DailyReadings() {
                                 },
                               }}
                             />
-                            {editReading2Verse && (
-                              <TextField
-                                fullWidth
-                                label="Reading2 Text"
-                                margin="normal"
-                                name="reading2Text"
-                                onChange={handleEditReading2Text}
-                                type="text"
-                                multiline
-                                value={editReading2Text}
-                                variant="outlined"
-                                sx={{
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "15px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              />
-                            )}
+
+                            <TextField
+                              fullWidth
+                              label={editReading2Text ? "" : "Reading2 Text"}
+                              margin="normal"
+                              name="reading2Text"
+                              onChange={handleEditReading2Text}
+                              type="text"
+                              multiline
+                              value={editReading2Text}
+                              variant="outlined"
+                              sx={{
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
                           </AccordionDetails>
                         </Accordion>
 
                         {/********************* READING 2 OPTION 1 VERSE ********************/}
                         <Accordion>
                           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                            Reading 2 Option 1 Verse
+                            Reading 2 Option 1
                           </AccordionSummary>
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Reading2 Option1 Verse"
+                              label={
+                                editReading2Option1Verse
+                                  ? ""
+                                  : "Reading2 Option1 Verse"
+                              }
                               margin="normal"
                               name="reading2Option1Verse"
                               onChange={handleEditReading2Option1Verse}
@@ -2872,37 +2857,40 @@ function DailyReadings() {
                                 },
                               }}
                             />
-                            {editReading2Option1Verse && (
-                              <TextField
-                                fullWidth
-                                label="Reading2 Text Option1"
-                                margin="normal"
-                                name="reading2TextOption1"
-                                onChange={handleEditReading2TextOption1}
-                                type="text"
-                                multiline
-                                value={editReading2TextOption1}
-                                variant="outlined"
-                                sx={{
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "15px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              />
-                            )}
+
+                            <TextField
+                              fullWidth
+                              label={
+                                editReading2TextOption1
+                                  ? ""
+                                  : "Reading2 Text Option1"
+                              }
+                              margin="normal"
+                              name="reading2TextOption1"
+                              onChange={handleEditReading2TextOption1}
+                              type="text"
+                              multiline
+                              value={editReading2TextOption1}
+                              variant="outlined"
+                              sx={{
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
                           </AccordionDetails>
                         </Accordion>
 
                         {/********************* READING 3 VERSE ********************/}
                         <Accordion>
                           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                            Reading 3 Verse
+                            Reading 3
                           </AccordionSummary>
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Reading3 Verse"
+                              label={editReading3Verse ? "" : "Reading3 Verse"}
                               margin="normal"
                               name="reading3Verse"
                               onChange={handleEditReading3Verse}
@@ -2917,37 +2905,36 @@ function DailyReadings() {
                                 },
                               }}
                             />
-                            {editReading3Verse && (
-                              <TextField
-                                fullWidth
-                                label="Reading3 Text"
-                                margin="normal"
-                                name="reading3Text"
-                                onChange={handleEditReading3Text}
-                                type="text"
-                                multiline
-                                value={editReading3Text}
-                                variant="outlined"
-                                sx={{
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "15px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              />
-                            )}
+
+                            <TextField
+                              fullWidth
+                              label={editReading3Text ? "" : "Reading3 Text"}
+                              margin="normal"
+                              name="reading3Text"
+                              onChange={handleEditReading3Text}
+                              type="text"
+                              multiline
+                              value={editReading3Text}
+                              variant="outlined"
+                              sx={{
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
                           </AccordionDetails>
                         </Accordion>
 
                         {/********************* READING 4 VERSE ********************/}
                         <Accordion>
                           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                            Reading 4 Verse
+                            Reading 4
                           </AccordionSummary>
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Reading4 Verse"
+                              label={editReading4Verse ? "" : "Reading4 Verse"}
                               margin="normal"
                               name="reading4Verse"
                               onChange={handleEditReading4Verse}
@@ -2962,36 +2949,35 @@ function DailyReadings() {
                                 },
                               }}
                             />
-                            {editReading4Verse && (
-                              <TextField
-                                fullWidth
-                                label="Reading4 Text"
-                                margin="normal"
-                                name="reading4Text"
-                                onChange={handleEditReading4Text}
-                                type="text"
-                                multiline
-                                value={editReading4Text}
-                                variant="outlined"
-                                sx={{
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "15px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              />
-                            )}
+
+                            <TextField
+                              fullWidth
+                              label={editReading4Text ? "" : "Reading4 Text"}
+                              margin="normal"
+                              name="reading4Text"
+                              onChange={handleEditReading4Text}
+                              type="text"
+                              multiline
+                              value={editReading4Text}
+                              variant="outlined"
+                              sx={{
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
                           </AccordionDetails>
                         </Accordion>
                         {/********************* READING 5 VERSE ********************/}
                         <Accordion>
                           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                            Reading 5 Verse
+                            Reading 5
                           </AccordionSummary>
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Reading5 Verse"
+                              label={editReading5Verse ? "" : "Reading5 Verse"}
                               margin="normal"
                               name="reading5Verse"
                               onChange={handleEditReading5Verse}
@@ -3006,37 +2992,36 @@ function DailyReadings() {
                                 },
                               }}
                             />
-                            {editReading5Verse && (
-                              <TextField
-                                fullWidth
-                                label="Reading5 Text"
-                                margin="normal"
-                                name="reading5Text"
-                                onChange={handleEditReading5Text}
-                                type="text"
-                                multiline
-                                value={editReading5Text}
-                                variant="outlined"
-                                sx={{
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "15px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              />
-                            )}
+
+                            <TextField
+                              fullWidth
+                              label={editReading5Text ? "" : "Reading5 Text"}
+                              margin="normal"
+                              name="reading5Text"
+                              onChange={handleEditReading5Text}
+                              type="text"
+                              multiline
+                              value={editReading5Text}
+                              variant="outlined"
+                              sx={{
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
                           </AccordionDetails>
                         </Accordion>
 
                         {/********************* READING 6 VERSE ********************/}
                         <Accordion>
                           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                            Reading 6 Verse
+                            Reading 6
                           </AccordionSummary>
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Reading6 Verse"
+                              label={editReading6Verse ? "" : "Reading6 Verse"}
                               margin="normal"
                               name="reading6Verse"
                               onChange={handleEditReading6Verse}
@@ -3051,37 +3036,36 @@ function DailyReadings() {
                                 },
                               }}
                             />
-                            {editReading6Verse && (
-                              <TextField
-                                fullWidth
-                                label="Reading6 Text"
-                                margin="normal"
-                                name="reading6Text"
-                                onChange={handleEditReading6Text}
-                                type="text"
-                                multiline
-                                value={editReading6Text}
-                                variant="outlined"
-                                sx={{
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "15px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              />
-                            )}
+
+                            <TextField
+                              fullWidth
+                              label={editReading6Text ? "" : "Reading6 Text"}
+                              margin="normal"
+                              name="reading6Text"
+                              onChange={handleEditReading6Text}
+                              type="text"
+                              multiline
+                              value={editReading6Text}
+                              variant="outlined"
+                              sx={{
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
                           </AccordionDetails>
                         </Accordion>
 
                         {/********************* READING 7 VERSE ********************/}
                         <Accordion>
                           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                            Reading 7 Verse
+                            Reading 7
                           </AccordionSummary>
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Reading7 Verse"
+                              label={editReading7Verse ? "" : "Reading7 Verse"}
                               margin="normal"
                               name="reading7Verse"
                               onChange={handleEditReading7Verse}
@@ -3096,37 +3080,40 @@ function DailyReadings() {
                                 },
                               }}
                             />
-                            {editReading7Verse && (
-                              <TextField
-                                fullWidth
-                                label="Reading7 Text"
-                                margin="normal"
-                                name="reading7Text"
-                                onChange={handleEditReading7Text}
-                                type="text"
-                                multiline
-                                value={editReading7Text}
-                                variant="outlined"
-                                sx={{
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "15px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              />
-                            )}
+
+                            <TextField
+                              fullWidth
+                              label={editReading7Text ? "" : "Reading7 Text"}
+                              margin="normal"
+                              name="reading7Text"
+                              onChange={handleEditReading7Text}
+                              type="text"
+                              multiline
+                              value={editReading7Text}
+                              variant="outlined"
+                              sx={{
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
                           </AccordionDetails>
                         </Accordion>
 
                         {/* START FROM HERE  */}
                         <Accordion>
                           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                            Procession Psalm Verse
+                            Procession Psalm
                           </AccordionSummary>
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Procession Psalm Verse"
+                              label={
+                                editProcessionPalmVerse
+                                  ? ""
+                                  : "Procession Psalm Verse"
+                              }
                               margin="normal"
                               name="processionPalmVerse"
                               onChange={handleEditProcessionPalmVerse}
@@ -3151,7 +3138,11 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Procession Psalms Gospel"
+                              label={
+                                editProcessionPalmsGospel
+                                  ? ""
+                                  : "Procession Psalms Gospel"
+                              }
                               margin="normal"
                               name="processionPalmsGospel"
                               onChange={handleEditProcessionPalmsGospel}
@@ -3172,12 +3163,16 @@ function DailyReadings() {
                         {/*PROCESSIONAL PSALMS GOSPEL2 VERSE*/}
                         <Accordion>
                           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                            Procession Psalms Gospel 2 Verse
+                            Procession Psalms Gospel 2
                           </AccordionSummary>
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Procession Psalms Gospel2 Verse"
+                              label={
+                                editProcessionPalmsGospel2Verse
+                                  ? ""
+                                  : "Procession Psalms Gospel2 Verse"
+                              }
                               margin="normal"
                               name="processionPalmsGospel2Verse"
                               onChange={handleEditProcessionPalmsGospel2Verse}
@@ -3192,37 +3187,44 @@ function DailyReadings() {
                                 },
                               }}
                             />
-                            {editProcessionPalmsGospel2Verse && (
-                              <TextField
-                                fullWidth
-                                label="Procession Psalms Gospel2 Text"
-                                margin="normal"
-                                name="processionPalmsGospel2Text"
-                                onChange={handleEditProcessionPalmsGospel2Text}
-                                type="text"
-                                multiline
-                                value={editProcessionPalmsGospel2Text}
-                                variant="outlined"
-                                sx={{
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "15px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              />
-                            )}
+
+                            <TextField
+                              fullWidth
+                              label={
+                                editProcessionPalmsGospel2Text
+                                  ? ""
+                                  : "Procession Psalms Gospel2 Text"
+                              }
+                              margin="normal"
+                              name="processionPalmsGospel2Text"
+                              onChange={handleEditProcessionPalmsGospel2Text}
+                              type="text"
+                              multiline
+                              value={editProcessionPalmsGospel2Text}
+                              variant="outlined"
+                              sx={{
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
                           </AccordionDetails>
                         </Accordion>
 
                         {/*RESPONSIAL PSALM VERSE*/}
                         <Accordion>
                           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                            Responsorial Psalm Verse
+                            Responsorial Psalm
                           </AccordionSummary>
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Responsorial Psalm Verse"
+                              label={
+                                editResponsorialPsalmVerse
+                                  ? ""
+                                  : "Responsorial Psalm Verse"
+                              }
                               margin="normal"
                               name="responsorialPsalmVerse"
                               onChange={handleEditResponsorialPsalmVerse}
@@ -3237,44 +3239,51 @@ function DailyReadings() {
                                 },
                               }}
                             />
-                            {editResponsorialPsalmVerse && (
-                              <>
-                                <TextField
-                                  fullWidth
-                                  label="Responsorial Psalm Respond"
-                                  margin="normal"
-                                  name="responsorialPsalmRespond"
-                                  onChange={handleEditResponsorialPsalmRespond}
-                                  type="text"
-                                  multiline
-                                  value={editResponsorialPsalmRespond}
-                                  variant="outlined"
-                                  sx={{
-                                    "& .MuiInputLabel-root": {
-                                      lineHeight: "15px",
-                                      fontSize: "smaller",
-                                    },
-                                  }}
-                                />
-                                <TextField
-                                  fullWidth
-                                  label="Responsorial Psalm Text1"
-                                  margin="normal"
-                                  name="responsorialPsalmText1"
-                                  onChange={handleEditResponsorialPsalmText1}
-                                  type="text"
-                                  multiline
-                                  value={editResponsorialPsalmText1}
-                                  variant="outlined"
-                                  sx={{
-                                    "& .MuiInputLabel-root": {
-                                      lineHeight: "15px",
-                                      fontSize: "smaller",
-                                    },
-                                  }}
-                                />
-                              </>
-                            )}
+
+                            <>
+                              <TextField
+                                fullWidth
+                                label={
+                                  editResponsorialPsalmRespond
+                                    ? ""
+                                    : "Responsorial Psalm Respond"
+                                }
+                                margin="normal"
+                                name="responsorialPsalmRespond"
+                                onChange={handleEditResponsorialPsalmRespond}
+                                type="text"
+                                multiline
+                                value={editResponsorialPsalmRespond}
+                                variant="outlined"
+                                sx={{
+                                  "& .MuiInputLabel-root": {
+                                    lineHeight: "15px",
+                                    fontSize: "smaller",
+                                  },
+                                }}
+                              />
+                              <TextField
+                                fullWidth
+                                label={
+                                  editResponsorialPsalmText1
+                                    ? ""
+                                    : "Responsorial Psalm Text1"
+                                }
+                                margin="normal"
+                                name="responsorialPsalmText1"
+                                onChange={handleEditResponsorialPsalmText1}
+                                type="text"
+                                multiline
+                                value={editResponsorialPsalmText1}
+                                variant="outlined"
+                                sx={{
+                                  "& .MuiInputLabel-root": {
+                                    lineHeight: "15px",
+                                    fontSize: "smaller",
+                                  },
+                                }}
+                              />
+                            </>
                           </AccordionDetails>
                         </Accordion>
 
@@ -3285,7 +3294,11 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Responsorial Psalm Text2"
+                              label={
+                                editResponsorialPsalmText2
+                                  ? ""
+                                  : "Responsorial Psalm Text2"
+                              }
                               margin="normal"
                               name="responsorialPsalmText2"
                               onChange={handleEditResponsorialPsalmText2}
@@ -3310,7 +3323,11 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Responsorial Psalm Text3"
+                              label={
+                                editResponsorialPsalmText3
+                                  ? ""
+                                  : "Responsorial Psalm Text3"
+                              }
                               margin="normal"
                               name="responsorialPsalmText3"
                               onChange={handleEditResponsorialPsalmText3}
@@ -3335,7 +3352,11 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Responsorial Psalm Text4"
+                              label={
+                                editResponsorialPsalmText4
+                                  ? ""
+                                  : "Responsorial Psalm Text4"
+                              }
                               margin="normal"
                               name="responsorialPsalmText4"
                               onChange={handleEditResponsorialPsalmText4}
@@ -3360,7 +3381,11 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Responsorial Psalm Text5"
+                              label={
+                                editResponsorialPsalmText5
+                                  ? ""
+                                  : "Responsorial Psalm Text5"
+                              }
                               margin="normal"
                               name="responsorialPsalmText5"
                               onChange={handleEditResponsorialPsalmText5}
@@ -3385,7 +3410,11 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Responsorial Psalm Text6"
+                              label={
+                                editResponsorialPsalmText6
+                                  ? ""
+                                  : "Responsorial Psalm Text6"
+                              }
                               margin="normal"
                               name="responsorialPsalmText6"
                               onChange={handleEditResponsorialPsalmText6}
@@ -3406,12 +3435,16 @@ function DailyReadings() {
                         {/*RESPONSIAL PSALM VERSE OPT2*/}
                         <Accordion>
                           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                            Responsorial Psalm Verse OPT 2
+                            Responsorial Psalm OPT 2
                           </AccordionSummary>
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Responsorial Psalm Verse OPT2"
+                              label={
+                                editResponsorialPsalmVerseOPT2
+                                  ? ""
+                                  : "Responsorial Psalm Verse OPT2"
+                              }
                               margin="normal"
                               name="responsorialPsalmVerseOPT2"
                               onChange={handleEditResponsorialPsalmVerseOPT2}
@@ -3426,25 +3459,50 @@ function DailyReadings() {
                                 },
                               }}
                             />
-                            {editResponsorialPsalmVerseOPT2 && (
-                              <TextField
-                                fullWidth
-                                label="Responsorial Psalm Text1 OPT2"
-                                margin="normal"
-                                name="responsorialPsalmText1OPT2"
-                                onChange={handleEditResponsorialPsalmText1OPT2}
-                                type="text"
-                                multiline
-                                value={editResponsorialPsalmText1OPT2}
-                                variant="outlined"
-                                sx={{
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "15px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              />
-                            )}
+
+                            <TextField
+                              fullWidth
+                              label={
+                                editResponsorialPsalmResponseOPT2
+                                  ? ""
+                                  : "Responsorial Psalm Response OPT2"
+                              }
+                              margin="normal"
+                              name="responsorialPsalmResponseOPT2"
+                              onChange={handleEditResponsorialPsalmResponseOPT2}
+                              type="text"
+                              multiline
+                              value={editResponsorialPsalmResponseOPT2}
+                              variant="outlined"
+                              sx={{
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+
+                            <TextField
+                              fullWidth
+                              label={
+                                editResponsorialPsalmText1OPT2
+                                  ? ""
+                                  : "Responsorial Psalm Text1 OPT2"
+                              }
+                              margin="normal"
+                              name="responsorialPsalmText1OPT2"
+                              onChange={handleEditResponsorialPsalmText1OPT2}
+                              type="text"
+                              multiline
+                              value={editResponsorialPsalmText1OPT2}
+                              variant="outlined"
+                              sx={{
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
                           </AccordionDetails>
                         </Accordion>
 
@@ -3455,7 +3513,11 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Responsorial Psalm Text2 OPT2"
+                              label={
+                                editResponsorialPsalmText2OPT2
+                                  ? ""
+                                  : "Responsorial Psalm Text2 OPT2"
+                              }
                               margin="normal"
                               name="responsorialPsalmText2OPT2"
                               onChange={handleEditResponsorialPsalmText2OPT2}
@@ -3475,37 +3537,16 @@ function DailyReadings() {
 
                         <Accordion>
                           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                            Responsorial Psalm Response OPT2
-                          </AccordionSummary>
-                          <AccordionDetails>
-                            <TextField
-                              fullWidth
-                              label="Responsorial Psalm Response OPT2"
-                              margin="normal"
-                              name="responsorialPsalmResponseOPT2"
-                              onChange={handleEditResponsorialPsalmResponseOPT2}
-                              type="text"
-                              multiline
-                              value={editResponsorialPsalmResponseOPT2}
-                              variant="outlined"
-                              sx={{
-                                "& .MuiInputLabel-root": {
-                                  lineHeight: "15px",
-                                  fontSize: "smaller",
-                                },
-                              }}
-                            />
-                          </AccordionDetails>
-                        </Accordion>
-
-                        <Accordion>
-                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                             Responsorial Psalm Text 3 OPT2
                           </AccordionSummary>
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Responsorial Psalm Text3 OPT2"
+                              label={
+                                editResponsorialPsalmText3OPT2
+                                  ? ""
+                                  : "Responsorial Psalm Text3 OPT2"
+                              }
                               margin="normal"
                               name="responsorialPsalmText3OPT2"
                               onChange={handleEditResponsorialPsalmText3OPT2}
@@ -3530,7 +3571,11 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Responsorial Psalm Text4 OPT2"
+                              label={
+                                editResponsorialPsalmText4OPT2
+                                  ? ""
+                                  : "Responsorial Psalm Text4 OPT2"
+                              }
                               margin="normal"
                               name="responsorialPsalmText4OPT2"
                               onChange={handleEditResponsorialPsalmText4OPT2}
@@ -3555,7 +3600,11 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Responsorial Psalm Text5 OPT2"
+                              label={
+                                editResponsorialPsalmText5OPT2
+                                  ? ""
+                                  : "Responsorial Psalm Text5 OPT2"
+                              }
                               margin="normal"
                               name="responsorialPsalmText5OPT2"
                               onChange={handleEditResponsorialPsalmText5OPT2}
@@ -3580,7 +3629,9 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="ResponsorialText1"
+                              label={
+                                editResponsorialText1 ? "" : "ResponsorialText1"
+                              }
                               margin="normal"
                               name="responsorialText1"
                               onChange={handleEditResponsorialText1}
@@ -3605,7 +3656,9 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="ResponsorialText2"
+                              label={
+                                editResponsorialText2 ? "" : "ResponsorialText2"
+                              }
                               margin="normal"
                               name="responsorialText2"
                               onChange={handleEditResponsorialText2}
@@ -3630,7 +3683,11 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="ResponsorialText3"
+                              label={
+                                editResponsorialText3
+                                  ? ""
+                                  : "Responsorial Text 3"
+                              }
                               margin="normal"
                               name="responsorialText3"
                               onChange={handleEditResponsorialText3}
@@ -3655,7 +3712,9 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Before Gospel Text"
+                              label={
+                                editBeforeGospelText ? "" : "Before Gospel Text"
+                              }
                               margin="normal"
                               name="beforeGospelText"
                               onChange={handleEditBeforeGospelText}
@@ -3681,7 +3740,11 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Verse before Gospel OPT2"
+                              label={
+                                editVerseb4GospelOPT2
+                                  ? ""
+                                  : "Verse before Gospel OPT2"
+                              }
                               margin="normal"
                               name="verseb4GospelOPT2"
                               onChange={handleEditVerseb4GospelOPT2}
@@ -3696,37 +3759,40 @@ function DailyReadings() {
                                 },
                               }}
                             />
-                            {editVerseb4GospelOPT2 && (
-                              <TextField
-                                fullWidth
-                                label="Before Gospel Text OPT2"
-                                margin="normal"
-                                name="b4GospelTextOPT2"
-                                onChange={handleEditB4GospelTextOPT2}
-                                type="text"
-                                multiline
-                                value={editB4GospelTextOPT2}
-                                variant="outlined"
-                                sx={{
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "15px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              />
-                            )}
+
+                            <TextField
+                              fullWidth
+                              label={
+                                editB4GospelTextOPT2
+                                  ? ""
+                                  : "Before Gospel Text OPT2"
+                              }
+                              margin="normal"
+                              name="b4GospelTextOPT2"
+                              onChange={handleEditB4GospelTextOPT2}
+                              type="text"
+                              multiline
+                              value={editB4GospelTextOPT2}
+                              variant="outlined"
+                              sx={{
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
                           </AccordionDetails>
                         </Accordion>
 
                         {/* ALLELULIA VERSE*/}
                         <Accordion>
                           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                            Alleluia Verse
+                            Alleluia
                           </AccordionSummary>
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Alleluia Verse"
+                              label={editAlleluiaVerse ? "" : "Alleluia Verse"}
                               margin="normal"
                               name="alleluiaVerse"
                               onChange={handleEditAlleluiaVerse}
@@ -3741,25 +3807,24 @@ function DailyReadings() {
                                 },
                               }}
                             />
-                            {editAlleluiaVerse && (
-                              <TextField
-                                fullWidth
-                                label="Alleluia Text"
-                                margin="normal"
-                                name="alleluiaText"
-                                onChange={handleEditAlleluiaText}
-                                type="text"
-                                multiline
-                                value={editAlleluiaText}
-                                variant="outlined"
-                                sx={{
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "15px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              />
-                            )}
+
+                            <TextField
+                              fullWidth
+                              label={editAlleluiaText ? "" : "Alleluia Text"}
+                              margin="normal"
+                              name="alleluiaText"
+                              onChange={handleEditAlleluiaText}
+                              type="text"
+                              multiline
+                              value={editAlleluiaText}
+                              variant="outlined"
+                              sx={{
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
                           </AccordionDetails>
                         </Accordion>
 
@@ -3770,7 +3835,7 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Alleluia OPT2"
+                              label={editAlleluiaOPT2 ? "" : "Alleluia OPT2"}
                               margin="normal"
                               name="alleluiaOPT2"
                               onChange={handleEditAlleluiaOPT2}
@@ -3785,17 +3850,12 @@ function DailyReadings() {
                                 },
                               }}
                             />
-                          </AccordionDetails>
-                        </Accordion>
 
-                        <Accordion>
-                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                            Alleluia Text OPT2
-                          </AccordionSummary>
-                          <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Alleluia Text OPT2"
+                              label={
+                                editAlleluiaTextOPT2 ? "" : "Alleluia Text OPT2"
+                              }
                               margin="normal"
                               name="alleluiaTextOPT2"
                               onChange={handleEditAlleluiaTextOPT2}
@@ -3816,12 +3876,12 @@ function DailyReadings() {
                         {/*       GOSPEL VERSE        */}
                         <Accordion>
                           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                            Gospel Verse
+                            Gospel
                           </AccordionSummary>
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Gospel Verse"
+                              label={editGospelVerse ? "" : "Gospel Verse"}
                               margin="normal"
                               name="gospelVerse"
                               onChange={handleEditGospelVerse}
@@ -3836,37 +3896,36 @@ function DailyReadings() {
                                 },
                               }}
                             />
-                            {editGospelVerse && (
-                              <TextField
-                                fullWidth
-                                label="Gospel Text"
-                                margin="normal"
-                                name="gospelText"
-                                onChange={handleEditGospelText}
-                                type="text"
-                                multiline
-                                value={editGospelText}
-                                variant="outlined"
-                                sx={{
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "15px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              />
-                            )}
+
+                            <TextField
+                              fullWidth
+                              label={editGospelText ? "" : "Gospel Text"}
+                              margin="normal"
+                              name="gospelText"
+                              onChange={handleEditGospelText}
+                              type="text"
+                              multiline
+                              value={editGospelText}
+                              variant="outlined"
+                              sx={{
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
                           </AccordionDetails>
                         </Accordion>
 
                         {/*      GOSPEL VERSE 2       */}
                         <Accordion>
                           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                            Gospel Verse 2
+                            Gospel 2
                           </AccordionSummary>
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Gospel Verse 2"
+                              label={editGospelVerse2 ? "" : "Gospel Verse 2"}
                               margin="normal"
                               name="gospelVerse2"
                               onChange={handleEditGospelVerse2}
@@ -3881,25 +3940,28 @@ function DailyReadings() {
                                 },
                               }}
                             />
-                            {editGospelVerse && (
-                              <TextField
-                                fullWidth
-                                label="Gospel Text Option2"
-                                margin="normal"
-                                name="gospelTextOption2"
-                                onChange={handleEditGospelTextOption2}
-                                type="text"
-                                multiline
-                                value={editGospelTextOption2}
-                                variant="outlined"
-                                sx={{
-                                  "& .MuiInputLabel-root": {
-                                    lineHeight: "15px",
-                                    fontSize: "smaller",
-                                  },
-                                }}
-                              />
-                            )}
+
+                            <TextField
+                              fullWidth
+                              label={
+                                editGospelTextOption2
+                                  ? ""
+                                  : "Gospel Text Option2"
+                              }
+                              margin="normal"
+                              name="gospelTextOption2"
+                              onChange={handleEditGospelTextOption2}
+                              type="text"
+                              multiline
+                              value={editGospelTextOption2}
+                              variant="outlined"
+                              sx={{
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
                           </AccordionDetails>
                         </Accordion>
 
@@ -3910,7 +3972,11 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label="Verse Before Gospel"
+                              label={
+                                editVerseBeforeGospel
+                                  ? ""
+                                  : "Verse Before Gospel"
+                              }
                               margin="normal"
                               name="verseBeforeGospel"
                               onChange={handleEditVerseBeforeGospel}

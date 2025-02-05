@@ -74,8 +74,7 @@ export default function Kyc({ isVerified }) {
     useState(false);
   const [kycRejectStatusErrorToast, setKycRejectStatusErrorToast] =
     useState(false);
-
-  console.log(isVerified);
+  const [isLoadingReceipt, setIsLoadingReceipt] = useState(false);
   const fetchUserKycDetails = async () => {
     setIsFetching(true);
     setIsLoading(true);
@@ -166,7 +165,33 @@ export default function Kyc({ isVerified }) {
     },
   });
 
-  const decodeBase64Image = (base64String) => {
+  async function uploadImageToCloudinary(selfie) {
+    try {
+      const uploadPreset = "a9fkz998"; // Replace with your Cloudinary upload preset
+      const formData = new FormData();
+      formData.append("file", selfie);
+      formData.append("upload_preset", uploadPreset);
+
+      const response = await axios.post(
+        `https://api.cloudinary.com/v1_1/dnhu3eqn5/image/upload`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      //console.log(response);
+
+      return response.data.secure_url;
+    } catch (error) {
+      console.error("Error uploading image to Cloudinary:", error);
+      throw error;
+    }
+  }
+
+  const decodeBase64Image = async (base64String) => {
     if (base64String) {
       const base64Image = base64String.replace(
         /^data:image\/(png|jpeg|jpg);base64,/,
@@ -177,17 +202,20 @@ export default function Kyc({ isVerified }) {
       for (let i = 0; i < binaryString.length; i++) {
         byteArray[i] = binaryString.charCodeAt(i);
       }
+
+      // Create blob and convert to File object
       const blob = new Blob([byteArray], { type: "image/jpeg" });
-      const imageUrl = URL.createObjectURL(blob);
-      setImageSrc(imageUrl);
+      const file = new File([blob], "image.jpg", { type: "image/jpeg" });
+
+      // Upload to Cloudinary
+      const cloudinaryUrl = await uploadImageToCloudinary(file);
+      setImageSrc(cloudinaryUrl);
     }
   };
 
   useEffect(() => {
     if (kyc.length > 0) {
       decodeBase64Image(kyc[0]?.verifiedData?.entity?.image);
-      //nin
-      //setImageSrc(kyc[0]?.metadata?.governmentData?.image_url);
       //selfie
       setSelfie(kyc[0]?.selfie);
       //nin
@@ -196,6 +224,7 @@ export default function Kyc({ isVerified }) {
   }, [kyc]);
 
   const generatePDFReceipt = async (kycData) => {
+    setIsLoadingReceipt(true);
     try {
       // Create a new PDF document
       const pdfDoc = await PDFDocument.create();
@@ -242,65 +271,78 @@ export default function Kyc({ isVerified }) {
 
       ///////////////////IMAGE MANIPULATION////////////////
 
-      // if (imageUrl) {
-      //   // Function to upload image to Cloudinary
-      //   async function uploadImageToCloudinary(imageUrl) {
-      //     try {
-      //       const uploadPreset = "a9fkz998"; // Replace with your Cloudinary upload preset
-      //       const formData = new FormData();
-      //       formData.append("file", imageUrl);
-      //       formData.append("upload_preset", uploadPreset);
+      if (selfie && nin && imageSrc) {
+        // Function to download the image from Cloudinary
+        async function downloadImageFromCloudinary(selfie) {
+          try {
+            const response = await axios.get(selfie, {
+              responseType: "arraybuffer",
+            });
 
-      //       const response = await axios.post(
-      //         `https://api.cloudinary.com/v1_1/dnhu3eqn5/image/upload`,
-      //         formData,
-      //         {
-      //           headers: {
-      //             "Content-Type": "multipart/form-data",
-      //           },
-      //         }
-      //       );
+            return response.data; // Image data buffer
+          } catch (error) {
+            console.error("Error downloading image from Cloudinary:", error);
+            throw error;
+          }
+        }
 
-      //       console.log(response)
+        const bvnData = await downloadImageFromCloudinary(imageSrc);
 
-      //       return response.data.secure_url;
-      //     } catch (error) {
-      //       console.error("Error uploading image to Cloudinary:", error);
-      //       throw error;
-      //     }
-      //   }
+        const selfieUrl = await uploadImageToCloudinary(selfie);
+        const selfieData = await downloadImageFromCloudinary(selfieUrl);
 
-      //   // Function to download the image from Cloudinary
-      //   async function downloadImageFromCloudinary(imageUrl) {
-      //     try {
-      //       const response = await axios.get(imageUrl, {
-      //         responseType: "arraybuffer",
-      //       });
+        const ninUrl = await uploadImageToCloudinary(nin);
+        const ninData = await downloadImageFromCloudinary(ninUrl);
 
-      //       return response.data; // Image data buffer
-      //     } catch (error) {
-      //       console.error("Error downloading image from Cloudinary:", error);
-      //       throw error;
-      //     }
-      //   }
+        // Embed the image into the PDF document
+        const selfieImage = await pdfDoc.embedJpg(selfieData);
+        const ninImage = await pdfDoc.embedPng(ninData);
+        const bvnImage = await pdfDoc.embedJpg(bvnData);
 
-      //   // Upload image to Cloudinary
-      //   const cloudinaryUrl = await uploadImageToCloudinary(imageUrl);
+        // Labels
+        page.drawText("Bvn Image", {
+          x: xCoordinate - 210,
+          y: page.getHeight() - 150, // Adjust y-coordinate as needed
+          size: 12,
+          font: timesRomanFont,
+          color: rgb(0, 0, 0),
+        });
+        page.drawText("Nin Slip", {
+          x: xCoordinate - 20,
+          y: page.getHeight() - 150, // Adjust y-coordinate as needed
+          size: 12,
+          font: timesRomanFont,
+          color: rgb(0, 0, 0),
+        });
+        page.drawText("Selfie Image", {
+          x: xCoordinate + 160,
+          y: page.getHeight() - 150, // Adjust y-coordinate as needed
+          size: 12,
+          font: timesRomanFont,
+          color: rgb(0, 0, 0),
+        });
 
-      //   // Download the image from Cloudinary
-      //   const imageData = await downloadImageFromCloudinary(cloudinaryUrl);
+        page.drawImage(bvnImage, {
+          x: xCoordinate - 210,
+          y: page.getHeight() - 135,
+          width: 100,
+          height: 100,
+        });
 
-      //   // Embed the image into the PDF document
-      //   const kycImage = await pdfDoc.embedPng(imageData);
+        page.drawImage(ninImage, {
+          x: xCoordinate - 20,
+          y: page.getHeight() - 135,
+          width: 100,
+          height: 100,
+        });
 
-      //   page.drawImage(kycImage, {
-      //     x: xCoordinate - 20,
-      //     y: page.getHeight() - 135,
-      //     width: 100,
-      //     height: 100,
-      //   });
-      // }
-
+        page.drawImage(selfieImage, {
+          x: xCoordinate + 160,
+          y: page.getHeight() - 135,
+          width: 100,
+          height: 100,
+        });
+      }
       //////////////IMAGE MANIPULATION END//////////////////////////
 
       const drawTexts = (label, value, x, y) => {
@@ -370,10 +412,10 @@ export default function Kyc({ isVerified }) {
       };
 
       page.drawLine({
-        start: { x: 50, y: imageUrl ? height - 170 : height - 55 },
+        start: { x: 50, y: imageSrc ? height - 170 : height - 55 },
         end: {
           x: 50 + page.getWidth() - 120,
-          y: imageUrl ? height - 170 : height - 55,
+          y: imageSrc ? height - 170 : height - 55,
         },
         thickness: 0.5,
         color: rgb(0, 0, 0), // Black color
@@ -396,7 +438,7 @@ export default function Kyc({ isVerified }) {
           ""
         }`,
         50, // Calculate the y-coordinate for the data
-        imageUrl ? dataYCoordinate - 115 : dataYCoordinate
+        imageSrc ? dataYCoordinate - 115 : dataYCoordinate
       );
 
       drawTexts(
@@ -406,31 +448,31 @@ export default function Kyc({ isVerified }) {
           kycData[0]?.verifiedData?.entity?.phone_number1
         }`,
         50, // Calculate the y-coordinate for the data
-        imageUrl ? dataYCoordinate - 155 : dataYCoordinate - 40
+        imageSrc ? dataYCoordinate - 155 : dataYCoordinate - 40
       );
       drawTexts(
         "BVN",
         `${kycData[0]?.bvn || "N/A"}`,
         50, // Calculate the y-coordinate for the data
-        imageUrl ? dataYCoordinate - 195 : dataYCoordinate - 80
+        imageSrc ? dataYCoordinate - 195 : dataYCoordinate - 80
       );
       drawTexts(
         "NIN",
         `${kycData[0]?.nin || "N/A"}`,
         50, // Calculate the y-coordinate for the data
-        imageUrl ? dataYCoordinate - 235 : dataYCoordinate - 120
+        imageSrc ? dataYCoordinate - 235 : dataYCoordinate - 120
       );
       drawTexts(
         "Passport",
         `${kycData[0]?.passport || "N/A"}`,
         50, // Calculate the y-coordinate for the data
-        imageUrl ? dataYCoordinate - 275 : dataYCoordinate - 160
+        imageSrc ? dataYCoordinate - 275 : dataYCoordinate - 160
       );
       drawTexts(
         "Driver's Licence",
         `${kycData[0]?.driversLicense || "N/A"}`,
         50, // Calculate the y-coordinate for the data
-        imageUrl ? dataYCoordinate - 315 : dataYCoordinate - 200
+        imageSrc ? dataYCoordinate - 315 : dataYCoordinate - 200
       );
       drawTexts(
         "Birthday",
@@ -441,30 +483,27 @@ export default function Kyc({ isVerified }) {
           }`
         ),
         50, // Calculate the y-coordinate for the data
-        imageUrl ? dataYCoordinate - 355 : dataYCoordinate - 240
+        imageSrc ? dataYCoordinate - 355 : dataYCoordinate - 240
       );
       drawTexts(
         "Profession",
-        `${
-          kycData[0]?.metadata?.governmentData?.profession || "N/A"
-        }`,
+        `${kycData[0]?.metadata?.governmentData?.profession || "N/A"}`,
         50, // Calculate the y-coordinate for the data
-        imageUrl ? dataYCoordinate - 395 : dataYCoordinate - 280
+        imageSrc ? dataYCoordinate - 395 : dataYCoordinate - 280
       );
       drawTexts(
         "Address",
         `${
-          kycData[0]?.metadata?.governmentData?.residence_AddressLine1 ||
-          "N/A"
+          kycData[0]?.metadata?.governmentData?.residence_AddressLine1 || "N/A"
         }`,
         50, // Calculate the y-coordinate for the data
-        imageUrl ? dataYCoordinate - 435 : dataYCoordinate - 320
+        imageSrc ? dataYCoordinate - 435 : dataYCoordinate - 320
       );
       drawTexts(
         "Date",
         formatTransactionDate(kycData[0]?.kycDate),
         50, // Calculate the y-coordinate for the data
-        imageUrl ? dataYCoordinate - 475 : dataYCoordinate - 360
+        imageSrc ? dataYCoordinate - 475 : dataYCoordinate - 360
       );
 
       // Add more KYC data as needed
@@ -476,7 +515,9 @@ export default function Kyc({ isVerified }) {
       const url = URL.createObjectURL(blob);
       window.open(url, "_blank");
       URL.revokeObjectURL(url);
+      setIsLoadingReceipt(false);
     } catch (error) {
+      setIsLoadingReceipt(false);
       console.error("Error generating PDF receipt:", error);
     }
   };
@@ -678,6 +719,7 @@ export default function Kyc({ isVerified }) {
                     borderRadius: "4%",
                     width: "100%",
                     objectFit: "cover",
+                    //transform: "rotate(90deg)"
                   }}
                   src={selfie}
                   loading="lazy"
@@ -810,9 +852,7 @@ export default function Kyc({ isVerified }) {
               <Typography>
                 <span style={{ fontWeight: "bold" }}>Driver's License:</span>
               </Typography>
-              <Typography>
-                {row?.drivers_license || "N/A"}
-              </Typography>
+              <Typography>{row?.drivers_license || "N/A"}</Typography>
             </Box>
             <Box
               sx={{
@@ -855,8 +895,7 @@ export default function Kyc({ isVerified }) {
                 <span style={{ fontWeight: "bold" }}>Address:</span>
               </Typography>
               <Typography>
-                {row?.metadata?.governmentData?.residence_AddressLine1 ||
-                  "N/A"}
+                {row?.metadata?.governmentData?.residence_AddressLine1 || "N/A"}
               </Typography>
             </Box>
             <Box
@@ -886,9 +925,14 @@ export default function Kyc({ isVerified }) {
             <Button
               variant="contained"
               color="primary"
+              disabled={isLoadingReceipt}
               onClick={() => generatePDFReceipt(kyc)}
             >
-              Download report
+              {isLoadingReceipt ? (
+                <CircularProgress size={23} color="inherit" />
+              ) : (
+                "Download report"
+              )}
             </Button>
           </Box>
           {isVerified === "unverified" && (
