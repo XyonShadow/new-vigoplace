@@ -146,91 +146,89 @@ function DailyReadings() {
   const [verseBeforeGospel, setVerseBeforeGospel] = useState(null);
 
   /////////////////////////////////////////////////////EDIT SECTION///////////////////////////////////////////////
-  const [fetchDate, setFetchDate] = useState(null);
-  const [id, setId] = useState(null);
-  const [editBibleReadingId, setEditBibleReadingId] = useState(null);
-  const [editDate, setEditDate] = useState(null);
-  const [editTitle, setEditTitle] = useState(null);
-  const [editReading1Verse, setEditReading1Verse] = useState(null);
-  const [editReading1Text, setEditReading1Text] = useState(null);
-  const [editReading1Option2Verse, setEditReading1Option2Verse] =
-    useState(null);
-  const [editReading1TextOption2, setEditReading1TextOption2] = useState(null);
-  const [editReading2Verse, setEditReading2Verse] = useState(null);
-  const [editReading2Text, setEditReading2Text] = useState(null);
-  const [editReading2Option1Verse, setEditReading2Option1Verse] =
-    useState(null);
-  const [editReading2TextOption1, setEditReading2TextOption1] = useState(null);
-  const [editReading3Verse, setEditReading3Verse] = useState(null);
-  const [editReading3Text, setEditReading3Text] = useState(null);
-  const [editReading4Verse, setEditReading4Verse] = useState(null);
-  const [editReading4Text, setEditReading4Text] = useState(null);
-  const [editReading5Verse, setEditReading5Verse] = useState(null);
-  const [editReading5Text, setEditReading5Text] = useState(null);
-  const [editReading6Verse, setEditReading6Verse] = useState(null);
-  const [editReading6Text, setEditReading6Text] = useState(null);
-  const [editReading7Verse, setEditReading7Verse] = useState(null);
-  const [editReading7Text, setEditReading7Text] = useState(null);
+  const [fetchDate, setFetchDate] = useState("");
+  const [id, setId] = useState("");
+  const [editBibleReadingId, setEditBibleReadingId] = useState("");
+  const [editDate, setEditDate] = useState("");
+  const [editTitle, setEditTitle] = useState("");
+  const [editReading1Verse, setEditReading1Verse] = useState("");
+  const [editReading1Text, setEditReading1Text] = useState("");
+  const [editReading1Option2Verse, setEditReading1Option2Verse] = useState("");
+  const [editReading1TextOption2, setEditReading1TextOption2] = useState("");
+  const [editReading2Verse, setEditReading2Verse] = useState("");
+  const [editReading2Text, setEditReading2Text] = useState("");
+  const [editReading2Option1Verse, setEditReading2Option1Verse] = useState("");
+  const [editReading2TextOption1, setEditReading2TextOption1] = useState("");
+  const [editReading3Verse, setEditReading3Verse] = useState("");
+  const [editReading3Text, setEditReading3Text] = useState("");
+  const [editReading4Verse, setEditReading4Verse] = useState("");
+  const [editReading4Text, setEditReading4Text] = useState("");
+  const [editReading5Verse, setEditReading5Verse] = useState("");
+  const [editReading5Text, setEditReading5Text] = useState("");
+  const [editReading6Verse, setEditReading6Verse] = useState("");
+  const [editReading6Text, setEditReading6Text] = useState("");
+  const [editReading7Verse, setEditReading7Verse] = useState("");
+  const [editReading7Text, setEditReading7Text] = useState("");
 
   //EDIT2ND BATCH
 
-  const [editProcessionPalmVerse, setEditProcessionPalmVerse] = useState(null);
+  const [editProcessionPalmVerse, setEditProcessionPalmVerse] = useState("");
   const [editProcessionPalmsGospel, setEditProcessionPalmsGospel] =
-    useState(null);
+    useState("");
   const [editProcessionPalmsGospel2Verse, setEditProcessionPalmsGospel2Verse] =
-    useState(null);
+    useState("");
   const [editProcessionPalmsGospel2Text, setEditProcessionPalmsGospel2Text] =
-    useState(null);
+    useState("");
   const [editResponsorialPsalmVerse, setEditResponsorialPsalmVerse] =
-    useState(null);
+    useState("");
   const [editResponsorialPsalmRespond, setEditResponsorialPsalmRespond] =
-    useState(null);
+    useState("");
   const [editResponsorialPsalmText1, setEditResponsorialPsalmText1] =
-    useState(null);
+    useState("");
   const [editResponsorialPsalmText2, setEditResponsorialPsalmText2] =
-    useState(null);
+    useState("");
   const [editResponsorialPsalmText3, setEditResponsorialPsalmText3] =
-    useState(null);
+    useState("");
   const [editResponsorialPsalmText4, setEditResponsorialPsalmText4] =
-    useState(null);
+    useState("");
   const [editResponsorialPsalmText5, setEditResponsorialPsalmText5] =
-    useState(null);
+    useState("");
   const [editResponsorialPsalmText6, setEditResponsorialPsalmText6] =
-    useState(null);
+    useState("");
   const [editResponsorialPsalmVerseOPT2, setEditResponsorialPsalmVerseOPT2] =
-    useState(null);
+    useState("");
   const [editResponsorialPsalmText1OPT2, setEditResponsorialPsalmText1OPT2] =
-    useState(null);
+    useState("");
   const [editResponsorialPsalmText2OPT2, setEditResponsorialPsalmText2OPT2] =
-    useState(null);
+    useState("");
   const [
     editResponsorialPsalmResponseOPT2,
     setEditResponsorialPsalmResponseOPT2,
-  ] = useState(null);
+  ] = useState("");
 
   const [editResponsorialPsalmText3OPT2, setEditResponsorialPsalmText3OPT2] =
-    useState(null);
+    useState("");
   const [editResponsorialPsalmText4OPT2, setEditResponsorialPsalmText4OPT2] =
-    useState(null);
+    useState("");
   const [editResponsorialPsalmText5OPT2, setEditResponsorialPsalmText5OPT2] =
-    useState(null);
+    useState("");
 
   ////EDIT 3RD BATCH
-  const [editResponsorialText1, setEditResponsorialText1] = useState(null);
-  const [editResponsorialText2, setEditResponsorialText2] = useState(null);
-  const [editResponsorialText3, setEditResponsorialText3] = useState(null);
-  const [editBeforeGospelText, setEditBeforeGospelText] = useState(null);
-  const [editVerseb4GospelOPT2, setEditVerseb4GospelOPT2] = useState(null);
-  const [editB4GospelTextOPT2, setEditB4GospelTextOPT2] = useState(null);
-  const [editAlleluiaVerse, setEditAlleluiaVerse] = useState(null);
-  const [editAlleluiaText, setEditAlleluiaText] = useState(null);
-  const [editAlleluiaOPT2, setEditAlleluiaOPT2] = useState(null);
-  const [editAlleluiaTextOPT2, setEditAlleluiaTextOPT2] = useState(null);
-  const [editGospelVerse, setEditGospelVerse] = useState(null);
-  const [editGospelText, setEditGospelText] = useState(null);
-  const [editGospelVerse2, setEditGospelVerse2] = useState(null);
-  const [editGospelTextOption2, setEditGospelTextOption2] = useState(null);
-  const [editVerseBeforeGospel, setEditVerseBeforeGospel] = useState(null);
+  const [editResponsorialText1, setEditResponsorialText1] = useState("");
+  const [editResponsorialText2, setEditResponsorialText2] = useState("");
+  const [editResponsorialText3, setEditResponsorialText3] = useState("");
+  const [editBeforeGospelText, setEditBeforeGospelText] = useState("");
+  const [editVerseb4GospelOPT2, setEditVerseb4GospelOPT2] = useState("");
+  const [editB4GospelTextOPT2, setEditB4GospelTextOPT2] = useState("");
+  const [editAlleluiaVerse, setEditAlleluiaVerse] = useState("");
+  const [editAlleluiaText, setEditAlleluiaText] = useState("");
+  const [editAlleluiaOPT2, setEditAlleluiaOPT2] = useState("");
+  const [editAlleluiaTextOPT2, setEditAlleluiaTextOPT2] = useState("");
+  const [editGospelVerse, setEditGospelVerse] = useState("");
+  const [editGospelText, setEditGospelText] = useState("");
+  const [editGospelVerse2, setEditGospelVerse2] = useState("");
+  const [editGospelTextOption2, setEditGospelTextOption2] = useState("");
+  const [editVerseBeforeGospel, setEditVerseBeforeGospel] = useState("");
 
   const [dailyReadingToast, setDailyReadingToast] = useState({
     error: false,
@@ -780,9 +778,16 @@ function DailyReadings() {
       onError: (err) => {
         console.log(err, "err fetching daily reading");
       },
+      refetchOnWindowFocus: false,
+      refetchOnMount: true,
+      staleTime: 1000 * 60 * 5,
       enabled: !!user?.token && !!fetchDate,
     }
   );
+
+  useEffect(() => {
+    refetch();
+  }, [fetchDate, refetch]);
 
   const dailyReading = async ({
     title,
@@ -1111,64 +1116,12 @@ function DailyReadings() {
       setTimeout(() => {
         setEditDailyReadingToast({ ...editDailyReadingToast, success: false });
       }, 3000);
-      localStorage.setItem("readingTabValue", String(1));
-      router.refresh();
-      setId(null);
-      setEditBibleReadingId(null);
-      setEditDate(null);
-      setEditTitle(null);
-      setEditReading1Verse(null);
-      setEditReading1Text(null);
-      setEditReading1Option2Verse(null);
-      setEditReading1TextOption2(null);
-      setEditReading2Verse(null);
-      setEditReading2Text(null);
-      setEditReading2Option1Verse(null);
-      setEditReading2TextOption1(null);
-      setEditReading3Verse(null);
-      setEditReading3Text(null);
-      setEditReading4Verse(null);
-      setEditReading4Text(null);
-      setEditReading5Verse(null);
-      setEditReading5Text(null);
-      setEditReading6Verse(null);
-      setEditReading6Text(null);
-      setEditReading7Verse(null);
-      setEditReading7Text(null);
-      setEditProcessionPalmVerse(null);
-      setEditProcessionPalmsGospel(null);
-      setEditProcessionPalmsGospel2Verse(null);
-      setEditProcessionPalmsGospel2Text(null);
-      setEditResponsorialPsalmVerse(null);
-      setEditResponsorialPsalmRespond(null);
-      setEditResponsorialPsalmText1(null);
-      setEditResponsorialPsalmText2(null);
-      setEditResponsorialPsalmText3(null);
-      setEditResponsorialPsalmText4(null);
-      setEditResponsorialPsalmText5(null);
-      setEditResponsorialPsalmText6(null);
-      setEditResponsorialPsalmVerseOPT2(null);
-      setEditResponsorialPsalmText1OPT2(null);
-      setEditResponsorialPsalmText2OPT2(null);
-      setEditResponsorialPsalmResponseOPT2(null);
-      setEditResponsorialPsalmText3OPT2(null);
-      setEditResponsorialPsalmText4OPT2(null);
-      setEditResponsorialPsalmText5OPT2(null);
-      setEditResponsorialText1(null);
-      setEditResponsorialText2(null);
-      setEditResponsorialText3(null);
-      setEditBeforeGospelText(null);
-      setEditVerseb4GospelOPT2(null);
-      setEditB4GospelTextOPT2(null);
-      setEditAlleluiaVerse(null);
-      setEditAlleluiaText(null);
-      setEditAlleluiaOPT2(null);
-      setEditAlleluiaTextOPT2(null);
-      setEditGospelVerse(null);
-      setEditGospelText(null);
-      setEditGospelVerse2(null);
-      setEditGospelTextOption2(null);
-      setEditVerseBeforeGospel(null);
+      setTimeout(() => {
+        router.refresh();
+      }, 1000);
+      setId("");
+      setEditBibleReadingId("");
+      setEditDate("");
     },
     onError: async (error) => {
       console.log(error);
@@ -2672,12 +2625,15 @@ function DailyReadings() {
                         <AccordionDetails>
                           <TextField
                             fullWidth
-                            label={editTitle ? "" : "Title"}
+                            label="Title"
                             margin="normal"
                             name="title"
                             onChange={handleEditTitle}
                             type="text"
                             multiline
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
                             value={editTitle}
                             variant="outlined"
                             sx={{
@@ -2699,13 +2655,16 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={editReading1Verse ? "" : "Reading1 Verse"}
+                              label="Reading1 Verse"
                               margin="normal"
                               name="reading1Verse"
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               onChange={handleEditReading1Verse}
-                              value={editReading1Verse || ""}
+                              value={editReading1Verse}
                               variant="outlined"
                               sx={{
                                 "& .MuiInputLabel-root": {
@@ -2716,13 +2675,16 @@ function DailyReadings() {
                             />
                             <TextField
                               fullWidth
-                              label={editReading1Text ? "" : "Reading1 Text"}
+                              label="Reading1 Text"
                               margin="normal"
                               name="reading1Text"
                               onChange={handleEditReading1Text}
                               type="text"
                               multiline
-                              value={editReading1Text || ""}
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
+                              value={editReading1Text}
                               variant="outlined"
                               sx={{
                                 "& .MuiInputLabel-root": {
@@ -2742,16 +2704,15 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={
-                                editReading1Option2Verse
-                                  ? ""
-                                  : "Reading1 Option2 Verse"
-                              }
+                              label="Reading1 Option2 Verse"
                               margin="normal"
                               name="reading1Option2Verse"
                               onChange={handleEditReading1Option2Verse}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editReading1Option2Verse}
                               variant="outlined"
                               sx={{
@@ -2764,16 +2725,15 @@ function DailyReadings() {
 
                             <TextField
                               fullWidth
-                              label={
-                                editReading1TextOption2
-                                  ? ""
-                                  : "Reading1 Text Option2"
-                              }
+                              label="Reading1 Text Option2"
                               margin="normal"
                               name="reading1TextOption2"
                               onChange={handleEditReading1TextOption2}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editReading1TextOption2}
                               variant="outlined"
                               sx={{
@@ -2794,12 +2754,15 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={editReading2Verse ? "" : "Reading2 Verse"}
+                              label="Reading2 Verse"
                               margin="normal"
                               name="reading2Verse"
                               onChange={handleEditReading2Verse}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editReading2Verse}
                               variant="outlined"
                               sx={{
@@ -2812,12 +2775,15 @@ function DailyReadings() {
 
                             <TextField
                               fullWidth
-                              label={editReading2Text ? "" : "Reading2 Text"}
+                              label="Reading2 Text"
                               margin="normal"
                               name="reading2Text"
                               onChange={handleEditReading2Text}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editReading2Text}
                               variant="outlined"
                               sx={{
@@ -2838,16 +2804,15 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={
-                                editReading2Option1Verse
-                                  ? ""
-                                  : "Reading2 Option1 Verse"
-                              }
+                              label="Reading2 Option1 Verse"
                               margin="normal"
                               name="reading2Option1Verse"
                               onChange={handleEditReading2Option1Verse}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editReading2Option1Verse}
                               variant="outlined"
                               sx={{
@@ -2860,16 +2825,15 @@ function DailyReadings() {
 
                             <TextField
                               fullWidth
-                              label={
-                                editReading2TextOption1
-                                  ? ""
-                                  : "Reading2 Text Option1"
-                              }
+                              label="Reading2 Text Option1"
                               margin="normal"
                               name="reading2TextOption1"
                               onChange={handleEditReading2TextOption1}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editReading2TextOption1}
                               variant="outlined"
                               sx={{
@@ -2890,12 +2854,15 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={editReading3Verse ? "" : "Reading3 Verse"}
+                              label="Reading3 Verse"
                               margin="normal"
                               name="reading3Verse"
                               onChange={handleEditReading3Verse}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editReading3Verse}
                               variant="outlined"
                               sx={{
@@ -2908,12 +2875,15 @@ function DailyReadings() {
 
                             <TextField
                               fullWidth
-                              label={editReading3Text ? "" : "Reading3 Text"}
+                              label="Reading3 Text"
                               margin="normal"
                               name="reading3Text"
                               onChange={handleEditReading3Text}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editReading3Text}
                               variant="outlined"
                               sx={{
@@ -2934,12 +2904,15 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={editReading4Verse ? "" : "Reading4 Verse"}
+                              label="Reading4 Verse"
                               margin="normal"
                               name="reading4Verse"
                               onChange={handleEditReading4Verse}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editReading4Verse}
                               variant="outlined"
                               sx={{
@@ -2952,12 +2925,15 @@ function DailyReadings() {
 
                             <TextField
                               fullWidth
-                              label={editReading4Text ? "" : "Reading4 Text"}
+                              label="Reading4 Text"
                               margin="normal"
                               name="reading4Text"
                               onChange={handleEditReading4Text}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editReading4Text}
                               variant="outlined"
                               sx={{
@@ -2977,12 +2953,15 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={editReading5Verse ? "" : "Reading5 Verse"}
+                              label="Reading5 Verse"
                               margin="normal"
                               name="reading5Verse"
                               onChange={handleEditReading5Verse}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editReading5Verse}
                               variant="outlined"
                               sx={{
@@ -2995,12 +2974,15 @@ function DailyReadings() {
 
                             <TextField
                               fullWidth
-                              label={editReading5Text ? "" : "Reading5 Text"}
+                              label="Reading5 Text"
                               margin="normal"
                               name="reading5Text"
                               onChange={handleEditReading5Text}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editReading5Text}
                               variant="outlined"
                               sx={{
@@ -3021,12 +3003,15 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={editReading6Verse ? "" : "Reading6 Verse"}
+                              label="Reading6 Verse"
                               margin="normal"
                               name="reading6Verse"
                               onChange={handleEditReading6Verse}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editReading6Verse}
                               variant="outlined"
                               sx={{
@@ -3039,12 +3024,15 @@ function DailyReadings() {
 
                             <TextField
                               fullWidth
-                              label={editReading6Text ? "" : "Reading6 Text"}
+                              label="Reading6 Text"
                               margin="normal"
                               name="reading6Text"
                               onChange={handleEditReading6Text}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editReading6Text}
                               variant="outlined"
                               sx={{
@@ -3065,12 +3053,15 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={editReading7Verse ? "" : "Reading7 Verse"}
+                              label="Reading7 Verse"
                               margin="normal"
                               name="reading7Verse"
                               onChange={handleEditReading7Verse}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editReading7Verse}
                               variant="outlined"
                               sx={{
@@ -3083,12 +3074,15 @@ function DailyReadings() {
 
                             <TextField
                               fullWidth
-                              label={editReading7Text ? "" : "Reading7 Text"}
+                              label="Reading7 Text"
                               margin="normal"
                               name="reading7Text"
                               onChange={handleEditReading7Text}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editReading7Text}
                               variant="outlined"
                               sx={{
@@ -3109,16 +3103,15 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={
-                                editProcessionPalmVerse
-                                  ? ""
-                                  : "Procession Psalm Verse"
-                              }
+                              label="Procession Psalm Verse"
                               margin="normal"
                               name="processionPalmVerse"
                               onChange={handleEditProcessionPalmVerse}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editProcessionPalmVerse}
                               variant="outlined"
                               sx={{
@@ -3138,16 +3131,15 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={
-                                editProcessionPalmsGospel
-                                  ? ""
-                                  : "Procession Psalms Gospel"
-                              }
+                              label="Procession Psalms Gospel"
                               margin="normal"
                               name="processionPalmsGospel"
                               onChange={handleEditProcessionPalmsGospel}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editProcessionPalmsGospel}
                               variant="outlined"
                               sx={{
@@ -3168,16 +3160,15 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={
-                                editProcessionPalmsGospel2Verse
-                                  ? ""
-                                  : "Procession Psalms Gospel2 Verse"
-                              }
+                              label="Procession Psalms Gospel2 Verse"
                               margin="normal"
                               name="processionPalmsGospel2Verse"
                               onChange={handleEditProcessionPalmsGospel2Verse}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editProcessionPalmsGospel2Verse}
                               variant="outlined"
                               sx={{
@@ -3190,16 +3181,15 @@ function DailyReadings() {
 
                             <TextField
                               fullWidth
-                              label={
-                                editProcessionPalmsGospel2Text
-                                  ? ""
-                                  : "Procession Psalms Gospel2 Text"
-                              }
+                              label="Procession Psalms Gospel2 Text"
                               margin="normal"
                               name="processionPalmsGospel2Text"
                               onChange={handleEditProcessionPalmsGospel2Text}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editProcessionPalmsGospel2Text}
                               variant="outlined"
                               sx={{
@@ -3220,16 +3210,15 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={
-                                editResponsorialPsalmVerse
-                                  ? ""
-                                  : "Responsorial Psalm Verse"
-                              }
+                              label="Responsorial Psalm Verse"
                               margin="normal"
                               name="responsorialPsalmVerse"
                               onChange={handleEditResponsorialPsalmVerse}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editResponsorialPsalmVerse}
                               variant="outlined"
                               sx={{
@@ -3243,16 +3232,15 @@ function DailyReadings() {
                             <>
                               <TextField
                                 fullWidth
-                                label={
-                                  editResponsorialPsalmRespond
-                                    ? ""
-                                    : "Responsorial Psalm Respond"
-                                }
+                                label="Responsorial Psalm Respond"
                                 margin="normal"
                                 name="responsorialPsalmRespond"
                                 onChange={handleEditResponsorialPsalmRespond}
                                 type="text"
                                 multiline
+                                InputLabelProps={{
+                                  shrink: true,
+                                }}
                                 value={editResponsorialPsalmRespond}
                                 variant="outlined"
                                 sx={{
@@ -3264,16 +3252,15 @@ function DailyReadings() {
                               />
                               <TextField
                                 fullWidth
-                                label={
-                                  editResponsorialPsalmText1
-                                    ? ""
-                                    : "Responsorial Psalm Text1"
-                                }
+                                label="Responsorial Psalm Text1"
                                 margin="normal"
                                 name="responsorialPsalmText1"
                                 onChange={handleEditResponsorialPsalmText1}
                                 type="text"
                                 multiline
+                                InputLabelProps={{
+                                  shrink: true,
+                                }}
                                 value={editResponsorialPsalmText1}
                                 variant="outlined"
                                 sx={{
@@ -3294,16 +3281,15 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={
-                                editResponsorialPsalmText2
-                                  ? ""
-                                  : "Responsorial Psalm Text2"
-                              }
+                              label="Responsorial Psalm Text2"
                               margin="normal"
                               name="responsorialPsalmText2"
                               onChange={handleEditResponsorialPsalmText2}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editResponsorialPsalmText2}
                               variant="outlined"
                               sx={{
@@ -3323,16 +3309,15 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={
-                                editResponsorialPsalmText3
-                                  ? ""
-                                  : "Responsorial Psalm Text3"
-                              }
+                              label="Responsorial Psalm Text3"
                               margin="normal"
                               name="responsorialPsalmText3"
                               onChange={handleEditResponsorialPsalmText3}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editResponsorialPsalmText3}
                               variant="outlined"
                               sx={{
@@ -3352,16 +3337,15 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={
-                                editResponsorialPsalmText4
-                                  ? ""
-                                  : "Responsorial Psalm Text4"
-                              }
+                              label="Responsorial Psalm Text4"
                               margin="normal"
                               name="responsorialPsalmText4"
                               onChange={handleEditResponsorialPsalmText4}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editResponsorialPsalmText4}
                               variant="outlined"
                               sx={{
@@ -3381,16 +3365,15 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={
-                                editResponsorialPsalmText5
-                                  ? ""
-                                  : "Responsorial Psalm Text5"
-                              }
+                              label="Responsorial Psalm Text5"
                               margin="normal"
                               name="responsorialPsalmText5"
                               onChange={handleEditResponsorialPsalmText5}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editResponsorialPsalmText5}
                               variant="outlined"
                               sx={{
@@ -3410,16 +3393,15 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={
-                                editResponsorialPsalmText6
-                                  ? ""
-                                  : "Responsorial Psalm Text6"
-                              }
+                              label="Responsorial Psalm Text6"
                               margin="normal"
                               name="responsorialPsalmText6"
                               onChange={handleEditResponsorialPsalmText6}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editResponsorialPsalmText6}
                               variant="outlined"
                               sx={{
@@ -3440,16 +3422,15 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={
-                                editResponsorialPsalmVerseOPT2
-                                  ? ""
-                                  : "Responsorial Psalm Verse OPT2"
-                              }
+                              label="Responsorial Psalm Verse OPT2"
                               margin="normal"
                               name="responsorialPsalmVerseOPT2"
                               onChange={handleEditResponsorialPsalmVerseOPT2}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editResponsorialPsalmVerseOPT2}
                               variant="outlined"
                               sx={{
@@ -3462,16 +3443,15 @@ function DailyReadings() {
 
                             <TextField
                               fullWidth
-                              label={
-                                editResponsorialPsalmResponseOPT2
-                                  ? ""
-                                  : "Responsorial Psalm Response OPT2"
-                              }
+                              label="Responsorial Psalm Response OPT2"
                               margin="normal"
                               name="responsorialPsalmResponseOPT2"
                               onChange={handleEditResponsorialPsalmResponseOPT2}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editResponsorialPsalmResponseOPT2}
                               variant="outlined"
                               sx={{
@@ -3484,16 +3464,15 @@ function DailyReadings() {
 
                             <TextField
                               fullWidth
-                              label={
-                                editResponsorialPsalmText1OPT2
-                                  ? ""
-                                  : "Responsorial Psalm Text1 OPT2"
-                              }
+                              label="Responsorial Psalm Text1 OPT2"
                               margin="normal"
                               name="responsorialPsalmText1OPT2"
                               onChange={handleEditResponsorialPsalmText1OPT2}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editResponsorialPsalmText1OPT2}
                               variant="outlined"
                               sx={{
@@ -3513,16 +3492,15 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={
-                                editResponsorialPsalmText2OPT2
-                                  ? ""
-                                  : "Responsorial Psalm Text2 OPT2"
-                              }
+                              label="Responsorial Psalm Text2 OPT2"
                               margin="normal"
                               name="responsorialPsalmText2OPT2"
                               onChange={handleEditResponsorialPsalmText2OPT2}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editResponsorialPsalmText2OPT2}
                               variant="outlined"
                               sx={{
@@ -3542,16 +3520,15 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={
-                                editResponsorialPsalmText3OPT2
-                                  ? ""
-                                  : "Responsorial Psalm Text3 OPT2"
-                              }
+                              label="Responsorial Psalm Text3 OPT2"
                               margin="normal"
                               name="responsorialPsalmText3OPT2"
                               onChange={handleEditResponsorialPsalmText3OPT2}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editResponsorialPsalmText3OPT2}
                               variant="outlined"
                               sx={{
@@ -3571,16 +3548,15 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={
-                                editResponsorialPsalmText4OPT2
-                                  ? ""
-                                  : "Responsorial Psalm Text4 OPT2"
-                              }
+                              label="Responsorial Psalm Text4 OPT2"
                               margin="normal"
                               name="responsorialPsalmText4OPT2"
                               onChange={handleEditResponsorialPsalmText4OPT2}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editResponsorialPsalmText4OPT2}
                               variant="outlined"
                               sx={{
@@ -3600,16 +3576,15 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={
-                                editResponsorialPsalmText5OPT2
-                                  ? ""
-                                  : "Responsorial Psalm Text5 OPT2"
-                              }
+                              label="Responsorial Psalm Text5 OPT2"
                               margin="normal"
                               name="responsorialPsalmText5OPT2"
                               onChange={handleEditResponsorialPsalmText5OPT2}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editResponsorialPsalmText5OPT2}
                               variant="outlined"
                               sx={{
@@ -3629,14 +3604,15 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={
-                                editResponsorialText1 ? "" : "ResponsorialText1"
-                              }
+                              label="ResponsorialText1"
                               margin="normal"
                               name="responsorialText1"
                               onChange={handleEditResponsorialText1}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editResponsorialText1}
                               variant="outlined"
                               sx={{
@@ -3656,14 +3632,15 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={
-                                editResponsorialText2 ? "" : "ResponsorialText2"
-                              }
+                              label="ResponsorialText2"
                               margin="normal"
                               name="responsorialText2"
                               onChange={handleEditResponsorialText2}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editResponsorialText2}
                               variant="outlined"
                               sx={{
@@ -3683,16 +3660,15 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={
-                                editResponsorialText3
-                                  ? ""
-                                  : "Responsorial Text 3"
-                              }
+                              label="Responsorial Text 3"
                               margin="normal"
                               name="responsorialText3"
                               onChange={handleEditResponsorialText3}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editResponsorialText3}
                               variant="outlined"
                               sx={{
@@ -3712,14 +3688,15 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={
-                                editBeforeGospelText ? "" : "Before Gospel Text"
-                              }
+                              label="Before Gospel Text"
                               margin="normal"
                               name="beforeGospelText"
                               onChange={handleEditBeforeGospelText}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editBeforeGospelText}
                               variant="outlined"
                               sx={{
@@ -3740,16 +3717,15 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={
-                                editVerseb4GospelOPT2
-                                  ? ""
-                                  : "Verse before Gospel OPT2"
-                              }
+                              label="Verse before Gospel OPT2"
                               margin="normal"
                               name="verseb4GospelOPT2"
                               onChange={handleEditVerseb4GospelOPT2}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editVerseb4GospelOPT2}
                               variant="outlined"
                               sx={{
@@ -3762,16 +3738,15 @@ function DailyReadings() {
 
                             <TextField
                               fullWidth
-                              label={
-                                editB4GospelTextOPT2
-                                  ? ""
-                                  : "Before Gospel Text OPT2"
-                              }
+                              label="Before Gospel Text OPT2"
                               margin="normal"
                               name="b4GospelTextOPT2"
                               onChange={handleEditB4GospelTextOPT2}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editB4GospelTextOPT2}
                               variant="outlined"
                               sx={{
@@ -3792,12 +3767,15 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={editAlleluiaVerse ? "" : "Alleluia Verse"}
+                              label="Alleluia Verse"
                               margin="normal"
                               name="alleluiaVerse"
                               onChange={handleEditAlleluiaVerse}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editAlleluiaVerse}
                               variant="outlined"
                               sx={{
@@ -3810,12 +3788,15 @@ function DailyReadings() {
 
                             <TextField
                               fullWidth
-                              label={editAlleluiaText ? "" : "Alleluia Text"}
+                              label="Alleluia Text"
                               margin="normal"
                               name="alleluiaText"
                               onChange={handleEditAlleluiaText}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editAlleluiaText}
                               variant="outlined"
                               sx={{
@@ -3835,12 +3816,15 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={editAlleluiaOPT2 ? "" : "Alleluia OPT2"}
+                              label="Alleluia OPT2"
                               margin="normal"
                               name="alleluiaOPT2"
                               onChange={handleEditAlleluiaOPT2}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editAlleluiaOPT2}
                               variant="outlined"
                               sx={{
@@ -3853,14 +3837,15 @@ function DailyReadings() {
 
                             <TextField
                               fullWidth
-                              label={
-                                editAlleluiaTextOPT2 ? "" : "Alleluia Text OPT2"
-                              }
+                              label="Alleluia Text OPT2"
                               margin="normal"
                               name="alleluiaTextOPT2"
                               onChange={handleEditAlleluiaTextOPT2}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editAlleluiaTextOPT2}
                               variant="outlined"
                               sx={{
@@ -3881,12 +3866,15 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={editGospelVerse ? "" : "Gospel Verse"}
+                              label="Gospel Verse"
                               margin="normal"
                               name="gospelVerse"
                               onChange={handleEditGospelVerse}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editGospelVerse}
                               variant="outlined"
                               sx={{
@@ -3899,12 +3887,15 @@ function DailyReadings() {
 
                             <TextField
                               fullWidth
-                              label={editGospelText ? "" : "Gospel Text"}
+                              label="Gospel Text"
                               margin="normal"
                               name="gospelText"
                               onChange={handleEditGospelText}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editGospelText}
                               variant="outlined"
                               sx={{
@@ -3925,12 +3916,15 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={editGospelVerse2 ? "" : "Gospel Verse 2"}
+                              label="Gospel Verse 2"
                               margin="normal"
                               name="gospelVerse2"
                               onChange={handleEditGospelVerse2}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editGospelVerse2}
                               variant="outlined"
                               sx={{
@@ -3943,16 +3937,15 @@ function DailyReadings() {
 
                             <TextField
                               fullWidth
-                              label={
-                                editGospelTextOption2
-                                  ? ""
-                                  : "Gospel Text Option2"
-                              }
+                              label="Gospel Text Option2"
                               margin="normal"
                               name="gospelTextOption2"
                               onChange={handleEditGospelTextOption2}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editGospelTextOption2}
                               variant="outlined"
                               sx={{
@@ -3972,16 +3965,15 @@ function DailyReadings() {
                           <AccordionDetails>
                             <TextField
                               fullWidth
-                              label={
-                                editVerseBeforeGospel
-                                  ? ""
-                                  : "Verse Before Gospel"
-                              }
+                              label="Verse Before Gospel"
                               margin="normal"
                               name="verseBeforeGospel"
                               onChange={handleEditVerseBeforeGospel}
                               type="text"
                               multiline
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
                               value={editVerseBeforeGospel}
                               variant="outlined"
                               sx={{
