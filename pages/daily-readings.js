@@ -132,6 +132,7 @@ function DailyReadings() {
   const [responsorialText1, setResponsorialText1] = useState(null);
   const [responsorialText2, setResponsorialText2] = useState(null);
   const [responsorialText3, setResponsorialText3] = useState(null);
+  const [verseBeforeGospel, setVerseBeforeGospel] = useState(null);
   const [beforeGospelText, setBeforeGospelText] = useState(null);
   const [verseb4GospelOPT2, setVerseb4GospelOPT2] = useState(null);
   const [b4GospelTextOPT2, setB4GospelTextOPT2] = useState(null);
@@ -143,7 +144,6 @@ function DailyReadings() {
   const [gospelText, setGospelText] = useState(null);
   const [gospelVerse2, setGospelVerse2] = useState(null);
   const [gospelTextOption2, setGospelTextOption2] = useState(null);
-  const [verseBeforeGospel, setVerseBeforeGospel] = useState(null);
 
   /////////////////////////////////////////////////////EDIT SECTION///////////////////////////////////////////////
   const [fetchDate, setFetchDate] = useState("");
@@ -2213,32 +2213,55 @@ function DailyReadings() {
 
                       <Accordion>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          Before Gospel Text
+                          Before Gospel
                         </AccordionSummary>
                         <AccordionDetails>
-                          <TextField
-                            fullWidth
-                            label="Before Gospel Text"
-                            margin="normal"
-                            name="beforeGospelText"
-                            onChange={handleBeforeGospelText}
-                            type="text"
-                            multiline
-                            value={beforeGospelText ?? ""}
-                            variant="outlined"
-                            sx={{
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
+                          <>
+                            <TextField
+                              fullWidth
+                              label="Verse Before Gospel"
+                              margin="normal"
+                              name="verseBeforeGospel"
+                              onChange={handleVerseBeforeGospel}
+                              type="text"
+                              multiline
+                              value={verseBeforeGospel ?? ""}
+                              variant="outlined"
+                              sx={{
+                                "& .MuiInputLabel-root": {
+                                  lineHeight: "15px",
+                                  fontSize: "smaller",
+                                },
+                              }}
+                            />
+
+                            {verseBeforeGospel && (
+                              <TextField
+                                fullWidth
+                                label="Before Gospel Text"
+                                margin="normal"
+                                name="beforeGospelText"
+                                onChange={handleBeforeGospelText}
+                                type="text"
+                                multiline
+                                value={beforeGospelText ?? ""}
+                                variant="outlined"
+                                sx={{
+                                  "& .MuiInputLabel-root": {
+                                    lineHeight: "15px",
+                                    fontSize: "smaller",
+                                  },
+                                }}
+                              />
+                            )}
+                          </>
                         </AccordionDetails>
                       </Accordion>
+
                       {/*VERSE B4 GOSPEL OPT2*/}
                       <Accordion>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          Verse before Gospel OPT2
+                          Before Gospel OPT2
                         </AccordionSummary>
                         <AccordionDetails>
                           <TextField
@@ -2460,31 +2483,6 @@ function DailyReadings() {
                               }}
                             />
                           )}
-                        </AccordionDetails>
-                      </Accordion>
-
-                      <Accordion>
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          Verse Before Gospel
-                        </AccordionSummary>
-                        <AccordionDetails>
-                          <TextField
-                            fullWidth
-                            label="Verse Before Gospel"
-                            margin="normal"
-                            name="verseBeforeGospel"
-                            onChange={handleVerseBeforeGospel}
-                            type="text"
-                            multiline
-                            value={verseBeforeGospel ?? ""}
-                            variant="outlined"
-                            sx={{
-                              "& .MuiInputLabel-root": {
-                                lineHeight: "15px",
-                                fontSize: "smaller",
-                              },
-                            }}
-                          />
                         </AccordionDetails>
                       </Accordion>
                     </>

@@ -271,7 +271,7 @@ export default function Kyc({ isVerified }) {
 
       ///////////////////IMAGE MANIPULATION////////////////
 
-      if (selfie && nin && imageSrc) {
+      if (imageSrc) {
         // Function to download the image from Cloudinary
         async function downloadImageFromCloudinary(selfie) {
           try {
@@ -288,11 +288,23 @@ export default function Kyc({ isVerified }) {
 
         const bvnData = await downloadImageFromCloudinary(imageSrc);
 
-        const selfieUrl = await uploadImageToCloudinary(selfie);
-        const selfieData = await downloadImageFromCloudinary(selfieUrl);
+        const selfieUrl = selfie
+          ? await uploadImageToCloudinary(selfie)
+          : selfieUrl;
+        const selfieData = selfie
+          ? await downloadImageFromCloudinary(selfieUrl)
+          : await downloadImageFromCloudinary(
+              "https://res.cloudinary.com/dnhu3eqn5/image/upload/v1739407699/download_lkfpj2.png"
+            );
 
-        const ninUrl = await uploadImageToCloudinary(nin);
-        const ninData = await downloadImageFromCloudinary(ninUrl);
+        const ninUrl = nin
+          ? await uploadImageToCloudinary(nin)
+          : await downloadImageFromCloudinary(
+              "https://res.cloudinary.com/dnhu3eqn5/image/upload/v1739407699/download_lkfpj2.png"
+            );
+        const ninData = nin
+          ? await downloadImageFromCloudinary(ninUrl)
+          : ninUrl;
 
         // Embed the image into the PDF document
         const selfieImage = await pdfDoc.embedJpg(selfieData);
