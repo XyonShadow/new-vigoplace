@@ -152,6 +152,18 @@ const Users = () => {
     React.useState(false);
   const [offAutoPayoutErrorToast, setoffAutoPayoutErrorToast] =
     React.useState(false);
+
+
+    const [virtualChargeSuccessToast, setVirtualChargeSuccessToast] =
+    React.useState(false);
+  const [virtualChargeErrorToast, setVirtualChargeErrorToast] = React.useState(false);
+  const [offVirtualChargeSuccessToast, setOffVirtualChargeSuccessToast] =
+    React.useState(false);
+  const [offVirtualChargeErrorToast, setOffVirtualChargeErrorToast] =
+    React.useState(false);
+
+
+
   const [autoEarningSuccessToast, setAutoEarningSuccessToast] =
     React.useState(false);
   const [autoEarningErrorToast, setAutoEarningErrorToast] =
@@ -164,6 +176,11 @@ const Users = () => {
   const [ticketModal, setTicketModal] = React.useState(false);
   const [autoPayoutModal, setAutoPayoutModal] = React.useState(false);
   const [offAutoPayoutModal, setOffAutoPayoutModal] = React.useState(false);
+
+  const [virtualChargeModal, setVirtualChargeModal] = React.useState(false);
+  const [offVirtualChargeModal, setOffVirtualChargeModal] = React.useState(false);
+
+
   const [autoEarningModal, setAutoEarningModal] = React.useState(false);
   const [offAutoEarningModal, setOffAutoEarningModal] = React.useState(false);
   const [notifyModal, setNotifyModal] = React.useState(false);
@@ -926,6 +943,72 @@ const Users = () => {
     },
   });
 
+  const virtualCharge = async ({ id, pin }) => {
+    const addVirtualCharge = await axios.patch(
+      //"http://localhost:4000/api/admin/console/users/kycverify",
+      "https://api.vigoplace.com/api/admin/console/virtual-charge/update",
+      { userId: id, approvalPin: pin, virtualCharge: true },
+      {
+        headers: {
+          Authorization: user?.token,
+        },
+      }
+    );
+
+    return addVirtualCharge;
+  };
+
+  const virtualChargeMutation = useMutation({
+    mutationKey: ["virtualCharge"],
+    mutationFn: virtualCharge,
+    onSuccess: () => {
+      setPin("");
+      setVirtualChargeSuccessToast(true);
+      queryClient.invalidateQueries("fetchSingleUser");
+      setTimeout(() => {
+        virtualChargeMutation.reset();
+      }, 7000);
+    },
+    onError: async (error) => {
+      console.log(error);
+      setVirtualChargeErrorToast(true);
+      setPin("");
+    },
+  });
+
+  const offVirtualCharge = async ({ id, pin }) => {
+    const removeVirtualCharge = await axios.patch(
+      //"http://localhost:4000/api/admin/console/users/kycverify",
+      "https://api.vigoplace.com/api/admin/console/virtual-charge/update",
+      { userId: id, approvalPin: pin, virtualCharge: false },
+      {
+        headers: {
+          Authorization: user?.token,
+        },
+      }
+    );
+
+    return removeVirtualCharge;
+  };
+
+  const offVirtualChargeMutation = useMutation({
+    mutationKey: ["offVirtualCharge"],
+    mutationFn: offVirtualCharge,
+    onSuccess: () => {
+      setPin("");
+      setOffVirtualChargeSuccessToast(true);
+      queryClient.invalidateQueries("fetchSingleUser");
+      setTimeout(() => {
+        offVirtualChargeMutation.reset();
+      }, 7000);
+    },
+    onError: async (error) => {
+      console.log(error);
+      setOffVirtualChargeErrorToast(true);
+      setPin("");
+    },
+  });
+
   const autoEarning = async ({ id, pin }) => {
     const verifyAutoEarning = await axios.patch(
       //"http://localhost:4000/api/admin/console/users/kycverify",
@@ -1053,6 +1136,22 @@ const Users = () => {
   };
   const handleoffAutoPayoutErrorToastClose = (event, reason) => {
     setoffAutoPayoutErrorToast(false);
+  };
+
+
+
+  const handleVirtualChargeSuccessToastClose = (event, reason) => {
+    setVirtualChargeSuccessToast(false);
+  };
+  const handleVirtualChargeErrorToastClose = (event, reason) => {
+    setVirtualChargeErrorToast(false);
+  };
+
+  const handleOffVirtualChargeSuccessToastClose = (event, reason) => {
+    setOffVirtualChargeSuccessToast(false);
+  };
+  const handleOffVirtualChargeErrorToastClose = (event, reason) => {
+    setOffVirtualChargeErrorToast(false);
   };
 
   const handleAutoEarningSuccessToastClose = (event, reason) => {
@@ -1415,6 +1514,69 @@ const Users = () => {
         </Alert>
       </Snackbar>
 
+
+      <Snackbar
+        TransitionComponent={Slide}
+        open={virtualChargeSuccessToast}
+        autoHideDuration={6000}
+        onClose={handleVirtualChargeSuccessToastClose}
+      >
+        <Alert
+          onClose={handleVirtualChargeSuccessToastClose}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {virtualChargeMutation?.data?.data?.message}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        TransitionComponent={Slide}
+        open={virtualChargeErrorToast}
+        autoHideDuration={6000}
+        onClose={handleVirtualChargeErrorToastClose}
+      >
+        <Alert
+          onClose={handleVirtualChargeErrorToastClose}
+          severity="warning"
+          sx={{ width: "100%" }}
+        >
+          {virtualChargeMutation?.error?.response?.data?.message}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        TransitionComponent={Slide}
+        open={offVirtualChargeSuccessToast}
+        autoHideDuration={6000}
+        onClose={handleOffVirtualChargeSuccessToastClose}
+      >
+        <Alert
+          onClose={handleOffVirtualChargeSuccessToastClose}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {offVirtualChargeMutation?.data?.data?.message}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        TransitionComponent={Slide}
+        open={offVirtualChargeErrorToast}
+        autoHideDuration={6000}
+        onClose={handleOffVirtualChargeErrorToastClose}
+      >
+        <Alert
+          onClose={handleOffVirtualChargeErrorToastClose}
+          severity="warning"
+          sx={{ width: "100%" }}
+        >
+          {offVirtualChargeMutation?.error?.response?.data?.message}
+        </Alert>
+      </Snackbar>
+
+
+
       <Snackbar
         TransitionComponent={Slide}
         open={autoEarningSuccessToast}
@@ -1561,6 +1723,13 @@ const Users = () => {
                 sx={{ marginBottom: "5px" }}
               >
                 <b>BIO:</b> {userDetails?.data?.user?.bio}
+              </Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ marginBottom: "5px" }}
+              >
+                <b>Virtual Account:</b> {userDetails?.data?.user?.virtualAccount}
               </Typography>
               <Typography
                 variant="body2"
@@ -2279,6 +2448,161 @@ const Users = () => {
                             }}
                           >
                             UnVerify
+                          </LoadingButton>
+                        </DialogActions>
+                      </Dialog>
+                    </>
+                  )}
+
+
+
+
+
+
+                  {userDetails?.data?.user?.virtualCharge === 0 ? (
+                    <>
+                      <MenuItem sx={{ width: "100%", marginRight: "auto" }}>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          onClick={() => setVirtualChargeModal(true)}
+                        >
+                          {virtualChargeMutation.isLoading ? (
+                            <CircularProgress size={23} color="inherit" />
+                          ) : virtualChargeMutation.isSuccess ? (
+                            <CheckIcon />
+                          ) : (
+                            "Add Virtual Account Charge"
+                          )}
+                        </Typography>
+                      </MenuItem>
+
+                      <Dialog
+                        open={virtualChargeModal}
+                        onClose={() => {
+                          setVirtualChargeModal(false);
+                        }}
+                      >
+                        <DialogTitle>Add Virtual Account Charge</DialogTitle>
+                        <DialogContent>
+                          <DialogContentText>
+                            Please enter your admin approval pin to add a 
+                            virtual account loading charge for this user, 
+                            if you dont have one yet, head to{" "}
+                            {
+                              <Link style={{ color: "blue" }} href="/settings">
+                                Settings
+                              </Link>
+                            }{" "}
+                          </DialogContentText>
+
+                          <TextField
+                            margin="dense"
+                            id="name"
+                            label="Approval Pin"
+                            type="number"
+                            fullWidth
+                            value={pin}
+                            variant="standard"
+                            onChange={handlePin}
+                          />
+                        </DialogContent>
+                        <DialogActions>
+                          <Button
+                            onClick={() => {
+                              setPin("");
+                              setVirtualChargeModal(false);
+                            }}
+                          >
+                            Cancel
+                          </Button>
+                          <LoadingButton
+                            variant="contained"
+                            loading={virtualChargeMutation.isLoading}
+                            disabled={pin === null || pin?.length <= 5}
+                            onClick={() => {
+                              virtualChargeMutation.mutate({
+                                id: userDetails?.data?.user?.id,
+                                pin,
+                              });
+                              setVirtualChargeModal(false);
+                            }}
+                          >
+                            Add Charge
+                          </LoadingButton>
+                        </DialogActions>
+                      </Dialog>
+                    </>
+                  ) : (
+                    <>
+                      <MenuItem sx={{ width: "100%", marginRight: "auto" }}>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          onClick={() => setOffVirtualChargeModal(true)}
+                        >
+                          {offVirtualChargeMutation.isLoading ? (
+                            <CircularProgress size={23} color="inherit" />
+                          ) : offVirtualChargeMutation.isSuccess ? (
+                            <CheckIcon />
+                          ) : (
+                            "Remove Virtual Account Charge"
+                          )}
+                        </Typography>
+                      </MenuItem>
+
+                      <Dialog
+                        open={offVirtualChargeModal}
+                        onClose={() => {
+                          setOffVirtualChargeModal(false);
+                        }}
+                      >
+                        <DialogTitle>Remove Virtual Account Charge</DialogTitle>
+                        <DialogContent>
+                          <DialogContentText>
+                            Please enter your admin approval pin to remove the
+                            virtual account loading charge for this user, if you dont have
+                            one yet, head to{" "}
+                            {
+                              <Link style={{ color: "blue" }} href="/settings">
+                                Settings
+                              </Link>
+                            }{" "}
+                          </DialogContentText>
+
+                          <TextField
+                            margin="dense"
+                            id="name"
+                            label="Approval Pin"
+                            type="number"
+                            fullWidth
+                            value={pin}
+                            variant="standard"
+                            onChange={handlePin}
+                          />
+                        </DialogContent>
+                        <DialogActions>
+                          <Button
+                            onClick={() => {
+                              setPin("");
+                              setOffVirtualChargeModal(false);
+                            }}
+                          >
+                            Cancel
+                          </Button>
+                          <LoadingButton
+                            variant="contained"
+                            loading={offVirtualChargeMutation.isLoading}
+                            disabled={pin === null || pin?.length <= 5}
+                            onClick={() => {
+                              offVirtualChargeMutation.mutate({
+                                id: userDetails?.data?.user?.id,
+                                pin,
+                              });
+                              setOffVirtualChargeModal(false);
+                            }}
+                          >
+                            Remove charge
                           </LoadingButton>
                         </DialogActions>
                       </Dialog>
