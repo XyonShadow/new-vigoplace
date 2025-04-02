@@ -21,6 +21,7 @@ import "../styles/app.css";
 import global from "../styles/global.css";
 import Index from "./index";
 import { UnreadTicketsProvider } from "../hooks/useUnreadTickets";
+import { Toaster } from "sonner";
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
@@ -73,17 +74,18 @@ export default function MyApp(props) {
             </Head>
             <ThemeProvider theme={theme}>
               <CssBaseline />
-              <UnreadTicketsProvider> {/* Wrap UnreadTicketsProvider around your components */}
-                {Component.auth ? (
-                  getLayout(
-                    <Auth>
-                      <Component {...pageProps} />
-                    </Auth>
-                  )
-                ) : (
-                  getLayout(<Component {...pageProps} />)
-                )}
+              <UnreadTicketsProvider>
+                {" "}
+                {/* Wrap UnreadTicketsProvider around your components */}
+                {Component.auth
+                  ? getLayout(
+                      <Auth>
+                        <Component {...pageProps} />
+                      </Auth>
+                    )
+                  : getLayout(<Component {...pageProps} />)}
               </UnreadTicketsProvider>
+              <Toaster richColors position="top-right" />
 
               {/* {getLayout(
           <Auth>

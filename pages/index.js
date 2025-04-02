@@ -1,35 +1,37 @@
-import * as React from 'react';
-import { signIn, signOut, useSession } from "next-auth/react"
-import { dehydrate, QueryClient } from '@tanstack/react-query'
-import HomeLayout from "../src/layouts/HomeLayout"
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
+import * as React from "react";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { dehydrate, QueryClient } from "@tanstack/react-query";
+import HomeLayout from "../src/layouts/HomeLayout";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import TextField from "@mui/material/TextField";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import Link from "@mui/material/Link";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
 // import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useRouter } from 'next/router'
-import { fetchRouteRoles } from '../hooks/useRouteRoles'
-
-
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useRouter } from "next/router";
+import { fetchRouteRoles } from "../hooks/useRouteRoles";
 
 function Copyright(props) {
-
   return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
+    <Typography
+      variant="body2"
+      color="text.secondary"
+      align="center"
+      {...props}
+    >
+      {"Copyright © "}
       <Link color="inherit" href="https://api.vigoplace.com">
         Vigoplace
-      </Link>{' '}
+      </Link>{" "}
       {new Date().getFullYear()}
-      {'.'}
+      {"."}
     </Typography>
   );
 }
@@ -37,7 +39,7 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function Login() {
-  const router = useRouter()
+  const router = useRouter();
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -46,11 +48,11 @@ export default function Login() {
     const data = new FormData(event.currentTarget);
 
     signIn("credentials", {
-      username: data.get('username'),
-      password: data.get('password'),
+      username: data.get("username"),
+      password: data.get("password"),
       callbackUrl: `${window.location.origin}/dashboard`,
       // redirect: false,
-    })
+    });
   };
 
   return (
@@ -60,18 +62,23 @@ export default function Login() {
         <Box
           sx={{
             marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
             {/* <LockOutlinedIcon /> */}
           </Avatar>
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ mt: 1 }}
+          >
             <TextField
               margin="normal"
               required
@@ -125,27 +132,23 @@ export default function Login() {
 }
 
 export async function getStaticProps() {
-  const queryClient = new QueryClient()
+  const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: ['routeRoles'],
+    queryKey: ["routeRoles"],
     queryFn: () => fetchRouteRoles(),
-  })
+  });
 
   return {
     props: {
       dehydratedState: dehydrate(queryClient),
     },
-  }
+  };
 }
 
 Login.getLayout = function getLayout(page) {
-    return (
-        <HomeLayout> {page}</HomeLayout>
-    )
-}
-
-
+  return <HomeLayout> {page}</HomeLayout>;
+};
 
 // import React from 'react'
 // import HomeLayout from "../src/layouts/HomeLayout"
@@ -203,11 +206,9 @@ Login.getLayout = function getLayout(page) {
 //     );
 // };
 
-
 // Login.getLayout = function getLayout(page) {
 //     return (
 //         <HomeLayout> {page}</HomeLayout>
-
 
 //     )
 // }

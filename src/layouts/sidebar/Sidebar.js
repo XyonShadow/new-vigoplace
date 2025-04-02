@@ -374,6 +374,15 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
           SCPUpdatedAt: null,
         },
         {
+          id: 24,
+          title: "Notification Operations",
+          icon: "settings",
+          href: "/notification-operation",
+          roles: ["admin", "root"],
+          SCPCreatedAt: "2025-03-28T06:46:44.000Z",
+          SCPUpdatedAt: null,
+        },
+        {
           id: 18,
           title: "Activity Logs",
           icon: "activity",
