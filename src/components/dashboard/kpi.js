@@ -1,21 +1,21 @@
-import { useState, useEffect } from "react";
-import PerfectScrollbar from "react-perfect-scrollbar";
+import { useState, useEffect, useRef } from "react";
+import { utils, writeFile } from "xlsx";
 import {
   Box,
   Typography,
   InputLabel,
   Select,
   MenuItem,
-  Button,
-  Card,
   Checkbox,
   Grid,
   Paper,
   styled,
   useTheme,
+  Button,
+  Card,
 } from "@mui/material";
 import axios from "axios";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 
 const KPI = (props) => {
@@ -23,6 +23,7 @@ const KPI = (props) => {
   const [endDate, setEndDate] = useState("");
   const [checkedCheckboxes, setCheckedCheckboxes] = useState([]);
   const [currency, setCurrency] = useState("USD");
+  const tableRef = useRef(null);
 
   const theme = useTheme();
 
@@ -41,10 +42,9 @@ const KPI = (props) => {
     ["fetchkpi"],
     async () => {
       let url = "https://api.vigoplace.com/api/admin/statistics/dashboard";
-      //let url = "http://localhost:4000/api/admin/statistics/dashboard";
 
       const queryParams = checkedCheckboxes.reduce((acc, checkbox) => {
-        acc[checkbox.value] = true; // Set the value to true for checked checkboxes
+        acc[checkbox.value] = true;
         return acc;
       }, {});
 
@@ -56,38 +56,10 @@ const KPI = (props) => {
           ...queryParams,
           currency: currency,
         },
-        // params: {
-        //   totalOrders: checkedCheckboxes.includes("totalOrders"),
-        //   users: checkedCheckboxes.includes("users"),
-        //   deletedUsers: checkedCheckboxes.includes("totalDeletedUsers"),
-        //   payout: checkedCheckboxes.includes("payout"),
-        //   totalUserActivities: checkedCheckboxes.includes(
-        //     "totalUserActivities"
-        //   ),
-        //   virtualAccount: checkedCheckboxes.includes("virtualAccount"),
-        //   marketPlaceCount: checkedCheckboxes.includes("marketPlaceCount"),
-        //   channelPlaceCount: checkedCheckboxes.includes("channelPlaceCount"),
-        //   contestPlaceCount: checkedCheckboxes.includes("contestPlaceCount"),
-        //   basicPlaceCount: checkedCheckboxes.includes("basicPlaceCount"),
-        //   newsPostCount: checkedCheckboxes.includes("newsPostCount"),
-        //   giftPostCount: checkedCheckboxes.includes("giftPostCount"),
-        //   walletCount: checkedCheckboxes.includes("walletCount"),
-        //   verifiedEmailCount: checkedCheckboxes.includes("verifiedEmailCount"),
-        //   verifiedPhoneCount: checkedCheckboxes.includes("verifiedPhoneCount"),
-        //   payoutRevenue: checkedCheckboxes.includes("payoutRevenue"),
-        //   giftRevenue: checkedCheckboxes.includes("giftRevenue"),
-        //   kycRevenue: checkedCheckboxes.includes("kycRevenue"),
-        //   channelRevenue: checkedCheckboxes.includes("channelRevenue"),
-        //   fundRaisingRevenue: checkedCheckboxes.includes("fundRaisingRevenue"),
-        //   placePromotionRevenue: checkedCheckboxes.includes("placePromotionRevenue"),
-        //   totalRevenue: checkedCheckboxes.includes("totalRevenue"),
-        //   currency: currency,
-        // },
         headers: {
           Authorization: user?.token,
         },
       });
-      //console.log(data);
       return data;
     },
     {
@@ -99,108 +71,201 @@ const KPI = (props) => {
   );
 
   useEffect(() => {
-    // When any of the query parameters or currency change, trigger a refetch
     refetch();
   }, [startDate, endDate, checkedCheckboxes, currency]);
 
   const firstCheckboxData = [
-    { id: "users", value: "totalUsers", label: "Users" },
+    { id: "users", value: "totalUsers", label: "Users", isCurrency: false },
     {
       id: "user_activities",
       value: "totalUserActivities",
       label: "User Activities",
+      isCurrency: false,
     },
-    { id: "deleted_users", value: "totalDeletedUsers", label: "Deleted Users" },
-    { id: "wallet", value: "totalWalletCount", label: "Wallet count" },
+    {
+      id: "deleted_users",
+      value: "totalDeletedUsers",
+      label: "Deleted Users",
+      isCurrency: false,
+    },
+    {
+      id: "wallet",
+      value: "totalWalletCount",
+      label: "Wallet count",
+      isCurrency: false,
+    },
     {
       id: "kycCount",
       value: "totalKyc",
       label: "KYC count",
+      isCurrency: false,
     },
-    { id: "emails", value: "totalVerifiedEmails", label: "Verified emails" },
+    {
+      id: "emails",
+      value: "totalVerifiedEmails",
+      label: "Verified emails",
+      isCurrency: false,
+    },
     {
       id: "virtual_accounts",
       value: "totalVirtualAccounts",
       label: "Virtual accounts",
+      isCurrency: false,
     },
     {
       id: "phone_numbers",
       value: "totalVerifiedPhoneNumbers",
       label: "Verified phone numbers",
+      isCurrency: false,
     },
   ];
 
   const secondCheckboxData = [
-    { id: "basic_place", value: "basicPlaceCount", label: "Basic place" },
-    { id: "channel_place", value: "channelPlaceCount", label: "Channel place" },
-    { id: "contest_place", value: "contestPlaceCount", label: "Contest place" },
-    { id: "market_place", value: "marketPlaceCount", label: "Market place" },
+    {
+      id: "basic_place",
+      value: "basicPlaceCount",
+      label: "Basic place",
+      isCurrency: false,
+    },
+    {
+      id: "channel_place",
+      value: "channelPlaceCount",
+      label: "Channel place",
+      isCurrency: false,
+    },
+    {
+      id: "contest_place",
+      value: "contestPlaceCount",
+      label: "Contest place",
+      isCurrency: false,
+    },
+    {
+      id: "market_place",
+      value: "marketPlaceCount",
+      label: "Market place",
+      isCurrency: false,
+    },
   ];
 
   const thirdCheckboxData = [
-    // { id: "product_post", value: "productPostCount", label: "Product post" },
-    // { id: "service_post", value: "servicePostCount", label: "Service post" },
-    { id: "gift_post", value: "giftPostCount", label: "Gift post" },
-    { id: "news_post", value: "newsPostCount", label: "News post" },
-    // { id: "paid_post", value: "paidPostCount", label: "Paid post" },
+    {
+      id: "gift_post",
+      value: "giftPostCount",
+      label: "Gift post",
+      isCurrency: false,
+    },
+    {
+      id: "news_post",
+      value: "newsPostCount",
+      label: "News post",
+      isCurrency: false,
+    },
   ];
 
   const fourthCheckboxData = [
     {
-      id: "channel_place_revenue",
-      value: "channelPlaceRevenue",
-      label: "Channel place revenue",
+      id: "channel_suscribe_revenue",
+      value: "channelSuscribeRevenue",
+      label: "Channel Suscribe revenue",
+      isCurrency: true,
+    },
+    {
+      id: "channel_rent_revenue",
+      value: "channelRentRevenue",
+      label: "Channel Rent revenue",
+      isCurrency: true,
+    },
+    {
+      id: "channel_buy_revenue",
+      value: "channelBuyRevenue",
+      label: "Channel Buy revenue",
+      isCurrency: true,
     },
     {
       id: "market_place_revenue",
       value: "marketPlaceRevenue",
       label: "Market place revenue",
+      isCurrency: true,
     },
     {
       id: "contest_place_revenue",
       value: "contestPlaceRevenue",
       label: "Contest place revenue",
+      isCurrency: true,
     },
     {
       id: "payout_revenue",
       value: "payoutRevenue",
       label: "Payout revenue",
+      isCurrency: true,
     },
     {
-      id: "wallet_loading_revenue",
-      value: "walletLoadingRevenue",
-      label: "Wallet Loading revenue",
+      id: "virtual_wallet_loading_revenue",
+      value: "virtualWalletLoadingRevenue",
+      label: "Virtual Wallet Loading revenue",
+      isCurrency: true,
+    },
+    {
+      id: "card_wallet_loading_revenue",
+      value: "cardWalletLoadingRevenue",
+      label: "Card Wallet Loading revenue",
+      isCurrency: true,
     },
     {
       id: "gift_revenue",
       value: "giftRevenue",
       label: "Gift revenue",
+      isCurrency: true,
     },
     {
       id: "kyc_revenue",
       value: "kycRevenue",
       label: "KYC revenue",
+      isCurrency: true,
     },
     {
-      id: "channel_revenue",
-      value: "channelRevenue",
-      label: "Channel revenue",
+      id: "ebook_revenue",
+      value: "ebookRevenue",
+      label: "Ebook revenue",
+      isCurrency: true,
     },
     {
       id: "fund_raising_revenue",
       value: "fundRaisingRevenue",
       label: "Fund Raising revenue",
+      isCurrency: true,
     },
     {
       id: "place_promotion_revenue",
       value: "placePromotionRevenue",
       label: "Place Promotion revenue",
+      isCurrency: true,
+    },
+    {
+      id: "ministry_give_revenue",
+      value: "ministryGiveRevenue",
+      label: "Ministry Give revenue",
+      isCurrency: true,
+    },
+    {
+      id: "minstry_request_revenue",
+      value: "ministryRequestRevenue",
+      label: "Ministry Request revenue",
+      isCurrency: true,
     },
     {
       id: "total_revenue",
       value: "totalRevenue",
       label: "Total revenue",
+      isCurrency: true,
     },
+  ];
+
+  const allCheckboxCategories = [
+    { title: "User_Statistics", data: firstCheckboxData },
+    { title: "Place_Types", data: secondCheckboxData },
+    { title: "Post_Types", data: thirdCheckboxData },
+    { title: "Revenue", data: fourthCheckboxData },
   ];
 
   const handleStartDateChange = (event) => {
@@ -219,37 +284,16 @@ const KPI = (props) => {
     const { value, checked, id } = event.target;
 
     if (checked) {
-      // If checkbox is checked, add it to the state with value true
       setCheckedCheckboxes((prevState) => [
         ...prevState,
         { value: value, label: id, checked: true },
       ]);
     } else {
-      // If checkbox is unchecked, remove it from the state
       setCheckedCheckboxes((prevState) =>
         prevState.filter((item) => item.value !== value)
       );
     }
   };
-
-  // const handleCheckboxChange = (event) => {
-  //   //console.log(event.target);
-  //   const { value, checked, id } = event.target;
-  //   const myObject = {}; // Step 2: Create an object
-
-  //   if (checked) {
-  //     myObject.value = value;
-  //     myObject.label = id;
-  //     // setCheckedValues([...checkedValues, myObject]);
-  //     setCheckedCheckboxes((prevState) => [...prevState, myObject]);
-  //   } else {
-  //     //console.log("Unche  kedddddddd")
-  //     // setCheckedValues(checkedValues.filter((v) => v.value !== value));
-  //     setCheckedCheckboxes((prevState) =>
-  //       prevState.filter((item) => item.value !== value)
-  //     );
-  //   }
-  // };
 
   const formatCurrency = (value, currency) => {
     const formattedValue =
@@ -257,8 +301,72 @@ const KPI = (props) => {
         ? currency === "NGN"
           ? `₦${value.toFixed(2)}`
           : `$${value.toFixed(2)}`
-        : value; // Return the value as is if it's not a number
+        : value;
     return formattedValue;
+  };
+
+  // Function to check if a checkbox belongs to a specific category
+  const belongsToCategory = (checkboxValue, categoryData) => {
+    return categoryData.some((item) => item.value === checkboxValue);
+  };
+
+  // Get selected checkboxes for a category
+  const getSelectedCheckboxesForCategory = (categoryData) => {
+    return checkedCheckboxes.filter((checkbox) =>
+      belongsToCategory(checkbox.value, categoryData)
+    );
+  };
+
+  // Export to Excel function using xlsx
+  const exportToExcel = (categoryData, categoryTitle) => {
+    const selectedInCategory = getSelectedCheckboxesForCategory(categoryData);
+
+    if (selectedInCategory.length === 0 || !kpis?.data) return;
+
+    // Create data for xlsx
+    const worksheet = utils.json_to_sheet(
+      selectedInCategory.map((item) => {
+        const originalItem = categoryData.find(
+          (orig) => orig.value === item.value
+        );
+        const isCurrencyItem = originalItem?.isCurrency || false;
+
+        const value = kpis?.data?.[item.value];
+        let displayValue = value;
+
+        if (isCurrencyItem && typeof value === "number") {
+          displayValue =
+            currency === "NGN"
+              ? `₦${value.toFixed(2)}`
+              : `$${value.toFixed(2)}`;
+        }
+
+        return {
+          KPI: item.label,
+          Value: displayValue,
+        };
+      })
+    );
+
+    // Set column widths
+    const columnWidths = [
+      { wch: 30 }, // Metric column width
+      { wch: 20 }, // Value column width
+    ];
+    worksheet["!cols"] = columnWidths;
+
+    // Create workbook and add worksheet
+    const workbook = utils.book_new();
+    utils.book_append_sheet(workbook, worksheet, categoryTitle);
+
+    // Generate filename with date range info
+    const dateInfo =
+      startDate && endDate ? `_${startDate}_to_${endDate}` : "_all_time";
+
+    const filename = `${categoryTitle}_KPI${dateInfo}.xlsx`;
+
+    // Export file
+    writeFile(workbook, filename);
   };
 
   return (
@@ -307,7 +415,6 @@ const KPI = (props) => {
           <Box sx={{ display: "flex", gap: 3 }}>
             <Box sx={{ display: "flex", flexDirection: "column", gap: "8px" }}>
               <label htmlFor="startDate">
-                {" "}
                 <Typography
                   sx={{
                     fontWeight: 500,
@@ -330,7 +437,6 @@ const KPI = (props) => {
             </Box>
             <Box sx={{ display: "flex", flexDirection: "column", gap: "8px" }}>
               <label htmlFor="endDate">
-                {" "}
                 <Typography
                   sx={{
                     fontWeight: 500,
@@ -372,20 +478,20 @@ const KPI = (props) => {
                 value={currency}
                 onChange={handleCurrencyChange}
                 sx={{
-                  height: "30px", // Custom height for the Select
-                  width: "100px", // Custom width for the Select
+                  height: "30px",
+                  width: "100px",
                   "& .MuiSelect-select": {
-                    minHeight: "30px", // Custom height for the select input
-                    lineHeight: "30px", // Adjust line height if needed
+                    minHeight: "30px",
+                    lineHeight: "30px",
                   },
                   "& .MuiInputBase-input": {
-                    fontSize: "12px", // Custom font size for Select input text
+                    fontSize: "12px",
                   },
                   "& .MuiListItem-root": {
-                    minHeight: "30px", // Custom height for each MenuItem
+                    minHeight: "30px",
                   },
                   "& .MuiMenuItem-root": {
-                    fontSize: "10px", // Custom font size for MenuItem
+                    fontSize: "10px",
                   },
                 }}
               >
@@ -417,8 +523,9 @@ const KPI = (props) => {
             {checkedCheckboxes.map((checkedValue) => (
               <Grid key={checkedValue.label} item xs={6}>
                 <>
+                  {/* Check if this is a currency value */}
                   {fourthCheckboxData.find(
-                    (checkbox) => checkbox.label === checkedValue.label
+                    (checkbox) => checkbox.value === checkedValue.value
                   ) ? (
                     <>
                       {checkedValue.label}
@@ -440,6 +547,42 @@ const KPI = (props) => {
                 </>
               </Grid>
             ))}
+
+            {/* Export buttons section */}
+            {checkedCheckboxes.length > 0 && (
+              <Grid item xs={12} sx={{ mt: 4 }}>
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+                    Export KPI Data
+                  </Typography>
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+                    {allCheckboxCategories.map((category) => {
+                      const selectedCount = getSelectedCheckboxesForCategory(
+                        category.data
+                      ).length;
+                      if (selectedCount === 0) return null;
+
+                      return (
+                        <Button
+                          key={category.title}
+                          variant="contained"
+                          onClick={() =>
+                            exportToExcel(category.data, category.title)
+                          }
+                          sx={{
+                            backgroundColor: "#8135F9",
+                            "&:hover": { backgroundColor: "#6025B8" },
+                          }}
+                        >
+                          Export {category.title.replace("_", " ")} (
+                          {selectedCount})
+                        </Button>
+                      );
+                    })}
+                  </Box>
+                </Box>
+              </Grid>
+            )}
           </Grid>
         </Box>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -473,6 +616,9 @@ const KPI = (props) => {
             <Box
               sx={{ display: "flex", flexDirection: "column", gap: 2, p: 3 }}
             >
+              <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
+                User Statistics
+              </Typography>
               {firstCheckboxData.map((checkbox) => (
                 <Box
                   sx={{
@@ -498,6 +644,9 @@ const KPI = (props) => {
             <Box
               sx={{ display: "flex", flexDirection: "column", gap: 2, p: 3 }}
             >
+              <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
+                Place Types
+              </Typography>
               {secondCheckboxData.map((checkbox) => (
                 <Box
                   sx={{
@@ -523,6 +672,9 @@ const KPI = (props) => {
             <Box
               sx={{ display: "flex", flexDirection: "column", gap: 2, p: 3 }}
             >
+              <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
+                Post Types
+              </Typography>
               {thirdCheckboxData.map((checkbox) => (
                 <Box
                   sx={{
@@ -548,6 +700,9 @@ const KPI = (props) => {
             <Box
               sx={{ display: "flex", flexDirection: "column", gap: 2, p: 3 }}
             >
+              <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
+                Revenue
+              </Typography>
               {fourthCheckboxData.map((checkbox) => (
                 <Box
                   sx={{

@@ -947,7 +947,7 @@ export default function Kyc({ isVerified }) {
               )}
             </Button>
           </Box>
-          {isVerified === "unverified" && (
+          {isVerified === "unverified" ? (
             <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
               <Button
                 variant="contained"
@@ -1053,6 +1053,97 @@ export default function Kyc({ isVerified }) {
                   "Approve Kyc"
                 )}
               </Button>
+            </Box>
+          ) : (
+            <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+              <Button
+                variant="contained"
+                color="danger"
+                onClick={() => setRejectKycModal(true)}
+                sx={{ marginRight: "10px" }}
+              >
+                {/* Reject KYC */}
+
+                {kycRejectStatusChangeMutation.isLoading ? (
+                  <CircularProgress size={23} color="inherit" />
+                ) : kycRejectStatusChangeMutation.isSuccess ? (
+                  <CheckIcon />
+                ) : (
+                  "Reject KYC"
+                )}
+              </Button>
+
+              <Dialog
+                open={rejectKycModal}
+                onClose={() => {
+                  setRejectKycModal(false);
+                }}
+              >
+                <DialogTitle>Reject KYC</DialogTitle>
+                <DialogContent>
+                  <DialogContentText>
+                    Enter Notification Text You Wish To Send To This User For
+                    Rejecting his/her KYC
+                  </DialogContentText>
+
+                  <TextField
+                    autoFocus
+                    margin="normal"
+                    id="name"
+                    label="Enter Notification Text"
+                    multiline
+                    fullWidth
+                    variant="standard"
+                    onChange={(e) => setNotificationText(e.target.value)}
+                  />
+                </DialogContent>
+                <DialogActions>
+                  <Button
+                    onClick={() => {
+                      setNotificationText("");
+                      setRejectKycModal(false);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <LoadingButton
+                    variant="contained"
+                    loading={kycRejectStatusChangeMutation.isLoading}
+                    disabled={notificationText === ""}
+                    onClick={() => {
+                      kycRejectStatusChangeMutation.mutate({
+                        users: userid,
+                        message: notificationText,
+                        type: "reject",
+                      });
+                      setNotificationText("");
+                      setRejectKycModal(false);
+                    }}
+                  >
+                    Notify
+                  </LoadingButton>
+                </DialogActions>
+              </Dialog>
+
+              {/* <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  kycStatusChangeMutation.mutate({
+                    users: userid,
+                    message: "Your KYC request has been successfully approved",
+                    type: "approve",
+                  });
+                }}
+              >
+                {kycStatusChangeMutation.isLoading ? (
+                  <CircularProgress size={23} color="inherit" />
+                ) : kycStatusChangeMutation.isSuccess ? (
+                  <CheckIcon />
+                ) : (
+                  "Approve Kyc"
+                )}
+              </Button> */}
             </Box>
           )}
         </Box>
