@@ -51,13 +51,7 @@ import { useSession } from "next-auth/react";
 
 const API_BASE_URL = "https://api.vigoplace.com";
 //const API_BASE_URL = "http://localhost:4000";
-export const UsersNotification = ({
-  operation,
-  operationId,
-  //onDeleteUser,
-  loading2,
-  error2,
-}) => {
+export const UnverifiedEmail = () => {
   const queryClient = useQueryClient();
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
@@ -65,13 +59,25 @@ export const UsersNotification = ({
   const [rowSelection, setRowSelection] = useState({});
   const getUser = useSession();
   const user = getUser?.data?.user;
-  console.log(operationId);
+  const [globalFilter, setGlobalFilter] = React.useState("");
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 10,
+  });
 
-  const onDeleteUser = async (userId, operationId) => {
-    try {
-      const { data: responseData } = await axios.post(
-        `${API_BASE_URL}/api/admin/console/remove/user/notification/operation`,
-        { userId, operationId },
+  const {
+    data,
+    isError,
+    isFetching,
+    isLoading: loading,
+    refetch,
+  } = useQuery(
+    ["unverifiedEmail", columnFilters, sorting, pagination],
+    async () => {
+      const { data } = await axios.get(
+        `${API_BASE_URL}/api/admin/console/onboarded/email/users?perPage=${
+          pagination.pageSize
+        }&page=${pagination.pageIndex + 1}&search=${globalFilter}`,
         {
           headers: {
             Authorization: user?.token,
@@ -79,21 +85,21 @@ export const UsersNotification = ({
         }
       );
 
-      if (responseData?.flag === true) {
-        toast.success("User Removed", {
-          description: "The user has been successfully removed.",
-        });
-        return true;
-      }
-      return false;
-    } catch (err) {
-      toast.error("User removal Failed", {
-        description:
-          err instanceof Error ? err.message : "An unexpected error occurred.",
+      //console.log(data);
+
+      toast.success("Users Fetched", {
+        description: "Successfully fetched users.",
       });
-      return false;
-    }
-  };
+      return data;
+    },
+    {
+      onError: (err) => {
+        console.log(err, "err fetching users");
+      },
+      enabled: !!user?.token,
+    },
+    { keepPreviousData: true }
+  );
 
   const columns = useMemo(
     () => [
@@ -122,7 +128,7 @@ export const UsersNotification = ({
         enableHiding: false,
       },
       {
-        id: "UFullName",
+        id: "fullName",
         header: ({ column }) => {
           return (
             <Button
@@ -131,24 +137,31 @@ export const UsersNotification = ({
                 column.toggleSorting(column.getIsSorted() === "asc")
               }
             >
-              Name
+              Full Name
               <ArrowUpDown />
             </Button>
           );
         },
         cell: ({ row }) => {
-          const name = row.original.UFullName;
+          const name = row.original.fullName;
+          const initials = name
+            ? name
+                .split(" ")
+                .map((word) => word[0])
+                .join("")
+                .toUpperCase()
+            : "US";
 
           return (
             <div className="flex items-center space-x-2">
               <Avatar>
                 <AvatarImage src={Frame} />
-                <AvatarFallback>US</AvatarFallback>
+                <AvatarFallback>{initials}</AvatarFallback>
               </Avatar>
               <span
                 className="lowercase ml-3"
                 onClick={() => {
-                  const userId = row.original.UId;
+                  const userId = row.original.userId;
                   const url = `/user/${userId}`;
                   window.open(url, "_blank");
                 }}
@@ -163,23 +176,30 @@ export const UsersNotification = ({
             </div>
           );
         },
-        accessorFn: (row) => `${row.UFullName}`,
+        accessorFn: (row) => `${row.fullName}`,
       },
       {
-        accessorKey: "UEmail",
+        accessorKey: "email",
         header: "Email",
         cell: ({ row }) => (
-          <div className="lowercase">{row.getValue("UEmail")}</div>
+          <div className="lowercase">{row.getValue("email")}</div>
         ),
       },
       {
-        accessorKey: "UPhone",
+        accessorKey: "username",
+        header: "Username",
+        cell: ({ row }) => (
+          <div className="lowercase">{row.getValue("username")}</div>
+        ),
+      },
+      {
+        accessorKey: "phone",
         header: () => <div>Phone</div>,
         cell: ({ row }) => {
-          const phone = row.getValue("UPhone");
+          const phone = row.getValue("phone");
 
           if (!phone) {
-            return <div className="text-left">—</div>;
+            return <div className="text-left"></div>;
           }
 
           return <div className="">{phone}</div>;
@@ -202,23 +222,10 @@ export const UsersNotification = ({
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                 <DropdownMenuItem
-                  onClick={() => navigator.clipboard.writeText(user.UId)}
+                  onClick={() => navigator.clipboard.writeText(user.userId)}
                   className="hover:cursor-pointer"
                 >
                   Copy user ID
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  className="hover:cursor-pointer text-red-500"
-                  onClick={async () => {
-                    const success = await onDeleteUser(user.UId, operationId);
-                    if (success)
-                      await queryClient.invalidateQueries({
-                        queryKey: ["useroperations"],
-                      });
-                  }}
-                >
-                  Remove
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -230,35 +237,46 @@ export const UsersNotification = ({
   );
 
   const table = useReactTable({
-    data: operation ?? [],
+    data: data?.data?.emailNotVerified ?? [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    //getPaginationRowModel: getPaginationRowModel(),
+    manualPagination: true,
+    rowCount: data?.data?.count,
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    onPaginationChange: setPagination,
     state: {
       sorting,
       columnFilters,
       columnVisibility,
       rowSelection,
+      pagination,
     },
+    autoResetPageIndex: false,
+    autoResetExpanded: false,
   });
 
   const debouncedFilter = useMemo(
     () =>
       debounce((value) => {
-        table.getColumn("title")?.setFilterValue(value);
+        table.getColumn("fullName")?.setFilterValue(value);
       }, 2000),
     [table]
   );
 
+  const handleSearchChange = debounce((event) => {
+    setGlobalFilter(event.target.value);
+    refetch();
+  }, 2000);
+
   return (
     <div className="flex flex-col w-full">
-      {loading2 ? (
+      {loading ? (
         <div className="w-full bg-white rounded-md px-6 py-6">
           <div className="flex items-center py-4">
             <div className="h-10 w-48 bg-gray-200 rounded animate-pulse max-w-sm"></div>
@@ -304,18 +322,25 @@ export const UsersNotification = ({
             </Table>
           </div>
         </div>
-      ) : error2 ? (
+      ) : isError ? (
         <div className="w-full bg-white rounded-md px-6 py-4 text-center text-red-500">
-          <p>Error: {error2}</p>
+          <p>Error: {isError}</p>
         </div>
       ) : (
         <div className="w-full bg-white rounded-md px-6">
+          <Input
+            placeholder="Global search..."
+            value={globalFilter}
+            onChange={(event) => {
+              setGlobalFilter(event.target.value);
+              handleSearchChange(event);
+            }}
+            className="max-w-sm mt-4"
+          />
           <div className="flex items-center py-4">
             <Input
               placeholder="Filter names..."
-              defaultValue={
-                table.getColumn("UFullName")?.getFilterValue() ?? ""
-              }
+              defaultValue={table.getColumn("fullName")?.getFilterValue() ?? ""}
               onChange={(event) => debouncedFilter(event.target.value)}
               className="max-w-sm"
             />
@@ -442,7 +467,6 @@ export const UsersNotification = ({
                     return (
                       <PaginationItem key={index} className="mb-auto text-xl">
                         ...
-                        {/* <PaginationEllipsis className='mb-0'/> */}
                       </PaginationItem>
                     );
                   }
@@ -460,6 +484,18 @@ export const UsersNotification = ({
                   />
                 </PaginationItem>
               </PaginationContent>
+              <select
+                value={table.getState().pagination.pageSize}
+                onChange={(e) => {
+                  table.setPageSize(Number(e.target.value));
+                }}
+              >
+                {[10, 20, 30, 40, 50].map((pageSize) => (
+                  <option key={pageSize} value={pageSize}>
+                    {pageSize}
+                  </option>
+                ))}
+              </select>
             </Pagination>
           </div>
         </div>

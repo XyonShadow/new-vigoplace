@@ -297,6 +297,15 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
           SCPCreatedAt: "2023-08-24T12:35:04.000Z",
           SCPUpdatedAt: null,
         },
+        {
+          id: 25,
+          title: "Onboarded-Users",
+          icon: "user",
+          href: "/onboarded-users",
+          roles: ["admin", "root"],
+          SCPCreatedAt: "2023-08-24T12:35:04.000Z",
+          SCPUpdatedAt: null,
+        },
       ],
     },
     {
