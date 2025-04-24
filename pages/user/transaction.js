@@ -218,11 +218,17 @@ export default function Transaction() {
       {
         id: "WIsDefault",
         accessorFn: (row) => {
-          if (row.WIsDefault === 1) {
-            return "Wallet 1";
-          } else if (row.WIsDefault === 0) {
-            return "Wallet";
+          let walletLabel = `Wallet ID: ${row.walletId}`;
+
+          if (row.currency) {
+            walletLabel += ` (${row.currency})`;
           }
+
+          if (row.WIsDefault === 1) {
+            walletLabel += " (Default)";
+          }
+
+          return walletLabel;
         },
         enableClickToCopy: false,
         header: "Wallet Category",

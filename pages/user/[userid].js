@@ -504,8 +504,6 @@ const Users = () => {
       setCreditDetails({
         amount: "",
         approvalPin: "",
-        reasonType: "",
-        reasonDescription: "",
       });
       setWalletId(null);
     },
