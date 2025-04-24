@@ -172,6 +172,29 @@ export default function Transaction() {
         header: "Type",
       },
       {
+        accessorKey: "transactionFrom",
+        enableClickToCopy: false,
+        muiTableBodyCellProps: ({ cell }) => ({
+          style: {
+            cursor: "pointer",
+          },
+          onClick: () => {
+            //console.log(cell.getValue());
+            const userId = cell.row.original.senderUserId;
+            const url = `/user/${userId}`;
+            window.open(url, "_blank");
+          },
+          onMouseEnter: (e) => {
+            e.target.style.textDecoration = "underline";
+          },
+          onMouseLeave: (e) => {
+            e.target.style.textDecoration = "none";
+          },
+        }),
+        header: "Sender",
+        id: "transactionFrom",
+      },
+      {
         accessorKey: "transactionReference",
         enableClickToCopy: true,
         header: "Reference",
@@ -198,7 +221,7 @@ export default function Transaction() {
           if (row.WIsDefault === 1) {
             return "Wallet 1";
           } else if (row.WIsDefault === 0) {
-            return "Wallet 2";
+            return "Wallet";
           }
         },
         enableClickToCopy: false,

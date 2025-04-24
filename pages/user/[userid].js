@@ -153,16 +153,14 @@ const Users = () => {
   const [offAutoPayoutErrorToast, setoffAutoPayoutErrorToast] =
     React.useState(false);
 
-
-    const [virtualChargeSuccessToast, setVirtualChargeSuccessToast] =
+  const [virtualChargeSuccessToast, setVirtualChargeSuccessToast] =
     React.useState(false);
-  const [virtualChargeErrorToast, setVirtualChargeErrorToast] = React.useState(false);
+  const [virtualChargeErrorToast, setVirtualChargeErrorToast] =
+    React.useState(false);
   const [offVirtualChargeSuccessToast, setOffVirtualChargeSuccessToast] =
     React.useState(false);
   const [offVirtualChargeErrorToast, setOffVirtualChargeErrorToast] =
     React.useState(false);
-
-
 
   const [autoEarningSuccessToast, setAutoEarningSuccessToast] =
     React.useState(false);
@@ -178,8 +176,8 @@ const Users = () => {
   const [offAutoPayoutModal, setOffAutoPayoutModal] = React.useState(false);
 
   const [virtualChargeModal, setVirtualChargeModal] = React.useState(false);
-  const [offVirtualChargeModal, setOffVirtualChargeModal] = React.useState(false);
-
+  const [offVirtualChargeModal, setOffVirtualChargeModal] =
+    React.useState(false);
 
   const [autoEarningModal, setAutoEarningModal] = React.useState(false);
   const [offAutoEarningModal, setOffAutoEarningModal] = React.useState(false);
@@ -207,6 +205,7 @@ const Users = () => {
   const [images, setImages] = useState([]);
   const [selfieImages, setSelfieImages] = useState([]);
   const [ninSlipImages, setNinSlipImages] = useState([]);
+  const [currency, setCurrency] = useState("Naira");
   const [creditDetails, setCreditDetails] = useState({
     amount: "",
     approvalPin: "",
@@ -264,6 +263,10 @@ const Users = () => {
 
   const handleWalletIdChange = (event) => {
     setWalletId(event.target.value);
+  };
+
+  const handleCurrencyChange = (event) => {
+    setCurrency(event.target.value);
   };
 
   const handleStartDateChange = (event) => {
@@ -458,7 +461,12 @@ const Users = () => {
     onSuccess: () => {
       setCreditSuccessToast(true);
       queryClient.invalidateQueries("fetchUserWallet");
-      setCreditDetails({ amount: "", approvalPin: "" });
+      setCreditDetails({
+        amount: "",
+        approvalPin: "",
+        reasonType: "",
+        reasonDescription: "",
+      });
       setWalletId(null);
     },
   });
@@ -493,7 +501,12 @@ const Users = () => {
     onSuccess: () => {
       setDebitSuccessToast(true);
       queryClient.invalidateQueries("fetchUserWallet");
-      setCreditDetails({ amount: "", approvalPin: "" });
+      setCreditDetails({
+        amount: "",
+        approvalPin: "",
+        reasonType: "",
+        reasonDescription: "",
+      });
       setWalletId(null);
     },
   });
@@ -1138,8 +1151,6 @@ const Users = () => {
     setoffAutoPayoutErrorToast(false);
   };
 
-
-
   const handleVirtualChargeSuccessToastClose = (event, reason) => {
     setVirtualChargeSuccessToast(false);
   };
@@ -1514,7 +1525,6 @@ const Users = () => {
         </Alert>
       </Snackbar>
 
-
       <Snackbar
         TransitionComponent={Slide}
         open={virtualChargeSuccessToast}
@@ -1574,8 +1584,6 @@ const Users = () => {
           {offVirtualChargeMutation?.error?.response?.data?.message}
         </Alert>
       </Snackbar>
-
-
 
       <Snackbar
         TransitionComponent={Slide}
@@ -1729,7 +1737,8 @@ const Users = () => {
                 color="text.secondary"
                 sx={{ marginBottom: "5px" }}
               >
-                <b>Virtual Account:</b> {userDetails?.data?.user?.virtualAccount}
+                <b>Virtual Account:</b>{" "}
+                {userDetails?.data?.user?.virtualAccount}
               </Typography>
               <Typography
                 variant="body2"
@@ -2454,11 +2463,6 @@ const Users = () => {
                     </>
                   )}
 
-
-
-
-
-
                   {userDetails?.data?.user?.virtualCharge === 0 ? (
                     <>
                       <MenuItem sx={{ width: "100%", marginRight: "auto" }}>
@@ -2486,9 +2490,9 @@ const Users = () => {
                         <DialogTitle>Add Virtual Account Charge</DialogTitle>
                         <DialogContent>
                           <DialogContentText>
-                            Please enter your admin approval pin to add a 
-                            virtual account loading charge for this user, 
-                            if you dont have one yet, head to{" "}
+                            Please enter your admin approval pin to add a
+                            virtual account loading charge for this user, if you
+                            dont have one yet, head to{" "}
                             {
                               <Link style={{ color: "blue" }} href="/settings">
                                 Settings
@@ -2561,8 +2565,8 @@ const Users = () => {
                         <DialogContent>
                           <DialogContentText>
                             Please enter your admin approval pin to remove the
-                            virtual account loading charge for this user, if you dont have
-                            one yet, head to{" "}
+                            virtual account loading charge for this user, if you
+                            dont have one yet, head to{" "}
                             {
                               <Link style={{ color: "blue" }} href="/settings">
                                 Settings
@@ -3132,19 +3136,45 @@ const Users = () => {
                           fullWidth
                           labelId="demo-simple-select-standard-label"
                           id="demo-simple-select-standard"
+                          value={currency}
+                          onChange={handleCurrencyChange}
+                          label="Currency"
+                        >
+                          {/* <MenuItem value="">
+                            <em>None</em>
+                          </MenuItem> */}
+
+                          <MenuItem value="NGN">Naira</MenuItem>
+                          <MenuItem value="US Dollar">USD</MenuItem>
+                        </Select>
+
+                        <InputLabel
+                          id="demo-simple-select-standard-label"
+                          style={{ marginTop: "18px" }}
+                        >
+                          Wallet
+                        </InputLabel>
+                        <Select
+                          fullWidth
+                          labelId="demo-simple-select-standard-label"
+                          id="demo-simple-select-standard"
                           value={walletId}
-                          defaultValue="None"
+                          //defaultValue="None"
                           onChange={handleWalletIdChange}
                           label="Wallet"
                         >
-                          <MenuItem value="">
-                            <em>None</em>
-                          </MenuItem>
-                          {userWallet?.data?.map((wallet, id) => (
-                            <MenuItem key={id} value={wallet.WId}>
-                              {wallet.SCCurrency}
-                            </MenuItem>
-                          ))}
+                          {userWallet?.data
+                            ?.filter((wallet) =>
+                              currency === "NGN"
+                                ? wallet.SCCurrency === "Naira"
+                                : wallet.SCCurrency === "US Dollar"
+                            )
+                            .map((wallet, id) => (
+                              <MenuItem key={id} value={wallet.WId}>
+                                {`Wallet ${id + 1}`} ({wallet.SCCurrency}){" "}
+                                {wallet.WIsDefault === 1 && "(Default)"}
+                              </MenuItem>
+                            ))}
                         </Select>
 
                         {/* Credit Reason type section.. */}
@@ -3271,19 +3301,45 @@ const Users = () => {
                           fullWidth
                           labelId="demo-simple-select-standard-label"
                           id="demo-simple-select-standard"
-                          value={walletId}
-                          defaultValue="None"
-                          onChange={handleWalletIdChange}
-                          label="wallet"
+                          value={currency}
+                          onChange={handleCurrencyChange}
+                          label="Currency"
                         >
-                          <MenuItem value={null}>
+                          {/* <MenuItem value="">
                             <em>None</em>
-                          </MenuItem>
-                          {userWallet?.data?.map((wallet, id) => (
-                            <MenuItem key={id} value={wallet.WId}>
-                              {wallet.SCCurrency}
-                            </MenuItem>
-                          ))}
+                          </MenuItem> */}
+
+                          <MenuItem value="NGN">Naira</MenuItem>
+                          <MenuItem value="US Dollar">USD</MenuItem>
+                        </Select>
+
+                        <InputLabel
+                          id="demo-simple-select-standard-label"
+                          style={{ marginTop: "18px" }}
+                        >
+                          Wallet
+                        </InputLabel>
+                        <Select
+                          fullWidth
+                          labelId="demo-simple-select-standard-label"
+                          id="demo-simple-select-standard"
+                          value={walletId}
+                          //defaultValue="None"
+                          onChange={handleWalletIdChange}
+                          label="Wallet"
+                        >
+                          {userWallet?.data
+                            ?.filter((wallet) =>
+                              currency === "NGN"
+                                ? wallet.SCCurrency === "Naira"
+                                : wallet.SCCurrency === "US Dollar"
+                            )
+                            .map((wallet, id) => (
+                              <MenuItem key={id} value={wallet.WId}>
+                                {`Wallet ${id + 1}`} ({wallet.SCCurrency}){" "}
+                                {wallet.WIsDefault === 1 && "(Default)"}
+                              </MenuItem>
+                            ))}
                         </Select>
 
                         {/* Debit Reason type section */}
