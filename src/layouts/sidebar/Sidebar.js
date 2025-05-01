@@ -311,7 +311,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
     {
       id: 6,
       title: "Customer Reps",
-      icon: "dollar-sign",
+      icon: "users",
       href: "",
       roles: ["admin", "root"],
       SCPCreatedAt: "2024-04-29T00:00:00.000Z",
@@ -365,9 +365,30 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
       ],
     },
     {
+      id: 21,
+      title: "Sales",
+      icon: "user-plus",
+      href: "",
+      roles: ["admin", "root"],
+      SCPCreatedAt: "2024-04-29T00:00:00.000Z",
+      SCPUpdatedAt: null,
+      subLinks: [
+        {
+          id: 22,
+          title: "Sales Rep",
+          icon: "user-plus",
+          href: "/sales-rep",
+          roles: ["admin", "root"],
+          SCPCreatedAt: "2022-12-19T06:46:44.000Z",
+          SCPUpdatedAt: null,
+        },
+        
+      ],
+    },
+    {
       id: 16,
       title: "Administration",
-      icon: "dollar-sign",
+      icon: "user",
       href: "",
       roles: ["admin", "root"],
       SCPCreatedAt: "2024-04-29T00:00:00.000Z",
@@ -385,7 +406,7 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
         {
           id: 24,
           title: "Notification Operations",
-          icon: "settings",
+          icon: "bell",
           href: "/notification-operation",
           roles: ["admin", "root"],
           SCPCreatedAt: "2025-03-28T06:46:44.000Z",

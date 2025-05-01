@@ -51,11 +51,11 @@ const FullLayout = ({ children }) => {
   const [isSidebarOpen, setSidebarOpen] = React.useState(true);
   const [isMobileSidebarOpen, setMobileSidebarOpen] = React.useState(false);
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"));
-   const [isIdle, warnUser, timeoutCountdown, onReset, intervalId] = useIdleHook();
+   //const [isIdle, warnUser, timeoutCountdown, onReset, intervalId] = useIdleHook();
 
   return (
     <MainWrapper>
-        <Modal
+        {/* <Modal
         open={warnUser}
         // onClose={()=>setWarnUser(false)}
         aria-labelledby="modal-modal-title"
@@ -72,7 +72,7 @@ const FullLayout = ({ children }) => {
             Logging you out in...{timeoutCountdown}
           </Typography>
         </Box>
-      </Modal>
+      </Modal> */}
       <Header
         sx={{
           paddingLeft: isSidebarOpen && lgUp ? "265px" : "",

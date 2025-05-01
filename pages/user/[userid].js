@@ -33,7 +33,6 @@ import Tabs from "@mui/material/Tabs";
 import MuiAlert from "@mui/material/Alert";
 import Slide from "@mui/material/Slide";
 import Snackbar from "@mui/material/Snackbar";
-
 import {
   QueryClient,
   QueryClientProvider,
@@ -76,10 +75,11 @@ import Places from "./places";
 import Followers from "./followers";
 import Notification from "./notification";
 import Kyc from "./kyc";
-import Transaction from "./transaction";
+import Transaction from "./transactions";
 import Tickets from "./ticket";
 import Referals from "./referals";
 import ImageUploader from "../../src/components/ImageUploader";
+import OnboardedUserSales from "@/src/components/table/OnboardedUserSales";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -3712,6 +3712,9 @@ const Users = () => {
                 <Tab label="Kyc" {...a11yProps(7)} />
                 <Tab label="Tickets" {...a11yProps(8)} />
                 <Tab label="Referals" {...a11yProps(9)} />
+                {userDetails?.data?.user?.isSalesRep && (
+                  <Tab label="Sales" {...a11yProps(10)} />
+                )}
               </Tabs>
             </Box>
 
@@ -3838,6 +3841,22 @@ const Users = () => {
                 </form>
               </Box>
             </TabPanel>
+
+            {userDetails?.data?.user?.isSalesRep && (
+              <TabPanel value={tabValue} index={10}>
+                <Box sx={{ pt: 3 }}>
+                  <form>
+                    {/* <Card>
+                      <CardHeader subheader="" title="Sales" />
+                      <Divider /> 
+                      <CardContent>*/}
+                        <OnboardedUserSales repsUsername={userDetails?.data?.user?.username}/>
+                      {/* </CardContent>
+                    </Card> */}
+                  </form>
+                </Box>
+              </TabPanel>
+            )}
           </Box>
         </Grid>
       </Grid>
