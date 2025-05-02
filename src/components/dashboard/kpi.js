@@ -95,9 +95,27 @@ const KPI = (props) => {
       isCurrency: false,
     },
     {
-      id: "kycCount",
+      id: "totalkycCount",
       value: "totalKyc",
-      label: "KYC count",
+      label: "Total KYC count",
+      isCurrency: false,
+    },
+    {
+      id: "verifiedkycCount",
+      value: "verifiedKyc",
+      label: "Verified KYC count",
+      isCurrency: false,
+    },
+    {
+      id: "pendingkycCount",
+      value: "pendingKyc",
+      label: "Pending KYC count",
+      isCurrency: false,
+    },
+    {
+      id: "incompletekycCount",
+      value: "incompleteKyc",
+      label: "Incomplete KYC count",
       isCurrency: false,
     },
     {

@@ -170,6 +170,16 @@ const Users = () => {
     React.useState(false);
   const [offAutoEarningErrorToast, setoffAutoEarningErrorToast] =
     React.useState(false);
+
+    const [restrictDollarSuccessToast, setRestrictDollarSuccessToast] =
+    React.useState(false);
+  const [restrictDollarErrorToast, setRestrictDollarErrorToast] =
+    React.useState(false);
+  const [unrestrictDollarSuccessToast, setUnrestrictDollarSuccessToast] =
+    React.useState(false);
+  const [unrestrictDollarErrorToast, setUnrestrictDollarErrorToast] =
+    React.useState(false);
+
   const [lienModal, setLienModal] = React.useState(false);
   const [ticketModal, setTicketModal] = React.useState(false);
   const [autoPayoutModal, setAutoPayoutModal] = React.useState(false);
@@ -181,6 +191,8 @@ const Users = () => {
 
   const [autoEarningModal, setAutoEarningModal] = React.useState(false);
   const [offAutoEarningModal, setOffAutoEarningModal] = React.useState(false);
+  const [restrictDollarModal, setRestrictDollarModal] = React.useState(false);
+  const [unrestrictDollarModal, setUnrestrictDollarModal] = React.useState(false);
   const [notifyModal, setNotifyModal] = React.useState(false);
   const [kycModal, setKycModal] = React.useState(false);
   const [emailModal, setEmailModal] = React.useState(false);
@@ -1086,6 +1098,72 @@ const Users = () => {
     },
   });
 
+  const restrictDollar = async ({ id }) => {
+    const restrictDollarWallets = await axios.post(
+      //"http://localhost:4000/api/admin/console/users/kycverify",
+      "https://api.vigoplace.com/api/admin/console/user/restrict/dollar-wallet",
+      { userId: id, restrict: true },
+      {
+        headers: {
+          Authorization: user?.token,
+        },
+      }
+    );
+
+    return restrictDollarWallets;
+  };
+
+  const restrictDollarMutation = useMutation({
+    mutationKey: ["restrictDollar"],
+    mutationFn: restrictDollar,
+    onSuccess: () => {
+      setPin("");
+      setRestrictDollarSuccessToast(true);
+      queryClient.invalidateQueries("fetchSingleUser");
+      setTimeout(() => {
+        restrictDollarMutation.reset();
+      }, 4000);
+    },
+    onError: async (error) => {
+      console.log(error);
+      setRestrictDollarErrorToast(true);
+      setPin("");
+    },
+  });
+
+  const unrestrictDollar = async ({ id }) => {
+    const unrestrictDollarWallets = await axios.post(
+      //"http://localhost:4000/api/admin/console/users/kycverify",
+      "https://api.vigoplace.com/api/admin/console/user/restrict/dollar-wallet",
+      { userId: id, restrict: false },
+      {
+        headers: {
+          Authorization: user?.token,
+        },
+      }
+    );
+
+    return unrestrictDollarWallets;
+  };
+
+  const unrestrictDollarMutation = useMutation({
+    mutationKey: ["unrestrictDollar"],
+    mutationFn: unrestrictDollar,
+    onSuccess: () => {
+      setPin("");
+      setUnrestrictDollarSuccessToast(true);
+      queryClient.invalidateQueries("fetchSingleUser");
+      setTimeout(() => {
+        unrestrictDollarMutation.reset();
+      }, 4000);
+    },
+    onError: async (error) => {
+      console.log(error);
+      setUnrestrictDollarErrorToast(true);
+      setPin("");
+    },
+  });
+
   const handleCreditSuccessToastClose = (event, reason) => {
     setCreditSuccessToast(false);
   };
@@ -1175,6 +1253,23 @@ const Users = () => {
   };
   const handleoffAutoEarningErrorToastClose = (event, reason) => {
     setoffAutoEarningErrorToast(false);
+  };
+
+
+
+
+  const handleRestrictDollarSuccessToastClose = (event, reason) => {
+    setRestrictDollarSuccessToast(false);
+  };
+  const handleRestrictDollarErrorToastClose = (event, reason) => {
+    setRestrictDollarErrorToast(false);
+  };
+
+  const handleUnrestrictDollarSuccessToastClose = (event, reason) => {
+    setUnrestrictDollarSuccessToast(false);
+  };
+  const handleUnrestrictDollarErrorToastClose = (event, reason) => {
+    setUnrestrictDollarErrorToast(false);
   };
 
   const handleClose = (event, reason) => {
@@ -1640,6 +1735,70 @@ const Users = () => {
           sx={{ width: "100%" }}
         >
           {offAutoEarningMutation?.error?.response?.data?.message}
+        </Alert>
+      </Snackbar>
+
+
+
+
+
+      <Snackbar
+        TransitionComponent={Slide}
+        open={restrictDollarSuccessToast}
+        autoHideDuration={6000}
+        onClose={handleRestrictDollarSuccessToastClose}
+      >
+        <Alert
+          onClose={handleRestrictDollarSuccessToastClose}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {restrictDollarMutation?.data?.data?.message}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        TransitionComponent={Slide}
+        open={restrictDollarErrorToast}
+        autoHideDuration={6000}
+        onClose={handleRestrictDollarErrorToastClose}
+      >
+        <Alert
+          onClose={handleRestrictDollarErrorToastClose}
+          severity="warning"
+          sx={{ width: "100%" }}
+        >
+          {restrictDollarMutation?.error?.response?.data?.message}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        TransitionComponent={Slide}
+        open={unrestrictDollarSuccessToast}
+        autoHideDuration={6000}
+        onClose={handleUnrestrictDollarSuccessToastClose}
+      >
+        <Alert
+          onClose={handleUnrestrictDollarSuccessToastClose}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {unrestrictDollarMutation?.data?.data?.message}
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        TransitionComponent={Slide}
+        open={unrestrictDollarErrorToast}
+        autoHideDuration={6000}
+        onClose={handleUnrestrictDollarErrorToastClose}
+      >
+        <Alert
+          onClose={handleUnrestrictDollarErrorToastClose}
+          severity="warning"
+          sx={{ width: "100%" }}
+        >
+          {unrestrictDollarMutation?.error?.response?.data?.message}
         </Alert>
       </Snackbar>
 
@@ -2761,6 +2920,156 @@ const Users = () => {
                     </>
                   )}
 
+                  {userDetails?.data?.isUsdWalletBlocked === false ? (
+                    <>
+                      <MenuItem sx={{ width: "100%", marginRight: "auto" }}>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          onClick={() => setRestrictDollarModal(true)}
+                        >
+                          {restrictDollarMutation.isLoading ? (
+                            <CircularProgress size={23} color="inherit" />
+                          ) : restrictDollarMutation.isSuccess ? (
+                            <CheckIcon />
+                          ) : (
+                            "Restrict Dollar Wallet"
+                          )}
+                        </Typography>
+                      </MenuItem>
+
+                      <Dialog
+                        open={restrictDollarModal}
+                        onClose={() => {
+                          setRestrictDollarModal(false);
+                        }}
+                      >
+                        <DialogTitle>Restrict User's Dollar Wallet</DialogTitle>
+                        <DialogContent>
+                          <DialogContentText>
+                            Please enter your admin approval pin to restrict this
+                            user's dollar wallet, if you dont have one
+                            yet, head to{" "}
+                            {
+                              <Link style={{ color: "blue" }} href="/settings">
+                                Settings
+                              </Link>
+                            }{" "}
+                          </DialogContentText>
+
+                          <TextField
+                            margin="dense"
+                            id="name"
+                            label="Approval Pin"
+                            type="number"
+                            fullWidth
+                            value={pin}
+                            variant="standard"
+                            onChange={handlePin}
+                          />
+                        </DialogContent>
+                        <DialogActions>
+                          <Button
+                            onClick={() => {
+                              setPin("");
+                              setRestrictDollarModal(false);
+                            }}
+                          >
+                            Cancel
+                          </Button>
+                          <LoadingButton
+                            variant="contained"
+                            loading={restrictDollarMutation.isLoading}
+                            disabled={pin === null || pin?.length <= 5}
+                            onClick={() => {
+                              restrictDollarMutation.mutate({
+                                id: userDetails?.data?.user?.id,
+                                pin,
+                              });
+                              setRestrictDollarModal(false);
+                            }}
+                          >
+                            Restrict
+                          </LoadingButton>
+                        </DialogActions>
+                      </Dialog>
+                    </>
+                  ) : (
+                    <>
+                      <MenuItem sx={{ width: "100%", marginRight: "auto" }}>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          onClick={() => setUnrestrictDollarModal(true)}
+                        >
+                          {unrestrictDollarMutation.isLoading ? (
+                            <CircularProgress size={23} color="inherit" />
+                          ) : unrestrictDollarMutation.isSuccess ? (
+                            <CheckIcon />
+                          ) : (
+                            "Un-Restrict User's Dollar Wallet"
+                          )}
+                        </Typography>
+                      </MenuItem>
+
+                      <Dialog
+                        open={unrestrictDollarModal}
+                        onClose={() => {
+                          setUnrestrictDollarModal(false);
+                        }}
+                      >
+                        <DialogTitle>Un-Restrict User's Dollar Wallet</DialogTitle>
+                        <DialogContent>
+                          <DialogContentText>
+                            Please enter your admin approval pin to un-restrict
+                            this user's dollar wallet, if you dont have
+                            one yet, head to{" "}
+                            {
+                              <Link style={{ color: "blue" }} href="/settings">
+                                Settings
+                              </Link>
+                            }{" "}
+                          </DialogContentText>
+
+                          <TextField
+                            margin="dense"
+                            id="name"
+                            label="Approval Pin"
+                            type="number"
+                            fullWidth
+                            value={pin}
+                            variant="standard"
+                            onChange={handlePin}
+                          />
+                        </DialogContent>
+                        <DialogActions>
+                          <Button
+                            onClick={() => {
+                              setPin("");
+                              setUnrestrictDollarModal(false);
+                            }}
+                          >
+                            Cancel
+                          </Button>
+                          <LoadingButton
+                            variant="contained"
+                            loading={unrestrictDollarMutation.isLoading}
+                            disabled={pin === null || pin?.length <= 5}
+                            onClick={() => {
+                              unrestrictDollarMutation.mutate({
+                                id: userDetails?.data?.user?.id,
+                                pin,
+                              });
+                              setUnrestrictDollarModal(false);
+                            }}
+                          >
+                            Un-Restrict
+                          </LoadingButton>
+                        </DialogActions>
+                      </Dialog>
+                    </>
+                  )}
+
                   <>
                     <MenuItem sx={{ width: "100%", marginRight: "auto" }}>
                       <Typography
@@ -3845,15 +4154,10 @@ const Users = () => {
             {userDetails?.data?.user?.isSalesRep && (
               <TabPanel value={tabValue} index={10}>
                 <Box sx={{ pt: 3 }}>
-                  <form>
-                    {/* <Card>
-                      <CardHeader subheader="" title="Sales" />
-                      <Divider /> 
-                      <CardContent>*/}
-                        <OnboardedUserSales repsUsername={userDetails?.data?.user?.username}/>
-                      {/* </CardContent>
-                    </Card> */}
-                  </form>
+                  <OnboardedUserSales
+                    repsUsername={userDetails?.data?.user?.username}
+                    repsUserId={userDetails?.data?.user?.id}
+                  />
                 </Box>
               </TabPanel>
             )}

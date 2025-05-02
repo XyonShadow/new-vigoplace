@@ -54,7 +54,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const API_BASE_URL = "https://api.vigoplace.com";
 //const API_BASE_URL = "http://localhost:4000";
-export default function OnboardedUserSales({ repsUsername }) {
+export default function OnboardedUserSales({ repsUsername, repsUserId }) {
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   const [columnVisibility, setColumnVisibility] = useState({});
@@ -62,6 +62,7 @@ export default function OnboardedUserSales({ repsUsername }) {
   const [rowSelection, setRowSelection] = useState({});
   const [result, setResult] = useState([]);
   const [username, setUsername] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const queryClient = useQueryClient();
   const getUser = useSession();
   const user = getUser?.data?.user;
@@ -80,7 +81,7 @@ export default function OnboardedUserSales({ repsUsername }) {
     ["onboardUsers", columnFilters, sorting, selectedDate],
     async () => {
       const { data } = await axios.get(
-        `${API_BASE_URL}/api/admin/onboarded/65?month=${month}&year=${year}`,
+        `${API_BASE_URL}/api/admin/onboarded/${repsUserId}?month=${month}&year=${year}`,
         {
           headers: {
             Authorization: user?.token,
@@ -88,7 +89,7 @@ export default function OnboardedUserSales({ repsUsername }) {
         }
       );
 
-      console.log("data", data);
+      //console.log("data", data);
       setResult(data?.data ?? []);
       toast.success("Onboarded users Fetched", {
         description: "Successfully onboarded users.",
@@ -105,6 +106,7 @@ export default function OnboardedUserSales({ repsUsername }) {
   );
 
   const onAddUser = async (userName) => {
+    setIsSubmitting(true);
     try {
       const { data: responseData } = await axios.post(
         `${API_BASE_URL}/api/admin/add`,
@@ -120,6 +122,8 @@ export default function OnboardedUserSales({ repsUsername }) {
         toast.success("User Added", {
           description: `The user has been added among onboarded users.`,
         });
+        setIsSubmitting(false);
+        setUsername("")
         await queryClient.invalidateQueries({
           queryKey: ["onboardUsers"],
         });
@@ -131,9 +135,38 @@ export default function OnboardedUserSales({ repsUsername }) {
           description: responseData?.message,
         });
       }
+     
       return false;
     } catch (err) {
+      setIsSubmitting(false);
       toast.error("User addition Failed", {
+        description:
+          err instanceof Error ? err.message : "An unexpected error occurred.",
+      });
+      return false;
+    }
+  };
+
+  const onDeleteUser = async (userId) => {
+    try {
+      const { data: responseData } = await axios.delete(
+        `${API_BASE_URL}/api/admin/remove/onboard/${repsUserId}/${userId}`,
+        {
+          headers: {
+            Authorization: user?.token,
+          },
+        }
+      );
+
+      if (responseData?.flag === true) {
+        toast.success("Onboarded User Removed", {
+          description: "The user has been successfully removed.",
+        });
+        return true;
+      }
+      return false;
+    } catch (err) {
+      toast.error("User removal Failed", {
         description:
           err instanceof Error ? err.message : "An unexpected error occurred.",
       });
@@ -177,7 +210,7 @@ export default function OnboardedUserSales({ repsUsername }) {
                 column.toggleSorting(column.getIsSorted() === "asc")
               }
             >
-              Name
+              Full Name
               <ArrowUpDown />
             </Button>
           );
@@ -308,16 +341,19 @@ export default function OnboardedUserSales({ repsUsername }) {
                 >
                   Copy user ID
                 </DropdownMenuItem>
-                {/* <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    className="hover:cursor-pointer text-blue-500"
-                    onClick={async () => {
-                      setSelectedUser(user);
-                      setOpen(true);
-                    }}
-                  >
-                    Add among sales reps
-                  </DropdownMenuItem> */}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="hover:cursor-pointer text-red-500"
+                  onClick={async () => {
+                    const success = await onDeleteUser(user.UId);
+                    if (success)
+                      await queryClient.invalidateQueries({
+                        queryKey: ["onboardUsers"],
+                      });
+                  }}
+                >
+                  Remove
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           );
@@ -369,16 +405,20 @@ export default function OnboardedUserSales({ repsUsername }) {
           </h2>
           <Input
             placeholder="Username"
+            value={username}
             onChange={(event) => setUsername(event.target.value)}
-            className="max-w-sm mx-auto mb-2"
+            className="max-w-sm mx-auto mb-2 placeholder:text-sm"
           />
           <div className="flex justify-center mt-2 mb-6">
             <Button
-              onClick={() => onAddUser(username)}
-              disabled={!username}
+              onClick={(e) => {
+                e.preventDefault();
+                onAddUser(username);
+              }}
+              disabled={!username || isSubmitting}
               className="text-center w-full max-w-sm"
             >
-              Add User
+              {isSubmitting ? "Adding ..." : "Add User"}
             </Button>
           </div>
         </div>
@@ -395,9 +435,9 @@ export default function OnboardedUserSales({ repsUsername }) {
           showMonthYearPicker
           className="border px-3 py-2 rounded-md"
         />
-        <Button onClick={() => refetch()} className="text-center">
+        {/* <Button onClick={() => refetch()} className="text-center">
           Fetch Users
-        </Button>
+        </Button> */}
       </div>
 
       <div className="flex flex-col w-full px-6">
