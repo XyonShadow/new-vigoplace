@@ -5,7 +5,7 @@ import { Input } from "../../../components/ui/input";
 import { Checkbox } from "../../../components/ui/checkbox";
 import { format } from "date-fns";
 import debounce from "lodash/debounce";
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, ChevronDown, MoreHorizontal, Download } from "lucide-react";
 import {
   Avatar,
   AvatarImage,
@@ -49,6 +49,7 @@ import React from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import Frame from "../../../assets/images/icons/Frame 7.svg";
+import { utils, writeFile } from "xlsx";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -123,7 +124,7 @@ export default function OnboardedUserSales({ repsUsername, repsUserId }) {
           description: `The user has been added among onboarded users.`,
         });
         setIsSubmitting(false);
-        setUsername("")
+        setUsername("");
         await queryClient.invalidateQueries({
           queryKey: ["onboardUsers"],
         });
@@ -135,7 +136,7 @@ export default function OnboardedUserSales({ repsUsername, repsUserId }) {
           description: responseData?.message,
         });
       }
-     
+
       return false;
     } catch (err) {
       setIsSubmitting(false);
@@ -171,6 +172,66 @@ export default function OnboardedUserSales({ repsUsername, repsUserId }) {
           err instanceof Error ? err.message : "An unexpected error occurred.",
       });
       return false;
+    }
+  };
+
+  const exportToExcel = () => {
+    try {
+      // Prepare data to export - don't include the selection checkbox or actions column
+      const exportData = result.map((user) => {
+        // Calculate the amount earned
+        const isVerified = user.UKycVerified === "verified";
+        const hasWallet = user.HasWallet === true;
+        const positiveWallet = user.BalanceStatus === "positive";
+        const amountEarned =
+          isVerified && hasWallet && positiveWallet ? 1500 : 1000;
+
+        return {
+          "Full Name": user.UFullName,
+          Email: user.UEmail,
+          Username: user.UUsername,
+          "KYC Verified": user.UKycVerified === "verified" ? "Yes" : "No",
+          "Has Wallet": user.HasWallet ? "Yes" : "No",
+          "Positive Wallet": user.BalanceStatus === "positive" ? "Yes" : "No",
+          "Amount Earned": amountEarned,
+        };
+      });
+
+      // Create worksheet
+      const worksheet = utils.json_to_sheet(exportData);
+
+      // Set column widths
+      const columnWidths = [
+        { wch: 25 }, // Full Name
+        { wch: 30 }, // Email
+        { wch: 20 }, // Username
+        { wch: 15 }, // KYC Verified
+        { wch: 15 }, // Has Wallet
+        { wch: 15 }, // Positive Wallet
+        { wch: 15 }, // Amount Earned
+      ];
+      worksheet["!cols"] = columnWidths;
+
+      // Create workbook and add worksheet
+      const workbook = utils.book_new();
+      utils.book_append_sheet(workbook, worksheet, "Onboarded Users");
+
+      // Format filename with month and year
+      const formattedMonth = String(month).padStart(2, "0");
+      const fileName = `Onboarded_Users_${formattedMonth}_${year}.xlsx`;
+
+      // Export file
+      writeFile(workbook, fileName);
+
+      toast.success("Export Successful", {
+        description: `Exported ${result.length} users to Excel.`,
+      });
+    } catch (err) {
+      console.error("Export error:", err);
+      toast.error("Export Failed", {
+        description:
+          err instanceof Error ? err.message : "An unexpected error occurred.",
+      });
     }
   };
 
@@ -495,13 +556,24 @@ export default function OnboardedUserSales({ repsUsername, repsUserId }) {
           <div className="w-full bg-white rounded-md px-6">
             <div className="flex items-center py-4">
               <Input
-                placeholder="Filter notification operations..."
+                placeholder="Filter onboarded users..."
                 defaultValue={
                   table.getColumn("UFullName")?.getFilterValue() ?? ""
                 }
                 onChange={(event) => debouncedFilter(event.target.value)}
                 className="max-w-sm"
               />
+
+              <Button
+                variant="outline"
+                className="ml-2 flex items-center gap-2"
+                onClick={exportToExcel}
+                disabled={result.length === 0}
+              >
+                <Download size={16} />
+                Export to Excel
+              </Button>
+
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
