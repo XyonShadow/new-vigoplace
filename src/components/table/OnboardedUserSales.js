@@ -5,7 +5,12 @@ import { Input } from "../../../components/ui/input";
 import { Checkbox } from "../../../components/ui/checkbox";
 import { format } from "date-fns";
 import debounce from "lodash/debounce";
-import { ArrowUpDown, ChevronDown, MoreHorizontal, Download } from "lucide-react";
+import {
+  ArrowUpDown,
+  ChevronDown,
+  MoreHorizontal,
+  Download,
+} from "lucide-react";
 import {
   Avatar,
   AvatarImage,
@@ -142,7 +147,7 @@ export default function OnboardedUserSales({ repsUsername, repsUserId }) {
       setIsSubmitting(false);
       toast.error("User addition Failed", {
         description:
-          err instanceof Error ? err.message : "An unexpected error occurred.",
+          err instanceof Error ? err.response.data.message : "An unexpected error occurred.",
       });
       return false;
     }
@@ -169,7 +174,7 @@ export default function OnboardedUserSales({ repsUsername, repsUserId }) {
     } catch (err) {
       toast.error("User removal Failed", {
         description:
-          err instanceof Error ? err.message : "An unexpected error occurred.",
+          err instanceof Error ? err.response.data.message : "An unexpected error occurred.",
       });
       return false;
     }

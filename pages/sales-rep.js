@@ -177,7 +177,7 @@ export default function SalesRep() {
     } catch (err) {
       toast.error("User addition Failed", {
         description:
-          err instanceof Error ? err.message : "An unexpected error occurred.",
+          err instanceof Error ?  err.response.data.message : "An unexpected error occurred.",
       });
       return false;
     }
