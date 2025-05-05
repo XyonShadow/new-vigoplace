@@ -95,7 +95,7 @@ export default function OnboardedUserSales({ repsUsername, repsUserId }) {
         }
       );
 
-      //console.log("data", data);
+      console.log("data", data);
       setResult(data?.data ?? []);
       toast.success("Onboarded users Fetched", {
         description: "Successfully onboarded users.",
@@ -186,7 +186,7 @@ export default function OnboardedUserSales({ repsUsername, repsUserId }) {
       const exportData = result.map((user) => {
         // Calculate the amount earned
         const isVerified = user.UKycVerified === "verified";
-        const hasWallet = user.HasWallet === true;
+        const hasWallet = user.HasWallet === 1;
         const positiveWallet = user.BalanceStatus === "positive";
         const amountEarned =
           isVerified && hasWallet && positiveWallet ? 1500 : 1000;
@@ -196,7 +196,7 @@ export default function OnboardedUserSales({ repsUsername, repsUserId }) {
           Email: user.UEmail,
           Username: user.UUsername,
           "KYC Verified": user.UKycVerified === "verified" ? "Yes" : "No",
-          "Has Wallet": user.HasWallet ? "Yes" : "No",
+          "Has Wallet": user.HasWallet === 1 ? "Yes" : "No",
           "Positive Wallet": user.BalanceStatus === "positive" ? "Yes" : "No",
           "Amount Earned": amountEarned,
         };
@@ -342,7 +342,7 @@ export default function OnboardedUserSales({ repsUsername, repsUserId }) {
         accessorKey: "HasWallet",
         header: "Has Wallet",
         cell: ({ row }) => {
-          const hasWallet = row.getValue("HasWallet") === true;
+          const hasWallet = row.getValue("HasWallet") === 1;
           return (
             <div className="flex items-center">
               {hasWallet ? (
