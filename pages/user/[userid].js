@@ -171,7 +171,7 @@ const Users = () => {
   const [offAutoEarningErrorToast, setoffAutoEarningErrorToast] =
     React.useState(false);
 
-    const [restrictDollarSuccessToast, setRestrictDollarSuccessToast] =
+  const [restrictDollarSuccessToast, setRestrictDollarSuccessToast] =
     React.useState(false);
   const [restrictDollarErrorToast, setRestrictDollarErrorToast] =
     React.useState(false);
@@ -192,7 +192,8 @@ const Users = () => {
   const [autoEarningModal, setAutoEarningModal] = React.useState(false);
   const [offAutoEarningModal, setOffAutoEarningModal] = React.useState(false);
   const [restrictDollarModal, setRestrictDollarModal] = React.useState(false);
-  const [unrestrictDollarModal, setUnrestrictDollarModal] = React.useState(false);
+  const [unrestrictDollarModal, setUnrestrictDollarModal] =
+    React.useState(false);
   const [notifyModal, setNotifyModal] = React.useState(false);
   const [kycModal, setKycModal] = React.useState(false);
   const [emailModal, setEmailModal] = React.useState(false);
@@ -218,6 +219,8 @@ const Users = () => {
   const [selfieImages, setSelfieImages] = useState([]);
   const [ninSlipImages, setNinSlipImages] = useState([]);
   const [currency, setCurrency] = useState("Naira");
+  const [selectKey, setSelectKey] = useState(0);
+  const [selectKey2, setSelectKey2] = useState(0);
   const [creditDetails, setCreditDetails] = useState({
     amount: "",
     approvalPin: "",
@@ -480,6 +483,8 @@ const Users = () => {
         reasonDescription: "",
       });
       setWalletId(null);
+      setSelectKey((prev) => prev + 1);
+      setSelectKey2((prev) => prev + 1);
     },
   });
 
@@ -513,10 +518,14 @@ const Users = () => {
     onSuccess: () => {
       setDebitSuccessToast(true);
       queryClient.invalidateQueries("fetchUserWallet");
-      setCreditDetails({
+      setDebitDetails({
         amount: "",
         approvalPin: "",
+        reasonType: "",
+        reasonDescription: "",
       });
+      setSelectKey((prev) => prev + 1);
+      setSelectKey2((prev) => prev + 1);
       setWalletId(null);
     },
   });
@@ -1255,9 +1264,6 @@ const Users = () => {
     setoffAutoEarningErrorToast(false);
   };
 
-
-
-
   const handleRestrictDollarSuccessToastClose = (event, reason) => {
     setRestrictDollarSuccessToast(false);
   };
@@ -1292,6 +1298,7 @@ const Users = () => {
     "Salary",
     "Fee",
     "Payment",
+    "Virtual Account Funding",
   ];
 
   // Function to filter and sort wallets by currency and default status
@@ -1737,10 +1744,6 @@ const Users = () => {
           {offAutoEarningMutation?.error?.response?.data?.message}
         </Alert>
       </Snackbar>
-
-
-
-
 
       <Snackbar
         TransitionComponent={Slide}
@@ -2947,9 +2950,9 @@ const Users = () => {
                         <DialogTitle>Restrict User's Dollar Wallet</DialogTitle>
                         <DialogContent>
                           <DialogContentText>
-                            Please enter your admin approval pin to restrict this
-                            user's dollar wallet, if you dont have one
-                            yet, head to{" "}
+                            Please enter your admin approval pin to restrict
+                            this user's dollar wallet, if you dont have one yet,
+                            head to{" "}
                             {
                               <Link style={{ color: "blue" }} href="/settings">
                                 Settings
@@ -3018,12 +3021,14 @@ const Users = () => {
                           setUnrestrictDollarModal(false);
                         }}
                       >
-                        <DialogTitle>Un-Restrict User's Dollar Wallet</DialogTitle>
+                        <DialogTitle>
+                          Un-Restrict User's Dollar Wallet
+                        </DialogTitle>
                         <DialogContent>
                           <DialogContentText>
                             Please enter your admin approval pin to un-restrict
-                            this user's dollar wallet, if you dont have
-                            one yet, head to{" "}
+                            this user's dollar wallet, if you dont have one yet,
+                            head to{" "}
                             {
                               <Link style={{ color: "blue" }} href="/settings">
                                 Settings
@@ -3440,6 +3445,7 @@ const Users = () => {
                           Currency
                         </InputLabel>
                         <Select
+                          key={selectKey2}
                           fullWidth
                           labelId="demo-simple-select-standard-label"
                           id="demo-simple-select-standard"
@@ -3492,6 +3498,7 @@ const Users = () => {
                           Reason Type
                         </InputLabel>
                         <Select
+                          key={selectKey}
                           fullWidth
                           labelId="demo-simple-select-standard-label"
                           id="demo-simple-select-standard"
@@ -3605,6 +3612,7 @@ const Users = () => {
                           Currency
                         </InputLabel>
                         <Select
+                          key={selectKey2}
                           fullWidth
                           labelId="demo-simple-select-standard-label"
                           id="demo-simple-select-standard"
@@ -3657,6 +3665,7 @@ const Users = () => {
                           Reason Type
                         </InputLabel>
                         <Select
+                          key={selectKey}
                           fullWidth
                           labelId="demo-simple-select-standard-label"
                           id="demo-simple-select-standard"
@@ -3699,7 +3708,7 @@ const Users = () => {
                               ["reasonDescription"]: e.target.value,
                             }))
                           }
-                          type={"text"}
+                          type="text"
                           value={debitDetails.reasonDescription}
                           variant="outlined"
                         />
