@@ -51,7 +51,7 @@ import { useSession } from "next-auth/react";
 
 const API_BASE_URL = "https://api.vigoplace.com";
 //const API_BASE_URL = "http://localhost:4000";
-export const VerifiedUSDWallets = () => {
+export const IncompleteKyc = () => {
   const queryClient = useQueryClient();
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
@@ -65,41 +65,39 @@ export const VerifiedUSDWallets = () => {
     pageSize: 10,
   });
 
-  const {
-    data,
-    isError,
-    isFetching,
-    isLoading: loading,
-    refetch,
-  } = useQuery(
-    ["verified", columnFilters, sorting, pagination],
-    async () => {
-      const { data } = await axios.get(
-        `${API_BASE_URL}/api/admin/console/users/dollar/verified-wallets?perPage=${
-          pagination.pageSize
-        }&page=${pagination.pageIndex + 1}&search=${globalFilter}`,
-        {
-          headers: {
-            Authorization: user?.token,
-          },
-        }
-      );
+    const {
+      data,
+      isError,
+      isFetching,
+      isLoading: loading,
+      refetch,
+    } = useQuery(
+      ["manualVerificationKycUsers", columnFilters, sorting, pagination],
+      async () => {
+        const { data } = await axios.get(
+          `https://api.vigoplace.com/api/admin/console/kyc-slip-status?perPage=${
+            pagination.pageSize
+          }&page=${pagination.pageIndex + 1}&search=${globalFilter}`,
+          //`http://localhost:4000/api/admin/console/kyc-unverified?perPage=${pagination.pageSize}&page=${pagination.pageIndex + 1}&search=${globalFilter}`,
+          {
+            headers: {
+              Authorization: user?.token,
+            },
+          }
+        );
 
-      //console.log(data);
+        //console.log(data);
 
-      toast.success("Users Fetched", {
-        description: "Successfully fetched users.",
-      });
-      return data;
-    },
-    {
-      onError: (err) => {
-        console.log(err, "err fetching users");
+        return data;
       },
-      enabled: !!user?.token,
-    },
-    { keepPreviousData: true }
-  );
+      {
+        keepPreviousData: true,
+        onError: (err) => {
+          console.log(err, "err fetching manual verification kyc users");
+        },
+        enabled: !!user?.token,
+      }
+    );
 
   const columns = useMemo(
     () => [
@@ -193,18 +191,9 @@ export const VerifiedUSDWallets = () => {
         ),
       },
       {
-        accessorKey: "walletBalance",
-        header: "Wallet Balance",
-        cell: ({ row }) => (
-          <div className="">{row.getValue("walletBalance")}</div>
-        ),
-      },
-      {
-        accessorKey: "restrictedBalance",
-        header: "Restricted Balance",
-        cell: ({ row }) => (
-          <div className="">{row.getValue("restrictedBalance")}</div>
-        ),
+        accessorKey: "phone",
+        header: "Phone",
+        cell: ({ row }) => <div className="">{row.getValue("phone")}</div>,
       },
       {
         id: "actions",
@@ -238,7 +227,7 @@ export const VerifiedUSDWallets = () => {
   );
 
   const table = useReactTable({
-    data: data?.data?.users ?? [],
+    data: data?.data?.result ?? [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,

@@ -1,173 +1,220 @@
-import { Card, CardContent, Typography, Box } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import dynamic from "next/dynamic";
-import BaseCard from "../baseCard/BaseCard";
-const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
-import axios from "axios";
+"use client";
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+import { useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
-//import Chart from 'react-apexcharts'
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import dynamic from "next/dynamic";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+// Dynamically import ApexCharts
+const ApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
+
+const MONTHS = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+const YEARS = [2022, 2023, 2024, 2025];
+
+const fetchFilteredActiveUsers = async (token, week, month, year) => {
+  const response = await axios.get(
+    "https://api.vigoplace.com/api/admin/console/users/activitycountdays",
+    {
+      headers: { Authorization: token },
+      params: { week, month, year },
+    }
+  );
+  return response.data?.data;
+};
 
 const ActiveUserByWeek = () => {
-  const [userActivityData, setUserActivityData] = useState(null);
-  const getUser = useSession();
-  const user = getUser?.data?.user;
-  const router = useRouter();
+  const { data: sessionData } = useSession();
+  const token = sessionData?.user?.token;
 
-  useEffect(() => {
-    const fetchActiveUsersData = async () => {
-      try {
-        const response = await axios.get(
-          "https://api.vigoplace.com/api/admin/console/users/activitycountdays",
-          //"http://localhost:4000/api/admin/console/users/activitycount",
-          {
-            headers: {
-              Authorization: user?.token,
-            },
-          }
-        );
-        //console.log(response);
-        setUserActivityData(response?.data?.data);
-      } catch (error) {
-        console.log("Error fetching user activity count:", error);
-      }
-    };
+  const currentDate = new Date();
+  const currentWeek = Math.ceil(currentDate.getDate() / 7).toString();
+  const currentMonth = currentDate.getMonth().toString();
+  const currentYear = currentDate.getFullYear().toString();
 
-    fetchActiveUsersData();
-  }, []);
+  const [week, setWeek] = useState(currentWeek);
+  const [month, setMonth] = useState(currentMonth);
+  const [year, setYear] = useState(currentYear);
 
-  const generateChartData = () => {
-    if (!userActivityData) return { categories: [], data: [] };
+  const {
+    data: userActivityData,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["dailyActiveUsers", week, month, year],
+    queryFn: () =>
+      fetchFilteredActiveUsers(
+        token,
+        Number(week),
+        Number(month),
+        Number(year)
+      ),
+    enabled: !!token,
+  });
+
+  const { categories, data, columnWidthPercentage } = useMemo(() => {
+    if (!userActivityData)
+      return { categories: [], data: [], columnWidthPercentage: "40%" };
 
     const categories = Object.keys(userActivityData);
     const data = Object.values(userActivityData);
-    const columnWidthPercentage = calculateColumnWidth(categories.length);
+
+    let columnWidthPercentage;
+    if (categories.length <= 3) columnWidthPercentage = "80%";
+    else if (categories.length <= 5) columnWidthPercentage = "60%";
+    else if (categories.length <= 7) columnWidthPercentage = "40%";
+    else columnWidthPercentage = "30%";
 
     return { categories, data, columnWidthPercentage };
-  };
+  }, [userActivityData]);
 
-  const calculateColumnWidth = (numDays) => {
-    // Adjust the column width dynamically based on the number of days
-    if (numDays <= 3) {
-      return "80%"; // Adjust as needed
-    } else if (numDays <= 5) {
-      return "60%"; // Adjust as needed
-    } else if (numDays <= 7) {
-      return "40%"; // Adjust as needed
-    } else {
-      return "30%"; // Default width for more than 7 days
-    }
-  };
+  const chartOptions = useMemo(() => {
+    const maxY = data.length > 0 ? Math.max(...data) : 0;
+    const yAxisMax = Math.ceil(maxY / 100) * 100;
 
-  const { categories, data, columnWidthPercentage } = generateChartData();
-
-  const maxYValue = data.reduce((max, value) => Math.max(max, value), 0);
-  const yAxisMax = Math.ceil(maxYValue / 100) * 100; // Round up to the nearest hundred
-
-  const optionsactiveusers = {
-    // grid: {
-    //   show: true,
-    //   borderColor: "transparent",
-    //   strokeDashArray: 2,
-    //   padding: {
-    //     left: 0,
-    //     right: 0,
-    //     bottom: 0,
-    //   },
-    // },
-    plotOptions: {
-      bar: {
-        horizontal: false,
-        columnWidth: columnWidthPercentage,
-        //endingShape: "rounded",
-        borderRadius: 5,
-        borderRadiusApplication: "end",
-      },
-    },
-
-    colors: ["#fb9678", "#03c9d7"],
-    fill: {
-      type: "solid",
-      opacity: 1,
-    },
-    chart: {
-      offsetX: -15,
-      toolbar: {
-        show: false,
-      },
-      foreColor: "#adb0bb",
-      fontFamily: "'DM Sans',sans-serif",
-      sparkline: {
-        enabled: false,
-      },
-    },
-    // dataLabels: {
-    //   enabled: false,
-    // },
-    markers: {
-      size: 0,
-    },
-    legend: {
-      show: false,
-    },
-    xaxis: {
-      type: "category",
-      categories: categories.map((day) => day.slice(0, 3)),
-      labels: {
-        style: {
-          cssClass: "grey--text lighten-2--text fill-color",
+    return {
+      plotOptions: {
+        bar: {
+          horizontal: false,
+          columnWidth: columnWidthPercentage,
+          borderRadius: 5,
+          borderRadiusApplication: "end",
         },
       },
-    },
-    yaxis: {
-      show: true,
-      min: 0,
-      max: yAxisMax,
-      tickAmount: 3,
-      labels: {
-        style: {
-          cssClass: "grey--text lighten-2--text fill-color",
-        },
+      chart: {
+        toolbar: { show: false },
+        fontFamily: "var(--font-sans)",
+        background: "transparent",
       },
-    },
-    stroke: {
-      show: true,
-      width: 5,
-      lineCap: "butt",
-      colors: ["transparent"],
-    },
-    // tooltip: {
-    //   theme: "dark",
-    // },
-  };
+      xaxis: {
+        categories: categories.map((d) => d.slice(0, 3)),
+        labels: { style: { colors: "hsl(var(--foreground))" } },
+        axisBorder: { color: "rgba(0,0,0,0.1)" },
+        axisTicks: { color: "rgba(0,0,0,0.1)" },
+      },
+      yaxis: {
+        min: 0,
+        max: yAxisMax,
+        tickAmount: 3,
+        labels: { style: { colors: "hsl(var(--foreground))" } },
+      },
+      colors: ["#6366f1"],
+      dataLabels: { enabled: false },
+      grid: { borderColor: "rgba(0,0,0,0.1)", strokeDashArray: 2 },
+      tooltip: { theme: "light" },
+    };
+  }, [categories, data, columnWidthPercentage]);
 
-  const seriesactiveusers = [
-    {
-      name: "Active Users",
-      data: data,
-    },
-  ];
+  const chartSeries = [{ name: "Daily Active Users", data }];
 
-  // Render a message if there is no data available for the current week
-  if (!data.some((value) => value !== 0)) {
-    return (
-      <BaseCard title="Daily Active Users">
-        <Typography variant="body1" style={{ height: "310px" }}>
-          No data available for this week.
-        </Typography>
-      </BaseCard>
-    );
-  }
+  const hasData = data.some((v) => v > 0);
 
   return (
-    <BaseCard title="Daily Active Users">
-      <Chart
-        options={optionsactiveusers}
-        series={seriesactiveusers}
-        type="bar"
-        height="295px"
-      />
-    </BaseCard>
+    <Card className="w-full shadow-sm">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-base font-medium">
+          Daily Active Users
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="flex items-center gap-3 mb-4 flex-wrap">
+          <Select value={week} onValueChange={setWeek}>
+            <SelectTrigger className="w-[160px]">
+              <SelectValue placeholder="Select Week" />
+            </SelectTrigger>
+            <SelectContent>
+              {[1, 2, 3, 4].map((w) => (
+                <SelectItem key={w} value={w.toString()}>
+                  Week {w}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select value={month} onValueChange={setMonth}>
+            <SelectTrigger className="w-[160px]">
+              <SelectValue placeholder="Select Month" />
+            </SelectTrigger>
+            <SelectContent>
+              {MONTHS.map((m, idx) => (
+                <SelectItem key={idx} value={idx.toString()}>
+                  {m}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select value={year} onValueChange={setYear}>
+            <SelectTrigger className="w-[120px]">
+              <SelectValue placeholder="Select Year" />
+            </SelectTrigger>
+            <SelectContent>
+              {YEARS.map((y) => (
+                <SelectItem key={y} value={y.toString()}>
+                  {y}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Button onClick={() => refetch()}>Search</Button>
+        </div>
+
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center h-72">
+            <Loader2 className="h-8 w-8 animate-spin text-primary mb-2" />
+            <p className="text-sm text-muted-foreground">
+              Loading user data...
+            </p>
+          </div>
+        ) : error ? (
+          <div className="flex items-center justify-center h-72">
+            <p className="text-sm text-destructive">Failed to fetch data</p>
+          </div>
+        ) : !hasData ? (
+          <div className="flex items-center justify-center h-72">
+            <p className="text-sm text-muted-foreground">
+              No data for selected week
+            </p>
+          </div>
+        ) : (
+          <div className="h-72">
+            <ApexChart
+              options={chartOptions}
+              series={chartSeries}
+              type="bar"
+              height="100%"
+              width="100%"
+            />
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 };
 

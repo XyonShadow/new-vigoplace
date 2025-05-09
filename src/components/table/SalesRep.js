@@ -176,6 +176,13 @@ export const SalessRep = ({
         ),
       },
       {
+        accessorKey: "onboardedUsersNo",
+        header: "Onboarded Users",
+        cell: ({ row }) => (
+          <div className="lowercase text-center">{row.getValue("onboardedUsersNo")}</div>
+        ),
+      },
+      {
         id: "actions",
         enableHiding: false,
         cell: ({ row }) => {

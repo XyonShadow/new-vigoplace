@@ -3,7 +3,7 @@ import { dehydrate, QueryClient } from "@tanstack/react-query";
 import { Box, Container, Grid, Tab, Tabs } from "@mui/material";
 import BlogCard from "../src/components/dashboard/BlogCard";
 import SalesOverview from "../src/components/dashboard/SalesOverview";
-import ActiveUsers from "../src/components/dashboard/activeUsers";
+import ActiveUsers from "../src/components/dashboard/ActiveUsers";
 import ActiveUserByWeek from "../src/components/dashboard/ActiveUserByWeek";
 import UserGrowth from "../src/components/dashboard/userGrowth";
 import UserGrowthByWeek from "../src/components/dashboard/userGrowthByWeek";

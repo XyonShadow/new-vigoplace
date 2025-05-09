@@ -101,9 +101,9 @@ export default function OpNotification() {
       );
 
       setResult(data?.data ?? []);
-      toast.success("Operations Fetched", {
-        description: "Successfully fetched operations.",
-      });
+      // toast.success("Operations Fetched", {
+      //   description: "Successfully fetched operations.",
+      // });
       return data;
     },
     {
@@ -203,7 +203,9 @@ export default function OpNotification() {
     } catch (err) {
       toast.error("User removal Failed", {
         description:
-          err instanceof Error ? err.response.data.message : "An unexpected error occurred.",
+          err instanceof Error
+            ? err.response.data.message
+            : "An unexpected error occurred.",
       });
       return false;
     }
@@ -240,7 +242,9 @@ export default function OpNotification() {
     } catch (err) {
       toast.error("User addition Failed", {
         description:
-          err instanceof Error ? err.response.data.message : "An unexpected error occurred.",
+          err instanceof Error
+            ? err.response.data.message
+            : "An unexpected error occurred.",
       });
       return false;
     }

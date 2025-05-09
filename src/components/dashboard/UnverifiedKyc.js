@@ -51,7 +51,7 @@ import { useSession } from "next-auth/react";
 
 const API_BASE_URL = "https://api.vigoplace.com";
 //const API_BASE_URL = "http://localhost:4000";
-export const VerifiedUSDWallets = () => {
+export const UnverifiedKyc = () => {
   const queryClient = useQueryClient();
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
@@ -72,12 +72,11 @@ export const VerifiedUSDWallets = () => {
     isLoading: loading,
     refetch,
   } = useQuery(
-    ["verified", columnFilters, sorting, pagination],
+    ["fetchUnVerifiedKycUsers", columnFilters, sorting, pagination],
     async () => {
       const { data } = await axios.get(
-        `${API_BASE_URL}/api/admin/console/users/dollar/verified-wallets?perPage=${
-          pagination.pageSize
-        }&page=${pagination.pageIndex + 1}&search=${globalFilter}`,
+        `https://api.vigoplace.com/api/admin/console/kyc-unverified?perPage=${pagination.pageSize}&page=${pagination.pageIndex}&search=${globalFilter}`,
+        //`http://localhost:4000/api/admin/console/kyc-unverified?perPage=${pagination.pageSize}&page=${pagination.pageIndex + 1}&search=${globalFilter}`,
         {
           headers: {
             Authorization: user?.token,
@@ -87,19 +86,47 @@ export const VerifiedUSDWallets = () => {
 
       //console.log(data);
 
-      toast.success("Users Fetched", {
-        description: "Successfully fetched users.",
-      });
       return data;
     },
     {
       onError: (err) => {
-        console.log(err, "err fetching users");
+        console.log(err, "err fetching unverified kyc users");
       },
       enabled: !!user?.token,
     },
     { keepPreviousData: true }
   );
+
+  //   const {
+  //     data,
+  //     isError,
+  //     isFetching,
+  //     isLoading: loading,
+  //     refetch,
+  //   } = useQuery(
+  //     ["fetchVerifiedKycUsers", globalFilter, pagination],
+  //     async () => {
+  //       const { data } = await axios.get(
+  //         `https://api.vigoplace.com/api/admin/console/kyc-verified?perPage=${pagination.pageSize}&page=${pagination.pageIndex}&search=${globalFilter}`,
+  //         //`http://localhost:4000/api/admin/console/kyc-verified?perPage=${pagination.pageSize}&page=${pagination + 1}&search=${globalFilter}`,
+  //         {
+  //           headers: {
+  //             Authorization: user?.token,
+  //           },
+  //         }
+  //       );
+
+  //       //console.log(data);
+  //       return data;
+  //     },
+  //     {
+  //       onError: (err) => {
+  //         console.log(err, "err fetching verified kyc users");
+  //       },
+  //       enabled: !!user?.token,
+  //     },
+  //     { keepPreviousData: true }
+  //   );
 
   const columns = useMemo(
     () => [
@@ -128,7 +155,7 @@ export const VerifiedUSDWallets = () => {
         enableHiding: false,
       },
       {
-        id: "fullName",
+        id: "fullname",
         header: ({ column }) => {
           return (
             <Button
@@ -143,7 +170,7 @@ export const VerifiedUSDWallets = () => {
           );
         },
         cell: ({ row }) => {
-          const name = row.original.fullName;
+          const name = row.original.fullname;
           const initials = name
             ? name
                 .split(" ")
@@ -176,7 +203,7 @@ export const VerifiedUSDWallets = () => {
             </div>
           );
         },
-        accessorFn: (row) => `${row.fullName}`,
+        accessorFn: (row) => `${row.fullname}`,
       },
       {
         accessorKey: "email",
@@ -193,18 +220,9 @@ export const VerifiedUSDWallets = () => {
         ),
       },
       {
-        accessorKey: "walletBalance",
-        header: "Wallet Balance",
-        cell: ({ row }) => (
-          <div className="">{row.getValue("walletBalance")}</div>
-        ),
-      },
-      {
-        accessorKey: "restrictedBalance",
-        header: "Restricted Balance",
-        cell: ({ row }) => (
-          <div className="">{row.getValue("restrictedBalance")}</div>
-        ),
+        accessorKey: "phone",
+        header: "Phone",
+        cell: ({ row }) => <div className="">{row.getValue("phone")}</div>,
       },
       {
         id: "actions",
@@ -238,7 +256,7 @@ export const VerifiedUSDWallets = () => {
   );
 
   const table = useReactTable({
-    data: data?.data?.users ?? [],
+    data: data?.data?.unVerifiedKycUsers ?? [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -265,7 +283,7 @@ export const VerifiedUSDWallets = () => {
   const debouncedFilter = useMemo(
     () =>
       debounce((value) => {
-        table.getColumn("fullName")?.setFilterValue(value);
+        table.getColumn("fullname")?.setFilterValue(value);
       }, 2000),
     [table]
   );
@@ -341,7 +359,7 @@ export const VerifiedUSDWallets = () => {
           <div className="flex items-center py-4">
             <Input
               placeholder="Filter names..."
-              defaultValue={table.getColumn("fullName")?.getFilterValue() ?? ""}
+              defaultValue={table.getColumn("fullname")?.getFilterValue() ?? ""}
               onChange={(event) => debouncedFilter(event.target.value)}
               className="max-w-sm"
             />

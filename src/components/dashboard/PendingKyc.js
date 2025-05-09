@@ -51,7 +51,7 @@ import { useSession } from "next-auth/react";
 
 const API_BASE_URL = "https://api.vigoplace.com";
 //const API_BASE_URL = "http://localhost:4000";
-export const VerifiedUSDWallets = () => {
+export const PendingKyc = () => {
   const queryClient = useQueryClient();
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
@@ -72,12 +72,13 @@ export const VerifiedUSDWallets = () => {
     isLoading: loading,
     refetch,
   } = useQuery(
-    ["verified", columnFilters, sorting, pagination],
+    ["pending", columnFilters, sorting, pagination],
     async () => {
       const { data } = await axios.get(
-        `${API_BASE_URL}/api/admin/console/users/dollar/verified-wallets?perPage=${
+        `https://api.vigoplace.com/api/admin/console/kyc-pending-status?perPage=${
           pagination.pageSize
         }&page=${pagination.pageIndex + 1}&search=${globalFilter}`,
+        //`http://localhost:4000/api/admin/console/kyc-unverified?perPage=${pagination.pageSize}&page=${pagination.pageIndex + 1}&search=${globalFilter}`,
         {
           headers: {
             Authorization: user?.token,
@@ -87,18 +88,15 @@ export const VerifiedUSDWallets = () => {
 
       //console.log(data);
 
-      toast.success("Users Fetched", {
-        description: "Successfully fetched users.",
-      });
       return data;
     },
     {
+      keepPreviousData: true,
       onError: (err) => {
-        console.log(err, "err fetching users");
+        console.log(err, "err fetching pending verification kyc users");
       },
       enabled: !!user?.token,
-    },
-    { keepPreviousData: true }
+    }
   );
 
   const columns = useMemo(
@@ -193,18 +191,9 @@ export const VerifiedUSDWallets = () => {
         ),
       },
       {
-        accessorKey: "walletBalance",
-        header: "Wallet Balance",
-        cell: ({ row }) => (
-          <div className="">{row.getValue("walletBalance")}</div>
-        ),
-      },
-      {
-        accessorKey: "restrictedBalance",
-        header: "Restricted Balance",
-        cell: ({ row }) => (
-          <div className="">{row.getValue("restrictedBalance")}</div>
-        ),
+        accessorKey: "phone",
+        header: "Phone",
+        cell: ({ row }) => <div className="">{row.getValue("phone")}</div>,
       },
       {
         id: "actions",
@@ -238,7 +227,7 @@ export const VerifiedUSDWallets = () => {
   );
 
   const table = useReactTable({
-    data: data?.data?.users ?? [],
+    data: data?.data?.result ?? [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,

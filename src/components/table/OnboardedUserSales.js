@@ -97,9 +97,9 @@ export default function OnboardedUserSales({ repsUsername, repsUserId }) {
 
       //console.log("data", data);
       setResult(data?.data ?? []);
-      toast.success("Onboarded users Fetched", {
-        description: "Successfully onboarded users.",
-      });
+      // toast.success("Onboarded users Fetched", {
+      //   description: "Successfully onboarded users.",
+      // });
       return data;
     },
     {

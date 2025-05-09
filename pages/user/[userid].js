@@ -59,6 +59,7 @@ import {
   useTheme,
 } from "@mui/material";
 import Link from "next/link";
+import { EyeOff, EyeClosed } from "lucide-react";
 
 //Icons Imports
 import { LoadingButton, TabContext, TabList } from "@mui/lab";
@@ -223,16 +224,19 @@ const Users = () => {
   const [selectKey2, setSelectKey2] = useState(0);
   const [creditDetails, setCreditDetails] = useState({
     amount: "",
+    displayAmount: "",
     approvalPin: "",
     reasonType: "",
     reasonDescription: "",
   });
   const [debitDetails, setDebitDetails] = useState({
     amount: "",
+    displayAmount: "",
     approvalPin: "",
     reasonType: "",
     reasonDescription: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
   const [fetchParams, setFetchParams] = useState({
     limit: 20,
     offset: 0,
@@ -478,6 +482,7 @@ const Users = () => {
       queryClient.invalidateQueries("fetchUserWallet");
       setCreditDetails({
         amount: "",
+        displayAmount: "",
         approvalPin: "",
         reasonType: "",
         reasonDescription: "",
@@ -520,6 +525,7 @@ const Users = () => {
       queryClient.invalidateQueries("fetchUserWallet");
       setDebitDetails({
         amount: "",
+        displayAmount: "",
         approvalPin: "",
         reasonType: "",
         reasonDescription: "",
@@ -2005,7 +2011,7 @@ const Users = () => {
                         variant="body2"
                         color="text.secondary"
                       >
-                        {wallet.SCSymbol} {wallet.WBalance}
+                        {wallet.SCSymbol} {wallet.WBalance.toLocaleString()}
                       </Typography>
                     </Stack>
                   ))}
@@ -2036,7 +2042,7 @@ const Users = () => {
                         variant="body2"
                         color="text.secondary"
                       >
-                        {wallet.SCSymbol} {wallet.WBalance}
+                        {wallet.SCSymbol} {wallet.WBalance.toLocaleString()}
                       </Typography>
                     </Stack>
                   ))}
@@ -3445,7 +3451,7 @@ const Users = () => {
                           Currency
                         </InputLabel>
                         <Select
-                          key={selectKey2}
+                          //key={selectKey2}
                           fullWidth
                           labelId="demo-simple-select-standard-label"
                           id="demo-simple-select-standard"
@@ -3524,9 +3530,18 @@ const Users = () => {
                           label="Amount"
                           margin="normal"
                           name="amount"
-                          onChange={handleCreditChange}
-                          type="number"
-                          value={creditDetails.amount}
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/,/g, "");
+                            if (!isNaN(value)) {
+                              setCreditDetails((prev) => ({
+                                ...prev,
+                                amount: value,
+                                displayAmount: Number(value).toLocaleString(),
+                              }));
+                            }
+                          }}
+                          type="text"
+                          value={creditDetails.displayAmount || ""}
                           variant="outlined"
                         />
                         <TextField
@@ -3545,21 +3560,31 @@ const Users = () => {
                           value={creditDetails.reasonDescription}
                           variant="outlined"
                         />
-                        <TextField
-                          autoComplete={false}
-                          fullWidth
-                          label="Approval Pin"
-                          margin="normal"
-                          name="approvalPin"
-                          onChange={handleCreditChange}
-                          type={
-                            creditDetails.approvalPin === ""
-                              ? "text"
-                              : "password"
-                          }
-                          value={creditDetails.approvalPin}
-                          variant="outlined"
-                        />
+
+                        <div className="relative">
+                          <TextField
+                            autoComplete={false}
+                            fullWidth
+                            label="Approval Pin"
+                            margin="normal"
+                            name="approvalPin"
+                            onChange={handleCreditChange}
+                            type={showPassword ? "text" : "password"}
+                            value={creditDetails.approvalPin}
+                            variant="outlined"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute inset-y-0 right-3 top-3 flex items-center text-gray-500"
+                          >
+                            {showPassword ? (
+                              <EyeOff className="h-6 w-5" />
+                            ) : (
+                              <EyeClosed className="h-6 w-5" />
+                            )}
+                          </button>
+                        </div>
                       </CardContent>
                       {/* End of Credit reason type section */}
 
@@ -3612,7 +3637,7 @@ const Users = () => {
                           Currency
                         </InputLabel>
                         <Select
-                          key={selectKey2}
+                          //key={selectKey2}
                           fullWidth
                           labelId="demo-simple-select-standard-label"
                           id="demo-simple-select-standard"
@@ -3686,7 +3711,7 @@ const Users = () => {
                           ))}
                         </Select>
 
-                        <TextField
+                        {/* <TextField
                           fullWidth
                           label="Amount"
                           margin="normal"
@@ -3694,6 +3719,26 @@ const Users = () => {
                           onChange={handleDebitChange}
                           type="number"
                           value={debitDetails.amount}
+                          variant="outlined"
+                        /> */}
+
+                        <TextField
+                          fullWidth
+                          label="Amount"
+                          margin="normal"
+                          name="amount"
+                          onChange={(e) => {
+                            const value = e.target.value.replace(/,/g, "");
+                            if (!isNaN(value)) {
+                              setDebitDetails((prev) => ({
+                                ...prev,
+                                amount: value,
+                                displayAmount: Number(value).toLocaleString(),
+                              }));
+                            }
+                          }}
+                          type="text"
+                          value={debitDetails.displayAmount || ""}
                           variant="outlined"
                         />
                         <TextField
@@ -3712,16 +3757,30 @@ const Users = () => {
                           value={debitDetails.reasonDescription}
                           variant="outlined"
                         />
-                        <TextField
-                          fullWidth
-                          label="Approval Pin"
-                          margin="normal"
-                          name="approvalPin"
-                          onChange={handleDebitChange}
-                          type="password"
-                          value={debitDetails.approvalPin}
-                          variant="outlined"
-                        />
+
+                        <div className="relative">
+                          <TextField
+                            fullWidth
+                            label="Approval Pin"
+                            margin="normal"
+                            name="approvalPin"
+                            onChange={handleDebitChange}
+                            type={showPassword ? "text" : "password"}
+                            value={debitDetails.approvalPin}
+                            variant="outlined"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute inset-y-0 right-3 top-3 flex items-center text-gray-500"
+                          >
+                            {showPassword ? (
+                              <EyeOff className="h-6 w-5" />
+                            ) : (
+                              <EyeClosed className="h-6 w-5" />
+                            )}
+                          </button>
+                        </div>
                       </CardContent>
                       {/* End of Debit Reason type section */}
                       <Divider />

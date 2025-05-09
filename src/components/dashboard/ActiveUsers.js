@@ -1,171 +1,261 @@
-import { Card, CardContent, Typography, Box } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import dynamic from "next/dynamic";
-import BaseCard from "../baseCard/BaseCard";
-const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
-import axios from "axios";
+"use client";
+
+import { useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
-//import Chart from 'react-apexcharts'
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import dynamic from "next/dynamic";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+const ApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
+
+const fetchMonthlyActiveUsers = async ({
+  token,
+  startMonth,
+  endMonth,
+  year,
+}) => {
+  if (!token) return null;
+
+  const response = await axios.get(
+    `https://api.vigoplace.com/api/admin/console/users/activitycount`,
+    {
+      headers: { Authorization: token },
+      params: { startMonth, endMonth, year },
+    }
+  );
+
+  return response?.data?.data;
+};
 
 const ActiveUsers = () => {
-  const [userActivityData, setUserActivityData] = useState(null);
-  const getUser = useSession();
-  const user = getUser?.data?.user;
-  const router = useRouter();
+  const { data: sessionData } = useSession();
+  const token = sessionData?.user?.token;
 
-  useEffect(() => {
-    const fetchActiveUsersData = async () => {
-      try {
-        const response = await axios.get(
-          "https://api.vigoplace.com/api/admin/console/users/activitycount",
-          //"http://localhost:4000/api/admin/console/users/activitycount",
-          {
-            headers: {
-              Authorization: user?.token,
-            },
-          }
-        );
-        //console.log(response);
-        setUserActivityData(response?.data?.data);
-      } catch (error) {
-        console.log("Error fetching user activity count:", error);
-      }
-    };
+  const currentYear = new Date().getFullYear();
 
-    fetchActiveUsersData();
-  }, []);
+  const [startMonth, setStartMonth] = useState(1);
+  const [endMonth, setEndMonth] = useState(
+    (new Date().getMonth() + 1).toString()
+  );
+  const [year, setYear] = useState(currentYear);
 
-  const generateChartData = () => {
-    if (!userActivityData) return { categories: [], data: [] };
+  const [searchParams, setSearchParams] = useState(null);
+
+  const {
+    data: userActivityData,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["monthlyActiveUsers", searchParams, startMonth, endMonth, year],
+    queryFn: () =>
+      fetchMonthlyActiveUsers({
+        token: token ?? "",
+        startMonth: searchParams?.startMonth ?? 1,
+        endMonth: searchParams?.endMonth ?? 12,
+        year: searchParams?.year ?? new Date().getFullYear(),
+      }),
+    enabled: !!token,
+    staleTime: 5 * 60 * 1000, // Data considered fresh for 5 minutes
+    cacheTime: 30 * 60 * 1000, // Cache kept for 30 minutes
+    refetchOnWindowFocus: false, // Don't refetch when window regains focus
+  });
+
+  const handleSearch = () => {
+    if (startMonth > endMonth)
+      return alert("Start month must be before end month.");
+    setSearchParams({ startMonth, endMonth, year });
+  };
+
+  const monthOptions = [
+    { value: 1, label: "January" },
+    { value: 2, label: "February" },
+    { value: 3, label: "March" },
+    { value: 4, label: "April" },
+    { value: 5, label: "May" },
+    { value: 6, label: "June" },
+    { value: 7, label: "July" },
+    { value: 8, label: "August" },
+    { value: 9, label: "September" },
+    { value: 10, label: "October" },
+    { value: 11, label: "November" },
+    { value: 12, label: "December" },
+  ];
+
+  const { categories, data, columnWidthPercentage } = useMemo(() => {
+    if (!userActivityData)
+      return { categories: [], data: [], columnWidthPercentage: "40%" };
 
     const categories = Object.keys(userActivityData);
     const data = Object.values(userActivityData);
-    const columnWidthPercentage = calculateColumnWidth(categories.length);
+
+    let columnWidthPercentage;
+    if (categories.length <= 3) {
+      columnWidthPercentage = "80%";
+    } else if (categories.length <= 6) {
+      columnWidthPercentage = "60%";
+    } else {
+      columnWidthPercentage = "42%";
+    }
 
     return { categories, data, columnWidthPercentage };
-  };
+  }, [userActivityData]);
 
-  const calculateColumnWidth = (numMonths) => {
-    // Adjust the column width dynamically based on the number of months
-    if (numMonths <= 3) {
-      return "80%"; // Adjust as needed
-    } else if (numMonths <= 6) {
-      return "60%"; // Adjust as needed
-    } else {
-      return "42%"; // Default width for 12 months
-    }
-  };
+  const chartOptions = useMemo(() => {
+    const maxYValue = data.length > 0 ? Math.max(...data) : 0;
+    const yAxisMax = Math.ceil(maxYValue / 100) * 100;
 
-  const { categories, data, columnWidthPercentage } = generateChartData();
-
-  const maxYValue = data.reduce((max, value) => Math.max(max, value), 0);
-  const yAxisMax = Math.ceil(maxYValue / 100) * 100; // Round up to the nearest hundred
-
-  const optionsactiveusers = {
-    // grid: {
-    //   show: true,
-    //   borderColor: "transparent",
-    //   strokeDashArray: 2,
-    //   padding: {
-    //     left: 0,
-    //     right: 0,
-    //     bottom: 0,
-    //   },
-    // },
-    plotOptions: {
-      bar: {
-        horizontal: false,
-        columnWidth: columnWidthPercentage,
-        //endingShape: "rounded",
-        borderRadius: 5,
-        borderRadiusApplication: "end",
-      },
-    },
-
-    colors: ["#fb9678", "#03c9d7"],
-    fill: {
-      type: "solid",
-      opacity: 1,
-    },
-    chart: {
-      offsetX: -15,
-      toolbar: {
-        show: false,
-      },
-      foreColor: "#adb0bb",
-      fontFamily: "'DM Sans',sans-serif",
-      sparkline: {
-        enabled: false,
-      },
-    },
-    // dataLabels: {
-    //   enabled: false,
-    // },
-    markers: {
-      size: 0,
-    },
-    legend: {
-      show: false,
-    },
-    xaxis: {
-      type: "category",
-      categories: categories.map((month) => month.slice(0, 3)),
-      labels: {
-        style: {
-          cssClass: "grey--text lighten-2--text fill-color",
+    return {
+      plotOptions: {
+        bar: {
+          horizontal: false,
+          columnWidth: columnWidthPercentage,
+          borderRadius: 5,
         },
       },
-    },
-    yaxis: {
-      show: true,
-      min: 0,
-      max: yAxisMax,
-      tickAmount: 3,
-      labels: {
-        style: {
-          cssClass: "grey--text lighten-2--text fill-color",
+      colors: ["#6366f1"],
+      chart: {
+        toolbar: { show: false },
+        fontFamily: "var(--font-sans)",
+        background: "transparent",
+      },
+      dataLabels: { enabled: false },
+      grid: {
+        borderColor: "rgba(0,0,0,0.1)",
+        strokeDashArray: 2,
+      },
+      xaxis: {
+        categories: categories.map((month) => month.slice(0, 3)),
+        labels: {
+          style: { colors: "hsl(var(--foreground))" },
         },
       },
-    },
-    stroke: {
-      show: true,
-      width: 5,
-      lineCap: "butt",
-      colors: ["transparent"],
-    },
-    // tooltip: {
-    //   theme: "dark",
-    // },
-  };
+      yaxis: {
+        min: 0,
+        max: yAxisMax,
+        tickAmount: 3,
+        labels: {
+          style: { colors: "hsl(var(--foreground))" },
+        },
+      },
+      tooltip: { theme: "light" },
+    };
+  }, [categories, data, columnWidthPercentage]);
 
-  const seriesactiveusers = [
-    {
-      name: "Active Users By Months",
-      data: data,
-    },
-  ];
+  const chartSeries = [{ name: "Monthly Active Users", data }];
 
-  // Render a message if there is no data available for the current week
-  if (!data.some((value) => value !== 0)) {
-    return (
-      <BaseCard title="Daily Active Users">
-        <Typography variant="body1" style={{ height: "310px" }}>
-          No data available for this year.
-        </Typography>
-      </BaseCard>
-    );
-  }
+  const hasData = useMemo(() => data.some((value) => value > 0), [data]);
 
   return (
-    <BaseCard title="Monthly Active Users">
-      <Chart
-        options={optionsactiveusers}
-        series={seriesactiveusers}
-        type="bar"
-        height="295px"
-      />
-    </BaseCard>
+    <Card className="w-full shadow-sm">
+      <CardHeader>
+        <CardTitle className="text-base font-medium mb-2">
+          Monthly Active Users
+        </CardTitle>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <Select
+            value={startMonth.toString()}
+            onValueChange={(val) => setStartMonth(Number(val))}
+          >
+            <SelectTrigger className="w-[120px] h-9 text-sm">
+              <SelectValue placeholder="Start" />
+            </SelectTrigger>
+            <SelectContent>
+              {monthOptions.map(({ value, label }) => (
+                <SelectItem key={value} value={value.toString()}>
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <span className="text-sm">to</span>
+
+          <Select
+            value={endMonth.toString()}
+            onValueChange={(val) => setEndMonth(Number(val))}
+          >
+            <SelectTrigger className="w-[120px] h-9 text-sm">
+              <SelectValue placeholder="End" />
+            </SelectTrigger>
+            <SelectContent>
+              {monthOptions.map(({ value, label }) => (
+                <SelectItem key={value} value={value.toString()}>
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select
+            value={year.toString()}
+            onValueChange={(val) => setYear(Number(val))}
+          >
+            <SelectTrigger className="w-[100px] h-9 text-sm">
+              <SelectValue placeholder="Year" />
+            </SelectTrigger>
+            <SelectContent>
+              {[...Array(4)].map((_, i) => {
+                const y = currentYear - i;
+                return (
+                  <SelectItem key={y} value={y.toString()}>
+                    {y}
+                  </SelectItem>
+                );
+              })}
+            </SelectContent>
+          </Select>
+
+          <Button onClick={handleSearch} className="h-9">
+            Search
+          </Button>
+        </div>
+      </CardHeader>
+
+      <CardContent>
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center h-72">
+            <Loader2 className="h-8 w-8 text-primary animate-spin mb-2" />
+            <p className="text-sm text-muted-foreground">
+              Loading user data...
+            </p>
+          </div>
+        ) : error ? (
+          <div className="flex items-center justify-center h-72">
+            <p className="text-sm text-destructive">
+              Failed to fetch user activity data
+            </p>
+          </div>
+        ) : !hasData ? (
+          <div className="flex items-center justify-center h-72">
+            <p className="text-sm text-muted-foreground">
+              No data available for this period
+            </p>
+          </div>
+        ) : (
+          <div className="h-72">
+            <ApexChart
+              options={chartOptions}
+              series={chartSeries}
+              type="bar"
+              height="100%"
+              width="100%"
+            />
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 };
 
