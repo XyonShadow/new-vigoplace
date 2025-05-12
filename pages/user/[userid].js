@@ -59,7 +59,7 @@ import {
   useTheme,
 } from "@mui/material";
 import Link from "next/link";
-import { EyeOff, EyeClosed } from "lucide-react";
+import { EyeOff, EyeClosed, Loader2 } from "lucide-react";
 
 //Icons Imports
 import { LoadingButton, TabContext, TabList } from "@mui/lab";
@@ -1314,6 +1314,14 @@ const Users = () => {
     );
     return filteredWallets.sort((a, b) => b.WIsDefault - a.WIsDefault);
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <>
