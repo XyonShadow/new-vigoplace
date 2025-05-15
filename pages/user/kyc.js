@@ -563,6 +563,7 @@ export default function Kyc({ isVerified }) {
   const handleKycRejectStatusError = (event, reason) => {
     setKycRejectStatusErrorToast(false);
   };
+  
   return (
     <>
       <Snackbar
