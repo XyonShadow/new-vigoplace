@@ -824,6 +824,7 @@ function Row({ payout, isPayoutSelected }) {
   const { isLoading } = useSinglePayoutRequest(payoutRId);
   const [openToast, setOpenToast] = React.useState(false);
   const [openModal, setOpenModal] = React.useState(false);
+  const [manualOpenModal, setManualOpenModal] = React.useState(false);
   const [declineModal, setDeclineModal] = React.useState(false);
   const [splitModal, setSplitModal] = React.useState(false);
   const [holdModal, setHoldModal] = React.useState(false);
@@ -934,6 +935,36 @@ function Row({ payout, isPayoutSelected }) {
     },
   });
 
+  const manualApprovePayOut = async ({ id, pin, users }) => {
+    //console.log(users)
+    const token = await getToken();
+    const parsed = await axios.post(
+      //"http://localhost:4000/api/admin/console/approvepayout",
+      "https://api.vigoplace.com/api/admin/console/manualapprovepayout",
+      { payoutRequestId: id, approvalPin: pin, users },
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+    return parsed;
+  };
+
+  const manualApprovePayOutMutation = useMutation({
+    mutationKey: ["manualApprovePayOut"],
+    mutationFn: manualApprovePayOut,
+    onSuccess: () => {
+      queryClient.invalidateQueries("payoutRequests");
+      setPin(null);
+      setManualOpenModal(false);
+    },
+    onError: async (error) => {
+      setOpenToast(true);
+      setPin(null);
+    },
+  });
+
   const approveUSDPayOut = async ({ id, pin, deliveryETA, users }) => {
     if (deliveryETA === "") {
       toast.error("Please pick a date");
@@ -982,10 +1013,10 @@ function Row({ payout, isPayoutSelected }) {
     return parsed;
   };
 
-  console.log(queryClient.getQueryData([
-    "payoutRequest",
-    payout.payoutRequestId,
-  ])?.data)
+  // console.log(queryClient.getQueryData([
+  //   "payoutRequest",
+  //   payout.payoutRequestId,
+  // ])?.data)
 
   const declinePayOutMutation = useMutation({
     mutationKey: ["declinePayOut"],
@@ -1424,6 +1455,7 @@ function Row({ payout, isPayoutSelected }) {
       >
         <Alert onClose={handleClose} severity="warning" sx={{ width: "100%" }}>
           {approvePayOutMutation.error?.response?.data?.message ||
+          manualApprovePayOutMutation.error?.response?.data?.message ||
             declinePayOutMutation.error?.response?.data?.message ||
             approveUSDPayOutMutation.error?.response?.data?.message ||
             splitPayOutMutation.error?.response?.data?.message}
@@ -1672,6 +1704,27 @@ function Row({ payout, isPayoutSelected }) {
                               )}
                             </Button>
                           </MenuItem>
+
+                          <MenuItem>
+                            <Button
+                              sx={{ margin: 1, bgcolor: green[500] }}
+                              size="small"
+                              variant="contained"
+                              color="success"
+                              onClick={() => {
+                                setManualOpenModal(true);
+                              }}
+                            >
+                              {manualApprovePayOutMutation.isLoading ? (
+                                <CircularProgress size={23} color="inherit" />
+                              ) : manualApprovePayOutMutation.isSuccess ? (
+                                <CheckIcon />
+                              ) : (
+                                "Manual Approve"
+                              )}
+                            </Button>
+                          </MenuItem>
+
                           {payout.payoutRequestStatus !== "onHold" && (
                             <>
                               <MenuItem>
@@ -1881,6 +1934,173 @@ function Row({ payout, isPayoutSelected }) {
                                     payout.payoutRequestId,
                                   ])?.data?.currency === "Naira"
                                     ? approvePayOutMutation
+                                    : approveUSDPayOutMutation
+                                  ).mutate(
+                                    queryClient.getQueryData([
+                                      "payoutRequest",
+                                      payout.payoutRequestId,
+                                    ])?.data?.currency === "Naira"
+                                      ? {
+                                          id: payout.payoutRequestId,
+                                          pin,
+                                          users: payout?.payoutRequestUId,
+                                        }
+                                      : {
+                                          id: payout.payoutRequestId,
+                                          pin,
+                                          deliveryETA,
+                                          users: payout?.payoutRequestUId,
+                                        }
+                                  );
+                                  setPin(null);
+                                  setDeliveryETA("");
+                                }}
+                              >
+                                Approve
+                              </LoadingButton>
+                            </DialogActions>
+                          </Dialog>
+
+                          <Dialog
+                            open={manualOpenModal}
+                            onClose={() => {
+                              setManualOpenModal(false);
+                              setPin(null);
+                            }}
+                          >
+                            <DialogTitle>Manually Approve Payout</DialogTitle>
+                            <DialogContent>
+                              <DialogContentText>
+                                You are about to manually approve the amount of{" "}
+                                <span style={{ fontWeight: "bold" }}>
+                                  {
+                                    queryClient.getQueryData([
+                                      "payoutRequest",
+                                      payout.payoutRequestId,
+                                    ])?.data?.currencySymbol
+                                  }
+                                  {""}
+                                  {queryClient
+                                    .getQueryData([
+                                      "payoutRequest",
+                                      payout.payoutRequestId,
+                                    ])
+                                    ?.data?.payoutRequestAmount.toLocaleString()}
+                                </span>{" "}
+                                to <br />
+                                <span style={{ fontWeight: "bold" }}>
+                                  Account name
+                                </span>{" "}
+                                -{" "}
+                                {
+                                  queryClient.getQueryData([
+                                    "payoutRequest",
+                                    payout.payoutRequestId,
+                                  ])?.data?.accountName
+                                }{" "}
+                                <br />
+                                <span style={{ fontWeight: "bold" }}>
+                                  Account number
+                                </span>{" "}
+                                -{" "}
+                                {
+                                  queryClient.getQueryData([
+                                    "payoutRequest",
+                                    payout.payoutRequestId,
+                                  ])?.data?.accountNumber
+                                }{" "}
+                                <br />
+                                <span style={{ fontWeight: "bold" }}>
+                                  Bank Name
+                                </span>{" "}
+                                -{" "}
+                                {
+                                  queryClient.getQueryData([
+                                    "payoutRequest",
+                                    payout.payoutRequestId,
+                                  ])?.data?.acountBankName
+                                }
+                                .
+                                <br />
+                                <br />
+                                Please enter{" "}
+                                {queryClient.getQueryData([
+                                  "payoutRequest",
+                                  payout.payoutRequestId,
+                                ])?.data?.currency === "US Dollar" && (
+                                  <span>the date and</span>
+                                )}{" "}
+                                your admin approval pin to approve this request,
+                                if you dont have one yet, head to{" "}
+                                {
+                                  <Link
+                                    style={{ color: "blue" }}
+                                    href="/settings"
+                                  >
+                                    Settings
+                                  </Link>
+                                }{" "}
+                                to create one now.
+                              </DialogContentText>
+                              {queryClient.getQueryData([
+                                "payoutRequest",
+                                payout.payoutRequestId,
+                              ])?.data?.currency === "US Dollar" && (
+                                <div className="flex items-center gap-5">
+                                  <h3>Expected Delivery Date:</h3>
+                                  <input
+                                    type="date"
+                                    className="my-5"
+                                    value={deliveryETA}
+                                    onChange={(e) =>
+                                      setDeliveryETA(e.target.value)
+                                    }
+                                  />
+                                </div>
+                              )}
+
+                              <TextField
+                                autoFocus
+                                margin="dense"
+                                id="name"
+                                label="Approval Pin"
+                                type="number"
+                                fullWidth
+                                value={pin}
+                                variant="standard"
+                                onChange={handlePin}
+                              />
+                            </DialogContent>
+                            <DialogActions>
+                              <Button
+                                onClick={() => {
+                                  setManualOpenModal(false);
+                                  setPin(null);
+                                }}
+                              >
+                                Cancel
+                              </Button>
+                              <LoadingButton
+                                variant="contained"
+                                loading={
+                                  manualApprovePayOutMutation.isLoading ||
+                                  manualApprovePayOutMutation.isLoading
+                                }
+                                disabled={
+                                  pin === null ||
+                                  pin?.length <= 5 ||
+                                  (queryClient.getQueryData([
+                                    "payoutRequest",
+                                    payout.payoutRequestId,
+                                  ])?.data?.currency !== "Naira" &&
+                                    deliveryETA === "")
+                                }
+                                onClick={() => {
+                                  (queryClient.getQueryData([
+                                    "payoutRequest",
+                                    payout.payoutRequestId,
+                                  ])?.data?.currency === "Naira"
+                                    ? manualApprovePayOutMutation
                                     : approveUSDPayOutMutation
                                   ).mutate(
                                     queryClient.getQueryData([
