@@ -2,12 +2,19 @@ module.exports = {
   apps: [
     {
       name: "AdminConsole",
-      script: "npm run start",
+      script: "npm",
+      args: "run start",
+      cwd: "/apps/vigoplace-admin",
+      interpreter: "node",
       watch: false,
-      port: 5000,
       ignore_watch: ["node_modules"],
+      env: {
+        NODE_ENV: "production",
+        PORT: 5000
+      },
       env_production: {
-        NODE_ENV: "production"
+        NODE_ENV: "production",
+        PORT: 5000
       },
     },
   ],
