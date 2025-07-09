@@ -470,251 +470,34 @@ export default function Virtual() {
                     />
                   </PaginationItem>
                 </PaginationContent>
-                <select
-                  value={table.getState().pagination.pageSize}
-                  onChange={(e) => {
-                    table.setPageSize(Number(e.target.value));
-                  }}
-                >
-                  {[10, 20, 30, 40, 50].map((pageSize) => (
-                    <option key={pageSize} value={pageSize}>
-                      {pageSize}
-                    </option>
-                  ))}
-                </select>
+                <div className="flex items-center space-x-2">
+                  {/* <p className="text-sm font-medium">Rows per page</p> */}
+                  <Select
+                    value={`${table.getState().pagination.pageSize}`}
+                    onValueChange={(value) => {
+                      table.setPageSize(Number(value));
+                    }}
+                  >
+                    <SelectTrigger className="h-8 w-[70px]">
+                      <SelectValue
+                        placeholder={table.getState().pagination.pageSize}
+                      />
+                    </SelectTrigger>
+                    <SelectContent side="top">
+                      {[10, 20, 30, 40, 50].map((pageSize) => (
+                        <SelectItem key={pageSize} value={`${pageSize}`}>
+                          {pageSize}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </Pagination>
             </div>
           </div>
         )}
       </div>
-      {/* <Box sx={{ padding: 5 }}>
-        <Grid container spacing={0}>
-          <Grid item sm={12} xs={12} lg={12}>
-            <Typography
-              variant="h4"
-              color="text.primary"
-              marginBottom={2}
-              sx={{ fontWeight: "bold" }}
-            >
-              Users Virtual Accounts
-            </Typography>
 
-            <TableContainer
-              component={Paper}
-              sx={{ width: "100%", marginBottom: 4 }}
-            >
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell
-                      sx={{
-                        borderRight: 1,
-                        borderColor: "divider",
-                        fontWeight: "bold",
-                        marginLeft: "10px",
-                        //display: "flex",
-                        alignContent: "center",
-                        justifyContent: "center",
-                        textAlign: "center",
-                      }}
-                    >
-                      S/N
-                    </TableCell>
-
-                    <TableCell
-                      sx={{
-                        textAlign: "left",
-                        borderRight: 1,
-                        borderColor: "divider",
-                        fontWeight: "bold",
-                        marginLeft: "10px",
-                        //display: "flex",
-                        alignContent: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      Account Name
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        textAlign: "left",
-                        borderRight: 1,
-                        borderColor: "divider",
-                        fontWeight: "bold",
-                        marginLeft: "10px",
-                        //display: "flex",
-                        alignContent: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      Account Number
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        textAlign: "left",
-                        borderRight: 1,
-                        borderColor: "divider",
-                        fontWeight: "bold",
-                        marginLeft: "10px",
-                        //display: "flex",
-                        alignContent: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      Date Issued
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {data?.data?.result?.map((user, index) => (
-                    <TableRow key={user?.OVAUserId}>
-                      <TableCell
-                        sx={{
-                          textAlign: "left",
-                          borderRight: 1,
-                          borderColor: "divider",
-                        }}
-                      >
-                        {pagination.pageIndex * pagination.pageSize + index + 1}
-                      </TableCell>
-                      <TableCell
-                        sx={{
-                          borderRight: 1,
-                          borderColor: "divider",
-                          textAlign: "left",
-                        }}
-                      >
-                        <a
-                          href={`/user/${user?.OVAUserId}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{
-                            cursor: "pointer",
-                            textDecoration: "none",
-                            color: "inherit",
-                            borderBottom: "1px solid transparent",
-                            transition: "border-color 0.2s ease",
-                            "&:hover": {
-                              borderBottomColor: "blue",
-                              textDecoration: "underline",
-                            },
-                          }}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            const userId = user.OVAUserId;
-                            const url = `/user/${userId}`;
-                            window.open(url, "_blank");
-                          }}
-                          onMouseEnter={(e) => {
-                            e.target.style.textDecoration = "underline";
-                          }}
-                          onMouseLeave={(e) => {
-                            e.target.style.textDecoration = "none";
-                          }}
-                        >
-                          {user?.OVAAccountName}
-                        </a>
-                      </TableCell>
-
-                      <TableCell
-                        sx={{
-                          textAlign: "left",
-                          borderRight: 1,
-                          borderColor: "divider",
-                        }}
-                      >
-                        {user?.OVAAccountNumber}
-                      </TableCell>
-                      <TableCell
-                        sx={{
-                          textAlign: "left",
-                          borderRight: 1,
-                          borderColor: "divider",
-                        }}
-                      >
-                        {formatDateTime(user?.OVACreatedAt)}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-
-            <TablePagination
-              rowsPerPageOptions={[10, 25, 50, 100]}
-              component="div"
-              count={data?.data?.count || 0}
-              rowsPerPage={pagination.pageSize}
-              page={pagination.pageIndex}
-              onPageChange={handlePageChange}
-              onRowsPerPageChange={handleRowsPerPageChange}
-              ActionsComponent={(props) => (
-                <div style={{ display: "flex" }}>
-                  <IconButton
-                    onClick={() => handlePageChange(0)}
-                    disabled={pagination.pageIndex === 0}
-                  >
-                    <FirstPageIcon />
-                  </IconButton>
-                  <IconButton
-                    onClick={() => handlePageChange(pagination.pageIndex - 1)}
-                    disabled={pagination.pageIndex === 0}
-                  >
-                    <NavigateBeforeIcon />
-                  </IconButton>
-                  <IconButton
-                    onClick={() => handlePageChange(pagination.pageIndex + 1)}
-                    disabled={
-                      pagination.pageIndex >=
-                      Math.ceil(
-                        (data?.data?.count || 0) / pagination.pageSize
-                      ) -
-                        1
-                    }
-                  >
-                    <NavigateNextIcon />
-                  </IconButton>
-                  <IconButton
-                    onClick={() =>
-                      handlePageChange(
-                        Math.ceil(
-                          (data?.data?.count || 0) / pagination.pageSize
-                        ) - 1
-                      )
-                    }
-                    disabled={
-                      pagination.pageIndex >=
-                      Math.ceil(
-                        (data?.data?.count || 0) / pagination.pageSize
-                      ) -
-                        1
-                    }
-                  >
-                    <LastPageIcon />
-                  </IconButton>
-                </div>
-              )}
-            /> */}
-
-      {/* <div style={{ display: "flex", gap: "0.5rem" }}>
-              <Tooltip arrow title="Refresh Data">
-                <IconButton onClick={() => refetch()}>
-                  <RefreshIcon />
-                </IconButton>
-              </Tooltip>
-            </div> */}
-
-      {/* <Typography
-              align="center"
-              marginTop={3}
-              variant="h3"
-              color="text.secondary"
-            >
-              <b>Users Virtual Accounts</b>
-            </Typography>
-          </Grid>
-        </Grid>
-      </Box> */}
     </>
   );
 }

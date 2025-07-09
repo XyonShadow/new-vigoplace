@@ -134,9 +134,9 @@ export default function OpNotification() {
       );
 
       setResult2(data?.data ?? []);
-      toast.success("Users Fetched", {
-        description: "Successfully fetched users.",
-      });
+      // toast.success("Users Fetched", {
+      //   description: "Successfully fetched users.",
+      // });
       return data;
     },
     {

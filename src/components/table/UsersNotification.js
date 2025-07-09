@@ -48,7 +48,7 @@ import {
 import React from "react";
 import Frame from "../../../assets/images/icons/Frame 7.svg";
 import { useSession } from "next-auth/react";
-
+//i have gotten them no wahala nau 
 const API_BASE_URL = "https://api.vigoplace.com";
 //const API_BASE_URL = "http://localhost:4000";
 export const UsersNotification = ({
@@ -65,9 +65,11 @@ export const UsersNotification = ({
   const [rowSelection, setRowSelection] = useState({});
   const getUser = useSession();
   const user = getUser?.data?.user;
-  console.log(operationId);
 
   const onDeleteUser = async (userId, operationId) => {
+    console.log(userId);
+    console.log(operationId);
+
     try {
       const { data: responseData } = await axios.post(
         `${API_BASE_URL}/api/admin/console/remove/user/notification/operation`,
@@ -79,17 +81,29 @@ export const UsersNotification = ({
         }
       );
 
+      //console.log(responseData);
+
       if (responseData?.flag === true) {
         toast.success("User Removed", {
           description: "The user has been successfully removed.",
         });
         return true;
       }
+      if (responseData?.flag === false) {
+        toast.error("User removal Failed", {
+          description: responseData
+            ? responseData.message
+            : "An unexpected error occurred.",
+        });
+        return false;
+      }
       return false;
     } catch (err) {
       toast.error("User removal Failed", {
         description:
-          err instanceof Error ? err.response.data.message : "An unexpected error occurred.",
+          err instanceof Error
+            ? err.response.data.message
+            : "An unexpected error occurred.",
       });
       return false;
     }

@@ -432,6 +432,15 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
           SCPCreatedAt: "2023-08-24T12:35:04.000Z",
           SCPUpdatedAt: null,
         },
+        {
+          id: 23,
+          title: "Flutterwave",
+          icon: "dollar-sign",
+          href: "/flutterwave",
+          roles: ["admin", "root"],
+          SCPCreatedAt: "2023-08-24T12:35:04.000Z",
+          SCPUpdatedAt: null,
+        },
       ],
     },
     {

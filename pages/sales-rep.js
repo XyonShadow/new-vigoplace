@@ -78,6 +78,12 @@ export default function SalesRep() {
   const [result3, setResult3] = useState([]);
   const [users, setUsers] = useState("");
 
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1); // Current month (1-12)
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+
+  // console.log("selectedMonth", selectedMonth); //6
+  // console.log("selectedYear", selectedYear); //2025
+
   const queryClient = useQueryClient();
   const getUser = useSession();
   const user = getUser?.data?.user;
