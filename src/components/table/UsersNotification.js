@@ -48,7 +48,7 @@ import {
 import React from "react";
 import Frame from "../../../assets/images/icons/Frame 7.svg";
 import { useSession } from "next-auth/react";
-//i have gotten them no wahala nau 
+
 const API_BASE_URL = "https://api.vigoplace.com";
 //const API_BASE_URL = "http://localhost:4000";
 export const UsersNotification = ({
