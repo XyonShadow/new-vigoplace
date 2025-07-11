@@ -19,7 +19,9 @@ jobs:
         with:  
           node-version: 18  
       - name: Install dependencies  
-        run: npm install  
+        run: npm install
+      - name: Build Next.js application
+        run: npm run build  
 
       - name: Check SSH connection  
         uses: appleboy/ssh-action@master  
@@ -65,5 +67,5 @@ jobs:
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  
             [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  
             cd ${{ env.DEPLOY_PATH }} 
-
+            npm install --production
             pm2 reload ecosystem.config.js || pm2 start ecosystem.config.js 
