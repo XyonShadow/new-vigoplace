@@ -5,7 +5,7 @@ on:
       - develop  
 
 env:
-  DEPLOY_PATH: /home/ubuntu/apps/vigoplace-admin
+  DEPLOY_PATH: /home/ubuntu/apps/vigoplace-admin2
 
 jobs:  
   deploy:  
