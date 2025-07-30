@@ -54,6 +54,8 @@ import { useSession } from "next-auth/react";
 import Frame from "../assets/images/icons/Frame 7.svg";
 import { SalessRep } from "../src/components/table/SalesRep";
 import { UsersTable2 } from "@/src/components/table/UsersTable2";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const API_BASE_URL = "https://api.vigoplace.com";
 //const API_BASE_URL = "http://localhost:4000";
@@ -77,12 +79,10 @@ export default function SalesRep() {
   const [error3, setError3] = useState(null);
   const [result3, setResult3] = useState([]);
   const [users, setUsers] = useState("");
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1); // Current month (1-12)
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-
-  // console.log("selectedMonth", selectedMonth); //6
-  // console.log("selectedYear", selectedYear); //2025
+  const month = selectedDate.getMonth() + 1;
+  const year = selectedDate.getFullYear();
 
   const queryClient = useQueryClient();
   const getUser = useSession();
@@ -97,11 +97,14 @@ export default function SalesRep() {
   } = useQuery(
     ["usersales", columnFilters, sorting],
     async () => {
-      const { data } = await axios.get(`${API_BASE_URL}/api/admin/list`, {
-        headers: {
-          Authorization: user?.token,
-        },
-      });
+      const { data } = await axios.get(
+        `${API_BASE_URL}/api/admin/list?month=${month}&year=${year}`,
+        {
+          headers: {
+            Authorization: user?.token,
+          },
+        }
+      );
 
       setResult(data?.data ?? []);
       //console.log(data?.data);
@@ -183,7 +186,9 @@ export default function SalesRep() {
     } catch (err) {
       toast.error("User addition Failed", {
         description:
-          err instanceof Error ?  err.response.data.message : "An unexpected error occurred.",
+          err instanceof Error
+            ? err.response.data.message
+            : "An unexpected error occurred.",
       });
       return false;
     }
@@ -256,6 +261,21 @@ export default function SalesRep() {
         </div> */}
 
         <div>
+          <div className="flex justify-center items-center space-x-4 mb-4">
+            <label htmlFor="month-picker" className="text-sm font-medium">
+              Pick Month & Year:
+            </label>
+            <DatePicker
+              selected={selectedDate}
+              onChange={(date) => setSelectedDate(date)}
+              dateFormat="MM/yyyy"
+              showMonthYearPicker
+              className="border px-3 py-2 rounded-md"
+            />
+            {/* <Button onClick={() => refetch()} className="text-center">
+                  Fetch Users
+                </Button> */}
+          </div>
           <SalessRep sales={result} loading={loading} error={error} />
         </div>
       </div>
