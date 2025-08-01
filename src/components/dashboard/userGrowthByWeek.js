@@ -53,7 +53,7 @@ const UserGrowthByWeek = () => {
 
   const currentDate = new Date();
   const currentWeek = Math.ceil(currentDate.getDate() / 7).toString();
-  const currentMonth = (currentDate.getMonth() + 1).toString(); // 1-based (May = 5)
+  const currentMonth = currentDate.getMonth().toString(); 
   const currentYear = currentDate.getFullYear().toString();
 
   const [week, setWeek] = useState(currentWeek);
@@ -162,7 +162,7 @@ const UserGrowthByWeek = () => {
               <SelectValue placeholder="Week" />
             </SelectTrigger>
             <SelectContent>
-              {[1, 2, 3, 4].map((w) => (
+              {[1, 2, 3, 4, 5].map((w) => (
                 <SelectItem key={w} value={w.toString()}>
                   Week {w}
                 </SelectItem>
@@ -188,7 +188,7 @@ const UserGrowthByWeek = () => {
               <SelectValue placeholder="Year" />
             </SelectTrigger>
             <SelectContent>
-              {[2022, 2023, 2024, 2025].map((y) => (
+              {[2022, 2023, 2024, 2025, 2026].map((y) => (
                 <SelectItem key={y} value={y.toString()}>
                   {y}
                 </SelectItem>

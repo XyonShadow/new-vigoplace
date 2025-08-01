@@ -34,7 +34,7 @@ const MONTHS = [
   "December",
 ];
 
-const YEARS = [2022, 2023, 2024, 2025];
+const YEARS = [2022, 2023, 2024, 2025, 2026];
 
 const fetchFilteredActiveUsers = async (token, week, month, year) => {
   const response = await axios.get(
@@ -148,7 +148,7 @@ const ActiveUserByWeek = () => {
               <SelectValue placeholder="Select Week" />
             </SelectTrigger>
             <SelectContent>
-              {[1, 2, 3, 4].map((w) => (
+              {[1, 2, 3, 4, 5].map((w) => (
                 <SelectItem key={w} value={w.toString()}>
                   Week {w}
                 </SelectItem>
