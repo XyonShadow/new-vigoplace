@@ -402,7 +402,25 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
           roles: ["admin", "root"],
           SCPCreatedAt: "2022-12-19T06:46:44.000Z",
           SCPUpdatedAt: null,
-        }
+        },
+        {
+          id: 19,
+          title: "Bills payment",
+          icon: "dollar-sign",
+          href: "/bills-payment",
+          roles: ["admin", "root"],
+          SCPCreatedAt: "2025-08-12T06:46:44.000Z",
+          SCPUpdatedAt: null,
+        },
+        // {
+        //   id: 31,
+        //   title: "Error Logs",
+        //   icon: "activity",
+        //   href: "/error-logs",
+        //   roles: ["admin", "root"],
+        //   SCPCreatedAt: "2022-12-19T06:46:44.000Z",
+        //   SCPUpdatedAt: null,
+        // },
       ],
     },
     {
