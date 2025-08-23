@@ -60,6 +60,8 @@ const ActiveUserByWeek = () => {
   const [month, setMonth] = useState(currentMonth);
   const [year, setYear] = useState(currentYear);
 
+//  console.log('active month', month)
+
   const {
     data: userActivityData,
     isLoading,

@@ -53,12 +53,15 @@ const UserGrowthByWeek = () => {
 
   const currentDate = new Date();
   const currentWeek = Math.ceil(currentDate.getDate() / 7).toString();
-  const currentMonth = currentDate.getMonth().toString(); 
+  //const currentMonth = currentDate.getMonth().toString();
+  const currentMonth = (currentDate.getMonth() + 1).toString();
   const currentYear = currentDate.getFullYear().toString();
 
   const [week, setWeek] = useState(currentWeek);
   const [month, setMonth] = useState(currentMonth);
   const [year, setYear] = useState(currentYear);
+
+  //console.log("growth month", month);
 
   const [searchParams, setSearchParams] = useState({
     week: currentWeek,
@@ -78,6 +81,8 @@ const UserGrowthByWeek = () => {
     cacheTime: 30 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
+
+    ///console.log(userGrowthData)
 
   const { categories, data, columnWidthPercentage } = useMemo(() => {
     if (!userGrowthData)
@@ -182,6 +187,19 @@ const UserGrowthByWeek = () => {
               ))}
             </SelectContent>
           </Select>
+
+          {/* <Select value={month} onValueChange={setMonth}>
+            <SelectTrigger className="w-[160px]">
+              <SelectValue placeholder="Select Month" />
+            </SelectTrigger>
+            <SelectContent>
+              {MONTHS.map((m, idx) => (
+                <SelectItem key={idx} value={idx.toString()}>
+                  {m}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select> */}
 
           <Select value={year} onValueChange={setYear}>
             <SelectTrigger className="w-[100px]">

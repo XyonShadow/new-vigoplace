@@ -60,6 +60,8 @@ const KPI = (props) => {
           Authorization: user?.token,
         },
       });
+
+      //console.log(data)
       return data;
     },
     {
@@ -275,6 +277,18 @@ const KPI = (props) => {
       id: "form_post_revenue",
       value: "formPostRevenue",
       label: "Form Post revenue",
+      isCurrency: false,
+    },
+    {
+      id: "data_and_airtime_revenue",
+      value: "dataAndAirtimeRevnue",
+      label: "Data and airtime revenue",
+      isCurrency: false,
+    },
+    {
+      id: "electricity_revenue",
+      value: "electriticityRevenue",
+      label: "Electricity revenue",
       isCurrency: false,
     },
     {
