@@ -115,7 +115,7 @@ export default function Transaction() {
         }
       );
 
-      //console.log(data);
+      console.log(data);
       setTransaction(data?.data ?? []);
       setTransactionCount(data?.count?.total ?? 0);
     } catch (err) {

@@ -61,7 +61,6 @@ const KPI = (props) => {
         },
       });
 
-      //console.log(data)
       return data;
     },
     {

@@ -459,6 +459,15 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
           SCPCreatedAt: "2023-08-24T12:35:04.000Z",
           SCPUpdatedAt: null,
         },
+         {
+          id: 40,
+          title: "Mobile Nig",
+          icon: "dollar-sign",
+          href: "/mobilenig-data",
+          roles: ["admin", "root"],
+          SCPCreatedAt: "2023-08-24T12:35:04.000Z",
+          SCPUpdatedAt: null,
+        },
       ],
     },
     {

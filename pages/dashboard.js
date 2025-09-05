@@ -7,6 +7,8 @@ import ActiveUsers from "../src/components/dashboard/ActiveUsers";
 import ActiveUserByWeek from "../src/components/dashboard/ActiveUserByWeek";
 import UserGrowth from "../src/components/dashboard/userGrowth";
 import UserGrowthByWeek from "../src/components/dashboard/userGrowthByWeek";
+import UserTransaction from "../src/components/dashboard/TransactionByMonth";
+import UserTransactionByWeek from "../src/components/dashboard/TransactionByWeek";
 import DailyActivity from "../src/components/dashboard/DailyActivity";
 import ProductPerfomance from "../src/components/dashboard/ProductPerfomance";
 import { Budget } from "../src/components/dashboard/budget";
@@ -141,6 +143,54 @@ export default function Index() {
     { keepPreviousData: true }
   );
 
+  const { data: mobilenigBalance, mobilenigIsLoading } = useQuery(
+    ["mobilenigBalanceOnDashboard"],
+    async () => {
+      const { data } = await axios.get(
+        `https://api.vigoplace.com/api/topup/mobileng/balance`,
+        // `http://localhost:3001/api/topup/mobileng/balance`,
+        {
+          headers: {
+            Authorization: user?.token,
+          },
+        }
+      );
+
+      return data;
+    },
+    {
+      onError: (err) => {
+        console.log(err, "err fetching mobile nig balance");
+      },
+      enabled: !!user?.token,
+    },
+    { keepPreviousData: true }
+  );
+
+  const { data: flutterwaveBalance, flutterwaveIsLoading } = useQuery(
+    ["flutterwaveBalanceOnDashboard"],
+    async () => {
+      const { data } = await axios.get(
+        `https://api.vigoplace.com/api/admin/console/balance/flutterwave`,
+        // `http://localhost:3001/api/admin/console/balance/flutterwave`,
+        {
+          headers: {
+            Authorization: user?.token,
+          },
+        }
+      );
+
+      return data;
+    },
+    {
+      onError: (err) => {
+        console.log(err, "err fetching flutterwave balance");
+      },
+      enabled: !!user?.token,
+    },
+    { keepPreviousData: true }
+  );
+
   // const { data: vigoWalletBalance, isLoading: vigoWalletLoading } = useQuery(
   //   ["vigoWalletBalance"],
   //   async () => {
@@ -249,6 +299,35 @@ export default function Index() {
                 balance={paystackBalance?.data?.balance ?? 0}
               />
             </Grid>
+
+            <Grid item xl={6} lg={6} sm={6} xs={12}>
+              <TotalProfit
+                header={"Flutterwave"}
+                isLoading={flutterwaveIsLoading}
+                currency="NGN"
+                balance={flutterwaveBalance?.data[0]?.available_balance ?? 0}
+              />
+            </Grid>
+
+            <Grid item xl={6} lg={6} sm={6} xs={12}>
+              <TotalProfit
+                header={"Flutterwave"}
+                isLoading={flutterwaveIsLoading}
+                currency="usd"
+                balance={flutterwaveBalance?.data[1]?.available_balance ?? 0}
+              />
+            </Grid>
+
+            <Grid item xl={6} lg={6} sm={6} xs={12}>
+              <TotalProfit
+                header={"MobileNIG"}
+                isLoading={mobilenigIsLoading}
+                balance={mobilenigBalance?.data?.details?.balance ?? 0}
+              />
+            </Grid>
+
+            <Grid item xl={6} lg={6} sm={6} xs={12}></Grid>
+
             {/* <Grid item xl={3} lg={3} sm={6} xs={12}>
               <TotalProfit
                 header={"Vigo Wallet"}
@@ -281,6 +360,7 @@ export default function Index() {
               >
                 <Tab label="Active Users" {...a11yProps(0)} />
                 <Tab label="User Growth" {...a11yProps(1)} />
+                <Tab label="Transaction" {...a11yProps(2)} />
               </Tabs>
             </Box>
 
@@ -316,6 +396,18 @@ export default function Index() {
                     </Grid>
                     <Grid item lg={6} md={6} xl={6} xs={12}>
                       <UserGrowth />
+                    </Grid>
+                  </Grid>
+                </TabPanel>
+              </Grid>
+              <Grid item lg={12} md={12} xl={12} xs={12}>
+                <TabPanel value={tabValue} index={2}>
+                  <Grid container spacing={3}>
+                    <Grid item lg={6} md={6} xl={6} xs={12}>
+                      <UserTransactionByWeek />
+                    </Grid>
+                    <Grid item lg={6} md={6} xl={6} xs={12}>
+                      <UserTransaction />
                     </Grid>
                   </Grid>
                 </TabPanel>
