@@ -5,6 +5,8 @@ import {
   IconButton,
   InputAdornment,
   Paper,
+  Chip,
+  Stack,
   Tab,
   Tooltip,
 } from "@mui/material";
@@ -66,6 +68,19 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { toast } from "react-toast";
 
 const emails = ["username@gmail.com", "user02@gmail.com"];
+
+const StatusChip = ({ status }) => {
+  const color =
+    status === "active" ? "success" : status === "blocked" ? "error" : "default";
+  return (
+    <Chip
+      label={status ?? "unknown"}
+      size="small"
+      color={color}
+      sx={{ textTransform: "capitalize", fontWeight: 600 }}
+    />
+  );
+};
 
 const Users = () => {
   const router = useRouter();
@@ -521,30 +536,27 @@ const Users = () => {
       },
       {
         accessorFn: (row) => row.fullname,
-        // accessorFn: (row) => `${row.fullname}`,
-        id: "name", //id is still required when using accessorFn instead of accessorKey
+        id: "name",
         header: "Full Name",
         Cell: ({ cell, row }) => (
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: "1rem",
-            }}
-          >
+          <Box sx={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
             {row.original.photo ? (
-              <img
-                // alt={row.original.fullname}
-                height={30}
+              <Avatar
                 src={row.original.photo}
-                loading="lazy"
-                style={{ borderRadius: "50%" }}
+                alt={row.original.fullname}
+                sx={{ width: 36, height: 36 }}
               />
             ) : (
-              <AccountCircleIcon sx={{ fontSize: "33px" }} />
+              <AccountCircleIcon sx={{ fontSize: 36 }} />
             )}
-
-            <Typography>{cell.getValue()}</Typography>
+            <Box>
+              <Typography sx={{ fontSize: "0.95rem", fontWeight: 600 }}>
+                {cell.getValue() || "—"}
+              </Typography>
+              <Typography sx={{ fontSize: "0.75rem", color: "text.secondary" }}>
+                {row.original.email ?? ""}
+              </Typography>
+            </Box>
           </Box>
         ),
       },
@@ -552,24 +564,25 @@ const Users = () => {
         accessorKey: "email",
         enableClickToCopy: true,
         header: "Email",
+        Cell: ({ cell }) => (
+          <Typography sx={{ fontSize: "0.85rem", color: "text.secondary" }}>
+            {cell.getValue()}
+          </Typography>
+        ),
       },
       {
         accessorKey: "status",
         enableClickToCopy: false,
         header: "Status",
         enableColumnFilter: false,
+        Cell: ({ cell }) => <StatusChip status={cell.getValue()} />,
       },
       {
-        // accessorKey: "createdAt",
-        accessorFn: (row) => {
-          if (row?.createdAt) {
-            return format(new Date(row.createdAt), "MM/dd/yyyy hh:mm a");
-          } else {
-            return "";
-          }
-        },
+        accessorFn: (row) =>
+          row?.createdAt ? format(new Date(row.createdAt), "MM/dd/yyyy hh:mm a") : "",
         enableClickToCopy: false,
         header: "Joined",
+        id: "joined",
         enableColumnFilter: false,
       },
       {
@@ -578,27 +591,25 @@ const Users = () => {
         enableColumnFilter: false,
         header: "Gender",
       },
-
       {
         accessorKey: "phone",
         enableClickToCopy: false,
         enableColumnFilter: false,
         header: "Phone",
       },
-
       {
         accessorKey: "postNoDebit",
         enableClickToCopy: false,
         enableColumnFilter: false,
         header: "Wallet Status",
         Cell: ({ cell }) => (
-          <span>
+          <Typography sx={{ fontSize: "0.85rem" }}>
             {cell.getValue() === 1
               ? "Suspended"
               : cell.getValue() === 0
               ? "Active"
               : "No Owned Wallet"}
-          </span>
+          </Typography>
         ),
       },
     ],
@@ -706,7 +717,7 @@ const Users = () => {
         </Alert>
       </Snackbar>
 
-      <MaterialReactTable
+      `<MaterialReactTable
         columns={columns}
         data={data?.data ?? []}
         getRowId={(row) => {
@@ -723,62 +734,56 @@ const Users = () => {
         // enableRowSelection
         manualPagination
         enablePagination
+        muiTableProps={{ sx: { borderRadius: 2, overflow: "hidden", boxShadow: 1 } }}
+        muiTableHeadCellProps={{ sx: { fontWeight: 700, bgcolor: "grey.100" } }}
+        muiTableBodyCellProps={{ sx: { fontSize: "0.9rem", py: 1 } }}
         onPaginationChange={setPagination}
         rowCount={datalenght ?? 0}
         onColumnFiltersChange={setColumnFilters}
         onGlobalFilterChange={setGlobalFilter}
-        initialState={{ showColumnFilters: true }}
+        initialState={{ showColumnFilters: true, density: "comfortable" }}
         positionToolbarAlertBanner="bottom"
         enableGlobalFilter={false}
         muiTableBodyRowProps={({ row }) => ({
           //implement row selection click events manually
           onClick: () =>
-            setRowSelection((prev) => ({
-              ...prev,
-              [row.id]: !prev[row.id],
-            })),
+            setRowSelection((prev) => ({ ...prev, [row.id]: !prev[row.id] })),
           selected: rowSelection[row.id],
           sx: {
             cursor: "pointer",
+            backgroundColor: row.index % 2 === 0 ? "background.paper" : "background.default",
+            "&:hover": {
+              backgroundColor: "action.hover",
+            },
           },
         })}
         renderDetailPanel={({ row }) => {
           // setWalletId(row.original.id)
           // getUserWalletMutation.mutate(row.original.id)
           return (
-            <>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "flex-start",
-                }}
-              >
-                <Box
-                  sx={{
-                    marginRight: "20px",
-                  }}
-                >
-                  <img
-                    alt="avatar"
-                    height={200}
-                    src={row.original.photo}
-                    loading="lazy"
-                    style={{ borderRadius: "50%" }}
-                  />
-                </Box>
-
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <UserBio usersBio={row.original.bio} />
-                  {/* <UserBalanceCard /> */}
-                </Box>
+            <Box sx={{ display: "flex", gap: 3, p: 2, alignItems: "flex-start", flexWrap: "wrap" }}>
+              <Box sx={{ minWidth: 160, textAlign: "center" }}>
+                <img
+                  alt={row.original.fullname || "avatar"}
+                  height={140}
+                  src={row.original.photo}
+                  loading="lazy"
+                  style={{ borderRadius: "8px", objectFit: "cover", width: 140, height: 140 }}
+                />
               </Box>
-            </>
+
+              <Box sx={{ flex: 1 }}>
+                <Stack spacing={0.5}>
+                  <Typography variant="h6">{row.original.fullname}</Typography>
+                  <Typography variant="body2" color="text.secondary">{row.original.email}</Typography>
+                  <Typography variant="body2">Phone: {row.original.phone ?? "—"}</Typography>
+                  <Typography variant="body2">Status: <StatusChip status={row.original.status} /></Typography>
+                  <Box sx={{ mt: 1 }}>
+                    <UserBio usersBio={row.original.bio} />
+                  </Box>
+                </Stack>
+              </Box>
+            </Box>
           );
         }}
         renderRowActionMenuItems={({ closeMenu, row, table }) => {
