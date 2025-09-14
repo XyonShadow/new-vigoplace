@@ -38,17 +38,17 @@ const YEARS = [2022, 2023, 2024, 2025, 2026];
 
 const fetchFilteredtransactionUsers = async (token, week, month, year) => {
   const response = await axios.get(
-    "https://api.vigoplace.com/api/admin/console/users/transactions/days",
+    "https://api.vigoplace.com/api/admin/console/users/payouts/days",
     {
       headers: { Authorization: token },
       params: { week, month, year },
     }
   );
-  
+
   return response.data?.data;
 };
 
-const TransactionByWeek = () => {
+const TransactionVolumeByWeek = () => {
   const { data: sessionData } = useSession();
   const token = sessionData?.user?.token;
 
@@ -61,15 +61,15 @@ const TransactionByWeek = () => {
   const [month, setMonth] = useState(currentMonth);
   const [year, setYear] = useState(currentYear);
 
-//  console.log('transaction month', month)
+  //  console.log('transaction month', month)
 
   const {
-    data: userTransactionData,
+    data: userVolumeTransactionData,
     isLoading,
     error,
     refetch,
   } = useQuery({
-    queryKey: ["dailyTransactionUsers", week, month, year],
+    queryKey: ["dailyTransactionVolumeUsers", week, month, year],
     queryFn: () =>
       fetchFilteredtransactionUsers(
         token,
@@ -81,11 +81,11 @@ const TransactionByWeek = () => {
   });
 
   const { categories, data, columnWidthPercentage } = useMemo(() => {
-    if (!userTransactionData)
+    if (!userVolumeTransactionData)
       return { categories: [], data: [], columnWidthPercentage: "40%" };
 
-    const categories = Object.keys(userTransactionData);
-    const data = Object.values(userTransactionData);
+    const categories = Object.keys(userVolumeTransactionData);
+    const data = Object.values(userVolumeTransactionData);
 
     let columnWidthPercentage;
     if (categories.length <= 3) columnWidthPercentage = "80%";
@@ -94,7 +94,7 @@ const TransactionByWeek = () => {
     else columnWidthPercentage = "30%";
 
     return { categories, data, columnWidthPercentage };
-  }, [userTransactionData]);
+  }, [userVolumeTransactionData]);
 
   const chartOptions = useMemo(() => {
     const maxY = data.length > 0 ? Math.max(...data) : 0;
@@ -124,16 +124,35 @@ const TransactionByWeek = () => {
         min: 0,
         max: yAxisMax,
         tickAmount: 3,
-        labels: { style: { colors: "hsl(var(--foreground))" } },
+        labels: {
+          style: { colors: "hsl(var(--foreground))" },
+          formatter: (val) => {
+            // Use Intl.NumberFormat if you need locale control
+            return val != null ? Number(val).toLocaleString() : "0";
+          },
+        },
       },
       colors: ["#6366f1"],
-      dataLabels: { enabled: false },
+      dataLabels: {
+        // enable if you want numbers on each bar
+        enabled: false,
+        formatter: (val) => {
+          return val != null ? Number(val).toLocaleString() : "0";
+        },
+      },
       grid: { borderColor: "rgba(0,0,0,0.1)", strokeDashArray: 2 },
-      tooltip: { theme: "light" },
+      tooltip: {
+        theme: "light",
+        y: {
+          formatter: (val) => {
+            return val != null ? Number(val).toLocaleString() : "0";
+          },
+        },
+      },
     };
   }, [categories, data, columnWidthPercentage]);
 
-  const chartSeries = [{ name: "Daily transaction Users", data }];
+  const chartSeries = [{ name: "Daily transaction Volume", data }];
 
   const hasData = data.some((v) => v > 0);
 
@@ -141,7 +160,7 @@ const TransactionByWeek = () => {
     <Card className="w-full shadow-sm">
       <CardHeader className="pb-2">
         <CardTitle className="text-base font-medium">
-          Daily transaction Users
+          Daily transaction volume
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -221,4 +240,4 @@ const TransactionByWeek = () => {
   );
 };
 
-export default TransactionByWeek;
+export default TransactionVolumeByWeek;

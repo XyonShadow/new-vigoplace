@@ -194,7 +194,6 @@ export default function FlutterwaveNaira() {
         },
         accessorFn: (row) => `${row.full_name}`,
       },
-
       {
         accessorKey: "account_number",
         header: "Account Number",
@@ -569,7 +568,6 @@ export default function FlutterwaveNaira() {
                     />
                   </PaginationItem>
                 </PaginationContent>
-               
 
                 <div className="flex items-center space-x-2">
                   {/* <p className="text-sm font-medium">Rows per page</p> */}

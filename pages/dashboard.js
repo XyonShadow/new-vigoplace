@@ -9,6 +9,8 @@ import UserGrowth from "../src/components/dashboard/userGrowth";
 import UserGrowthByWeek from "../src/components/dashboard/userGrowthByWeek";
 import UserTransaction from "../src/components/dashboard/TransactionByMonth";
 import UserTransactionByWeek from "../src/components/dashboard/TransactionByWeek";
+import TransactionVolumeByMonth from "../src/components/dashboard/TransactionVolumeByMonth";
+import TransactionVolumeByWeek from "../src/components/dashboard/TransactionVolumeByWeek";
 import DailyActivity from "../src/components/dashboard/DailyActivity";
 import ProductPerfomance from "../src/components/dashboard/ProductPerfomance";
 import { Budget } from "../src/components/dashboard/budget";
@@ -361,6 +363,7 @@ export default function Index() {
                 <Tab label="Active Users" {...a11yProps(0)} />
                 <Tab label="User Growth" {...a11yProps(1)} />
                 <Tab label="Transaction" {...a11yProps(2)} />
+                <Tab label="Transaction Volume" {...a11yProps(3)} />
               </Tabs>
             </Box>
 
@@ -408,6 +411,18 @@ export default function Index() {
                     </Grid>
                     <Grid item lg={6} md={6} xl={6} xs={12}>
                       <UserTransaction />
+                    </Grid>
+                  </Grid>
+                </TabPanel>
+              </Grid>
+              <Grid item lg={12} md={12} xl={12} xs={12}>
+                <TabPanel value={tabValue} index={3}>
+                  <Grid container spacing={3}>
+                    <Grid item lg={6} md={6} xl={6} xs={12}>
+                      <TransactionVolumeByWeek />
+                    </Grid>
+                    <Grid item lg={6} md={6} xl={6} xs={12}>
+                      <TransactionVolumeByMonth />
                     </Grid>
                   </Grid>
                 </TabPanel>
