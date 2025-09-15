@@ -93,7 +93,7 @@ const Users = () => {
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState([]);
   const [pagination, setPagination] = useState({
-    pageIndex: 1,
+    pageIndex: 0,
     pageSize: 10,
   });
   const [gender, setGender] = React.useState("");
@@ -450,7 +450,7 @@ const Users = () => {
         // }&page=${pagination.pageIndex + 1}&walletCurrencyId=${wallet}${
         `https://api.vigoplace.com/api/admin/console/users?perPage=${
           pagination.pageSize
-        }&page=${pagination.pageIndex}&walletCurrencyId=${wallet}${
+        }&page=${pagination.pageIndex + 1}&walletCurrencyId=${wallet}${
           gender !== "" ? `&gender=${gender}` : ""
         }${status !== "" ? `&status=${status}` : ""}${
           flagged !== "" ? `&flagged=${flagged}` : ""
