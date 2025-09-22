@@ -526,6 +526,35 @@ function Sidebar({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }) {
         },
       ],
     },
+    {
+      id: 31,
+      title: "Traction",
+      icon: "credit-card",
+      href: "",
+      roles: ["admin", "root"],
+      SCPCreatedAt: "2024-04-29T00:00:00.000Z",
+      SCPUpdatedAt: null,
+      subLinks: [
+        {
+          id: 32,
+          title: "KPI",
+          icon: "activity",
+          href: "/kpi",
+          roles: ["admin", "superAdmin", "root"],
+          SCPCreatedAt: "2024-05-03T11:21:15.000Z",
+          SCPUpdatedAt: null,
+        },
+        {
+          id: 33,
+          title: "User Revenues",
+          icon: "activity",
+          href: "/user-revenue",
+          roles: ["admin", "root"],
+          SCPCreatedAt: "2024-11-27T06:46:44.000Z",
+          SCPUpdatedAt: null,
+        },
+      ]
+    },
     // {
     //   id: 23,
     //   title: "Virtual-Accounts",

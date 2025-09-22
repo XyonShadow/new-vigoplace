@@ -429,10 +429,10 @@ export default function Index() {
               </Grid>
             </Grid>
 
-            <Grid item lg={12} md={12} xl={12} xs={12}>
-              {/* <LatestOrders /> */}
+            {/* <Grid item lg={12} md={12} xl={12} xs={12}>
+              {/* <LatestOrders /> 
               <KPI />
-            </Grid>
+            </Grid> */}
           </Grid>
         </Container>
       </Box>
