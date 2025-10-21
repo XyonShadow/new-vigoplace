@@ -522,6 +522,12 @@ export default function OnboardedUserSales({ repsUsername, repsUserId }) {
           showMonthYearPicker
           className="border px-3 py-2 rounded-md"
         />
+        <div className="flex items-center space-x-2 bg-white px-4 py-2 rounded-md border border-gray-300">
+          <span className="text-sm font-medium text-gray-700">Total Amount:</span>
+          <span className="text-base font-semibold text-gray-900">
+            ₦{data?.totalAmount?.toLocaleString() || 0}
+          </span>
+        </div>
         {/* <Button onClick={() => refetch()} className="text-center">
           Fetch Users
         </Button> */}
